@@ -1,0 +1,15 @@
+\begin{tikzpicture}[x=1.5cm,y=1.4cm]
+	\tikzset{
+		draw tangents/.style={decorate,decoration={
+						markings,mark=between positions 0 and
+						1 step
+						.2 with
+							{\draw[-latex,black,thick] (0,0) --
+								(1cm,0)
+								node[above] {$\Efield$};},
+					}
+			}
+	}
+	\draw[red,line width=2pt,postaction=draw tangents]
+	(0,0) to[out=45, in=135] (3,0);
+\end{tikzpicture}

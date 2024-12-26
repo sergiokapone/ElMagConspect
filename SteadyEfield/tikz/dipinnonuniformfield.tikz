@@ -1,0 +1,19 @@
+\begin{tikzpicture}[>=latex, midarrow/.style={%
+   postaction={ decorate,
+   decoration={ markings, mark=at position .7 with {\arrow{latex}}}}}]
+
+    \foreach \y in {-3,...,3}{
+        \draw[red, midarrow] plot[domain=1:4] (\x, 0.2*\y+0.05*\y*\x^2);
+    }
+
+	\node [circle, ball color=blue, inner sep=1.2pt, text=white]
+	(qn) at (2.5,-1) {\tikz\draw[thick] (0,0) -- ++(0.1,0);};
+
+	\node [circle, ball color=red, inner sep=0pt, text=white,
+		font=\scriptsize] (qp) at (3.3,1.45) {$+$};
+
+        \draw[->, thick] (qp) -- ++(36:1) node[above] {$+q\Efield_+$};
+        \draw[->, thick] (qn) -- ++(155:2) node[above] {$-q\Efield_-$};
+        \draw[->, thick] (qn) -- (qp) node[right, pos=0.6] {$\vect{\ell}$};
+
+\end{tikzpicture}
