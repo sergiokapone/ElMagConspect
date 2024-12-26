@@ -1,0 +1,26 @@
+\begin{tikzpicture}[>=latex]
+	\foreach \i in {-1,-0.5,...,1} {
+			\draw[->, red] (-3, \i) -- ++(6, 0);
+		}
+
+	\node [circle, ball color=blue, inner sep=1.2pt, text=white]
+	(qn) at (-1,-0.75) {\tikz\draw[thick] (0,0) -- ++(0.2,0);};
+
+	\node [circle, ball color=red, inner sep=0pt, text=white,
+		font=\scriptsize] (qp) at (1,0.75) {$+$};
+
+
+	\draw[->, ultra thick, gray] (qn) -- ++(-1, 0) node[left]
+	{$-q\vec{E}$};
+
+	\draw[->, ultra thick, gray] (qp) -- ++(1, 0) node[right]
+	{$+q\vec{E}$};
+
+	\node[inner sep=1pt, circle, fill] (O) at (0, -1.5) {};
+	\node[below] at (O) {$O$};
+
+	\draw[->] (O) -- node[left] {$\vec{r}_-$}(qn);
+	\draw[->] (O) -- node[right] {$\vec{r}_+$}(qp);
+
+	\draw[->, gray] (qn) -- node[above] {$\vec{\ell}$} (qp);
+\end{tikzpicture}

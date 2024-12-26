@@ -1,0 +1,33 @@
+\begin{tikzpicture}[scale=1.5, transform shape]
+% ============================ параметри ===================================
+\pgfmathsetmacro{\step}{0.4}
+\pgfmathsetmacro{\ea}{5}
+\pgfmathsetmacro{\eb}{1}
+\pgfmathsetmacro{\shape}{1}
+% ============================== функція ===================================
+\draw [
+    raw gnuplot, red,
+    ] plot[id=curve, raw gnuplot] function {
+            set isosamples 55, 55;
+            set contour base;
+            set cntrparam levels incremental -2.2,\step,2.2;
+            %set style data lines;
+            unset  surface;
+            splot [-4:4] [-2.2:2.2] (y*(1+\shape/(x**2 + y**2))) ;
+            };
+% ================================ куля ======================================
+\fill[ball color=gray!20, draw=gray!30, thick] (0,0) circle (1.01);
+% ======================= стрілки на лініях ==================================
+\foreach \i in {-2.2,-1.8,...,2.2} {
+\draw[red, -latex', rotate around = {{-asin(\i/(3 +\shape/3))}:({asin(\i/(3 +\shape/3))}:3)}] ({asin(\i/(3 +\shape/3))}:3) -- ({asin(\i/(3 +\shape/3))}:3.1);
+\draw[red, -latex',rotate around = {{180-asin(\i/(3 +\shape/3))}:({180+asin(\i/(3 +\shape/3))}:3)} ] ({180+asin(\i/(3 +\shape/3))}:3) -- ({180+asin(\i/(3 +\shape/3))}:3.1);
+}
+% ============================ знаки зарядів =================================
+\foreach \i in {70,30,15,0}{
+%==================================
+\node at (\i:1.1) {\tiny $+$};
+\node at (-\i:1.1) {\tiny $+$};
+\node at ({180-\i}:1.1) {\tiny $-$};
+\node at ({180+\i}:1.1) {\tiny $-$};
+}
+\end{tikzpicture}

@@ -1,0 +1,258 @@
+% !TeX program = lualatex
+% !TeX encoding = utf8
+% !TeX spellcheck = uk_UA
+% !TeX root =./EMConspect.tex
+
+%===============================================================================
+%
+%									      Палітурка
+%
+%===============================================================================
+
+\newcommand{\CoverPage}{
+	\begin{alwayssingle}
+		\begin{center}
+			\begin{flushright}\bfseries\sffamily
+				\MakeUppercase{Міністерство освіти і науки України}\\
+				КПІ ім. Ігоря Сікорського\\
+			\end{flushright}
+			\begin{tcolorbox}[titlepagestyle,
+					toprule=0.10cm,
+					bottomrule=0.10cm,
+%					overlay={%
+%						\node (picture) at ([xshift=2.5cm]frame.west) {\includegraphics[width=4cm]{logo_IPT}};
+%					}
+			]%
+			\begin{flushright}
+				\large\bfseries\color{white}Навчально-науковий фізико-технічний інститут
+			\end{flushright}
+			\end{tcolorbox}
+			\vspace*{-2em}
+		 	\begin{Large}\color{themecolordark!90!black}
+			\begin{alignat*}{3}
+				\vect{\nabla}&\times&&\Efield &&= -\dfrac{1}{c}\dfrac{\partial\Bfield}{\partial t} \\
+				\vect{\nabla}&\,\cdot&&\Bfield &&= 0 \\
+				\vect{\nabla}&\,\cdot&&\Dfield &&= 4\pi\rho \\
+				\vect{\nabla}&\times&&\Hfield &&= \dfrac{4\pi}{c} \vect{j}+\dfrac{1}{c}\dfrac{\partial\Dfield}{\partial t}
+			\end{alignat*}
+			\end{Large}
+			\vspace*{2em}
+			\begin{tcolorbox}[
+				titlepagestyle,
+				toprule=0.15cm,
+				bottomrule=0.15cm,
+				top=1.3cm,
+				bottom=0.7cm,
+				overlay={%
+				\node[%
+							fill=white,
+							rounded corners = 15pt,
+							draw=themecolorlight,
+							line width=0.15cm,
+							inner sep=0pt,
+							text width=8cm,
+							minimum height=2cm,
+							align=center,
+							%anchor=east,
+							font=\sffamily\bfseries\Large
+						] (title) at (frame.north) {\authors};
+				}
+			]
+			\centering
+			\Huge\sffamily\bfseries\textcolor{white}{\realtitle}\\
+			\huge\sffamily\bfseries\textcolor{white}{\subtitle}
+			\end{tcolorbox}
+			\vfill
+		 	\begin{Large}\color{themecolordark!90!black}
+			\begin{alignat*}{4}
+					&\oiint\limits_S \Dfield\cdot d\vect{S} = 4\pi\iiint\limits_V\rho dV  \quad
+					&&\oint\limits_L \Efield\cdot d\vect{r} &&&= - \frac1c \iint\limits_S \frac{\partial\Bfield}{\partial t}\cdot d\vect{S} \\
+					&\oiint\limits_S \Bfield\cdot d\vect{S} = 0
+					 \quad
+					&&\oint\limits_L \Hfield\cdot d\vect{r} &&& =\dfrac{4\pi}{c} \iint\limits_S \vect{j}\cdot d\vect{S} \,+ \\
+					& && &&& +\,\frac{1}{c} \iint\limits_S  \frac{\partial\Dfield}{\partial t}\cdot d\vect{S}
+			\end{alignat*}
+			\end{Large}
+			\vfill
+			\begin{tcolorbox}[titlepagestyle,
+					toprule=0.10cm,
+					bottomrule=0.10cm]
+				\begin{center}\color{white}\bfseries\normalsize
+					\MakeUppercase{Київ~2024} \\
+%					КПІ ім. Ігоря Сікорського \\
+%					2021
+				\end{center}
+			\end{tcolorbox}
+		\end{center}
+		\clearpage
+	\end{alwayssingle}
+\setcounter{page}{1}
+}
+
+
+%===============================================================================
+%
+%									      Титульна сторінка
+%
+%===============================================================================
+
+\renewcommand\maketitle{
+	\begin{alwayssingle}
+		\begin{center}
+				\MakeUppercase{Міністерство освіти і науки України}
+
+				\bigskip
+				\MakeUppercase{Національний технічний університет України}\\
+				<<КИЇВСЬКИЙ ПОЛІТЕХНІЧНИЙ ІНСТИТУТ \\ імені ІГОРЯ СІКОРСЬКОГО>>
+				\vspace*{100pt}
+
+				{\Large\authors}
+				\vspace*{50pt}
+
+				{\Huge\sffamily\bfseries\realtitle}\\
+				{\huge\sffamily\bfseries\subtitle}
+
+			\vspace*{50pt}
+			\begin{center}\itshape
+
+				Рекомендовано Методичною радою КПІ ім. Ігоря Сікорського як навчальний посібник для здобувачів ступеня бакалавра за освітньою програмою
+				<<Прикладна фізика>> спеціальності 105 <<Прикладна фізика та наноматеріали>>
+			\end{center}
+
+			\vfill
+			\begin{center}
+				\MakeUppercase{Київ} \\
+				КПІ ім. Ігоря Сікорського \\
+				2024
+			\end{center}
+		\end{center}
+		\clearpage
+	\end{alwayssingle}
+}
+
+
+%========================================================================================================
+%
+%									      Друга сторінка
+%
+%========================================================================================================
+\newcommand\makeinfopage{
+	\begin{alwayssingle}
+		\noindent%
+		\begin{minipage}[t]{0.5\textwidth}
+				\begin{flushleft}
+					УДК  537\\
+					ББК  22.3\\
+					П 563
+				\end{flushleft}
+		\end{minipage}
+
+%		\begin{minipage}[t]{0.55\textwidth}
+%				\begin{flushleft}
+%					Гриф надано Методичною радою КПІ ім. Ігоря Сікорського (протокол № 9/2019~від 30.05.2019~р.) за поданням Вченої ради Фізико-технічного інституту (протокол № 5/2019 від 24.04.2019 р.)
+%				\end{flushleft}
+%		\end{minipage}
+		\bigskip\noindent%
+		\begin{tabular}[t]{p{4.2cm}p{0.7\textwidth}}
+	%				Автор та укладач:                        & \href{http://phes.ipt.kpi.ua/ponomarenko-sergij-mikolajovich}{\authors}, к.ф.-м.н., доцент кафедри  фізики енергетичних систем ФТІ \\
+	%				                                         &                                                                                                                                   \\
+			Рецензенти:                              & \href{http://imfn.lviv.ua/zf/?page_id=569}{І.~Р.~Зачек}, д.ф.-м.н., професор  кафедри загальної фізики Інституту прикладної математики та фундаментальних наук Національного університету <<Львівська політехніка>>                            \\
+											 & \href{https://www.nas.gov.ua/UA/PersonalSite/Pages/default.aspx?PersonID=0000006279}{О.~М.~Кордюк}, д.ф.-м.н., член-кореспондент НАН України, директор Київського академічного університету                            \\
+	                                     &                                                                                                                                   \\
+			Відповідальний редактор: & \href{http://ipt.kpi.ua/litvinova}{С.~А.~Смирнов}, к.ф.-м..н., доцент, голова методичної ради ФТІ
+		\end{tabular}
+		\vfill
+		\begin{center}\itshape\small
+				Гриф надано Методичною радою КПІ ім. Ігоря Сікорського (протокол №~9/2019~від 30.05.2019~р.) за поданням Вченої ради Фізико-технічного інституту (протокол №~5/2019 від 24.04.2019 р.)
+		\end{center}
+		\begin{center}
+			\ifelectronic Електронне мережне видання \fi
+			%\par {Версія від~\href{http://www.istpravda.com.ua/dates}{\today}} \par\else \par  \fi
+		\end{center}
+			\vfill
+		\begin{center}
+			\href{http://phes.ipt.kpi.ua/ponomarenko-sergij-mikolajovich}{\itshape Пономаренко Сергій Миколайович}, к.ф.-м.н., доцент
+		\end{center}
+			\vfill
+		\begin{center}
+			\LARGE\sffamily\realtitle \\
+			\Large\sffamily\subtitle
+		\end{center}
+			\vfill
+		\bigskip\noindent%
+		\begin{flushleft}
+			\begin{tabular}{lp{0.9\textwidth}}
+				     & \textbf{\href{http://phes.ipt.kpi.ua/ponomarenko-sergij-mikolajovich}{\authors}}                                                                                                                                                                        \\
+				П 563 & \hspace*{3ex} \realtitle : \subtitle{} [Електронний ресурс] : навчальний посібник / \authors{} --- К.:~КПІ ім. Ігоря Сікорського, 2024. --~\the\numexpr\getpagerefnumber{LastPage}-1\relax~с. -- Бібліогр.: с.~\pageref{BibPage}. \ifelectronic\relax\else-- 80~прим.\fi
+			\end{tabular}
+		\end{flushleft}
+		\vfill
+
+        Представлено конспект лекцій з освітньої компоненти <<Електрика та магнетизм>>, у якому розглядаються фізичні та математичні
+        підґрунтя теорії електромагнітного поля, основні визначення, рівняння та
+        характеристики електромагнітного поля.
+
+		Для студентів фізико-технічного інституту КПІ ім. Ігоря Сікорського, які навчаються за спеціальністю 105~<<Прикладна фізика та наноматеріали>>.
+
+		\vfill
+
+%		\begin{flushleft}\small
+%			Ілюстративний матеріал підручника підготовлений за допомогою пакету \href{http://pgf.sourceforge.net}{TikZ/Pgf}. Верстка тексту проведена в видавничій системі \LaTeXe{} (компілятор Lua\LaTeX) на базі системи комп'ютерної верстки \TeX{} (Збірка  \href{https://www.tug.org/texlive/}{\TeX Live~2021}) з використанням оболонки \href{https://www.texstudio.org}{\TeX Studio}.
+%		\end{flushleft}
+%		\vfill
+
+		\begin{flushleft}
+			\begin{tabular}{p{\textwidth - 45ex}l}
+				& \small\textcopyright\quad \authors, 2024~р. \\
+				& \small \textcopyright\quad КПІ ім. Ігоря Сікорського (ФТІ), 2024~р.
+			\end{tabular}
+		\end{flushleft}
+		\newpage%
+	\end{alwayssingle}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                        %%
+%%                              Last Page                                 %%
+%%                                                                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\makelastpage}{%
+\clearpage%
+\thispagestyle{empty}%
+\vspace*{0.4\textheight}
+\begin{center}
+	    \textbf{Пономаренко} Сергій Миколайович
+\end{center}
+
+\begin{center}\bfseries
+    \Large\sffamily\realtitle \\
+    \large\sffamily\subtitle
+\end{center}
+
+\begin{center}\itshape
+    Комп'ютерне верстання в системі \LaTeXe{} С.\ М. Пономаренко
+\end{center}
+
+\vspace*{1em}
+\begin{center}\small
+Національний технічний університет України \\
+<<Київський політехнічний інститут імені Ігоря Сікорського>> \\
+Свідоцтво про державну реєстрацію: серія ДК № 5354 від 25.05.2017 р.\\
+просп. Перемоги, 37, м. Київ, 03056
+\end{center}
+
+%\vfill
+%
+%\begin{center}
+%    Видавництво <<Політехніка>> \kpishort \\
+%    вул. Політехнічна, 14, корп. 15 \\
+%    м. Київ, 03056 \\
+%    Тел. (044) 204-81-78
+%\end{center}
+}
+
+
+
+
+
+

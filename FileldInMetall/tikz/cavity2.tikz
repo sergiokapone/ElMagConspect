@@ -1,0 +1,48 @@
+\begin{tikzpicture}[>=latex,  scale=1.5, transform shape,
+		draw charges/.style={decorate,decoration={
+						markings,mark=between positions 0 and
+						1 step
+						.05 with
+							{\node[text=red, font=\tiny] at (0,0) {$+$};},
+					}
+			}
+	]
+		\pgfmathsetseed{55}
+		\clip[smooth, scale=1.1] plot
+			[smooth cycle,
+				samples=8,domain={1:10}]
+		(\x*360/10+5*rnd:1cm+1cm*rnd);
+	\begin{scope}
+		\pgfmathsetseed{55}
+		\draw[ball color=gray!5, name path=metall, smooth] plot
+			[smooth cycle,
+				samples=8,domain={1:10}]
+		(\x*360/10+5*rnd:1cm+1cm*rnd);
+		\pgfmathsetseed{55}
+		\draw[fill=white=gray!5, name path=metall, smooth, scale=0.5, yshift=0.5cm, name path
+			global=cavity] plot
+			[smooth cycle,
+				samples=8,domain={1:10}]
+		(\x*360/10+5*rnd:1cm+1cm*rnd);
+		\pgfmathsetseed{55}
+		\path[smooth, postaction=draw charges, scale=0.95]
+		plot
+			[smooth cycle,
+				samples=8,domain={1:10}]
+		(\x*360/10+5*rnd:1cm+1cm*rnd);
+	\end{scope}
+	\foreach[count=\c] \r in {0.5,0.8,...,2.5} {
+			\path[name path global=charge\c] (0, -0.5) circle[x radius=\r, y radius=0.5*\r];
+		}
+	\draw[black, ->, densely dashed] (0,-0.5) [partial ellipse=125:50:1 and 0.5] node[pos=0.5,
+	above, text=red]
+	{?};
+	\draw[black, densely dashed] (0,-0.5) [partial ellipse=45:-230:1 and 0.5];
+	\foreach \c in {1,...,4} {
+			\path[name intersections={of=cavity and charge\c}]  (intersection-1)
+			node[anchor=east,
+				text=blue, font=\tiny, inner sep=1pt] (A\c) {$-$}
+			(intersection-2)  node  [anchor=west, inner sep=1pt,
+				text=red, font=\tiny] (B\c) {$+$} ;
+		};
+\end{tikzpicture}

@@ -1,0 +1,42 @@
+\begin{tikzpicture}[>=latex, every node/.style={font=\scriptsize}, scale=1.5, transform shape]
+    \pgfmathsetmacro\h{0.4}
+    \pgfmathsetmacro\r{0.5}
+	\begin{scope}[opacity=0.2]
+		\draw[ball color=red!5] (0,0) to[bend left] ++(2,1.5)  to[bend left] ++(2,-1)
+		to[bend right]
+		++(-2, -0.5)  to[bend
+			right] cycle;
+
+	\end{scope}
+
+    \pgfmathsetmacro\x{2.1}
+    \pgfmathsetmacro\y{1.0}
+    \coordinate (A)  at (\x,          \y);
+    \coordinate (A1) at ({\x - \r},   \y);
+    \coordinate (A2) at ({\x + \r},   \y);
+    \coordinate (E0) at ({\x - \r/2}, \y);
+    \coordinate (Es) at ({\x + \r/2}, \y);
+
+	\draw[->, red]  (A) -- ++(90:1.5) coordinate (B)
+	node[above] {$\Efield$};
+
+	\draw[fill=gray!50, opacity=0.5] (A) circle[x radius =\r, y radius= 0.15] node[right=15pt]
+	{$\sigma dS$};
+	\draw[dashed] (A) ++(90:\h) circle[x radius =\r, y radius= 0.15];
+
+	\draw[densely dashed] (A1) -- ++(90:\h);
+	\draw[densely dashed] (A2) -- ++(90:\h);
+
+    \draw[->, red] (Es) -- ++(0,+0.75) node[right] {$\Efield_{\sigma}$};
+    \draw[->, red] (E0) -- ++(0,+0.75) node[left] {$\Efield_{0}$};
+
+    \begin{scope}[opacity=0.5]
+        \draw[densely dashed] (A1) -- ++(90:-\h);
+   		\draw[densely dashed] (A2) -- ++(90:-\h);
+        \draw[dashed] (A) ++(90:-\h) circle[x radius =\r, y radius= 0.15];
+
+        \draw[->, red] (Es) -- ++(0,-0.75) node[right] {$\Efield_{\sigma}$};
+        \draw[<-, red] (E0) -- ++(0,-0.75) node[left] {$\Efield_{0}$};
+    \end{scope}
+
+\end{tikzpicture}

@@ -1,0 +1,161 @@
+% !TeX program = lualatex
+% !TeX encoding = utf8
+% !TeX spellcheck = uk_UA
+% !BIB program = biber
+
+\documentclass[biblatex]{ConspectBook}
+
+%===============================================================================
+%
+%							Вихідні дані докумета
+%
+%===============================================================================
+
+\title{Електрика та магнетизм}
+\def\subtitle{конспект лекцій}
+\def\authors{С.~М.~Пономаренко}
+
+%=================================== Бібліографія  =============================
+%
+\addbibresource{d:/Projects/LaTeX/MyPackages/bib/MyBase.bib}
+%\addbibresource{Kvant.bib}
+%
+%===============================================================================
+
+%===============================================================================
+%
+\input{CoverPage}%			Титульна сторінка
+%
+%===============================================================================
+\begin{document}
+\pagestyle{empty}
+%\ifelectronic\CoverPage\setcounter{page}{0}\fi
+\CoverPage
+\maketitle
+\makeinfopage
+%===============================================================================
+%
+\clearpage\pagestyle{main}
+\tableofcontents%				   Зміст
+%
+%===============================================================================
+
+%===============================================================================
+%
+%\include{intro}%                  Вступ та передмова
+%
+%===============================================================================
+
+%===============================================================================
+%
+%									      Вставка файлів розділів
+%
+%===============================================================================
+%\setcounter{chapter}{-1}
+%\input{Additions/MaxwellEquation}
+\newcommand{\Chapters}{
+	SteadyEfield,
+    FileldInMetall,
+	%    SteadyCurrent,
+	%    Magnetostatics,
+	%    Electrodynamics,
+	%    ParticleMotion,
+	%	Relativity,
+	%    AlternatingCurrent,
+}
+%===============================================================================
+\multiinclude{\Chapters}[]
+%===============================================================================
+%
+%									       Вставка відповідей
+%
+%===============================================================================
+%\answers
+%\multiinclude{\Chapters}[-Answers]
+%===============================================================================
+%
+%									             Додатки
+%
+%===============================================================================
+%\appendix
+%\input{Additions/Vanaliz}
+%\input{Additions/SItoGauss}
+%\input{Spheres/Spheres}
+%%\input{Additions/MatherialConstants}
+%\input{Additions/PhysConstants}
+%%==============================================================================
+%
+%									       Вставка бібліографії
+%
+%===============================================================================
+\clearpage\bibliographytrue\phantomsection\label{BibPage}
+
+\nocite{%
+	AleshkevichElectro,
+	AxiezerGeneralPhysElectro,
+	AxiezerElectromagnetizm,
+	Siv3,
+	berkeley2,
+	FLF5,
+	FLF6,
+	FLF7,
+	Mat3,
+	Sav2,
+	Smajt,
+	ZilbermanElectro,
+	Tamm,
+	Kalashnikov,
+	Jackson,
+	Meshkov1,
+	%Meshkov2,
+	PennerUgarov,
+	ParnovskyElectro,
+	Ivanenko,
+	SivP3,
+	Ovchinkin2,
+	ZilbermanZadachi,
+	FLFP,
+	IrodovProblems,
+	VonsovskyMagnetizm,
+	Mironova,
+}
+
+\printbibheading
+\defbibheading{subbibliography}[\bibname]{\section*{#1}}
+\printbibliography[category=Textbooks, heading=subbibliography, title={Підручники та посібники}]
+\addtocategory{Textbooks}{%
+	AleshkevichElectro,
+	AlekseevElectro,
+	AxiezerGeneralPhysElectro,
+	AxiezerElectromagnetizm,
+	Siv3,
+	berkeley2,
+	FLF5,
+	FLF6,
+	FLF7,
+	Mat3,
+	Sav2,
+	Smajt,
+	ZilbermanElectro,
+	Tamm,
+	Kalashnikov,
+	Jackson,
+	Meshkov1,
+	PennerUgarov,
+	ParnovskyElectro,
+	Ivanenko,
+	VonsovskyMagnetizm}
+
+\printbibliography[category=Problems, heading=subbibliography, title={Задачники}]
+\addtocategory{Problems}{%
+	SivP3,
+	Ovchinkin2,
+	ZilbermanZadachi,
+	FLFP,
+	IrodovProblems,
+	AlekseevElectro,
+	Mironova,
+}
+
+\makelastpage
+\end{document}

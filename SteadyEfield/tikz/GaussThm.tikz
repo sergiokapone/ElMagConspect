@@ -1,0 +1,50 @@
+\begin{tikzpicture}[surface/.pic = {
+				\fill[blue!50, draw=red, opacity=0.5]  plot[smooth
+						cycle, tension=.7]
+				coordinates {
+						(-1,0)
+						(-0.5,1)
+						(0.5,2)
+						(2.5,1.5)
+						(3,0.5)
+						(2,-1.5)
+						(0.5,-2)
+						(-0.5,-1)
+					};
+			},
+		>=latex,
+		scale=0.7,
+		transform shape
+	]
+	\pic[] at (0,0)  {surface};
+
+	\node [circle, ball color=red, inner sep=0pt, text=white,
+		font=\scriptsize] (qp) at (0,0) {$+$};
+
+	\foreach \i in {0,20,...,360} {
+			\draw[->, red] (qp) -- (\i:3);
+		}
+	\draw[gray, ultra thin, densely dashed] (qp) -- (35.8:2.8)
+	coordinate
+	(A);
+	\draw[gray, ultra thin, densely dashed] (qp) -- (26.5:3)
+	coordinate (B);
+
+	\coordinate (S) at (2.5,1.5);
+
+	\draw[->, thick] (S) -- ++(52:1) node[above] {$d\vec{S}$};
+	\fill[rotate around={-35:(S)}, gray, draw] (A) arc[start
+			angle = -180,
+			delta
+			angle=190, x radius= 0.25cm, y radius=0.1cm] -- (S) -- (A) --
+	cycle;
+
+	%             \draw[->, red] (qp) -- (31:4);
+	\draw[->, red] (S) -- ++(31:1) node[below] {$\vec{E}$};
+
+	\draw (S)  ++(52:0.5) arc[radius = 0.5cm, start angle=52, end
+			angle=31];
+
+	\node[below] at (2,-1.5) {$S$};
+	\node[] at (2, -0.5) {$V$};
+\end{tikzpicture}

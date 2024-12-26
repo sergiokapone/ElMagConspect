@@ -1,0 +1,1085 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global/global}
+    \entry{AleshkevichElectro}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=e41a47d87a99e3e0d2a197223596d3cd}{%
+           family={Алешкевич},
+           familyi={А\bibinitperiod},
+           given={В.\bibnamedelimi А.},
+           giveni={В\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {М.}%
+      }
+      \list{publisher}{1}{%
+        {Физматлит}%
+      }
+      \strng{namehash}{e41a47d87a99e3e0d2a197223596d3cd}
+      \strng{fullhash}{e41a47d87a99e3e0d2a197223596d3cd}
+      \strng{fullhashraw}{e41a47d87a99e3e0d2a197223596d3cd}
+      \strng{bibnamehash}{e41a47d87a99e3e0d2a197223596d3cd}
+      \strng{authorbibnamehash}{e41a47d87a99e3e0d2a197223596d3cd}
+      \strng{authornamehash}{e41a47d87a99e3e0d2a197223596d3cd}
+      \strng{authorfullhash}{e41a47d87a99e3e0d2a197223596d3cd}
+      \strng{authorfullhashraw}{e41a47d87a99e3e0d2a197223596d3cd}
+      \field{sortinit}{А}
+      \field{sortinithash}{9db8541854f3671fde760253476fbbdb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{langid}{russian}
+      \field{pagetotal}{404}
+      \field{title}{Электромагнетизм}
+      \field{year}{2014}
+      \true{nocite}
+      \keyw{Electrodynamics}
+    \endentry
+    \entry{AxiezerGeneralPhysElectro}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=d7cd0229e7fad2c4e8e58f2d34b4703a}{%
+           family={Ахиезер},
+           familyi={А\bibinitperiod},
+           given={А.\bibnamedelimi И.},
+           giveni={А\bibinitperiod\bibinitdelim И\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {К.}%
+      }
+      \list{publisher}{1}{%
+        {Наукова думка}%
+      }
+      \strng{namehash}{d7cd0229e7fad2c4e8e58f2d34b4703a}
+      \strng{fullhash}{d7cd0229e7fad2c4e8e58f2d34b4703a}
+      \strng{fullhashraw}{d7cd0229e7fad2c4e8e58f2d34b4703a}
+      \strng{bibnamehash}{d7cd0229e7fad2c4e8e58f2d34b4703a}
+      \strng{authorbibnamehash}{d7cd0229e7fad2c4e8e58f2d34b4703a}
+      \strng{authornamehash}{d7cd0229e7fad2c4e8e58f2d34b4703a}
+      \strng{authorfullhash}{d7cd0229e7fad2c4e8e58f2d34b4703a}
+      \strng{authorfullhashraw}{d7cd0229e7fad2c4e8e58f2d34b4703a}
+      \field{sortinit}{А}
+      \field{sortinithash}{9db8541854f3671fde760253476fbbdb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{pagetotal}{472}
+      \field{subtitle}{Электрические и магнитные явления: Справочное пособие}
+      \field{title}{Общая физика}
+      \field{year}{1981}
+      \true{nocite}
+    \endentry
+    \entry{AxiezerElectromagnetizm}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=d7cd0229e7fad2c4e8e58f2d34b4703a}{%
+           family={Ахиезер},
+           familyi={А\bibinitperiod},
+           given={А.\bibnamedelimi И.},
+           giveni={А\bibinitperiod\bibinitdelim И\bibinitperiod}}}%
+        {{hash=64e6e492ee4ae0de7483ffe75803a5b8}{%
+           family={Ахиезер},
+           familyi={А\bibinitperiod},
+           given={И.\bibnamedelimi А.},
+           giveni={И\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {М.}%
+      }
+      \list{publisher}{1}{%
+        {Высшая школа}%
+      }
+      \strng{namehash}{a2819c356913280b76138818439c34c4}
+      \strng{fullhash}{a2819c356913280b76138818439c34c4}
+      \strng{fullhashraw}{a2819c356913280b76138818439c34c4}
+      \strng{bibnamehash}{a2819c356913280b76138818439c34c4}
+      \strng{authorbibnamehash}{a2819c356913280b76138818439c34c4}
+      \strng{authornamehash}{a2819c356913280b76138818439c34c4}
+      \strng{authorfullhash}{a2819c356913280b76138818439c34c4}
+      \strng{authorfullhashraw}{a2819c356913280b76138818439c34c4}
+      \field{sortinit}{А}
+      \field{sortinithash}{9db8541854f3671fde760253476fbbdb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{pagetotal}{504}
+      \field{title}{Электромагнетизм и электромагнитные волны}
+      \field{year}{1985}
+      \true{nocite}
+      \keyw{Electrodynamics}
+    \endentry
+    \entry{Mironova}{book}{}{}
+      \name{author}{3}{}{%
+        {{hash=00528bb8876ea866cf5011f3eb473314}{%
+           family={Брандт},
+           familyi={Б\bibinitperiod},
+           given={Н.\bibnamedelimi Н.},
+           giveni={Н\bibinitperiod\bibinitdelim Н\bibinitperiod}}}%
+        {{hash=039b68f4719c138573219c6eefa16183}{%
+           family={Миронова},
+           familyi={М\bibinitperiod},
+           given={Г.\bibnamedelimi А.},
+           giveni={Г\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+        {{hash=dbe571ab38f4cb541f784bc67e1f410b}{%
+           family={А.\bibnamedelimi М.},
+           familyi={А\bibinitperiod\bibinitdelim М\bibinitperiod},
+           given={Салецкий},
+           giveni={С\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {СПб.}%
+      }
+      \list{publisher}{1}{%
+        {Лань}%
+      }
+      \strng{namehash}{9f2ba60de58036801da69aaa0c5a70b4}
+      \strng{fullhash}{9f2ba60de58036801da69aaa0c5a70b4}
+      \strng{fullhashraw}{9f2ba60de58036801da69aaa0c5a70b4}
+      \strng{bibnamehash}{9f2ba60de58036801da69aaa0c5a70b4}
+      \strng{authorbibnamehash}{9f2ba60de58036801da69aaa0c5a70b4}
+      \strng{authornamehash}{9f2ba60de58036801da69aaa0c5a70b4}
+      \strng{authorfullhash}{9f2ba60de58036801da69aaa0c5a70b4}
+      \strng{authorfullhashraw}{9f2ba60de58036801da69aaa0c5a70b4}
+      \field{sortinit}{Б}
+      \field{sortinithash}{5261f8dfa92113358b76bb09b8629977}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{2}
+      \field{isbn}{978-5-8114-1088-0}
+      \field{langid}{russian}
+      \field{pagetotal}{288}
+      \field{title}{Электростатика в вопросах и задачах. Пособие по решению задач для студентов}
+      \field{year}{2010}
+      \true{nocite}
+      \keyw{Electrodynamics}
+    \endentry
+    \entry{VonsovskyMagnetizm}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=db17c183b83af7cf596e053393c3d6b5}{%
+           family={Вонсовский},
+           familyi={В\bibinitperiod},
+           given={С.\bibnamedelimi В.},
+           giveni={С\bibinitperiod\bibinitdelim В\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {М.}%
+      }
+      \list{publisher}{1}{%
+        {Наука}%
+      }
+      \strng{namehash}{db17c183b83af7cf596e053393c3d6b5}
+      \strng{fullhash}{db17c183b83af7cf596e053393c3d6b5}
+      \strng{fullhashraw}{db17c183b83af7cf596e053393c3d6b5}
+      \strng{bibnamehash}{db17c183b83af7cf596e053393c3d6b5}
+      \strng{authorbibnamehash}{db17c183b83af7cf596e053393c3d6b5}
+      \strng{authornamehash}{db17c183b83af7cf596e053393c3d6b5}
+      \strng{authorfullhash}{db17c183b83af7cf596e053393c3d6b5}
+      \strng{authorfullhashraw}{db17c183b83af7cf596e053393c3d6b5}
+      \field{sortinit}{В}
+      \field{sortinithash}{769561dacf0468c568f33adb4926797c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{langid}{russian}
+      \field{pagetotal}{208}
+      \field{series}{Проблемы науки и технического прогресса}
+      \field{title}{Магнетизм}
+      \field{year}{1984}
+      \true{nocite}
+    \endentry
+    \entry{Jackson}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=181e67f147d625059eaa0cb6a9e44136}{%
+           family={Джексон},
+           familyi={Д\bibinitperiod},
+           given={Дж.},
+           giveni={Д\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {М.}%
+      }
+      \list{publisher}{1}{%
+        {Мир}%
+      }
+      \strng{namehash}{181e67f147d625059eaa0cb6a9e44136}
+      \strng{fullhash}{181e67f147d625059eaa0cb6a9e44136}
+      \strng{fullhashraw}{181e67f147d625059eaa0cb6a9e44136}
+      \strng{bibnamehash}{181e67f147d625059eaa0cb6a9e44136}
+      \strng{authorbibnamehash}{181e67f147d625059eaa0cb6a9e44136}
+      \strng{authornamehash}{181e67f147d625059eaa0cb6a9e44136}
+      \strng{authorfullhash}{181e67f147d625059eaa0cb6a9e44136}
+      \strng{authorfullhashraw}{181e67f147d625059eaa0cb6a9e44136}
+      \field{sortinit}{Д}
+      \field{sortinithash}{1acf1490327dfefb00e074ab043a2e03}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{langid}{russian}
+      \field{pagetotal}{703}
+      \field{title}{Классическая электродинамика}
+      \field{year}{1965}
+      \true{nocite}
+      \keyw{Electrodynamics}
+    \endentry
+    \entry{ZilbermanZadachi}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=159a10da9f195de7cb8472557793dc85}{%
+           family={Зильберман},
+           familyi={З\bibinitperiod},
+           given={А.\bibnamedelimi Р.},
+           giveni={А\bibinitperiod\bibinitdelim Р\bibinitperiod}}}%
+        {{hash=381ff493678e7dd552b39abc9fef4608}{%
+           family={Сурков},
+           familyi={С\bibinitperiod},
+           given={Е.\bibnamedelimi Л.},
+           giveni={Е\bibinitperiod\bibinitdelim Л\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \strng{namehash}{51e519df683d28e4c067d62c92e46546}
+      \strng{fullhash}{51e519df683d28e4c067d62c92e46546}
+      \strng{fullhashraw}{51e519df683d28e4c067d62c92e46546}
+      \strng{bibnamehash}{51e519df683d28e4c067d62c92e46546}
+      \strng{authorbibnamehash}{51e519df683d28e4c067d62c92e46546}
+      \strng{authornamehash}{51e519df683d28e4c067d62c92e46546}
+      \strng{authorfullhash}{51e519df683d28e4c067d62c92e46546}
+      \strng{authorfullhashraw}{51e519df683d28e4c067d62c92e46546}
+      \field{sortinit}{З}
+      \field{sortinithash}{1d80b3a15a09c2872443be31e19ee653}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Задачи для физиков}
+      \field{year}{1971}
+      \true{nocite}
+    \endentry
+    \entry{ZilbermanElectro}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=33a7ca42ce793255e7c1414f891e2f1c}{%
+           family={Зильберман},
+           familyi={З\bibinitperiod},
+           given={Г.\bibnamedelimi Е.},
+           giveni={Г\bibinitperiod\bibinitdelim Е\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {М.}%
+      }
+      \list{publisher}{1}{%
+        {Наука}%
+      }
+      \strng{namehash}{33a7ca42ce793255e7c1414f891e2f1c}
+      \strng{fullhash}{33a7ca42ce793255e7c1414f891e2f1c}
+      \strng{fullhashraw}{33a7ca42ce793255e7c1414f891e2f1c}
+      \strng{bibnamehash}{33a7ca42ce793255e7c1414f891e2f1c}
+      \strng{authorbibnamehash}{33a7ca42ce793255e7c1414f891e2f1c}
+      \strng{authornamehash}{33a7ca42ce793255e7c1414f891e2f1c}
+      \strng{authorfullhash}{33a7ca42ce793255e7c1414f891e2f1c}
+      \strng{authorfullhashraw}{33a7ca42ce793255e7c1414f891e2f1c}
+      \field{sortinit}{З}
+      \field{sortinithash}{1d80b3a15a09c2872443be31e19ee653}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{pagetotal}{384}
+      \field{title}{Электричество и магнетизм}
+      \field{year}{1970}
+      \true{nocite}
+    \endentry
+    \entry{Ivanenko}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=ae6ac0a83871d47a00ef590953facf19}{%
+           family={Иваненко},
+           familyi={И\bibinitperiod},
+           given={Д.\bibnamedelimi Д.},
+           giveni={Д\bibinitperiod\bibinitdelim Д\bibinitperiod}}}%
+        {{hash=3c966ee2f06667396f9c6db7fde4218d}{%
+           family={Соколов},
+           familyi={С\bibinitperiod},
+           given={А.\bibnamedelimi А.},
+           giveni={А\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{publisher}{1}{%
+        {ГИТТЛ}%
+      }
+      \strng{namehash}{11d3c6c409a81abca707558a8f2ef9ea}
+      \strng{fullhash}{11d3c6c409a81abca707558a8f2ef9ea}
+      \strng{fullhashraw}{11d3c6c409a81abca707558a8f2ef9ea}
+      \strng{bibnamehash}{11d3c6c409a81abca707558a8f2ef9ea}
+      \strng{authorbibnamehash}{11d3c6c409a81abca707558a8f2ef9ea}
+      \strng{authornamehash}{11d3c6c409a81abca707558a8f2ef9ea}
+      \strng{authorfullhash}{11d3c6c409a81abca707558a8f2ef9ea}
+      \strng{authorfullhashraw}{11d3c6c409a81abca707558a8f2ef9ea}
+      \field{sortinit}{И}
+      \field{sortinithash}{2470d9127fdc7d7ccff0fd8f03da4828}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{pagetotal}{479}
+      \field{title}{Классическая теория поля}
+      \field{year}{1951}
+      \true{nocite}
+    \endentry
+    \entry{IrodovProblems}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=b6fdeac333326db1e2e8c725adb8c4e0}{%
+           family={Иродов},
+           familyi={И\bibinitperiod},
+           given={И.\bibnamedelimi Е.},
+           giveni={И\bibinitperiod\bibinitdelim Е\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{publisher}{1}{%
+        {Бином}%
+      }
+      \strng{namehash}{b6fdeac333326db1e2e8c725adb8c4e0}
+      \strng{fullhash}{b6fdeac333326db1e2e8c725adb8c4e0}
+      \strng{fullhashraw}{b6fdeac333326db1e2e8c725adb8c4e0}
+      \strng{bibnamehash}{b6fdeac333326db1e2e8c725adb8c4e0}
+      \strng{authorbibnamehash}{b6fdeac333326db1e2e8c725adb8c4e0}
+      \strng{authornamehash}{b6fdeac333326db1e2e8c725adb8c4e0}
+      \strng{authorfullhash}{b6fdeac333326db1e2e8c725adb8c4e0}
+      \strng{authorfullhashraw}{b6fdeac333326db1e2e8c725adb8c4e0}
+      \field{sortinit}{И}
+      \field{sortinithash}{2470d9127fdc7d7ccff0fd8f03da4828}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{9}
+      \field{langid}{russian}
+      \field{pagetotal}{432}
+      \field{title}{Задачи по общей физике}
+      \field{year}{2012}
+      \true{nocite}
+    \endentry
+    \entry{Kalashnikov}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=284504bc64b2e991ceedbf7142b7d757}{%
+           family={Калашников},
+           familyi={К\bibinitperiod},
+           given={С.\bibnamedelimi Г.},
+           giveni={С\bibinitperiod\bibinitdelim Г\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {М.}%
+      }
+      \list{publisher}{1}{%
+        {Физматлит}%
+      }
+      \strng{namehash}{284504bc64b2e991ceedbf7142b7d757}
+      \strng{fullhash}{284504bc64b2e991ceedbf7142b7d757}
+      \strng{fullhashraw}{284504bc64b2e991ceedbf7142b7d757}
+      \strng{bibnamehash}{284504bc64b2e991ceedbf7142b7d757}
+      \strng{authorbibnamehash}{284504bc64b2e991ceedbf7142b7d757}
+      \strng{authornamehash}{284504bc64b2e991ceedbf7142b7d757}
+      \strng{authorfullhash}{284504bc64b2e991ceedbf7142b7d757}
+      \strng{authorfullhashraw}{284504bc64b2e991ceedbf7142b7d757}
+      \field{sortinit}{К}
+      \field{sortinithash}{007824ff2af181c6f6762379475efd5a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{6}
+      \field{isbn}{5-9221-0312-1}
+      \field{langid}{russian}
+      \field{pagetotal}{624}
+      \field{title}{Электричество}
+      \field{year}{2004}
+      \true{nocite}
+    \endentry
+    \entry{Mat3}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=a4a3995ea02477bf9f07f7bfca43da88}{%
+           family={Матвеев},
+           familyi={М\bibinitperiod},
+           given={А.\bibnamedelimi Н.},
+           giveni={А\bibinitperiod\bibinitdelim Н\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{publisher}{1}{%
+        {Высшая школа}%
+      }
+      \strng{namehash}{a4a3995ea02477bf9f07f7bfca43da88}
+      \strng{fullhash}{a4a3995ea02477bf9f07f7bfca43da88}
+      \strng{fullhashraw}{a4a3995ea02477bf9f07f7bfca43da88}
+      \strng{bibnamehash}{a4a3995ea02477bf9f07f7bfca43da88}
+      \strng{authorbibnamehash}{a4a3995ea02477bf9f07f7bfca43da88}
+      \strng{authornamehash}{a4a3995ea02477bf9f07f7bfca43da88}
+      \strng{authorfullhash}{a4a3995ea02477bf9f07f7bfca43da88}
+      \strng{authorfullhashraw}{a4a3995ea02477bf9f07f7bfca43da88}
+      \field{sortinit}{М}
+      \field{sortinithash}{3750e8e5bcd54966a663076166442576}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{pagetotal}{463}
+      \field{title}{Том 3. Электричество и магнетизм.}
+      \field{year}{1983}
+      \true{nocite}
+    \endentry
+    \entry{Meshkov1}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=ca269dde55197a910dc2ac5af4d55e31}{%
+           family={Мешков},
+           familyi={М\bibinitperiod},
+           given={И.\bibnamedelimi Н.},
+           giveni={И\bibinitperiod\bibinitdelim Н\bibinitperiod}}}%
+        {{hash=e622a39fe4718cd4889cad04f70d2e54}{%
+           family={Чириков},
+           familyi={Ч\bibinitperiod},
+           given={Б.\bibnamedelimi В.},
+           giveni={Б\bibinitperiod\bibinitdelim В\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {Н.}%
+      }
+      \list{publisher}{1}{%
+        {Наука}%
+      }
+      \strng{namehash}{3ccc6a65f70e99e49751053de338c988}
+      \strng{fullhash}{3ccc6a65f70e99e49751053de338c988}
+      \strng{fullhashraw}{3ccc6a65f70e99e49751053de338c988}
+      \strng{bibnamehash}{3ccc6a65f70e99e49751053de338c988}
+      \strng{authorbibnamehash}{3ccc6a65f70e99e49751053de338c988}
+      \strng{authornamehash}{3ccc6a65f70e99e49751053de338c988}
+      \strng{authorfullhash}{3ccc6a65f70e99e49751053de338c988}
+      \strng{authorfullhashraw}{3ccc6a65f70e99e49751053de338c988}
+      \field{sortinit}{М}
+      \field{sortinithash}{3750e8e5bcd54966a663076166442576}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{internalsortvolume}{Часть 1}
+      \field{langid}{russian}
+      \field{pagetotal}{272}
+      \field{title}{Электромагнитное поле}
+      \field{volumes}{2 частях}
+      \field{year}{1987}
+      \true{nocite}
+      \field{volume}{Часть 1. Электричество и магнетизм}
+      \range{volume}{-1}
+      \keyw{Electrodynamics}
+    \endentry
+    \entry{ParnovskyElectro}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=b1a34896b0978727ed521a3a87ecbc7c}{%
+           family={Парновский},
+           familyi={П\bibinitperiod},
+           given={С.\bibnamedelimi Л.},
+           giveni={С\bibinitperiod\bibinitdelim Л\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {ukrainian}%
+      }
+      \list{publisher}{1}{%
+        {ФТІ, КПІ ім. Ігоря Сікорського}%
+      }
+      \strng{namehash}{b1a34896b0978727ed521a3a87ecbc7c}
+      \strng{fullhash}{b1a34896b0978727ed521a3a87ecbc7c}
+      \strng{fullhashraw}{b1a34896b0978727ed521a3a87ecbc7c}
+      \strng{bibnamehash}{b1a34896b0978727ed521a3a87ecbc7c}
+      \strng{authorbibnamehash}{b1a34896b0978727ed521a3a87ecbc7c}
+      \strng{authornamehash}{b1a34896b0978727ed521a3a87ecbc7c}
+      \strng{authorfullhash}{b1a34896b0978727ed521a3a87ecbc7c}
+      \strng{authorfullhashraw}{b1a34896b0978727ed521a3a87ecbc7c}
+      \field{sortinit}{П}
+      \field{sortinithash}{b60c3989b0a91e15e157f5b4997c35c7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{pagetotal}{24}
+      \field{title}{Електрика та магнетизм: додаткові матеріали до курсу}
+      \field{year}{2020}
+      \true{nocite}
+    \endentry
+    \entry{berkeley2}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=6df2ec2d6c0278cca579438e224a1234}{%
+           family={Парселл},
+           familyi={П\bibinitperiod},
+           given={Э.},
+           giveni={Э\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {М.}%
+      }
+      \list{publisher}{1}{%
+        {Наука}%
+      }
+      \strng{namehash}{6df2ec2d6c0278cca579438e224a1234}
+      \strng{fullhash}{6df2ec2d6c0278cca579438e224a1234}
+      \strng{fullhashraw}{6df2ec2d6c0278cca579438e224a1234}
+      \strng{bibnamehash}{6df2ec2d6c0278cca579438e224a1234}
+      \strng{authorbibnamehash}{6df2ec2d6c0278cca579438e224a1234}
+      \strng{authornamehash}{6df2ec2d6c0278cca579438e224a1234}
+      \strng{authorfullhash}{6df2ec2d6c0278cca579438e224a1234}
+      \strng{authorfullhashraw}{6df2ec2d6c0278cca579438e224a1234}
+      \field{sortinit}{П}
+      \field{sortinithash}{b60c3989b0a91e15e157f5b4997c35c7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{3}
+      \field{internalsortvolume}{Том 2}
+      \field{langid}{russian}
+      \field{pagetotal}{416}
+      \field{title}{Берклеевский курс физики}
+      \field{volumes}{6}
+      \field{year}{1983}
+      \true{nocite}
+      \field{volume}{Том 2. Электричество и магнетизм}
+      \range{volume}{-1}
+    \endentry
+    \entry{PennerUgarov}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=fdc91c78271f1719efab8e820906838c}{%
+           family={Пеннер},
+           familyi={П\bibinitperiod},
+           given={Д.\bibnamedelimi И.},
+           giveni={Д\bibinitperiod\bibinitdelim И\bibinitperiod}}}%
+        {{hash=93a2498cf56ecaaa66302fb10f261326}{%
+           family={Угаров},
+           familyi={У\bibinitperiod},
+           given={В.\bibnamedelimi А.},
+           giveni={В\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {М.}%
+      }
+      \list{publisher}{1}{%
+        {Просвещение}%
+      }
+      \strng{namehash}{d9b1bb4eee9bb6d980e10d148c6d6394}
+      \strng{fullhash}{d9b1bb4eee9bb6d980e10d148c6d6394}
+      \strng{fullhashraw}{d9b1bb4eee9bb6d980e10d148c6d6394}
+      \strng{bibnamehash}{d9b1bb4eee9bb6d980e10d148c6d6394}
+      \strng{authorbibnamehash}{d9b1bb4eee9bb6d980e10d148c6d6394}
+      \strng{authornamehash}{d9b1bb4eee9bb6d980e10d148c6d6394}
+      \strng{authorfullhash}{d9b1bb4eee9bb6d980e10d148c6d6394}
+      \strng{authorfullhashraw}{d9b1bb4eee9bb6d980e10d148c6d6394}
+      \field{sortinit}{П}
+      \field{sortinithash}{b60c3989b0a91e15e157f5b4997c35c7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{pagetotal}{271}
+      \field{title}{Электродинамика и специальная теория относительности}
+      \field{year}{1980}
+      \true{nocite}
+      \keyw{Electrodynamics}
+    \endentry
+    \entry{Sav2}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=aa42408bcdbdd231e6da8c1f333d880b}{%
+           family={Савельев},
+           familyi={С\bibinitperiod},
+           given={И.\bibnamedelimi В.},
+           giveni={И\bibinitperiod\bibinitdelim В\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {М.}%
+      }
+      \list{publisher}{1}{%
+        {Наука}%
+      }
+      \strng{namehash}{aa42408bcdbdd231e6da8c1f333d880b}
+      \strng{fullhash}{aa42408bcdbdd231e6da8c1f333d880b}
+      \strng{fullhashraw}{aa42408bcdbdd231e6da8c1f333d880b}
+      \strng{bibnamehash}{aa42408bcdbdd231e6da8c1f333d880b}
+      \strng{authorbibnamehash}{aa42408bcdbdd231e6da8c1f333d880b}
+      \strng{authornamehash}{aa42408bcdbdd231e6da8c1f333d880b}
+      \strng{authorfullhash}{aa42408bcdbdd231e6da8c1f333d880b}
+      \strng{authorfullhashraw}{aa42408bcdbdd231e6da8c1f333d880b}
+      \field{sortinit}{С}
+      \field{sortinithash}{e581ee5e052c6c8e9beb0cf2da905808}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{3}
+      \field{internalsortvolume}{Том 2}
+      \field{langid}{russian}
+      \field{pagetotal}{496}
+      \field{title}{Курс общей физики}
+      \field{year}{1988}
+      \true{nocite}
+      \field{volume}{Том 2.  Электричество}
+      \range{volume}{-1}
+    \endentry
+    \entry{SivP3}{book}{useauthor=false}{}
+      \name{author}{4}{}{%
+        {{hash=e358eb5f15c6ad0126d870fce0fa344a}{%
+           family={Стрелков},
+           familyi={С\bibinitperiod},
+           given={С.\bibnamedelimi П.},
+           giveni={С\bibinitperiod\bibinitdelim П\bibinitperiod}}}%
+        {{hash=414c59baaf760f9151f3eefba778cf18}{%
+           family={Сивухин},
+           familyi={С\bibinitperiod},
+           given={Д.\bibnamedelimi В.},
+           giveni={Д\bibinitperiod\bibinitdelim В\bibinitperiod}}}%
+        {{hash=229d60052a36bce1d84bfcd6295d2e1b}{%
+           family={Хайкин},
+           familyi={Х\bibinitperiod},
+           given={С.\bibnamedelimi Э.},
+           giveni={С\bibinitperiod\bibinitdelim Э\bibinitperiod}}}%
+        {{hash=7014b091fb3fc47fc4eff96bdf981ba0}{%
+           family={Яковлев},
+           familyi={Я\bibinitperiod},
+           given={И.\bibnamedelimi А.},
+           giveni={И\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=7014b091fb3fc47fc4eff96bdf981ba0}{%
+           family={Яковлев},
+           familyi={Я\bibinitperiod},
+           given={И.\bibnamedelimi А.},
+           giveni={И\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{publisher}{1}{%
+        {М.: Физматлит}%
+      }
+      \strng{authorbibnamehash}{61a53a5b8ab04933d459d7c8dba1654e}
+      \strng{authornamehash}{61a53a5b8ab04933d459d7c8dba1654e}
+      \strng{authorfullhash}{e328b4959d1736f8faee31b5d0c14fab}
+      \strng{authorfullhashraw}{e328b4959d1736f8faee31b5d0c14fab}
+      \strng{editorbibnamehash}{7014b091fb3fc47fc4eff96bdf981ba0}
+      \strng{editornamehash}{7014b091fb3fc47fc4eff96bdf981ba0}
+      \strng{editorfullhash}{7014b091fb3fc47fc4eff96bdf981ba0}
+      \strng{editorfullhashraw}{7014b091fb3fc47fc4eff96bdf981ba0}
+      \field{sortinit}{С}
+      \field{sortinithash}{e581ee5e052c6c8e9beb0cf2da905808}
+      \field{labeltitlesource}{title}
+      \field{edition}{5-е}
+      \field{internalsortvolume}{III. Электричество и магнетизм}
+      \field{langid}{russian}
+      \field{pagetotal}{232}
+      \field{title}{Сборник задач по общему курсу физики}
+      \field{year}{2006}
+      \true{nocite}
+      \field{volume}{III. Электричество и магнетизм}
+      \range{volume}{-1}
+    \endentry
+    \entry{Ovchinkin2}{book}{useauthor=false}{}
+      \name{author}{4}{}{%
+        {{hash=0252ec10468ae78017b7201c48bf795f}{%
+           family={Козел},
+           familyi={К\bibinitperiod},
+           given={С.\bibnamedelimi М.},
+           giveni={С\bibinitperiod\bibinitdelim М\bibinitperiod}}}%
+        {{hash=8dd745bbd248e712860f80f5807c8e90}{%
+           family={Лейман},
+           familyi={Л\bibinitperiod},
+           given={В.\bibnamedelimi Г.},
+           giveni={В\bibinitperiod\bibinitdelim Г\bibinitperiod}}}%
+        {{hash=77b552d8837e64a68986c2b56e7db95f}{%
+           family={Локшин},
+           familyi={Л\bibinitperiod},
+           given={Г.\bibnamedelimi Р.},
+           giveni={Г\bibinitperiod\bibinitdelim Р\bibinitperiod}}}%
+        {{hash=f1a40c545edbb72347df231229dad261}{%
+           family={Овчинкин},
+           familyi={О\bibinitperiod},
+           given={В.\bibnamedelimi А.},
+           giveni={В\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=f1a40c545edbb72347df231229dad261}{%
+           family={Овчинкин},
+           familyi={О\bibinitperiod},
+           given={В.\bibnamedelimi А.},
+           giveni={В\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{publisher}{1}{%
+        {Наука}%
+      }
+      \strng{authorbibnamehash}{4cceadb8d8d3544774d37148146f73d6}
+      \strng{authornamehash}{4cceadb8d8d3544774d37148146f73d6}
+      \strng{authorfullhash}{756e1d2cac76cce75cc3e9b0f9e8cf2a}
+      \strng{authorfullhashraw}{756e1d2cac76cce75cc3e9b0f9e8cf2a}
+      \strng{editorbibnamehash}{f1a40c545edbb72347df231229dad261}
+      \strng{editornamehash}{f1a40c545edbb72347df231229dad261}
+      \strng{editorfullhash}{f1a40c545edbb72347df231229dad261}
+      \strng{editorfullhashraw}{f1a40c545edbb72347df231229dad261}
+      \field{sortinit}{С}
+      \field{sortinithash}{e581ee5e052c6c8e9beb0cf2da905808}
+      \field{labeltitlesource}{title}
+      \field{langid}{russian}
+      \field{pagetotal}{400}
+      \field{title}{Сборник задач по общему курсу физики. Часть 2. Электричество и магнетизм. Оптика}
+      \field{year}{2004}
+      \true{nocite}
+    \endentry
+    \entry{Siv3}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=414c59baaf760f9151f3eefba778cf18}{%
+           family={Сивухин},
+           familyi={С\bibinitperiod},
+           given={Д.\bibnamedelimi В.},
+           giveni={Д\bibinitperiod\bibinitdelim В\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {М.}%
+      }
+      \list{publisher}{1}{%
+        {Физматлит}%
+      }
+      \strng{namehash}{414c59baaf760f9151f3eefba778cf18}
+      \strng{fullhash}{414c59baaf760f9151f3eefba778cf18}
+      \strng{fullhashraw}{414c59baaf760f9151f3eefba778cf18}
+      \strng{bibnamehash}{414c59baaf760f9151f3eefba778cf18}
+      \strng{authorbibnamehash}{414c59baaf760f9151f3eefba778cf18}
+      \strng{authornamehash}{414c59baaf760f9151f3eefba778cf18}
+      \strng{authorfullhash}{414c59baaf760f9151f3eefba778cf18}
+      \strng{authorfullhashraw}{414c59baaf760f9151f3eefba778cf18}
+      \field{sortinit}{С}
+      \field{sortinithash}{e581ee5e052c6c8e9beb0cf2da905808}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{4}
+      \field{internalsortvolume}{Том 3}
+      \field{langid}{russian}
+      \field{pagetotal}{655}
+      \field{title}{Общий курс физики}
+      \field{volumes}{5}
+      \field{year}{2004}
+      \true{nocite}
+      \field{volume}{Том 3. Электричество}
+      \range{volume}{-1}
+    \endentry
+    \entry{Smajt}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=f9830459c987eece3cb70cd67debabd0}{%
+           family={Смайт},
+           familyi={С\bibinitperiod},
+           given={В.},
+           giveni={В\bibinitperiod}}}%
+      }
+      \name{translator}{2}{}{%
+        {{hash=cd48d927f476e70cb3326ea8a7a5204e}{%
+           family={Гапонова},
+           familyi={Г\bibinitperiod},
+           given={А.\bibnamedelimi В.},
+           giveni={А\bibinitperiod\bibinitdelim В\bibinitperiod}}}%
+        {{hash=3f99c963b44d4874301dad3926bf20ae}{%
+           family={Миллер},
+           familyi={М\bibinitperiod},
+           given={М.\bibnamedelimi А.},
+           giveni={М\bibinitperiod\bibinitdelim А\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{location}{1}{%
+        {М.}%
+      }
+      \list{publisher}{1}{%
+        {ИЛ}%
+      }
+      \strng{namehash}{f9830459c987eece3cb70cd67debabd0}
+      \strng{fullhash}{f9830459c987eece3cb70cd67debabd0}
+      \strng{fullhashraw}{f9830459c987eece3cb70cd67debabd0}
+      \strng{bibnamehash}{f9830459c987eece3cb70cd67debabd0}
+      \strng{authorbibnamehash}{f9830459c987eece3cb70cd67debabd0}
+      \strng{authornamehash}{f9830459c987eece3cb70cd67debabd0}
+      \strng{authorfullhash}{f9830459c987eece3cb70cd67debabd0}
+      \strng{authorfullhashraw}{f9830459c987eece3cb70cd67debabd0}
+      \strng{translatorbibnamehash}{665aee5853fa0f74396e5f95fce8774c}
+      \strng{translatornamehash}{665aee5853fa0f74396e5f95fce8774c}
+      \strng{translatorfullhash}{665aee5853fa0f74396e5f95fce8774c}
+      \strng{translatorfullhashraw}{665aee5853fa0f74396e5f95fce8774c}
+      \field{sortinit}{С}
+      \field{sortinithash}{e581ee5e052c6c8e9beb0cf2da905808}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{перевод со 2-го издания}
+      \field{langid}{russian}
+      \field{pagetotal}{604}
+      \field{title}{Электростатика и электродинамика}
+      \field{year}{1954}
+      \true{nocite}
+    \endentry
+    \entry{Tamm}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=122b953f46ea07c01a81b286e344a531}{%
+           family={Тамм},
+           familyi={Т\bibinitperiod},
+           given={И.\bibnamedelimi Е.},
+           giveni={И\bibinitperiod\bibinitdelim Е\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{publisher}{1}{%
+        {М.: Физматлит}%
+      }
+      \strng{namehash}{122b953f46ea07c01a81b286e344a531}
+      \strng{fullhash}{122b953f46ea07c01a81b286e344a531}
+      \strng{fullhashraw}{122b953f46ea07c01a81b286e344a531}
+      \strng{bibnamehash}{122b953f46ea07c01a81b286e344a531}
+      \strng{authorbibnamehash}{122b953f46ea07c01a81b286e344a531}
+      \strng{authornamehash}{122b953f46ea07c01a81b286e344a531}
+      \strng{authorfullhash}{122b953f46ea07c01a81b286e344a531}
+      \strng{authorfullhashraw}{122b953f46ea07c01a81b286e344a531}
+      \field{sortinit}{Т}
+      \field{sortinithash}{f2616f6a7966d80048da61c919aeb3ae}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{11}
+      \field{langid}{russian}
+      \field{pagetotal}{618}
+      \field{title}{Основы теории электричества}
+      \field{year}{2003}
+      \true{nocite}
+    \endentry
+    \entry{FLF5}{book}{}{}
+      \name{author}{3}{}{%
+        {{hash=30fb816d6c836c87dda726294aa5ab6e}{%
+           family={Фейнман},
+           familyi={Ф\bibinitperiod},
+           given={Р.},
+           giveni={Р\bibinitperiod}}}%
+        {{hash=1d9df47dfd6ef8344923cf50981b72a4}{%
+           family={Лейтон},
+           familyi={Л\bibinitperiod},
+           given={Р.},
+           giveni={Р\bibinitperiod}}}%
+        {{hash=07959be578c79279d8cdfefea46df77a}{%
+           family={Сэндс},
+           familyi={С\bibinitperiod},
+           given={М.},
+           giveni={М\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{publisher}{1}{%
+        {М.: Мир}%
+      }
+      \strng{namehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{fullhash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{fullhashraw}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{bibnamehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authorbibnamehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authornamehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authorfullhash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authorfullhashraw}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \field{extraname}{1}
+      \field{sortinit}{Ф}
+      \field{sortinithash}{b428a16bb8d154b256b1e6c39440f4f9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{2-е}
+      \field{internalsortvolume}{Выпуск 5}
+      \field{pagetotal}{306}
+      \field{title}{Фейнмановские лекции по физике}
+      \field{year}{1977}
+      \true{nocite}
+      \field{volume}{Выпуск 5. Электричество и магнетизм}
+      \range{volume}{-1}
+    \endentry
+    \entry{FLF6}{book}{}{}
+      \name{author}{3}{}{%
+        {{hash=30fb816d6c836c87dda726294aa5ab6e}{%
+           family={Фейнман},
+           familyi={Ф\bibinitperiod},
+           given={Р.},
+           giveni={Р\bibinitperiod}}}%
+        {{hash=1d9df47dfd6ef8344923cf50981b72a4}{%
+           family={Лейтон},
+           familyi={Л\bibinitperiod},
+           given={Р.},
+           giveni={Р\bibinitperiod}}}%
+        {{hash=07959be578c79279d8cdfefea46df77a}{%
+           family={Сэндс},
+           familyi={С\bibinitperiod},
+           given={М.},
+           giveni={М\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{publisher}{1}{%
+        {М.: Мир}%
+      }
+      \strng{namehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{fullhash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{fullhashraw}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{bibnamehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authorbibnamehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authornamehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authorfullhash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authorfullhashraw}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \field{extraname}{2}
+      \field{sortinit}{Ф}
+      \field{sortinithash}{b428a16bb8d154b256b1e6c39440f4f9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{2-е}
+      \field{internalsortvolume}{Выпуск 6}
+      \field{pagetotal}{354}
+      \field{title}{Фейнмановские лекции по физике}
+      \field{year}{1977}
+      \true{nocite}
+      \field{volume}{Выпуск 6. Электродинамика}
+      \range{volume}{-1}
+    \endentry
+    \entry{FLF7}{book}{}{}
+      \name{author}{3}{}{%
+        {{hash=30fb816d6c836c87dda726294aa5ab6e}{%
+           family={Фейнман},
+           familyi={Ф\bibinitperiod},
+           given={Р.},
+           giveni={Р\bibinitperiod}}}%
+        {{hash=1d9df47dfd6ef8344923cf50981b72a4}{%
+           family={Лейтон},
+           familyi={Л\bibinitperiod},
+           given={Р.},
+           giveni={Р\bibinitperiod}}}%
+        {{hash=07959be578c79279d8cdfefea46df77a}{%
+           family={Сэндс},
+           familyi={С\bibinitperiod},
+           given={М.},
+           giveni={М\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{publisher}{1}{%
+        {М.: Мир}%
+      }
+      \strng{namehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{fullhash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{fullhashraw}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{bibnamehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authorbibnamehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authornamehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authorfullhash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authorfullhashraw}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \field{extraname}{3}
+      \field{sortinit}{Ф}
+      \field{sortinithash}{b428a16bb8d154b256b1e6c39440f4f9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{2-е}
+      \field{internalsortvolume}{Выпуск 7}
+      \field{pagetotal}{290}
+      \field{title}{Фейнмановские лекции по физике}
+      \field{year}{1977}
+      \true{nocite}
+      \field{volume}{Выпуск 7. Физика сплошных сред}
+      \range{volume}{-1}
+    \endentry
+    \entry{FLFP}{book}{}{}
+      \name{author}{3}{}{%
+        {{hash=30fb816d6c836c87dda726294aa5ab6e}{%
+           family={Фейнман},
+           familyi={Ф\bibinitperiod},
+           given={Р.},
+           giveni={Р\bibinitperiod}}}%
+        {{hash=1d9df47dfd6ef8344923cf50981b72a4}{%
+           family={Лейтон},
+           familyi={Л\bibinitperiod},
+           given={Р.},
+           giveni={Р\bibinitperiod}}}%
+        {{hash=07959be578c79279d8cdfefea46df77a}{%
+           family={Сэндс},
+           familyi={С\bibinitperiod},
+           given={М.},
+           giveni={М\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=5c1b769deb45c8f18c8969928a507153}{%
+           family={Леванюк},
+           familyi={Л\bibinitperiod},
+           given={А.\bibnamedelimi П.},
+           giveni={А\bibinitperiod\bibinitdelim П\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{publisher}{1}{%
+        {М.: Мир}%
+      }
+      \strng{namehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{fullhash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{fullhashraw}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{bibnamehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authorbibnamehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authornamehash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authorfullhash}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{authorfullhashraw}{a4072fa6fb786d01a26e4d9e8f6713d6}
+      \strng{editorbibnamehash}{5c1b769deb45c8f18c8969928a507153}
+      \strng{editornamehash}{5c1b769deb45c8f18c8969928a507153}
+      \strng{editorfullhash}{5c1b769deb45c8f18c8969928a507153}
+      \strng{editorfullhashraw}{5c1b769deb45c8f18c8969928a507153}
+      \field{extraname}{4}
+      \field{sortinit}{Ф}
+      \field{sortinithash}{b428a16bb8d154b256b1e6c39440f4f9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{3-е, переработанное}
+      \field{internalsortvolume}{Задачи и упражнения с ответами и решениями}
+      \field{langid}{russian}
+      \field{pagetotal}{546}
+      \field{title}{Фейнмановские лекции по физике}
+      \field{year}{1978}
+      \true{nocite}
+      \field{volume}{Задачи и упражнения с ответами и решениями}
+      \range{volume}{-1}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

@@ -1,0 +1,15 @@
+\begin{tikzpicture}[>=latex, scale=1.5]
+	\draw[->] (0,0) -- ++(1, 0) node[below] {$y$};
+	\draw[->] (0,0) -- ++(0, 1) node[above] {$z$};
+	\draw[->] (0,0) -- (-135:0.8) node[below] {$x$};
+
+	\node [circle, ball color=blue, inner sep=1.2pt, text=white]
+	(qn) at (1,2) {\tikz\draw[thick] (0,0) -- ++(0.1,0);};
+
+	\node [circle, ball color=red, inner sep=0pt, text=white,
+		font=\scriptsize] (qp) at (2.5,1.75) {$+$};
+
+	\draw[->] (0,0) -- (qp) node[pos=0.5, above] {$\vec{r}_+$};
+	\draw[->] (0,0) -- (qn) node[pos=0.5, above] {$\vec{r}_-$};
+	\draw[->] (qn) -- node[above] {$\vec{\ell}$} (qp);
+\end{tikzpicture}
