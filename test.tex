@@ -1,66 +1,36 @@
+\documentclass[tikz,border=2mm]{standalone}
+\usetikzlibrary{3d}
 
-\documentclass{beamer}
-\usetheme{Electromagnetism}
-\usepackage{Electromagnetism}
-\graphicspath{{pictures/}}
-% -------------------------------------- Grid
-%-------------------------------------------------------
-\makeatletter
-\def\grd@save@target#1{%
-  \def\grd@target{#1}}
-\def\grd@save@start#1{%
-  \def\grd@start{#1}}
-\tikzset{
-  grid with coordinates/.style={
-    to path={%
-      \pgfextra{%
-        \edef\grd@@target{(\tikztotarget)}%
-        \tikz@scan@one@point\grd@save@target\grd@@target\relax
-        \edef\grd@@start{(\tikztostart)}%
-        \tikz@scan@one@point\grd@save@start\grd@@start\relax
-        \draw[minor help lines] (\tikztostart) grid (\tikztotarget);
-        \draw[major help lines] (\tikztostart) grid (\tikztotarget);
-        \grd@start
-        \pgfmathsetmacro{\grd@xa}{\the\pgf@x/1cm}
-        \pgfmathsetmacro{\grd@ya}{\the\pgf@y/1cm}
-        \grd@target
-        \pgfmathsetmacro{\grd@xb}{\the\pgf@x/1cm}
-        \pgfmathsetmacro{\grd@yb}{\the\pgf@y/1cm}
-        \pgfmathsetmacro{\grd@xc}{\grd@xa + \pgfkeysvalueof{/tikz/grid with coordinates/major step}}
-        \pgfmathsetmacro{\grd@yc}{\grd@ya + \pgfkeysvalueof{/tikz/grid with coordinates/major step}}
-        \foreach \x in {\grd@xa,\grd@xc,...,\grd@xb}
-        \node[anchor=north] at (\x,\grd@ya) {\pgfmathprintnumber{\x}};
-        \foreach \y in {\grd@ya,\grd@yc,...,\grd@yb}
-        \node[anchor=east] at (\grd@xa,\y) {\pgfmathprintnumber{\y}};
-      }
-    }
-  },
-  minor help lines/.style={
-    help lines,
-    step=\pgfkeysvalueof{/tikz/grid with coordinates/minor step}
-  },
-  major help lines/.style={
-    help lines,
-    line width= 0.5pt,
-    step=\pgfkeysvalueof{/tikz/grid with coordinates/major step}
-  },
-  grid with coordinates/.cd,
-  minor step/.initial=.2,
-  major step/.initial=1,
-  major line width/.initial=2pt,
-}
-\makeatother
-\usepackage{cancel}
 \begin{document}
+\begin{tikzpicture}[scale=3,line cap=round]
 
 
+\begin{scope}[]
+  \draw [ultra thin, step = 0.25, lightgray] (-1,-1) grid (1,1);
+  \draw [dashed, red] (225:1) -- (0,0) -- (135:1);
+  \draw [green, ultra thick] (0, 0) circle (1);
+  \foreach\i in{0,90}
+  {
+    \filldraw [fill= orange!20, draw = orange] (0,0) -- (\i:0.5) arc (\i:\i+45:0.5) -- cycle;
+    \draw [->, orange, ultra thick] (0,0) -- (\i:1);
+  }
+  \node [anchor = north west] at (0, 1) {$\vec{i}$};
+  \node [anchor = north]      at (1, 0) {$\vec{j}$};
+\end{scope}
+%    \draw [ultra thick] (0, 0, 0) -- (0,1,0);
 
-% ============================== Слайд ## ===================================
-\begin{frame}{Граничні умови}{}\small
+%\begin{scope}[rotate around y=45,rotate around z=30]
+%  \draw [canvas is zx plane at y=0, green!50!black, ultra thick] (1, 0) arc (0:180:1);
+%  \foreach\i in {0,90}
+%    \filldraw [canvas is xy plane at z=0, fill=red!20, draw=red] (0,0) -- (\i-30:0.4) arc (\i-30:\i:0.4) -- cycle;
+%  \draw [->, red, ultra thick] (0,0,0) -- (1,0,0);
+%  \draw [->, red, ultra thick] (0,0,0) -- (0,1,0);
+%  \draw [->, red, ultra thick] (0,0,0) -- (0,0,1);
+%\end{scope}
+%
+%\draw [->, orange, ultra thick] (0,0,0) -- (0,1,0) node[black, anchor=south east] at (0, 1, 0) {$\vec{z_0}$};
+%\draw [canvas is zx plane at y=0.75, ->, blue] (0,-0.15) arc (-90:180:0.15);
+%\node at (0.3,0.9) {$\dot{\Psi}\vec{z_0}$};
 
-\input{SteadyEfield/tikz/Columb.tikz}
-
-\end{frame}
-% ===========================================================================
-
+\end{tikzpicture}
 \end{document}
