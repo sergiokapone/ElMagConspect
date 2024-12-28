@@ -10,17 +10,17 @@
 		font=\scriptsize] (qp) at (1,0.75) {$+$};
 
 
-	\draw[->, ultra thick, gray] (qn) -- ++(-1, 0) node[left]
-	{$-q\vec{E}$};
+    	\draw[->, ultra thick, red] (qn) -- ++(-1, 0) node[left]
+	{$-q\Efield$};
 
-	\draw[->, ultra thick, gray] (qp) -- ++(1, 0) node[right]
-	{$+q\vec{E}$};
+	\draw[->, ultra thick, red] (qp) -- ++(1, 0) node[right]
+	{$+q\Efield$};
 
 	\node[inner sep=1pt, circle, fill] (O) at (0, -1.5) {};
 	\node[below] at (O) {$O$};
 
-	\draw[->] (O) -- node[left] {$\vec{r}_-$}(qn);
-	\draw[->] (O) -- node[right] {$\vec{r}_+$}(qp);
+	\draw[->, ultra thick, cyan] (O) -- node[left] {$\vect{r}_-$}(qn);
+	\draw[->, ultra thick, cyan] (O) -- node[right] {$\vec{r}_+$}(qp);
 
-	\draw[->, gray] (qn) -- node[above] {$\vec{\ell}$} (qp);
+	\draw[->, gray, ultra thick] (qn) -- node[above] {$\vect{\ell}$} (qp);
 \end{tikzpicture}
