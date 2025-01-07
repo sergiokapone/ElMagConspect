@@ -8,11 +8,11 @@ scale=2
 			\draw[red, midarrow] plot[domain=1:4] (\x, 0.2*\y);
 		}
 
-	\node [circle, ball color=blue, inner sep=1.2pt, text=white]
-	(qn) at (2,0) {\tikz\draw[thick] (0,0) -- ++(0.2,0);};
+	\node [circle, ball color=blue, inner sep=0pt, text=white, font=\scriptsize]
+	(qn) at (2,0) {\mathstrut$-$};
 
 	\node [circle, ball color=red, inner sep=0pt, text=white,
-		font=\scriptsize] (qp) at (3,0) {$+$};
+		font=\scriptsize] (qp) at (3,0) {\mathstrut$+$};
 
 
 	\draw[->, ultra thick, cyan] (qn) --  node[anchor=north, circle, inner sep=1pt, fill=white] {$\vect{p}$} (qp);
@@ -27,11 +27,12 @@ scale=2
 \draw[red, midarrow] plot[domain=1:4] (\x, 0.2*\y);
 }
 
-\node [circle, ball color=blue, inner sep=1.2pt, text=white]
-(qn) at (2,0.25) {\tikz\draw[thick] (0,0) -- ++(0.2,0);};
+\node [circle, ball color=blue, inner sep=0pt, text=white,
+		font=\scriptsize]
+(qn) at (2,0.25) {\mathstrut$-$};
 
 \node [circle, ball color=red, inner sep=0pt, text=white,
-font=\scriptsize] (qp) at (3,-0.25) {$+$};
+font=\scriptsize] (qp) at (3,-0.25) {\mathstrut$+$};
 
 \draw[->, ultra thick, cyan] (qn) --  node[anchor=north east, circle, inner sep=1pt, fill=white] {$\vect{p}$} (qp);
 \end{tikzpicture}

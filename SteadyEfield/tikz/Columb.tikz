@@ -1,6 +1,6 @@
 \begin{tikzpicture}[>=latex, scale=1.5]
-	\node [circle, ball color=red, inner sep=1pt, text=white, font=\bfseries] (q1) at (-1,-1) {$+$};
-	\node [circle, ball color=red, inner sep=1pt, text=white, font=\bfseries] (q2) at (1,1) {$+$};
+	\node [circle, ball color=red, inner sep=1pt, text=white, font=\bfseries] (q1) at (-1,-1) {\mathstrut$+$};
+	\node [circle, ball color=red, inner sep=1pt, text=white, font=\bfseries] (q2) at (1,1) {\mathstrut$+$};
 	\node[below=5pt] at (q1) {$q_1$};
 	\node[below=5pt] at (q2) {$q_2$};
 	\draw[dash pattern={on 1pt off 0.5pt}, ->] (q1) -- node[below right] {$\vect{r}_{12}$} (q2);
@@ -10,8 +10,8 @@
     	{$\vect{F}_{21}$} ++(45:-1);
 \end{tikzpicture}
 \begin{tikzpicture}[>=latex, scale=1.5]
-	\node [circle, ball color=blue, inner sep=1pt, text=white, font=\bfseries] (q1) at (-1,-1) {\tikz{\draw[thick] (0,0) -- ++(0.3, 0);}};
-	\node [circle, ball color=red, inner sep=1pt, text=white, font=\bfseries] (q2) at (1,1) {$+$};
+	\node [circle, ball color=blue, inner sep=1pt, text=white, font=\bfseries] (q1) at (-1,-1) {\mathstrut$-$};
+	\node [circle, ball color=red, inner sep=1pt, text=white, font=\bfseries] (q2) at (1,1) {\mathstrut$+$};
 	\node[below=5pt] at (q1) {$q_1$};
 	\node[below=5pt] at (q2) {$q_2$};
 	\draw[dash pattern={on 1pt off 0.5pt}] (q1) -- (q2);

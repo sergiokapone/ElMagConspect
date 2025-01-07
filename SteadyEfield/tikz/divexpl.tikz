@@ -22,7 +22,7 @@
 	\begin{scope}
 		\foreach \i in {20,40,...,360}
 			{
-				\draw[->, red!50] (0,0)  ++(\i:0.1) -- ++(\i:2);
+				\draw[->, red] (0,0)  ++(\i:0.1) -- ++(\i:2);
 			}
 
 		\node[font=\scriptsize, anchor=south west, inner sep=1pt, text
@@ -48,7 +48,7 @@
 		]
 		\foreach \i in {20,40,...,360}
 			{
-				\draw[postaction={decorate}, blue!50] (0,0)  ++(\i:0.1) --
+				\draw[postaction={decorate}, blue] (0,0)  ++(\i:0.1) --
 				++(\i:2);
 			}
 

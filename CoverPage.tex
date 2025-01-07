@@ -9,6 +9,7 @@
 %
 %===============================================================================
 
+\def\curryear{\the\year}
 \newcommand{\CoverPage}{
 	\begin{alwayssingle}
 		\begin{center}
@@ -78,7 +79,7 @@
 					toprule=0.10cm,
 					bottomrule=0.10cm]
 				\begin{center}\color{white}\bfseries\normalsize
-					\MakeUppercase{Київ~2024} \\
+					\MakeUppercase{Київ~\curryear} \\
 %					КПІ ім. Ігоря Сікорського \\
 %					2021
 				\end{center}
@@ -123,7 +124,7 @@
 			\begin{center}
 				\MakeUppercase{Київ} \\
 				КПІ ім. Ігоря Сікорського \\
-				2024
+				\curryear
 			\end{center}
 		\end{center}
 		\clearpage
@@ -183,7 +184,9 @@
 		\begin{flushleft}
 			\begin{tabular}{lp{0.9\textwidth}}
 				     & \textbf{\href{http://phes.ipt.kpi.ua/ponomarenko-sergij-mikolajovich}{\authors}}                                                                                                                                                                        \\
-				П 563 & \hspace*{3ex} \realtitle : \subtitle{} [Електронний ресурс] : навчальний посібник / \authors{} --- К.:~КПІ ім. Ігоря Сікорського, 2024. --~\the\numexpr\getpagerefnumber{LastPage}-1\relax~с. -- Бібліогр.: с.~\pageref{BibPage}. \ifelectronic\relax\else-- 80~прим.\fi
+				П 563 & \hspace*{3ex} \realtitle : \subtitle{} [Електронний ресурс] : навчальний посібник / \authors{} --- К.:~КПІ ім. Ігоря
+				Сікорського, \curryear. --~\the\numexpr\getpagerefnumber{LastPage}-1\relax~с. -- Бібліогр.: с.~\pageref{BibPage}.
+				\ifelectronic\relax\else-- 80~прим.\fi
 			\end{tabular}
 		\end{flushleft}
 		\vfill
@@ -203,8 +206,8 @@
 
 		\begin{flushleft}
 			\begin{tabular}{p{\textwidth - 45ex}l}
-				& \small\textcopyright\quad \authors, 2024~р. \\
-				& \small \textcopyright\quad КПІ ім. Ігоря Сікорського (ФТІ), 2024~р.
+				& \small\textcopyright\quad \authors, \curryear~р. \\
+				& \small \textcopyright\quad КПІ ім. Ігоря Сікорського (ФТІ), \curryear~р.
 			\end{tabular}
 		\end{flushleft}
 		\newpage%
