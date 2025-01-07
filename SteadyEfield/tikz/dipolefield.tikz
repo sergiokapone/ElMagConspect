@@ -1,9 +1,10 @@
 \begin{tikzpicture}[>=latex, scale=1, transform shape]
-	\node [circle, ball color=blue, inner sep=1.2pt, text=white]
-	(qn) at (-1,0) {\tikz\draw[thick] (0,0) -- ++(0.1,0);};
+	\node [circle, ball color=blue, inner sep=0pt, text=white,
+		font=\scriptsize]
+	(qn) at (-1,0) {\mathstrut$-$};
 
 	\node [circle, ball color=red, inner sep=0pt, text=white,
-		font=\scriptsize] (qp) at (1,0) {$+$};
+		font=\scriptsize] (qp) at (1,0) {\mathstrut$+$};
 
 	\draw[->] (qn) -- node[below] {$\vect{\ell}$} (qp);
 

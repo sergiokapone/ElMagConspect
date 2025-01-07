@@ -1,6 +1,6 @@
 \begin{tikzpicture}[>=latex, transform shape, scale=1.5]
 	\node [circle, ball color=red, inner sep=0pt, text=white,
-		font=\scriptsize] (qp) at (0,0) {$+$};
+		font=\scriptsize] (qp) at (0,0) {\mathstrut$+$};
 	\node[circle, inner sep=0.75pt, fill] (P) at (1, 2) {};
 	\node[left] at (P) {$P$};
 
@@ -15,9 +15,10 @@
 
 
     \begin{scope}[xshift=2cm]
-      		\node [circle, ball color=blue, inner sep=1.2pt, text=white]
+      		\node [circle, ball color=blue, inner sep=0pt, text=white,
+    		font=\scriptsize]
       		(qn) at
-      		(0,0) {\tikz\draw[thick] (0,0) -- ++(0.1,0);};
+      		(0,0) {\mathstrut$-$};
       		\node[circle, inner sep=0.75pt, fill] (P) at (1, 2) {};
 
       		\node[below=5pt] at (qn) {$Q$};

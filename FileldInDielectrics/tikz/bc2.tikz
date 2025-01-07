@@ -1,0 +1,24 @@
+ \begin{tikzpicture}[
+scale=0.4,
+transform shape,
+>=latex,
+declare function = {
+h = 2;
+r=2;
+r2=0.2;
+},
+midarrow/.style={%
+   postaction={ decorate,transform shape,
+   decoration={ markings, mark=at position .5 with {\arrow{>}}}}},
+]
+
+\fill[red,opacity=0.5]
+ (-4.75,0.7) -- ++(8,0) -- ++(1.5,0.7) -- ++(-8,0) ;
+
+\draw[midarrow] (2, 1) -- ++(0, 1) -- node[above=5pt] {$L$} ++(-4, 0) -- ++(0, -1);
+\draw[midarrow] (-2, 1) -- ++(0, -1) -- ++(4, 0) -- ++(0, 1);
+
+\draw[->] (-3,1) -- ++(-2,0) node[above] {$\vect{\tau}$};
+\node[circle, draw] at (3,0) {$1$};
+\node[circle, draw] at (3,h) {$2$};
+\end{tikzpicture}

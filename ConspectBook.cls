@@ -49,7 +49,7 @@
 \RequirePackage[%
 	a4paper,%
 	footskip=1cm,%
-	headsep=0.3cm,%
+	headsep=0.5cm,%
 	top=\topspace, %поле сверху
 	bottom=2cm, %поле снизу
 	left=2cm, %поле ліворуч
@@ -153,7 +153,7 @@
 % ------------------------------------ Плаваючі об'єкти ------------------------
 %\RequirePackage{subfig}
 %\renewcommand\thesubfigure{\alph{subfigure}}
-\RequirePackage{wrapfig}
+\RequirePackage{wrapstuff}
 % ------------------------------------ Таблиці ---------------------------------
 \RequirePackage{tabularray}
 \setlength\arrayrulewidth{1pt}
@@ -170,6 +170,7 @@
 \RequirePackage{nicefrac}
 \let\nfrac\nicefrac
 \allowdisplaybreaks
+
 % ------------------------- Визначення математичних команд ---------------------
 \def\EMF{\mathcal{E}}
 \newcommand{\vect}[1]{\symbf{#1}}
@@ -217,6 +218,28 @@
 \RequirePackage{pdftexcmds}
 \RequirePackage[most, many]{tcolorbox}
 
+\tcbset{
+	highlight math style={
+			enhanced jigsaw,
+			colframe=themecolormain,
+			opacityback=0.1,
+			colback=themecolormain!1!white,
+			arc=0pt,
+			boxrule=1pt,
+			boxsep=1pt,
+			attach boxed title to top center = {yshift=-\tcboxedtitleheight/2},
+			colbacktitle=white,
+			coltitle=black,
+			fonttitle = \scriptsize,
+			boxed title style={
+					boxrule=0pt,
+					colframe=white,
+					colback=white,
+					size=fbox,
+				},
+		},
+}
+
 %===============================================================================
 %
 %										Рисування
@@ -235,7 +258,7 @@
 \usetikzlibrary{shapes, shadows}
 \usetikzlibrary{quotes,angles,tikzmark}
 \pgfdeclarelayer{bg}    % declare background layer
-\pgfsetlayers{bg,main}  % set the order of the layers (main is the standard layer)
+\pgfsetlayers{bg, main}  % set the order of the layers (main is the standard layer)
 \usetikzlibrary{shapes.geometric,calc}
 \usepgfplotslibrary{fillbetween}
 \pgfplotsset{
@@ -363,17 +386,21 @@ postaction={ decorate,
  }
 \ExplSyntaxOff
 
+%========================================================================================================
+%
+%										   Рубрикація
+%
+%========================================================================================================
 
-%===============================================================================
-%
-%								Рубрикація
-%
-%===============================================================================
 \let\cleardoublepage\clearpage
-\def\@sectiontitlemark{\S}
-\newcommand{\@secnum@dot}{.}
-\newcommand{\@chapnum@dot}{.}
-% ----------------------------- Верстка ДОДАТКІВ -------------------------------
+
+\def\schapter#1{%
+\chapter*{#1}
+\addcontentsline{toc}{chapter}{#1}%
+}
+
+
+% ---------------------------------------- Верстка ДОДАТКІВ ---------------------------------------------
 
 \renewcommand\appendix{\par
 	\appendixtrue
@@ -384,7 +411,7 @@ postaction={ decorate,
 	\setcounter{chapter}{0}%
 	\setcounter{section}{0}%
 	\renewcommand{\theequation}{\thesection.\arabic{equation}}
-	\clearpage\pagestyle{main}
+	\clearpage\pagestyle{appendix}
 	\def\@sectiontitlemark{\appendixname}
 	\if@twocolumn
 		\@restonecoltrue\onecolumn
@@ -392,346 +419,95 @@ postaction={ decorate,
 		\@restonecolfalse
 	\fi
 	\chapter*{Додатки}%
+    \addcontentsline{toc}{chapter}{Додатки}
 	\if@restonecol\twocolumn\fi
 }
-% ------------------------------- Верстка ВІДПОВІДЕЙ ---------------------------
+% ---------------------------------------- Верстка ВІДПОВІДЕЙ -------------------------------------------
 \newcommand\answers{\par
 	\answerstrue
 	\setcounter{chapter}{0}%
 	\setcounter{section}{0}%
 	\renewcommand{\thesection}{\arabic{section}}
-	\def\@sectiontitlemark{Відповіді до розділу}
-	\if@twocolumn
-		\@restonecoltrue\onecolumn
-	\else
-		\@restonecolfalse
-	\fi
+    \clearpage\pagestyle{answers}
 	\chapter*{Відповіді}%
+    \addcontentsline{toc}{chapter}{Відповіді}
+    \renewcommand{\theequation}{\arabic{equation}}
 	\if@restonecol\twocolumn\fi
 }
-% ------------------ Лічильник зносок починаються з кожної сторінки ------------
+% ---------------------------------------- Лічильник зносок починаються з кожної сторінки ---------------
 \@newctr{footnote}[page]
-% ------------------------ Верстка ЗМІСТУ---------------------------------------
-\renewcommand\tableofcontents{%
-	\if@twocolumn
-		\@restonecoltrue\onecolumn
-	\else
-		\@restonecolfalse
-	\fi
-	\toctrue
-	\chapter*{\contentsname
-%		\@mkboth{%
-%			\MakeUppercase\contentsname}{\MakeUppercase\contentsname}%
-	}\hypertarget{tocpage}{}%
-	\@starttoc{toc}%
-	\if@restonecol\twocolumn\fi
-	\tocfalse
-}
-% ---------------------- Верстка ЗМІСТУ для Розділів ------------------------
 
-\renewcommand*\l@chapter[2]{%
-	\ifnum \c@tocdepth >\m@ne
-		\addpenalty{-\@highpenalty}%
-		\vskip 1.0em \@plus\p@
-		\setlength\@tempdima{1.5em}%
-		\begingroup
-		\parindent \z@ \rightskip \@pnumwidth
-		\parfillskip -\@pnumwidth
-		\leavevmode \bfseries
-		\advance\leftskip\@tempdima
-		\hskip -\leftskip
-		#1\leaders\hbox to .5em{\hss.\hss}\hfil \nobreak\hb@xt@\@pnumwidth{\hss  #2}\par
-		\penalty\@highpenalty%
-		\endgroup
-	\fi}
 
-% ----------------------- Верстка РОЗДІЛУ -------------------------------------
-\renewcommand\chapter{\if@openright\cleardoublepage\else\clearpage\fi
-  \thispagestyle{chapterpage}%
-  \global\@topnum\z@
-  \@afterindentfalse
-  \secdef\@chapter\@schapter}
 
-\def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne%     #1 -- скорочена назва розділу, #2 -- повна назва розділу
-		\if@mainmatter
-			\refstepcounter{chapter}%                         При виклику команди \chapter змінювати лічильник на одиницю
-			\addcontentsline{toc}{chapter}%
-			{\@chapapp~\protect\numberline{\thechapter\@chapnum@dot~}#1}% Додати в зміст "Друк Розділ 1. Назва розділу", #1 -- аргумент команди \chapter"
-		\else
-			\addcontentsline{toc}{chapter}{#1}%
-		\fi
-	\else
-		\addcontentsline{toc}{chapter}{#1}%
-	\fi
-	\chaptermark{#1}%                                 Додати "Назву розділу" для колонтитулів
-	\addtocontents{lot}{\protect\addvspace{10\p@}}%
-	\if@twocolumn
-		\@topnewpage[\@makechapterhead{#2}]%
-	\else
-		\@makechapterhead{#2}%                            Створити вигляд розділу
-		\@afterheading
-	\fi}
+\RequirePackage[pagestyles, explicit]{titlesec}
+\RequirePackage{titletoc}
 
-\def\@schapter#1{%                                    Аналогічно до команди \@chapter, але для версії з зірочкою
-	\if@twocolumn
-		\@topnewpage[\@makeschapterhead{#1}]%
-	\else
-		\@makeschapterhead{#1}%
-		\@afterheading
-	\fi
-	\chaptermark{#1}%
-	\iftoc\relax\else
-		\addcontentsline{toc}{chapter}{#1}
-	\fi
-}
+\newlength\chapnumb
+\setlength\chapnumb{4cm}
 
-\tcbset{%
-		chaptertitlestyle/.style={%
-				enhanced,
-				colback=white,
-				%boxrule=0.25cm,
-				colframe=themecolorlight,
-				arc=0pt,
-				outer arc=0pt,
-				leftrule=0pt,
-				rightrule=0pt,
-				fontupper=\sffamily\bfseries\LARGE,
-				enlarge left by=-1in-\hoffset-\oddsidemargin,
-				enlarge right by=-\paperwidth+1in+\hoffset+\oddsidemargin+\textwidth,
-				width=\paperwidth,
-				left=1in+\hoffset+\oddsidemargin,
-				right=\paperwidth-1in-\hoffset-\oddsidemargin-\textwidth,
-				top=0.7cm,
-				bottom=0.7cm,
-				halign = center,
-				frame hidden,
-		}%
-}%
+\titleformat{\part}[display]{\bfseries\sffamily\huge}{\partname\ \thepart }{0pt}{\addvspace{1em}\Huge\centering #1}
 
-\tcbset{
-	highlight math style={
-			enhanced jigsaw,
-			colframe=themecolormain,
-			opacityback=0.1,
-			colback=themecolormain!1!white,
-			arc=0pt,
-			boxrule=1pt,
-			boxsep=1pt,
-			attach boxed title to top center = {yshift=-\tcboxedtitleheight/2},
-			colbacktitle=white,
-			coltitle=black,
-			fonttitle = \scriptsize,
-			boxed title style={
-					boxrule=0pt,
-					colframe=white,
-					colback=white,
-					size=fbox,
-				},
-		},
-}
+\titlecontents{part}%
+[0pt]{\sffamily\bfseries\large\protect\addvspace{25pt}\addvspace{1.5ex}}
+{}{\partname~}
+{\hfill\contentspage}%
+[\addvspace{0.7ex}\titlerule\addvspace{10pt}]%
 
-\def\@makechapterhead#1{%
-	\vspace*{50\p@}%
-		\begin{tcolorbox}[%
-				chaptertitlestyle,
-				overlay={%
-						\draw[line width = 0.15cm, themecolorlight] (frame.north west) -- (frame.north east);
-						\draw[line width = 0.15cm, themecolorlight] (frame.south west) -- (frame.south east);
-						\node[%
-							fill=themecolordark,
-							draw=themecolorlight,
-							line width=0.15cm,
-							inner sep=0pt,
-							text width=2cm,
-							minimum height=2cm,
-							align=center,
-							anchor=east,
-							font=\color{white}\sffamily\bfseries\fontsize{40}{52}\selectfont
-						]%
-						(chapname)
-						at (frame.north east)
-						{\thechapter};
-						\node[font=\small,anchor=south,inner sep=2pt] at (chapname.north)
-						{\MakeTextUppercase{\sffamily\bfseries\@chapapp}};
-					}
-			]%
-			#1%
-		\end{tcolorbox}%
-		\nobreak%
-		\vskip 50\p@%
-	}%
+\titleclass{\part}{top}
+\newcommand\partbreak{\clearpage}
 
-\def\@makeschapterhead#1{%
-	\vspace*{50\p@}%
-		\begin{tcolorbox}[chaptertitlestyle,
-				overlay={%
-						\draw[line width = 0.15cm, themecolorlight] (frame.south west) -- (frame.south east);
-						\draw[line width = 0.15cm, themecolorlight] (frame.north west) -- (frame.north east);
-					}]
-			#1
-		\end{tcolorbox}%
-		\nobreak%
-		\vskip 50\p@%
-	}%
+\titleformat{\chapter}[block]
+{\normalfont\sffamily}{}{0pt}
+{\parbox[b]{\chapnumb}{%
+   \color{themecolordark}\fontsize{100}{90}\selectfont\thechapter}%
+  \parbox[b]{\dimexpr\textwidth-\chapnumb\relax}{%
+    \raggedleft%
+    \hfill{\LARGE#1}\\
+    \rule{\dimexpr\textwidth-\chapnumb\relax}{0.4pt}}}
 
-% ----------------------- Верстка ЗМІСТУ для Секцій ----------------------------
-\newlength\@sectoctitle@len                                                           % Ширина мітки разом з номером для секції
-\newlength\@chaptoclabel@len\settowidth\@chaptoclabel@len{\@chapapp}                  % Ширина мітки для розділу
-\newlength\@sectiontitlemark@box\settowidth\@sectiontitlemark@box{\@sectiontitlemark} % Ширина мітки для секції
-\advance\@chaptoclabel@len by -\@sectiontitlemark@box
-\renewcommand*\l@section{\@dottedtocline{2}{\@chaptoclabel@len}{\@sectoctitle@len}}
-% -------------------- Верстка ЗМІСТУ для Підсекцій ---------------------------
+\titleformat{name=\chapter,numberless}[block]
+{\normalfont\sffamily}{}{0pt}
+{\parbox[b]{\chapnumb}{%
+   \mbox{}}%
+  \parbox[b]{\dimexpr\textwidth-\chapnumb\relax}{%
+    \raggedleft%
+    \hfill{\LARGE#1}\\
+    \rule{\dimexpr\textwidth-\chapnumb\relax}{0.4pt}}}
 
-\newlength{\thesubsection@len}\settowidth{\thesubsection@len}{\thesubsection}
-\renewcommand*\l@subsection{\@dottedtocline{2}{7.2em}{\thesubsection@len}}
+\titleformat{\section}
+{\normalsize\bfseries}{\thesection.}{1em}{#1}
 
-% -------------------------- Верстка СЕКЦІЇ-------------------------------------
-\renewcommand\section{\global\@topnum\z@
-  \@afterindentfalse
-  \secdef\@section\@ssection}
-\def\@section[#1]#2{\refstepcounter{section}%
-	\def\@sectoclabel@format{\@sectiontitlemark\hspace\@spase\thesection\@secnum@dot\space}
-	\settowidth{\@tempdimb}{\@sectoclabel@format}
-	\ifdim\@tempdimb=\@sectoctitle@len
-		\relax
-	\else
-		\setlength\@sectoctitle@len{\@tempdimb}
-		\addtocontents{toc}{\setlength\@sectoctitle@len{\the\@tempdimb}}
-	\fi
-	\addcontentsline{toc}{section}{\protect\numberline{\@sectoclabel@format}#1}%
-	\sectionmark{#1}%
-	\addtocontents{lof}{\protect\addvspace{10\p@}}%
-	\addtocontents{lot}{\protect\addvspace{10\p@}}%
-	\@makesectionhead{#2}%
-	\@afterheading
-}
-\def\@makesectionhead#1{%
-	\settowidth{\length@titlemark}{\@sectiontitlemark\hspace\@spase\thesection\@secnum@dot}
-	\vspace*{10\p@}%
-	{\parindent \z@ \raggedright%
-	%\normalfont\sffamily\normalsize\bfseries
-		\begin{tikzpicture}[overlay,every node/.style={signal, draw, text=white, signal to=nowhere}]
-		  \node[baseline,themecolordark,fill, signal to=east, inner sep=0.25em, drop shadow,
-		    text=white,font=\bfseries\normalfont,anchor=west,
-		    xshift=-2cm, yshift=1ex]
-		    at (0,0) {\color{white}\@sectiontitlemark\hspace\@spase\thesection\@secnum@dot};
-		\end{tikzpicture}%
-		\bfseries\sffamily\normalsize\hspace*{\dimexpr\length@titlemark-1cm\relax}\parbox{\dimexpr\linewidth-1cm\relax}{#1}%
-		\par\nopagebreak
-		%\vskip-1.75ex{\hskip-2cm\color{gray!60}\rule{\textwidth + 2cm}{2pt}}\nobreak
-		\vskip 10\p@\nopagebreak
-	}}
-\def\@ssection#1{\refstepcounter{section}%
-	\if@twocolumn
-		\@topnewpage[\@makessectionhead{#1}]%
-	\else
-		\@makessectionhead{#1}%
-		\@afterheading
-		%\addcontentsline{toc}{section}{#1}% % 21/12/2017
-		\sectionmark{#1}%
-	\fi}
-\def\@makessectionhead#1{%
-	\vspace*{10\p@}%
-	{\parindent \z@ \raggedright
-		\normalfont
-		\interlinepenalty\@M
-		\sffamily\large\bfseries  #1\par\nopagebreak
-		\vskip 10\p@
-	}}
-% -------------------------- Верстка ПІДСЕКЦІЇ----------------------------------
+\titleformat{\subsection}
+{\normalsize\bfseries\itshape}{\thesubsection.}{1em}{#1}
 
-\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
-	{-3.25ex\@plus -1ex \@minus -.2ex}%
-	{1.5ex \@plus .2ex}%
-	{\normalfont\normalsize\bfseries}}
 
-%===============================================================================
-%
-%										Колонтитули
-%
-%===============================================================================
 
-% ------------------------- Колонтитули для РОЗДІЛУ ----------------------------
-\def\ps@chapterpage{%
-	\renewcommand{\@oddhead}%
-	{
-	}% конец макроопределения
+\newpagestyle{main}{\headrule%
+  \sethead{\ifodd\thepage\relax\else\itshape\small\thechapter.\ \chaptertitle\fi}{}{\ifodd\thepage\itshape\small\thechapter.\
+  \chaptertitle\else\relax\fi}
+  \setfoot{}{\small\thepage}{}}
 
-	\renewcommand{\@evenhead}%
-	{
-	}%
+\newpagestyle{answers}{\headrule%
+  \sethead{\ifodd\thepage\relax\else\itshape\small Відповіді\fi}{}{\ifodd\thepage\itshape\small Відповіді\else\relax\fi}
+  \setfoot{}{\small\thepage}{}}
 
-	\renewcommand{\@oddfoot}%
-	{\raisebox{0pt}[\headheight][0pt]{%
-			\vbox{\hbox to\textwidth{\strut
-					\small{\hfil\small\hyperlink{tocpage}{\thepage}}\hfil}}}% конец блока
-	}%
+\newpagestyle{appendix}{\headrule%
+  \sethead{\ifodd\thepage\relax\else\itshape\small Додатки\fi}{}{\ifodd\thepage\itshape\small Додатки\else\relax\fi}
+  \setfoot{}{\small\thepage}{}}
 
-	\renewcommand{\@evenfoot}%
-	{\raisebox{0pt}[\headheight][0pt]{%
-			\vbox{\hbox to\textwidth{\strut
-					\small{\hfil{\small\hyperlink{tocpage}{\thepage}}\hfil}}}}% конец блока
-	}% ия
-}
+\newpagestyle{bibliography}{\headrule%
+  \sethead{\ifodd\thepage\relax\else\itshape\small\bibname\fi}{}{\ifodd\thepage\itshape\small\bibname\else\relax\fi}
+  \setfoot{}{\small\thepage}{}}
 
-% ----------------------- Колонтитули для основних сторінок --------------------
+\renewpagestyle{plain}{%
+  \sethead{}{}{}
+  \setfoot{}{\small\thepage}{}}
 
-\def\ps@main{%
-\def\chaptermark##1{                       % ##1 - містить значення, яке сюди вкладують команди \@chapter та \@schapter
-\markboth {%
-	\ifnum \c@secnumdepth >\m@ne
-		\if@mainmatter%
-			\ifappendix\relax      % Якщо сторінка додатків то друкувати "Додатки"
-			\else
-				\iftoc\relax                    % Якщо сторінка змісту то друкувати "Зміст"
-				\else
-					\ifanswers\relax             % Якщо сторінка з відповідями, друкувати "Відповіді"
-					\else
-						\protect\hyperlink{\@currentHref}{\@chapapp\ \thechapter\@chapnum@dot} \ % Якщо стрінка з задачими, друкувати "Розділ 1." (тут \@chapapp=Розділ)
-					\fi
-				\fi
-			\fi
-		\fi
-	\fi
-	##1}{%
-		\iftoc\contentsname\fi%
-		\ifintro##1\fi%
-		}%
-}%
-\def\sectionmark##1{%
-\markright {%
-	\ifnum \c@secnumdepth >\z@
-		\ifbibliography\bibname
-			\else%
-			\protect\hyperlink{\@currentHref}{\@sectiontitlemark~\thesection\@secnum@dot}\ ##1%\@sectiontitlemark = \S (для Розділів), інші значення встановлюються командами \appendix та \answers
-		\fi
-	\fi
-	}}
+\assignpagestyle{\chapter}{plain}
+\assignpagestyle{\part}{empty}
 
-\renewcommand{\@oddhead}%
-{\raisebox{0pt}[\headheight][0pt]{% начало блока
-		\vbox{\hbox to\textwidth{\strut
-				\small{\hfil\small\leftmark\hfil}}\hrule}}% конец блока
-}% конец макроопределения
 
-\renewcommand{\@evenhead}%
-{\raisebox{0pt}[\headheight][0pt]{% начало блока
-		\vbox{\hbox to\textwidth{\strut
-				\small{\hfil{\small\rightmark}\hfil}}\hrule}}% конец блока
-}% конец макроопределения
 
-\renewcommand{\@oddfoot}%
-{\raisebox{0pt}[\headheight][0pt]{% начало блока
-		\vbox{\hbox to\textwidth{\strut
-				\small{\hfil\small\hyperlink{tocpage}{\thepage}}\hfil}}}% конец блока
-}% конец макроопределения
-
-\renewcommand{\@evenfoot}%
-{\raisebox{0pt}[\headheight][0pt]{% начало блока
-		\vbox{\hbox to\textwidth{\strut
-				\small{\hfil{\small\hyperlink{tocpage}{\thepage}}\hfil}}}}% конец блока
-}% конец макроопределения
-}
 
 %===============================================================================
 %
@@ -893,7 +669,7 @@ hbox,
   boxrule=0.4pt,left=5mm,right=2mm,top=1mm,bottom=1mm,
   colback=yellow!10,
   colframe=yellow!50,
-  fontupper=\sffamily,
+  fontupper=\itshape,
   sharp corners,rounded corners=southeast,arc is angular,arc=3mm,
   underlay={%
     \path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);

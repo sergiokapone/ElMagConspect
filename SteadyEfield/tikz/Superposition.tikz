@@ -5,10 +5,11 @@
 				\node [circle, ball color=red, inner sep=0pt, text=white,
 					font=\scriptsize] (q1) at
 				(-1,0.5)
-				{$+$};
-				\node [circle, ball color=blue, inner sep=1pt, text=white]
+				{\mathstrut$+$};
+				\node [circle, ball color=blue, inner sep=0pt, text=white,
+					font=\scriptsize]
 				(q2) at
-				(2,0) {\tikz\draw[thick] (0,0) -- ++(0.1,0);};
+				(2,0) {\mathstrut$-$};
 
 				\node[inner sep = 0.5pt, fill, circle] (P) at (0.2, 1) {};
 				\node[above] at (P) {$P$};
