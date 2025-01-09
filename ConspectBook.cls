@@ -180,6 +180,9 @@
 \def\Hfield{\vect{H}}          % --- Визначення вектора напруженості магнітного поля ---
 \def\rot{\symbf{\nabla}\times} % --- Визначення ротора                               ---
 \def\divg{\symbf{\nabla}\cdot} % --- Визначення дівергенції                          ---
+\def\grad{\vect{\nabla}}
+\def\diff#1#2{\frac{\partial #1}{\partial #2}}
+\def\ddiff#1#2{\frac{\partial^2 #1}{\partial #2^2}}
 \AtBeginDocument{%
 	\let\phi\varphi
 	\let\epsilon\varepsilon
@@ -271,6 +274,30 @@
 	partial ellipse/.style args={#1:#2:#3}{
 			insert path={+ (#1:#3) arc (#1:#2:#3)}
 		}
+}
+
+\tikzset{
+    tangent/.style={
+        decoration={
+            markings,% switch on markings
+            mark=
+                at position #1
+                with
+                {
+                    \coordinate (tangent point-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (0pt,0pt);
+                    \coordinate (tangent unit vector-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (1,0pt);
+                    \coordinate (tangent orthogonal unit vector-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (0pt,1);
+                }
+        },
+        postaction=decorate
+    },
+    use tangent/.style={
+        shift=(tangent point-#1),
+        x=(tangent unit vector-#1),
+        y=(tangent orthogonal unit vector-#1)
+    },
+    use tangent/.default=1,
+       >=latex
 }
 % --------------------------- Електричні кола ----------------------------------
 \usetikzlibrary{circuits.ee.IEC}
@@ -560,7 +587,7 @@ postaction={ decorate,
 	unicode,
 	linktocpage = true,
 	hypertexnames=false,
-	pdftoolbar=false,
+	pdftoolbar=true,
 	pdfpagelayout=TwoPageRight,
 	pdfauthor={Ponomarenko S.M.},
 	pdfdisplaydoctitle=true,

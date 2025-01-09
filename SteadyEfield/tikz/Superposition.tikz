@@ -1,4 +1,4 @@
-			\begin{tikzpicture}[>=latex, transform shape, scale=1.5]
+			\begin{tikzpicture}[>=latex, scale=1.5]
 
 				\def\qp{1.2}
 				\def\qn{0.5}
@@ -20,12 +20,12 @@
 				\draw[->, red] let \p1=(q1), \p2=(P) in (P) --
 				++({ atan((\y2 - \y1)/(\x2 - \x1) ) }:\qp) coordinate (E1)
 				node[above]
-					{$\vec{E}_1$};
+					{$\Efield_1$};
 
 				\draw[->, blue] let \p1=(q2), \p2=(P) in (P) --
 				++({ atan((\y2 - \y1)/(\x2 - \x1) ) }:\qn) coordinate (E2)
 				node[below left]
-					{$\vec{E}_2$};
+					{$\Efield_2$};
 
 				\draw[dashed]  let \p1=(q2), \p2=(P) in (E1) -- ++({ atan((\y2
 						- \y1)/(\x2 - \x1) ) }:\qn) coordinate (E);

@@ -44,8 +44,9 @@
 
     \draw[dash pattern={on 5pt off 5pt}, red, opacity=0.1] (A) -- (D);
     \draw[->, ultra thick] ($(B)!0.3!(C)$) -- ++(-15:1) node[above] {$d\vect{r}_2$};
+    \draw[->, ultra thick] ($(A)!0.6!(D)$) -- ++(-15:1) node[above] {$\vect{\tau}$};
 
-    \draw[->, red, ultra thick] (0, -0.5) -- ++(65:3) node[above, inner sep=3pt] {$\Efield_2$};
+    \draw[->, red, ultra thick] (0, -0.5) -- ++(65:2) node[above, inner sep=3pt] {$\Efield_2$};
 
 
 	\begin{scope}[opacity=0.5]

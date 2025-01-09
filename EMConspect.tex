@@ -30,12 +30,12 @@
 \begin{document}
 \pagestyle{empty}
 %\ifelectronic\CoverPage\setcounter{page}{0}\fi
-\CoverPage
+%\CoverPage
 \maketitle
 \makeinfopage
 %===============================================================================
 %
-\clearpage\pagestyle{main}
+\clearpage\clearpage\pagestyle{main}
 \tableofcontents%				   Зміст
 %
 %===============================================================================
@@ -55,8 +55,9 @@
 %\input{Additions/MaxwellEquation}
 \newcommand{\Chapters}{
 	SteadyEfield,
+%    ChargeSystem,
 %	FileldInMetall,
-    FileldInDielectrics,
+%    FileldInDielectrics,
 	%    SteadyCurrent,
 	%    Magnetostatics,
 	%    Electrodynamics,
@@ -92,71 +93,24 @@
 \clearpage\bibliographytrue\phantomsection\label{BibPage}
 
 \nocite{%
-	AleshkevichElectro,
-	AxiezerGeneralPhysElectro,
-	AxiezerElectromagnetizm,
-	Siv3,
-	berkeley2,
-	FLF5,
-	FLF6,
-	FLF7,
-	Mat3,
-	Sav2,
-	Smajt,
-	ZilbermanElectro,
-	Tamm,
-	Kalashnikov,
-	Jackson,
-	Meshkov1,
-	%Meshkov2,
-	PennerUgarov,
+    ZhdanovElectro1,
+    ZhdanovElectro2,
 	ParnovskyElectro,
-	Ivanenko,
-	SivP3,
-	Ovchinkin2,
-	ZilbermanZadachi,
-	FLFP,
-	IrodovProblems,
-	%VonsovskyMagnetizm,
-	Mironova,
+    Ponomarenko,
 }
 
 \printbibheading
 \defbibheading{subbibliography}[\bibname]{\section*{#1}}
 \printbibliography[category=Textbooks, heading=subbibliography, title={Підручники та посібники}]
 \addtocategory{Textbooks}{%
-	AleshkevichElectro,
-	AlekseevElectro,
-	AxiezerGeneralPhysElectro,
-	AxiezerElectromagnetizm,
-	Siv3,
-	berkeley2,
-	FLF5,
-	FLF6,
-	FLF7,
-	Mat3,
-	Sav2,
-	Smajt,
-	ZilbermanElectro,
-	Tamm,
-	Kalashnikov,
-	Jackson,
-	Meshkov1,
-	PennerUgarov,
+    ZhdanovElectro1,
+    ZhdanovElectro2,
 	ParnovskyElectro,
-	Ivanenko,
-	%VonsovskyMagnetizm
     }
 
 \printbibliography[category=Problems, heading=subbibliography, title={Задачники}]
 \addtocategory{Problems}{%
-	SivP3,
-	Ovchinkin2,
-	ZilbermanZadachi,
-	FLFP,
-	IrodovProblems,
-	AlekseevElectro,
-	Mironova,
+    Ponomarenko,
 }
 
 \makelastpage
