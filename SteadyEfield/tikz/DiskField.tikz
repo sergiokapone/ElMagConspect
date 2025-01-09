@@ -3,7 +3,7 @@
     \draw[fill=gray!50] (-1, 0) -- ++(0,-0.1) arc(180:360:1 and 0.3) -- ++(0, 0.1) arc(0:-180:1 and 0.3) ;
     \draw[-stealth] (0,0) -- ++(0, 2) node[left] {$z$};
     \draw[->] (0,0) -- node[above] {$R$} (-50:1 and 0.3);
-    \draw[fill=red] (150:0.8 and 0.23) arc(150:210:0.8 and 0.23) -- (210:0.7 and 0.17) arc(210:150:0.7 and 0.17) -- cycle;
+    \draw[fill=red!40] (150:0.8 and 0.23) arc(150:210:0.8 and 0.23) -- (210:0.7 and 0.17) arc(210:150:0.7 and 0.17) -- cycle;
 
     \draw[->] (180:0.75) coordinate (r) -- node[anchor=south east] {$\vect{r}$} (0, 1.5) node[circle, fill, inner sep=0.25pt] (P) {};
     \node[left] at (P) {$P$};

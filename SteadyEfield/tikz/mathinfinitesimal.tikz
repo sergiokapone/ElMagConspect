@@ -1,4 +1,4 @@
-\begin{tikzpicture}[>=latex, scale=1.5, transform shape]
+\begin{tikzpicture}[>=latex, scale=1.5]
 \draw[->] (0,0) -- ++(0, 1) node[left] {$z$};
 \draw[->] (0,0) -- ++(1, 0) node[below] {$y$};
 \draw[->] (0,0) -- ++(-135:0.75) node[left] {$x$};
