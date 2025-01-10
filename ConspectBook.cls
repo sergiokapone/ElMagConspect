@@ -504,9 +504,12 @@ postaction={ decorate,
 \titleformat{\section}
 {\normalsize\bfseries}{\thesection.}{1em}{#1}
 
-\titleformat{\subsection}
-{\normalsize\bfseries\itshape}{\thesubsection.}{1em}{#1}
-
+\titleformat{\subsection}[runin]
+    {\normalsize\bfseries}
+    {\thesubsection.}
+    {1em}
+    {#1}
+    [.]
 
 
 \newpagestyle{main}{\headrule%
