@@ -54,10 +54,11 @@
 %\setcounter{chapter}{-1}
 %\input{Additions/MaxwellEquation}
 \newcommand{\Chapters}{
+	Charges,
 	SteadyEfield,
-%    ChargeSystem,
-%	FileldInMetall,
-%    FileldInDielectrics,
+	%    ChargeSystem,
+	%	FileldInMetall,
+	%    FileldInDielectrics,
 	%    SteadyCurrent,
 	%    Magnetostatics,
 	%    Electrodynamics,
@@ -93,24 +94,24 @@
 \clearpage\bibliographytrue\phantomsection\label{BibPage}
 
 \nocite{%
-    ZhdanovElectro1,
-    ZhdanovElectro2,
+	ZhdanovElectro1,
+	ZhdanovElectro2,
 	ParnovskyElectro,
-    Ponomarenko,
+	Ponomarenko,
 }
 
 \printbibheading
 \defbibheading{subbibliography}[\bibname]{\section*{#1}}
 \printbibliography[category=Textbooks, heading=subbibliography, title={Підручники та посібники}]
 \addtocategory{Textbooks}{%
-    ZhdanovElectro1,
-    ZhdanovElectro2,
+	ZhdanovElectro1,
+	ZhdanovElectro2,
 	ParnovskyElectro,
-    }
+}
 
 \printbibliography[category=Problems, heading=subbibliography, title={Задачники}]
 \addtocategory{Problems}{%
-    Ponomarenko,
+	Ponomarenko,
 }
 
 \makelastpage
