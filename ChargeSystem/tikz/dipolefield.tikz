@@ -1,0 +1,18 @@
+\begin{tikzpicture}[>=latex, scale=1, transform shape]
+	\node [circle, ball color=blue, inner sep=0pt, text=white,
+		font=\scriptsize]
+	(qn) at (-1,0) {\mathstrut$-$};
+
+	\node [circle, ball color=red, inner sep=0pt, text=white,
+		font=\scriptsize] (qp) at (1,0) {\mathstrut$+$};
+
+	\draw[->] (qn) -- node[below] {$\vect{\ell}$} (qp);
+
+	\node[fill, circle, inner sep=1pt] (P) at  (0.5, 4) {};
+	\node[left] at (P) {$P$};
+
+	\draw[->] (0,0) -- node[above left] {$\vect{r}$} (P);
+
+	\draw[->] (qn) -- node[left] {$\vect{r}_-$} (P);
+	\draw[->] (qp) -- node[right] {$\vect{r}_+$} (P);
+\end{tikzpicture}
