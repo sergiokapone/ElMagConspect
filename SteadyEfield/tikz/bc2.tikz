@@ -1,34 +1,10 @@
 \begin{tikzpicture}[
 		>=latex,
 		line width=1pt,
-		vertical ticks/.style={
-				decoration={markings,
-						mark=between positions 0 and 1 step 0.05 with {
-								\pgftransformresetnontranslations
-								\draw[] (0 ,0) -- ++(0, -0.3);
-							}
-					},
-				postaction={decorate}
-			},
-		area/.pic={
-				\node [] (0) at (-4, 0) {};
-				\node [] (1) at (0, -2.5) {};
-				\node [] (2) at (4, 0) {};
-				\node [] (3) at (0, 2) {};
-				\draw [in=165, out=90, looseness=0.75, name path=A] (0.center) to (3.center);
-				\draw [in=90, out=-15, name path=C] (3.center) to (2.center);
-				\draw [vertical ticks, in=-30, out=-90, looseness=0.75, name path=D] (2.center) to (1.center);
-				\draw [vertical ticks, in=-90, out=135, looseness=1.25, name path=B] (1.center) to (0.center);
-				\tikzfillbetween[of=A and B]{red!20};
-				\tikzfillbetween[of=C and D]{red!20};
-			}
 	]
 
-
-
-
-	\pgfmathsetmacro\h{0.75}
-	\pgfmathsetmacro\l{2}
+	\pgfmathsetmacro\h{0.6}
+	\pgfmathsetmacro\l{1.5}
 	\coordinate (A) at (-\l, 0);
 	\coordinate (B) at (-\l, \h);
 	\coordinate (C) at ($(\l, \h) - (0, 1)$);
@@ -43,15 +19,14 @@
     \draw[red] (A) -- (B) -- (C) -- (D);
 
     \draw[dash pattern={on 5pt off 5pt}, red, opacity=0.1] (A) -- (D);
-    \draw[->, ultra thick] ($(B)!0.3!(C)$) -- ++(-15:1) node[above] {$d\vect{r}_2$};
-    \draw[->, ultra thick] ($(A)!0.6!(D)$) -- ++(-15:1) node[above] {$\vect{\tau}$};
+    \draw[->, ultra thick] ($(B)!0.5!(C)$) -- ++(-18:1) node[above] {$d\vect{r}_2$};
 
-    \draw[->, red, ultra thick] (0, -0.5) -- ++(65:2) node[above, inner sep=3pt] {$\Efield_2$};
+    \draw[->, red, ultra thick] (0, -0.5) -- ++(65:3) node[above, inner sep=3pt] {$\Efield_2$};
 
 
-	\begin{scope}[opacity=0.5]
+	\begin{scope}[on background layer]
         \draw[red, dashed, line width=1pt] (D) -- (C') -- (B') -- (A);
-        \draw[<-, ultra thick] ($(B')!0.3!(C')$) node[below] {$d\vect{r}_1$} -- ++(-15:1);
+        \draw[<-, ultra thick] ($(B')!0.3!(C')$) node[below] {$d\vect{r}_1$} -- ++(-18:1);
         \draw[<-, red, ultra thick] (0, -0.5) -- ++(25:-3) node[above, inner sep=3pt] {$\Efield_1$};
 	\end{scope}
 

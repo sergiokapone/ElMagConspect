@@ -28,7 +28,7 @@ surface/.pic ={
 
 
 \begin{scope}[scale=1, yshift=-1.5cm,]
-    \pic[scale=0.5, fill=red!50, opacity=0.5, draw, ultra thick] (S) at (2, 0) {surface};
+    \pic[scale=0.5, fill=gray!50, opacity=0.5, draw, ultra thick] (S) at (2, 0) {surface};
     \draw[->, blue, line width=1pt] (S-c) -- ++(2,0) node[right] {$\vect{v}$};
     \draw[->, line width=2pt] (S-c) -- ++(1.5,0) node[above] {$\vect{n}$};
     \draw[dashed] (S-A) -- ++(3,0);
@@ -40,7 +40,7 @@ surface/.pic ={
 
 \begin{scope}[scale=1, shift={(9, -1.5)}]
     \def\a{60}
-    \pic[scale=0.5, fill=red!50, opacity=0.5, draw, ultra thick, rotate around z=\a] (S) at (0, 0) {surface};
+    \pic[scale=0.5, fill=gray!50, opacity=0.5, draw, ultra thick, rotate around z=\a] (S) at (0, 0) {surface};
     \pic[scale=0.5, draw, dashed, rotate around z=\a, xshift=6cm] at (0,0) {surface};
     \draw[->, blue, line width=1pt] (S-c) -- ++(2,0) node[right] {$\vect{v}$};
     \draw[->, line width=2pt] (S-c) -- ++(\a:1.5) node[above] {$\vect{n}$};
