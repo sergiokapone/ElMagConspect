@@ -1,18 +1,23 @@
-\begin{tikzpicture}[>=latex, scale=1, transform shape]
+\begin{tikzpicture}[>=latex, scale=1.5]
+	\draw[->] (0,0) -- ++(2, 0) node[below] {$y$};
+	\draw[->] (0,0) -- ++(0, 2) node[above] {$z$};
+	\draw[->] (0,0) -- (-135:1.8) node[below] {$x$};
+
 	\node [circle, ball color=blue, inner sep=0pt, text=white,
 		font=\scriptsize]
 	(qn) at (-1,0) {\mathstrut$-$};
 
 	\node [circle, ball color=red, inner sep=0pt, text=white,
-		font=\scriptsize] (qp) at (1,0) {\mathstrut$+$};
+		font=\scriptsize] (qp) at (+1,0) {\mathstrut$+$};
 
-	\draw[->] (qn) -- node[below] {$\vect{\ell}$} (qp);
+	\draw[->, red, thick] (qn) -- (qp) node[pos=0.6, below, text=black] {$\vect{p}$};
 
-	\node[fill, circle, inner sep=1pt] (P) at  (0.5, 4) {};
-	\node[left] at (P) {$P$};
+    \coordinate (P) at (55:6);
+    \node[right] at (P) {$P$};
 
-	\draw[->] (0,0) -- node[above left] {$\vect{r}$} (P);
+    \draw (qn) -- node[left] {$\vect{r}_-$}(P);
+    \draw (qp) -- node[right] {$\vect{r}_+$}(P);
 
-	\draw[->] (qn) -- node[left] {$\vect{r}_-$} (P);
-	\draw[->] (qp) -- node[right] {$\vect{r}_+$} (P);
+    \draw[->] (0,0) --node[left] {$\vect{r}$} (P);
+
 \end{tikzpicture}

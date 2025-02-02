@@ -4,132 +4,30 @@
 \begin{document}
 
 
-\begin{tikzpicture}[
-		>=latex,
-		line width=1pt,
-		vertical ticks/.style={
-				decoration={markings,
-						mark=between positions 0 and 1 step 0.05 with {
-								\pgftransformresetnontranslations
-								\draw[] (0 ,0) -- ++(0, -0.3);
-							}
-					},
-				postaction={decorate}
-			},
-		area/.pic={
-				\node [] (0) at (-4, 0) {};
-				\node [] (1) at (0, -2.5) {};
-				\node [] (2) at (4, 0) {};
-				\node [] (3) at (0, 2) {};
-				\draw [in=165, out=90, looseness=0.75, name path=A] (0.center) to (3.center);
-				\draw [in=90, out=-15, name path=C] (3.center) to (2.center);
-				\draw [vertical ticks, in=-30, out=-90, looseness=0.75, name path=D] (2.center) to (1.center);
-				\draw [vertical ticks, in=-90, out=135, looseness=1.25, name path=B] (1.center) to (0.center);
-				\tikzfillbetween[of=A and B]{red!20};
-				\tikzfillbetween[of=C and D]{red!20};
-			}
-	]
+\begin{tikzpicture}[>=latex, scale=1.5]
+	\draw[->] (0,0) -- ++(2, 0) node[below] {$y$};
+	\draw[->] (0,0) -- ++(0, 2) node[above] {$z$};
+	\draw[->] (0,0) -- (-135:1.8) node[below] {$x$};
 
+	\node [circle, ball color=blue, inner sep=0pt, text=white,
+		font=\scriptsize]
+	(qn) at (-1,0) {\mathstrut$-$};
 
+	\node [circle, ball color=red, inner sep=0pt, text=white,
+		font=\scriptsize] (qp) at (+1,0) {\mathstrut$+$};
 
+	\draw[->, red, thick] (0,0) -- (qp) node[pos=0.5, below, text=black] {$\vect{r}'_+$};
+	\draw[->, red, thick] (0,0) -- (qn) node[pos=0.5, below, text=black] {$\vect{r}'_-$};
+	\draw[->, thick, gray] (qn)  node[pos=0.6, below] {$\vect{\ell}$} (qp);
 
-	\pgfmathsetmacro\h{1.3}
-	\pgfmathsetmacro\R{1}
-	\pgfmathsetmacro\r{0.4}
+    \coordinate (P) at (55:6);
 
-	\coordinate (A) at (-\R, 0);
-	\coordinate (B) at (-\R, \h);
-	\coordinate (C) at (\R, \h);
-	\coordinate (D) at (\R, 0);
+    \draw (qn) -- node[left] {$\vect{r}_-$}(P);
+    \draw (qp) -- node[right] {$\vect{r}_+$}(P);
 
-	\coordinate (B') at (-\R, -\h);
-	\coordinate (C') at (\R, -\h);
-
-	\pic[opacity=0.5] (0,0) {area};
-
-	\draw[dashed, red] (A) arc(180:0:{\R} and \r);
-	\draw[red] (A) -- (B) arc(180:0:{\R} and \r) -- (D) arc(0:-180:{\R} and \r) -- cycle;
-	\draw[red] (B) arc(180:360:{\R} and \r);
-	\fill[fill=red, opacity=0.5, pattern=north east lines, pattern color=red, line width=0.5mm] (0, 0) circle({\R} and \r);
-
-	\draw[->] ($(B)!0.5!(C)$) -- ++(0, 1) node[above] {$d\vect{S}_2$};
-
-	\draw[->] (0, 0) -- ++(0, 0.75) node[left, inner sep=3pt] {$\vect{n}$};
-
-    \draw[->, red, ultra thick] (0, 0) -- ++(65:3) node[above, inner sep=3pt] {$\Efield_2$};
-%	\draw[->] (+0.25, 0) -- ++(0, 0.75) node[anchor=north west, inner sep=3pt] {$\vect{n}_1$};
-
-
-	\begin{scope}[on background layer]
-%		\draw[->] (0, 0) -- ++(0, -0.75) node[anchor=west, inner sep=3pt] {$\vect{n}_2$};
-        \draw[->, line width=1pt] ($(B')!0.5!(C')$) -- ++(0, -1) node[right] {$d\vect{S}_1$};
-		\draw[dashed, red, line width=1pt] (A) -- (B') arc(180:360:{\R} and \r) -- (D);
-		\draw[dashed, red, line width=1pt] (B') arc(180:0:{\R} and \r);
-        \draw[<-, red, ultra thick] (0, 0) -- ++(25:-3) node[above, inner sep=3pt] {$\Efield_1$};
-	\end{scope}
+    \draw[->] (0,0) --node[left] {$\vect{r}$} (P);
 
 \end{tikzpicture}
 
-
-\begin{tikzpicture}[
-		>=latex,
-		line width=1pt,
-		vertical ticks/.style={
-				decoration={markings,
-						mark=between positions 0 and 1 step 0.05 with {
-								\pgftransformresetnontranslations
-								\draw[] (0 ,0) -- ++(0, -0.3);
-							}
-					},
-				postaction={decorate}
-			},
-		area/.pic={
-				\node [] (0) at (-4, 0) {};
-				\node [] (1) at (0, -2.5) {};
-				\node [] (2) at (4, 0) {};
-				\node [] (3) at (0, 2) {};
-				\draw [in=165, out=90, looseness=0.75, name path=A] (0.center) to (3.center);
-				\draw [in=90, out=-15, name path=C] (3.center) to (2.center);
-				\draw [vertical ticks, in=-30, out=-90, looseness=0.75, name path=D] (2.center) to (1.center);
-				\draw [vertical ticks, in=-90, out=135, looseness=1.25, name path=B] (1.center) to (0.center);
-				\tikzfillbetween[of=A and B]{red!20};
-				\tikzfillbetween[of=C and D]{red!20};
-			}
-	]
-
-
-
-
-	\pgfmathsetmacro\h{0.75}
-	\pgfmathsetmacro\l{2}
-	\coordinate (A) at (-\l, 0);
-	\coordinate (B) at (-\l, \h);
-	\coordinate (C) at ($(\l, \h) - (0, 1)$);
-	\coordinate (D) at ($(\l, 0) - (0, 1)$);
-
-	\coordinate (B') at (-\l, -\h);
-	\coordinate (C') at ($(\l, -\h) - (0, 1)$);
-
-	\pic[opacity=0.5] at (0,-0.5) {area};
-
-
-    \draw[red] (A) -- (B) -- (C) -- (D);
-
-    \draw[dash pattern={on 5pt off 5pt}, red, opacity=0.1] (A) -- (D);
-    \draw[->, ultra thick] ($(B)!0.3!(C)$) -- ++(-15:1) node[above] {$d\vect{r}_2$};
-
-    \draw[->, red, ultra thick] (0, -0.5) -- ++(65:3) node[above, inner sep=3pt] {$\Efield_2$};
-
-
-	\begin{scope}[on background layer]
-        \draw[red, dashed, line width=1pt] (D) -- (C') -- (B') -- (A);
-        \draw[<-, ultra thick] ($(B')!0.3!(C')$) node[below] {$d\vect{r}_1$} -- ++(-15:1);
-        \draw[<-, red, ultra thick] (0, -0.5) -- ++(25:-3) node[above, inner sep=3pt] {$\Efield_1$};
-	\end{scope}
-
-\end{tikzpicture}
-
-
-\input{ChargeSystem/tikz/far_potential.tikz}
 
 \end{document}

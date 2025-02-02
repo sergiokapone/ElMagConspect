@@ -46,6 +46,7 @@
         \node[\type] (q\i) at (xyz polar cs:angle=\angle, x radius=\xrad, y radius=\yrad) {$\sign$};
     }
         \draw[->, red] (O) --  (q1) node[anchor=north east, text=black, pos=0.4, inner sep=1pt] {$\vect{r}_i$};
+        \node[above] at (q1) {$q_i$};
         \draw[->, blue] (q1) -- node[above, sloped] {$\vect{r} - \vect{r}_i$} (P);
         \draw[->] (O) -- (P) node[below, sloped, pos=0.8] {$\vect{r}$} ;
     	\node[right] at (P) {$P$};

@@ -70,13 +70,13 @@
 
 \ifluatex
 	\RequirePackage{fontspec}
-%    \RequirePackage[sfdefault,regular]{roboto}
+	%    \RequirePackage[sfdefault,regular]{roboto}
 	\setmainfont{BookmanOldStyle}%{alegreya}%{CMU Serif}
 	\setsansfont{Roboto}%{Arial}
 	\setmonofont{JetBrains Mono}%{Consolas}
 	\defaultfontfeatures{Ligatures={TeX}}
-	\newfontfamily\Annabelle{Annabelle}
-    \newfontfamily\Alexander{Alexander}
+	%	\newfontfamily\Annabelle{Annabelle}
+	\newfontfamily\Alexander{Alexander}
 	\RequirePackage{luacolor}
 \else
 	\RequirePackage[T2A,T1]{fontenc}
@@ -159,7 +159,7 @@
 \setlength\arrayrulewidth{1pt}
 % ------------------------------------ Математика ------------------------------
 \ifluatex
-%	\RequirePackage{lualatex-math}
+	%	\RequirePackage{lualatex-math}
 	\RequirePackage[math-style=TeX,bold-style=TeX]{unicode-math}
 	\setmathfont[]{Stix Two Math}
 \else
@@ -189,7 +189,7 @@
 	\DeclareMathOperator{\const}{const}
 	\DeclareMathOperator{\Div}{div}
 	\DeclareMathOperator{\Rot}{rot}
-    \DeclareMathOperator{\Grad}{grad}
+	\DeclareMathOperator{\Grad}{grad}
 	\DeclareMathOperator{\inv}{inv}
 	\newcommand{\Laplasian}{\Delta}
 }
@@ -256,7 +256,7 @@
 %\tikzexternalize[optimize=false, prefix=figures/]
 %---------------------------------------------------
 \usetikzlibrary{decorations.text, decorations.markings}
-\usetikzlibrary{intersections}
+\usetikzlibrary{intersections, backgrounds}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{shapes, shadows}
 \usetikzlibrary{quotes,angles,tikzmark}
@@ -276,28 +276,53 @@
 		}
 }
 
+
 \tikzset{
-    tangent/.style={
-        decoration={
-            markings,% switch on markings
-            mark=
-                at position #1
-                with
-                {
-                    \coordinate (tangent point-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (0pt,0pt);
-                    \coordinate (tangent unit vector-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (1,0pt);
-                    \coordinate (tangent orthogonal unit vector-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (0pt,1);
-                }
-        },
-        postaction=decorate
-    },
-    use tangent/.style={
-        shift=(tangent point-#1),
-        x=(tangent unit vector-#1),
-        y=(tangent orthogonal unit vector-#1)
-    },
-    use tangent/.default=1,
-       >=latex
+	vertical ticks/.style={
+			decoration={markings,
+					mark=between positions 0 and 1 step 0.05 with {
+							\pgftransformresetnontranslations
+							\draw[] (0 ,0) -- ++(0, -0.3);
+						}
+				},
+			postaction={decorate}
+		},
+	area/.pic={
+			\node [] (0) at (-3.75, -1.25) {};
+			\node [] (1) at (-1.25, 1.5) {};
+			\node [] (2) at (1.5, -2) {};
+			\node [] (3) at (4, 0.25) {};
+			\draw [bend left=15, name path=A] (0.center) to (1.center);
+			\draw [bend left=15, looseness=0.75, name path=C] (1.center) to (3.center);
+			\draw [bend right, name path=D] (3.center) to (2.center);
+			\draw [bend right=15, name path=B] (2.center) to (0.center);
+			\tikzfillbetween[of=A and B]{gray!20};
+			\tikzfillbetween[of=C and D]{gray!20};
+		}
+}
+
+\tikzset{
+	tangent/.style={
+			decoration={
+					markings,% switch on markings
+					mark=
+					at position #1
+					with
+						{
+							\coordinate (tangent point-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (0pt,0pt);
+							\coordinate (tangent unit vector-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (1,0pt);
+							\coordinate (tangent orthogonal unit vector-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (0pt,1);
+						}
+				},
+			postaction=decorate
+		},
+	use tangent/.style={
+			shift=(tangent point-#1),
+			x=(tangent unit vector-#1),
+			y=(tangent orthogonal unit vector-#1)
+		},
+	use tangent/.default=1,
+	>=latex
 }
 % --------------------------- Електричні кола ----------------------------------
 \usetikzlibrary{circuits.ee.IEC}
@@ -387,30 +412,30 @@ postaction={ decorate,
 }
 
 \tcbset{%
-		titlepagestyle/.style={%
-				enhanced,
-				colback=themecolordark,
-				colframe=themecolorlight,
-				arc=0pt,
-				outer arc=0pt,
-				leftrule=0pt,
-				rightrule=0pt,
-				enlarge left by=-1in-\hoffset-\oddsidemargin,
-				enlarge right by=-\paperwidth+1in+\hoffset+\oddsidemargin+\textwidth,
-				width=\paperwidth,
-				left=1in+\hoffset+\oddsidemargin,
-				right=\paperwidth-1in-\hoffset-\oddsidemargin-\textwidth,
+	titlepagestyle/.style={%
+			enhanced,
+			colback=themecolordark,
+			colframe=themecolorlight,
+			arc=0pt,
+			outer arc=0pt,
+			leftrule=0pt,
+			rightrule=0pt,
+			enlarge left by=-1in-\hoffset-\oddsidemargin,
+			enlarge right by=-\paperwidth+1in+\hoffset+\oddsidemargin+\textwidth,
+			width=\paperwidth,
+			left=1in+\hoffset+\oddsidemargin,
+			right=\paperwidth-1in-\hoffset-\oddsidemargin-\textwidth,
 		}%
 }%
 
 \ExplSyntaxOn
 \RenewDocumentCommand{\title}{m}
- {
-  \tl_gset:cn { @title } { #1 } % needed by \maketitle
-  \tl_gset:Nn { \realtitle } { #1 }
-%  \seq_set_split:Nnn \l_tmpa_seq { \\ } { #1 }
-%  \tl_gset:Nx \inlinetitle { \seq_use:Nn \l_tmpa_seq { ~ } }
- }
+{
+	\tl_gset:cn { @title } { #1 } % needed by \maketitle
+	\tl_gset:Nn { \realtitle } { #1 }
+	%  \seq_set_split:Nnn \l_tmpa_seq { \\ } { #1 }
+	%  \tl_gset:Nx \inlinetitle { \seq_use:Nn \l_tmpa_seq { ~ } }
+}
 \ExplSyntaxOff
 
 %========================================================================================================
@@ -422,8 +447,8 @@ postaction={ decorate,
 \let\cleardoublepage\clearpage
 
 \def\schapter#1{%
-\chapter*{#1}
-\addcontentsline{toc}{chapter}{#1}%
+	\chapter*{#1}
+	\addcontentsline{toc}{chapter}{#1}%
 }
 
 
@@ -446,7 +471,7 @@ postaction={ decorate,
 		\@restonecolfalse
 	\fi
 	\chapter*{Додатки}%
-    \addcontentsline{toc}{chapter}{Додатки}
+	\addcontentsline{toc}{chapter}{Додатки}
 	\if@restonecol\twocolumn\fi
 }
 % ---------------------------------------- Верстка ВІДПОВІДЕЙ -------------------------------------------
@@ -455,10 +480,10 @@ postaction={ decorate,
 	\setcounter{chapter}{0}%
 	\setcounter{section}{0}%
 	\renewcommand{\thesection}{\arabic{section}}
-    \clearpage\pagestyle{answers}
+	\clearpage\pagestyle{answers}
 	\chapter*{Відповіді}%
-    \addcontentsline{toc}{chapter}{Відповіді}
-    \renewcommand{\theequation}{\arabic{equation}}
+	\addcontentsline{toc}{chapter}{Відповіді}
+	\renewcommand{\theequation}{\arabic{equation}}
 	\if@restonecol\twocolumn\fi
 }
 % ---------------------------------------- Лічильник зносок починаються з кожної сторінки ---------------
@@ -486,52 +511,52 @@ postaction={ decorate,
 \titleformat{\chapter}[block]
 {\normalfont\sffamily}{}{0pt}
 {\parbox[b]{\chapnumb}{%
-   \color{themecolordark}\fontsize{100}{90}\selectfont\thechapter}%
-  \parbox[b]{\dimexpr\textwidth-\chapnumb\relax}{%
-    \raggedleft%
-    \hfill{\LARGE#1}\\
-    \rule{\dimexpr\textwidth-\chapnumb\relax}{0.4pt}}}
+		\color{themecolordark}\fontsize{100}{90}\selectfont\thechapter}%
+	\parbox[b]{\dimexpr\textwidth-\chapnumb\relax}{%
+		\raggedleft%
+		\hfill{\LARGE#1}\\
+		\rule{\dimexpr\textwidth-\chapnumb\relax}{0.4pt}}}
 
 \titleformat{name=\chapter,numberless}[block]
 {\normalfont\sffamily}{}{0pt}
 {\parbox[b]{\chapnumb}{%
-   \mbox{}}%
-  \parbox[b]{\dimexpr\textwidth-\chapnumb\relax}{%
-    \raggedleft%
-    \hfill{\LARGE#1}\\
-    \rule{\dimexpr\textwidth-\chapnumb\relax}{0.4pt}}}
+		\mbox{}}%
+	\parbox[b]{\dimexpr\textwidth-\chapnumb\relax}{%
+		\raggedleft%
+		\hfill{\LARGE#1}\\
+		\rule{\dimexpr\textwidth-\chapnumb\relax}{0.4pt}}}
 
 \titleformat{\section}
 {\normalsize\bfseries}{\thesection.}{1em}{#1}
 
 \titleformat{\subsection}[runin]
-    {\normalsize\bfseries}
-    {\thesubsection.}
-    {1em}
-    {#1}
-    [.]
+{\normalsize\bfseries}
+{\thesubsection.}
+{1em}
+{#1}
+[.]
 
 
 \newpagestyle{main}{\headrule%
-  \sethead{\ifodd\thepage\relax\else\itshape\small\thechapter.\ \chaptertitle\fi}{}{\ifodd\thepage\itshape\small\thechapter.\
-  \chaptertitle\else\relax\fi}
-  \setfoot{}{\small\thepage}{}}
+	\sethead{\ifodd\thepage\relax\else\itshape\small\thechapter.\ \chaptertitle\fi}{}{\ifodd\thepage\itshape\small\thechapter.\
+			\chaptertitle\else\relax\fi}
+	\setfoot{}{\small\thepage}{}}
 
 \newpagestyle{answers}{\headrule%
-  \sethead{\ifodd\thepage\relax\else\itshape\small Відповіді\fi}{}{\ifodd\thepage\itshape\small Відповіді\else\relax\fi}
-  \setfoot{}{\small\thepage}{}}
+	\sethead{\ifodd\thepage\relax\else\itshape\small Відповіді\fi}{}{\ifodd\thepage\itshape\small Відповіді\else\relax\fi}
+	\setfoot{}{\small\thepage}{}}
 
 \newpagestyle{appendix}{\headrule%
-  \sethead{\ifodd\thepage\relax\else\itshape\small Додатки\fi}{}{\ifodd\thepage\itshape\small Додатки\else\relax\fi}
-  \setfoot{}{\small\thepage}{}}
+	\sethead{\ifodd\thepage\relax\else\itshape\small Додатки\fi}{}{\ifodd\thepage\itshape\small Додатки\else\relax\fi}
+	\setfoot{}{\small\thepage}{}}
 
 \newpagestyle{bibliography}{\headrule%
-  \sethead{\ifodd\thepage\relax\else\itshape\small\bibname\fi}{}{\ifodd\thepage\itshape\small\bibname\else\relax\fi}
-  \setfoot{}{\small\thepage}{}}
+	\sethead{\ifodd\thepage\relax\else\itshape\small\bibname\fi}{}{\ifodd\thepage\itshape\small\bibname\else\relax\fi}
+	\setfoot{}{\small\thepage}{}}
 
 \renewpagestyle{plain}{%
-  \sethead{}{}{}
-  \setfoot{}{\small\thepage}{}}
+	\sethead{}{}{}
+	\setfoot{}{\small\thepage}{}}
 
 \assignpagestyle{\chapter}{plain}
 \assignpagestyle{\part}{empty}
@@ -607,7 +632,7 @@ postaction={ decorate,
 % --------------------------------------------------------------------------------
 
 \ifdefined\inlinetitle%
-\AtBeginDocument{\hypersetup{pdftitle={\inlinetitle}}}
+	\AtBeginDocument{\hypersetup{pdftitle={\inlinetitle}}}
 \fi
 
 %===============================================================================
@@ -617,23 +642,23 @@ postaction={ decorate,
 %===============================================================================
 
 \ifbiblatex
-  \RequirePackage[backend=biber, bibstyle=gost-numeric, babel=other, isbn=true, url=false, defernumbers=true]{biblatex}
-  \newbibmacro{string+url}[1]{%
-  	\iffieldundef{url}{#1}{\href{\thefield{url}}{#1}}%
-  }
-  \DeclareFieldFormat{title}{\usebibmacro{string+url}{#1}}
-  \RequirePackage{csquotes}
+	\RequirePackage[backend=biber, bibstyle=gost-numeric, babel=other, isbn=true, url=false, defernumbers=true]{biblatex}
+	\newbibmacro{string+url}[1]{%
+		\iffieldundef{url}{#1}{\href{\thefield{url}}{#1}}%
+	}
+	\DeclareFieldFormat{title}{\usebibmacro{string+url}{#1}}
+	\RequirePackage{csquotes}
 
-  \DefineBibliographyStrings{ukrainian}{%
-  	bibliography = {Література},
-  }
-  \DeclareBibliographyCategory{Textbooks}
-  \DeclareBibliographyCategory{Problems}
+	\DefineBibliographyStrings{ukrainian}{%
+		bibliography = {Література},
+	}
+	\DeclareBibliographyCategory{Textbooks}
+	\DeclareBibliographyCategory{Problems}
 \else
-    \renewcommand{\@biblabel}[1]{#1.}
-    \addto\captionsukrainian{%
-    \renewcommand{\bibname}{Література}%
-    }
+	\renewcommand{\@biblabel}[1]{#1.}
+	\addto\captionsukrainian{%
+		\renewcommand{\bibname}{Література}%
+	}
 \fi
 
 %===============================================================================
@@ -645,68 +670,69 @@ postaction={ decorate,
 
 
 \newtcolorbox[auto counter]{Theory}[1][]{
-  breakable,
-  enhanced,
-  outer arc=0pt,
-  arc=0pt,
-  colframe=themecolordark,
-  colback=themecolordark!20,
-  attach boxed title to top left,
+	breakable,
+	enhanced,
+	outer arc=0pt,
+	arc=0pt,
+	colframe=themecolordark,
+	colback=themecolordark!20,
+	attach boxed title to top left,
 	fontupper=\small,
 	before upper={\parindent15pt},
-  boxed title style={
-    colback=themecolordark,
-    outer arc=0pt,
-    arc=0pt,
-    top=3pt,
-    bottom=3pt,
-    },
-  fonttitle=\sffamily,
-  colback=white,
-  rightrule=0pt,
-%  toprule=0pt,
+	boxed title style={
+			colback=themecolordark,
+			outer arc=0pt,
+			arc=0pt,
+			top=3pt,
+			bottom=3pt,
+		},
+	fonttitle=\sffamily,
+	colback=white,
+	rightrule=0pt,
+	%  toprule=0pt,
 	before=\nopagebreak,
-  title=Теоретичні відомості,
-  overlay unbroken and first={
-      \path
-        let
-        \p1=(title.north east),
-        \p2=(frame.north east)
-        in
-        node[anchor=west,font=\sffamily,color=themecolordark,text width=\x2-\x1]
-        at (title.east) {#1};
-  }
+	title=Теоретичні відомості,
+	overlay unbroken and first={
+			\path
+			let
+			\p1=(title.north east),
+			\p2=(frame.north east)
+			in
+			node[anchor=west,font=\sffamily,color=themecolordark,text width=\x2-\x1]
+			at (title.east) {#1};
+		}
 }
 
 \newtcolorbox{pict}{
-colback=white,
-colframe=gray,
-boxrule=0.1pt,
-left=0pt,
-right=0pt,
-top=0pt,
-bottom=0pt,
-sharp corners,
-halign=center,
-enhanced,drop fuzzy shadow,
-hbox,
+	colback=white,
+	colframe=gray,
+	boxrule=0.1pt,
+	left=0pt,
+	right=0pt,
+	top=0pt,
+	bottom=0pt,
+	sharp corners,
+	halign=center,
+	enhanced,drop fuzzy shadow,
+	hbox,
 }
 
-\newtcolorbox{Attention}[1][]{enhanced,
-  breakable,
-  before skip=2mm,after skip=3mm,
-  before upper={\parindent15pt},
-  boxrule=0.4pt,left=5mm,right=2mm,top=1mm,bottom=1mm,
-  colback=yellow!10,
-  colframe=yellow!50,
-  fontupper=\itshape,
-  sharp corners,rounded corners=southeast,arc is angular,arc=3mm,
-  underlay={%
-    \path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
-    \path[draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
-    \path[fill=themecolordark,draw=none] (interior.south west) rectangle node[text=white]{\Large\bfseries !} ([xshift=4mm]interior.north west);
-    },
-  drop fuzzy shadow,#1}
+\newtcolorbox{Attention}[1][]{
+	enhanced,
+	breakable,
+	before skip=2mm,after skip=3mm,
+	before upper={\parindent15pt},
+	boxrule=0.4pt,left=5mm,right=2mm,top=1mm,bottom=1mm,
+	colback=yellow!10,
+	colframe=yellow!50,
+	fontupper=\itshape,
+	sharp corners,rounded corners=southeast,arc is angular,arc=3mm,
+	underlay={%
+			\path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+			\path[draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+			\path[fill=themecolordark,draw=none] (interior.south west) rectangle node[text=white]{\Large\bfseries !} ([xshift=4mm]interior.north west);
+		},
+	drop fuzzy shadow,#1}
 
 
 
@@ -723,67 +749,67 @@ hbox,
 % segments and so on, in a similar way of a Koch snowflake.
 \pgfdeclaredecoration{irregular fractal line}{init}
 {
-  \state{init}[width=\pgfdecoratedinputsegmentremainingdistance]
-  {
-    \pgfpathlineto{%
-      \pgfpoint{random * \pgfdecoratedinputsegmentremainingdistance}{%
-        (random * \pgfdecorationsegmentamplitude - 0.02) *
-         \pgfdecoratedinputsegmentremainingdistance}}
-    \pgfpathlineto{\pgfpoint{\pgfdecoratedinputsegmentremainingdistance}{0pt}}
-  }
+	\state{init}[width=\pgfdecoratedinputsegmentremainingdistance]
+	{
+		\pgfpathlineto{%
+			\pgfpoint{random * \pgfdecoratedinputsegmentremainingdistance}{%
+				(random * \pgfdecorationsegmentamplitude - 0.02) *
+				\pgfdecoratedinputsegmentremainingdistance}}
+		\pgfpathlineto{\pgfpoint{\pgfdecoratedinputsegmentremainingdistance}{0pt}}
+	}
 }
 
 % Define paper style
 \tikzset{
-  paper/.style={%
-    draw=black!10,
-%    blur shadow,
-    path picture={%
-      \node at (path picture bounding box.center) {
-        \includegraphics[width=\linewidth]{./Icons/OLD_PAPER_TEXTURE}
-      };
-    }
-  },
-  irregular border/.style={%
-    decoration={irregular fractal line, amplitude=0.2},
-    decorate,
-  },
-  ragged border/.style={%
-    decoration={random steps, segment length=7mm, amplitude=2mm},
-    decorate,
-  }
+	paper/.style={%
+			draw=black!10,
+			%    blur shadow,
+			path picture={%
+					\node at (path picture bounding box.center) {
+						\includegraphics[width=\linewidth]{./Icons/OLD_PAPER_TEXTURE}
+					};
+				}
+		},
+	irregular border/.style={%
+			decoration={irregular fractal line, amplitude=0.2},
+			decorate,
+		},
+	ragged border/.style={%
+			decoration={random steps, segment length=7mm, amplitude=2mm},
+			decorate,
+		}
 }
 
 \newtcolorbox{tornpage}[1][]{%
-  % enhanced jigsaw, <-- Beware, This rendering engine let the
-  %                      frame appear on some PDF viewers
-  empty, % Better use this rendering engine to avoid the bug
-  parbox=true,
-  interior code={%
-    \begin{pgfonlayer}{background}  % Draw the shape behind
-      \fill[paper] % recursively decorate the bottom border
-      decorate[irregular border]{%
-        decorate{decorate{decorate{decorate[ragged border]{
-                ($(interior.south east) - (0, random * 5mm)$) --
-                ($(interior.south west) - (0, random * 5mm)$)
-              }
-            }
-          }
-        }
-      }
-      -- (interior.north west) -- (interior.north east) -- cycle;
-    \end{pgfonlayer}
-  },
-  sharp corners,
-  boxrule=0pt,
-  left=5pt,
-  right=5pt,
-  top=5pt,
-  bottom=1em,
-  fonttitle=\sffamily\bfseries\LARGE,
-  attach boxed title to top center={yshift*=-\tcboxedtitleheight},
-  coltitle=black,
-  #1
+	% enhanced jigsaw, <-- Beware, This rendering engine let the
+	%                      frame appear on some PDF viewers
+	empty, % Better use this rendering engine to avoid the bug
+	parbox=true,
+	interior code={%
+			\begin{pgfonlayer}{background}  % Draw the shape behind
+				\fill[paper] % recursively decorate the bottom border
+				decorate[irregular border]{%
+						decorate{decorate{decorate{decorate[ragged border]{
+														($(interior.south east) - (0, random * 5mm)$) --
+														($(interior.south west) - (0, random * 5mm)$)
+													}
+											}
+									}
+							}
+					}
+				-- (interior.north west) -- (interior.north east) -- cycle;
+			\end{pgfonlayer}
+		},
+	sharp corners,
+	boxrule=0pt,
+	left=5pt,
+	right=5pt,
+	top=5pt,
+	bottom=1em,
+	fonttitle=\sffamily\bfseries\LARGE,
+	attach boxed title to top center={yshift*=-\tcboxedtitleheight},
+	coltitle=black,
+	#1
 }
 
 
@@ -824,23 +850,43 @@ hbox,
 \newtheorem{problem}{}[chapter]
 \DeclareAssociatedCounters{problem}{totalproblems}
 
+%\tcbset{
+%	answersolutionstyle/.style={
+%		enhanced, colback=gray!10,
+%%         interior hidden,
+%		boxrule=0pt, frame hidden, breakable,
+%		before skip=10pt, after skip=10pt,
+%		overlay unbroken={\draw[line width=3pt, themecolordark] (frame.south west) -- (frame.north west);},
+%		extras first={
+%			overlay={\draw[line width=3pt, themecolordark] (frame.south west) -- (frame.north west);}
+%		},
+%		extras last={
+%			overlay={\draw[line width=3pt, themecolordark] (frame.south west) -- (frame.north west);}
+%		},
+%	},
+%}
+
 \tcbset{
-		answersolutionstyle/.style={
-			enhanced jigsaw,colframe=cyan,interior hidden, boxrule=0pt, frame hidden,
-				breakable,before skip=10pt,after skip=10pt,
-				overlay unbroken = {\draw[line width=1pt, themecolorlight, rounded corners] (frame.south west) rectangle (frame.north east);},
-				extras first={
-		        overlay={%
-			            \draw[line width=1pt, themecolorlight, rounded corners] (frame.south west) -- (frame.north west) -- (frame.north east) --(frame.south east);
-						},
+	answersolutionstyle/.style={
+			enhanced,
+			breakable,
+			before skip=2mm,after skip=3mm,
+			before upper={\parindent15pt},
+			boxrule=0.4pt,left=5mm,right=2mm,top=1mm,bottom=1mm,
+			colback=gray!5,
+			colframe=yellow!50,
+			fontupper=\itshape,
+			sharp corners,rounded corners=southeast,arc is angular,arc=3mm,
+			underlay={%
+					\path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+					\path[draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+					\path[fill=themecolordark,draw=none] (interior.south west) rectangle node[text=white]{\large\bfseries ?} ([xshift=4mm]interior.north
+					west);
 				},
-				extras last={
-		        overlay={%
-			            \draw[line width=1pt, themecolorlight, rounded corners] (frame.north west) -- (frame.south west) -- (frame.south east) --(frame.north east);
-						},
-				},
-			},
+			drop fuzzy shadow
+		}
 }
+
 
 \tcolorboxenvironment{problem}{answersolutionstyle}
 
@@ -856,8 +902,8 @@ hbox,
 \Newassociation{solution}{Solution}{answer}
 \renewenvironment{Solution}[1]{%
 	\begin{answerbox}
-\hypertarget{solution:\@roman{#1}}{\hyperlink{problem:\@roman{#1}}{\bfseries#1.}\label{solution\@roman{#1}}}
-}{%
+		\hypertarget{solution:\@roman{#1}}{\hyperlink{problem:\@roman{#1}}{\bfseries#1.}\label{solution\@roman{#1}}}
+		}{%
 	\end{answerbox}
 }
 
