@@ -2,6 +2,7 @@ _minted*/
 tmp/
 *.aux
 *.synctex.gz
+*.synctex(busy)
 *.log
 *.run.xml
 *.bak*
