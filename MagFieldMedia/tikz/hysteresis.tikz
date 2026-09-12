@@ -1,0 +1,25 @@
+\begin{tikzpicture}[>=latex, scale=1.25, transform shape,
+		point/.style={circle, draw, inner sep=0.7pt, fill=white}
+	]
+
+	\draw[-latex, name path=E] (-2.5,0) -- (2.5,0) node[below]{$H$};
+	\draw[-latex, name path
+		=P] (0,-1.5) -- (0,1.5)node[left]{$J $};
+
+	\draw[samples=200, domain=-3:2, name path=d, midarrow,  red, thick] plot ({\x+0.5}, {0.2*\x
+			+ tanh(1.9*\x) + 0.1}); \draw[samples=200, domain=-2:3, name path=u, midarrowR, red, thick]
+	plot ({\x-0.5}, {0.2*\x + tanh(1.9*\x) - 0.1});
+	\draw[midarrow, thick, cyan!50!black] (0,0) .. controls (0.5, 0.2) and
+	(0.2, 1.0) ..
+	(1.52, 1.28);
+	\tikzfillbetween[of=u and d]{blue, opacity=0.1};
+
+	\foreach \i/\a in {P/u, P/d, E/u, E/d} {
+			\path[name intersections={of={\i} and {\a}}]
+			(intersection-1) node[point] (\i\a) {};
+		}
+	\node[left,  text=brown] at (Pu) {$J_r$};
+	\node[right, text=brown] at (Pd) {$-J_r$};
+	\node[above left, text=red] at (Eu) {$-H_c$};
+	\node[below right, text=red] at (Ed) {$H_c$};
+\end{tikzpicture}

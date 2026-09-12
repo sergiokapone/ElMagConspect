@@ -1,4 +1,4 @@
-\begin{tikzpicture}[>=latex, every node/.style={font=\scriptsize}, scale=0.7,
+\begin{tikzpicture}[>=latex, every node/.style={font=\scriptsize}, scale=1.25,
 		transform shape]
 	\draw[ball color=blue!5] (0,0) to[bend left] ++(2,1.9)  to[bend left] ++(2,-2)
 	to[bend right]

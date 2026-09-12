@@ -1,0 +1,17 @@
+\tikz[>=latex, baseline,
+	pencildraw/.style={ %
+			decorate,
+			decoration={random steps,segment length=2pt,amplitude=1pt}
+		},]{
+	\draw[fill=gray!60] (0,0) -- ++(3, 0) decorate [pencildraw]
+		{to ++(1, 1)}
+	-- ++(-3, 0)
+	decorate [pencildraw]  {to cycle};
+	\foreach \s in {0.2,0.4,...,0.8}  {
+			\draw[->, red] ({0.8+\s}, \s) -- ++(1.2, 0);
+		}
+	\draw (1.5, 0) -- node[right, fill=gray!60, circle, inner sep=0] {$l$} ++(1,1) node (S) [above=5pt] {$dS$};
+	\draw[fill=red!50, opacity=0.5] (1.0,0) -- ++(1, 0) -- ++(1, 1) -- ++(-1, 0) -- cycle;
+	\draw[->] (S.east) to[out=0, in=90] (2.7, 0.9);
+
+}

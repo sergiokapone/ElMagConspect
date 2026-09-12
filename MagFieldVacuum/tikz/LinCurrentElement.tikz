@@ -1,0 +1,5 @@
+\tikz[>=latex, baseline]{
+    \draw[gray!60, line width=0.05cm, arrowpos={0.2}{2pt}{6pt}] (0,0)  [partial ellipse=90:0:2] node[pos=0.2, anchor=north, text=black] {$I$};
+    \draw[red!40, line width=0.05cm] (0,0) [partial ellipse=55:45:2];
+    \draw[-{Latex[scale=0.5]}] (55:2)  arc(55:45:2) node[above, sloped, pos=0.7, font=\tiny] {$d\vect{\ell}$};
+}

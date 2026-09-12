@@ -18,10 +18,10 @@
 				++(\x*360/10+5*rnd:0.7cm+1cm*rnd);
 			}
 
-		\foreach \y in {-3,...,3}{
-				\draw[jfield, midarrow] plot[domain=0.5:3] ({\x-2},
-				0.2*\y+0.05*\y*\x^2);
-			}
+%		\foreach \y in {-3,...,3}{
+%				\draw[jfield, midarrow] plot[domain=0.5:3] ({\x-2},
+%				0.2*\y+0.05*\y*\x^2);
+%			}
 	\path (0, 0) node[text=white,
 		scale=1.1, font=\bfseries] {$V$} node[] {$V$} ;
 	\path (135:1.1) node[text=white,

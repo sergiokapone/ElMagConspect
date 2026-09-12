@@ -1,0 +1,8 @@
+\begin{tikzpicture}[>=latex, scale=0.85]
+    \fill[red!20, draw=green!50!black, arrowpos={0.2}{0pt}{4pt}] (0,0) -- ++(4, 0) -- ++(-45:2) -- ++(-4, 0) --cycle;
+    \foreach \x in {0,1,...,8}{
+            \draw[arrowpos={0.45}{2pt}{3pt}, red, scale=0.5] (\x, 0) [partial ellipse=10:350:0.2 and 1];
+            \draw[arrowpos={0.95}{2pt}{3pt}, red, scale=0.5] ({\x+3}, -2.8) [partial ellipse=10:350:0.12 and 0.6];
+        }
+    \draw[->, ultra thick, red!50, opacity=0.75] (2.8, -0.7) -- ++(0, -1.5) node[below] {$d\vect{S}$};
+\end{tikzpicture}

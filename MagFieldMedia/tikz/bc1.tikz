@@ -1,0 +1,24 @@
+ \begin{tikzpicture}[
+scale=0.4,
+transform shape,
+>=latex,
+declare function = {
+h = 2;
+r=2;
+r2=0.2;
+},
+]
+
+\fill[red!50, opacity=0.5, draw=black, dashed] (0,1) circle (r and r2);
+\draw (-2,h) -- (-2,0) arc (180:360:r and r2) -- (2,h) ++ (-2,0) circle (r and r2);
+\draw[dashed] (-2,0) arc (180:0:r and r2);
+\fill[red,opacity=0.5]
+ (-4.75,0.7) -- ++(8,0) -- ++(1.5,0.7) -- ++(-8,0) ;
+\draw[->] (0,h) -- ++(0,1) node[above] {$d\vect{S}_1$};
+\draw[->] (0,0) -- ++(0,-1) node[below] {$d\vect{S}_2$};
+
+\draw[->] (-3,1) -- ++(0,1) node[above] {$\vect{n}$};
+
+\node[circle, draw] at (3,0) {$1$};
+\node[circle, draw] at (3,h) {$2$};
+\end{tikzpicture}

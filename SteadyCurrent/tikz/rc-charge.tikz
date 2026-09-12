@@ -1,11 +1,11 @@
 % Адаптовано з SteadyCurrent_slides.tex (слайд "Перехідні процеси...", зарядка конденсатора)
-\begin{circuitikz}[european, scale=0.7, transform shape]
+\begin{circuitikz}[european, scale=1.25]
 	\draw
 	(0,0) to[battery2, l=$\mathcal{E}$] ++(0,2)  to[R, l=$R$] ++(2.5, 0) to[C, l=$C$] ++(0, -2)
 	to[opening switch, l=$S$, mirror] ++(-2.5, 0) -- cycle
 	;
 \end{circuitikz}
-\begin{tikzpicture}[>=latex]
+\begin{tikzpicture}[>=latex, scale=1.25]
 	\draw[->] (0,0) -- ++(2,0) node[below] {$t$};
 	\draw[->] (0,0) -- ++(0,2) node[left] {$q$};
 	\node[left] at (0, 1.6) {$q_{\max}$};

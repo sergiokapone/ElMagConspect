@@ -1,0 +1,5 @@
+% Адаптовано з ElMagInduction.tex (слайд "Задачі на застосування теореми взаємності", Задача 1)
+\begin{tikzpicture}[rotate=90]
+	\draw[red!40, ultra thick] (0, 0) [partial ellipse=0:360:0.6 and 2];
+	\draw[arrowpos={0.5}{2pt}{7pt}, red!40, ultra thick] (0, 0) [partial ellipse=0:360:0.2 and 0.6];
+\end{tikzpicture}

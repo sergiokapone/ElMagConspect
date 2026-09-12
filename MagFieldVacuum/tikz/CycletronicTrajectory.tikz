@@ -1,0 +1,13 @@
+\begin{tikzpicture}[>=latex, every node/.style={font=\scriptsize}, scale=1.4]
+	\foreach \x in {0,...,2} {
+			\draw[->, blue] (\x, 0) -- ++(0, 2) \ifnum\x=1 node[right] {$\Bfield$}\fi;
+			\draw[->, blue] ({\x+0.5}, -0.5) -- ++(0, 2);
+			\draw[arrowpos={0.2}{2pt}{5pt}, red] (1.25, 0.5) coordinate (O) [partial ellipse=360:0:1.2 and 0.2] node[pos=0.7, circle, inner
+					sep=1pt, ball
+					color=red,
+					text=white] (q)
+			{$+$} ;
+		}
+	\draw[->, green!50!black, thick] (q) -- ++(3:1) node[above] {$\vect{v}$};
+	\draw[gray, ->] (q) -- (O) node[anchor=west] {$\vect{F}$};
+\end{tikzpicture}

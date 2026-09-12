@@ -1,4 +1,4 @@
-\begin{tikzpicture}[scale=0.7, transform shape]
+\begin{tikzpicture}[scale=1.25]
 	\node  [gray!50, ground, minimum width=7cm,yshift=-0.17cm] (floor1) at (-1,0) {};
 	\draw (floor1.north west) -- (floor1.north east);
 	\node  [gray!50, ground, minimum width=7cm,yshift=-0.17cm] (floor2) at (1,0) {};

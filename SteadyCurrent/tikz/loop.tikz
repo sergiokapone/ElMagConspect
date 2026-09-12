@@ -1,4 +1,4 @@
-\begin{circuitikz}[scale=0.7, transform shape]
+\begin{circuitikz}[scale=1, transform shape]
     \node[circ] (1) at (0, 0) [] {};
 
     \draw (1) to[battery2, l=$\mathcal{E}_1$, invert] ++(-10:1) to[R, l=$R_1$,european, i>^=$I_1$] ++(-10:3) node[circ] (2) {};

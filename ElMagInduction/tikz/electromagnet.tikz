@@ -1,0 +1,15 @@
+\begin{tikzpicture}[>=latex, scale=0.85, transform shape]
+    \draw[fill=blue!20] (-2, 0)  arc(180:0:1) -- ++(0, -2) -- ++(0.5, 0) -- ++(0, 2) arc(0:180:1.5) -- ++(0, -2) -- ++(0.5, 0) -- cycle;
+    \draw[fill=blue!20] (-2.5, -2.5) rectangle ++(3, -.5);
+    \draw[green!60!black, dash pattern={on 2pt off 1pt}] (-2.25, 0) arc(180:0:1.25) -- ++(0, -2.75) -- ++(-2.5, 0) -- cycle;
+    \draw[<->] (0.6, -2) -- node[right] {$x$}++(0, -0.5);
+    \foreach \a in {-45,-35,...,25} {
+        \draw[red, arrowpos={0.5}{2pt}{3pt}, rotate around={\a:(-1cm, 0)}] (-1, 1.25) [partial ellipse=60:300:1.3mm and 3mm];
+    }
+
+    \draw[arrowpos={0.6}{2pt}{3pt}, red, rotate around={40:(-1cm, 0)}] (-1, 2) node[circle, draw=red, fill=white, inner sep=0.25mm] {} -- ++(0,
+    -0.75) arc(180:300:1.3mm and
+    3mm);
+    \draw[red, rotate around={-50:(-1cm, 0)}] (-1, 2) node[circle, draw=red, fill=white, inner sep=0.25mm] {} -- ++(0, -0.5);
+
+\end{tikzpicture}

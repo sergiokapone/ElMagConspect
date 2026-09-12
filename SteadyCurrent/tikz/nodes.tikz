@@ -1,4 +1,4 @@
-\begin{tikzpicture}[>=latex]
+\begin{tikzpicture}[>=latex, scale=1.5]
     \node[circle, fill=black, inner sep=1pt] (O) at (0,0) {};
     \draw[midarrow] (O) -- node[anchor=north west] {$I_1$} (65:1);
     \draw[midarrowR] (O) -- node[above] {$I_2$} (120:1);

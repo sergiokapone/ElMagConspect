@@ -1,0 +1,23 @@
+% Адаптовано з MagFieldVacuum_slides.tex (слайд "Теорема про циркуляцію магнітного поля у вакуумі. Інтегральна форма")
+\begin{tikzpicture}[>=latex]
+	\draw [arrowpos={0.9}{2pt}{4pt}, in=-45, out=45, looseness=1.25, line width=1pt,
+	gray!50] (-1, -1) to (-1, 1) node[above, text=black] {$I_1 >
+			0$};
+	\draw [arrowpos={0.1}{2pt}{4pt}, out=225, looseness=0.80, line width=1pt, gray!50] (0.2,
+	1) node[above, text=black ] {$I_2 < 0$} to (0.2,
+	-1) ;
+	\draw [arrowpos={0.1}{2pt}{4pt}, line width=1pt, gray!50]  (0.9, 0.1)  circle(0.2 and
+	0.7) node[above right=0.4cm, text=black] {$I_3 <
+			0$};
+	\draw[thick, green!50!black, fill=red!20] (0, 0) circle(1 and 0.3);
+	\draw[thick, arrowpos={0.4}{3pt}{4pt}, green!50!black] (-1, 0) arc(180:360:1 and 0.3)
+	node[pos=0.4, below] {$L$};
+	\draw[->, red, thick] (0,0) -- ++(0, 0.5);
+	\node[text=red] at (0.3, 0) {$S$};
+	\begin{scope}
+		\clip (-1, 0) rectangle ++(2, 0.5);
+		\draw [in=-45, out=45, looseness=1.25, line width=1pt, gray!50] (-1, -1) to (-1, 1);
+		\draw [out=225, looseness=0.80, line width=1pt, gray!50] (0.2, 1)  to (0.2, -1);
+		\draw [line width=1pt, gray!50]  (0.9, 0.1)  circle(0.2 and 0.7);
+	\end{scope}
+\end{tikzpicture}

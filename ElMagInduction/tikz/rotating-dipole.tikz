@@ -1,0 +1,18 @@
+% Адаптовано з ElMagInduction.tex (слайд "Задачі на застосування теореми взаємності", Задача 2)
+\begin{tikzpicture}[scale=1]
+	\tdplotsetmaincoords{0}{0}
+	\begin{scope}[tdplot_main_coords, rotate around x=70, rotate around z=-45]
+		\draw [dashed] (0,0,0) circle (1);
+		\fill [blue] (180:0.2) -- (90:1) -- (0:0.2) -- cycle;
+		\fill [red] (180:0.2) -- (-90:1) -- (0:0.2) -- cycle;
+	\end{scope}
+	\draw [-latex'] (0,-1) -- (0,1) node [above] {$\omega$};
+	\draw [-latex'] (3,0) -- (3.5,0) node [right] {$\vect{n}$};
+	\begin{scope}[shift={(3,0,0)}, tdplot_main_coords, rotate around y=60]
+		\draw [thick, red!40] (0,0,0) circle (0.4);
+		\draw [-latex'] (0,0) -- +(110:0.4) node[above] {$a$};
+	\end{scope}
+	\draw (3,0) -- ([yshift=-1cm]3,0);
+	\draw [dash dot] (0,0) -- (3,0);
+	\draw [latex'-latex']  (0,-0.8) -- node [above] {$l$}(3,-0.8);
+\end{tikzpicture}

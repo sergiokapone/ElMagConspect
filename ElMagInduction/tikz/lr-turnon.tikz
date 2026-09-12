@@ -1,0 +1,14 @@
+% Адаптовано з ElMagInduction.tex (слайд "Перехідні процеси в колі з індуктивністю", встановлення струму)
+\begin{circuitikz}[scale=1.25, transform shape]
+	\draw
+	(0,0) to[L, l=$L$] ++(0,2) to[battery2, l=$\mathcal{E}$] ++(2.5, 0) to[R, l=$R$] ++(0, -2)
+	to[closing switch, l=$S$, mirror] ++(-2.5, 0) -- cycle
+	;
+\end{circuitikz}
+\begin{tikzpicture}[scale=1.25,>=latex]
+	\draw[->] (0,0) -- ++(2,0) node[below] {$t$};
+	\draw[->] (0,0) -- ++(0,2) node[left] {$I$};
+	\node[left] at (0, 1.6) {$\frac{\mathcal{E}}{R}$};
+	\draw[dashed] (0, 1.6) -- ++(2,0);
+	\draw[domain=0:1.8, red, thick] plot (\x, {1.6*(1-exp(-2*\x))});
+\end{tikzpicture}

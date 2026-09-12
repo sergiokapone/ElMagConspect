@@ -1,5 +1,5 @@
 % Адаптовано з ElEnergy_slides.tex (слайд "Енергія електричного поля в конденсаторі")
-\begin{tikzpicture}[>=latex]
+\begin{tikzpicture}[>=latex, scale=1.5]
 	\draw[red, fill=red!50] (0,0) rectangle ++(0.2,2)  node[above left] {$+$};
 	\draw[blue, fill=blue!50] (1,0) rectangle ++(0.2,2) node[above] {$-$};
 	\draw[<-] (0.2, 1) to[bend left] node[above] {$dq$} ++(0.8,0);

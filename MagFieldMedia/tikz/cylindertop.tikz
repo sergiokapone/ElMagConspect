@@ -1,0 +1,10 @@
+\begin{tikzpicture}[>=latex]
+    \draw[arrowpos={0.4}{2pt}{4pt}, thick, blue] (0,0) [partial ellipse=0:360:1.01];
+    \foreach \a in {10, 40,...,340} {
+            \draw[arrowpos={\a/360}{2pt}{3pt}, red] (\a:0.8) [partial ellipse=0:360:0.2];
+        }
+    \foreach \a in {25,85,...,335} {
+            \draw[arrowpos={\a/360}{2pt}{3pt}, red] (\a:0.42) [partial ellipse=0:360:0.2];
+        }
+    \draw[arrowpos={0.5}{2pt}{3pt}, red] (0, 0) [partial ellipse=0:360:0.2];
+\end{tikzpicture}

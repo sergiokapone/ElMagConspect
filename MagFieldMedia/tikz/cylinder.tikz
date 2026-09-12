@@ -1,0 +1,25 @@
+\begin{tikzpicture}[>=latex]
+    \draw[fill=gray!20] (0,0) arc(180:350:1 and 0.2) -- ++(45:2)  arc(350:180:1 and 0.2) -- cycle;
+    \path (45:2) ++(1,0) coordinate (O);
+
+    \begin{scope}[shift={(O)}, yscale=0.2]
+        \draw[thick, blue, arrowpos={0.7}{2pt}{3pt}] (0,0) [partial ellipse=0:360:1];
+        \foreach \a in {10, 40,...,340} {
+                \draw[red, smooth, arrowpos={0.75}{2pt}{3pt}] (\a:0.8) [partial ellipse=0:360:0.2];
+            }
+        \foreach \a in {25,85,...,335} {
+                \draw[red, smooth] (\a:0.42) [partial ellipse=0:360:0.2];
+            }
+        \draw[red, smooth] (0, 0) [partial ellipse=0:360:0.2];
+    \end{scope}
+
+    \foreach \l in {0.2,0.4,...,1.8} {
+            \draw[blue, arrowpos={0.4}{2pt}{3pt}] (45:\l) arc(180:350:1 and 0.2);
+        }
+    \draw[->, ultra thick] (O) -- ++(0,1) coordinate (J) node[left] {$\vect{J}$};
+    \draw (0,0) -- ++(0,2);
+    \draw (0,0) ++(0, 0.5) arc (90:45:0.5) node[pos=0.5, anchor=south] {$\theta$};
+    \draw[->] (O) -- ++(45:{1*cos(45)}) coordinate (Pr) node[right] {$\ell\vect{\tau}$};
+    \draw[dashed] (J) -- (Pr);
+    \draw[<->] (2.2, 0) -- node[right] {$\ell$} ++(45:2);
+\end{tikzpicture}

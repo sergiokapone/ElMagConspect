@@ -1,0 +1,12 @@
+% Адаптовано з MagFieldVacuum_slides.tex (слайд "Магнітний момент колового витка")
+\begin{tikzpicture}[>=latex, baseline]
+	\def\R{1.5}
+	\draw[thick, red, arrowpos={0.7}{4pt}{5pt}] (0,0) [partial ellipse =0:360:\R]
+	node[pos=0.7, above] {$I$};
+	\draw[->] (0,0) -- node[below] {$\vect{r}$} (0:\R) coordinate (P);
+	\draw[->] (P) -- node[right] {$d\vect{\ell}$} ++(0, 0.5) coordinate (E);
+	\fill[red!30, opacity=0.5] (0,0) -- (P) -- (E) -- cycle;
+	\fill[blue] (0, 0) circle (2pt);
+	\draw[blue] (0, 0) circle (4pt);
+	\node[below, circle, inner sep=4pt, blue] at (0, 0) {$\vect{p}_m$};
+\end{tikzpicture}

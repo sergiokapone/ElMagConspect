@@ -1,0 +1,7 @@
+% Адаптовано з MagFieldVacuum_slides.tex (слайд "Магнітні та механічні моменти різних тіл")
+\begin{tikzpicture}[baseline, >=latex]
+	\def\R{0.8}
+	\draw[ball color=red] (0,0) circle (\R);
+	\draw[->, thick, blue] (0, {\R+0.01}) -- ++(0, 0.5) node[above] {$\vect{\omega}$};
+	\draw[->] (0, {\R+0.25}) [partial ellipse=110:{360 + 70}:0.5 and 0.1];
+\end{tikzpicture}

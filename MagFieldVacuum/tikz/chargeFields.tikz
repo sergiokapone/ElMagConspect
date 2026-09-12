@@ -1,0 +1,17 @@
+\begin{tikzpicture}[>=latex, scale=1, transform shape]
+	\def\R{0.2}
+	\draw[ball color=red!60] (0,0) circle (\R);
+	\foreach \a in {20,40,...,340} {
+			\draw[->, red] (0, 0) ++(\a:\R) -- (\a:1.5);
+		}
+	\draw[->, thick] (\R, 0) -- ++(2, 0) node[below] {$\vect{v}$};
+	\draw[arrowpos={0.6}{2pt}{5pt}, blue, thick] (0,0) [partial ellipse=15:345:{0.3*0.5} and {1*0.5}];
+	\draw[arrowpos={0.6}{2pt}{5pt}, blue, thick] (0,0) [partial ellipse=1:359:0.3 and 1];
+	\draw[arrowpos={0.6}{2pt}{5pt}, blue, thick] (0,0) [partial ellipse=1:359:{0.3*1.5} and {1*1.5}];
+
+	\foreach \c in {-1.5, +1.5}{
+	\foreach \a in {0.2, 0.5, 1}{
+	\draw[arrowpos={0.6}{2pt}{5pt}, blue, thick] (\c,0) [partial ellipse=1:359:{0.3*\a} and {1*\a}];
+	}
+	}
+\end{tikzpicture}
