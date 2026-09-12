@@ -1,0 +1,67 @@
+% Адаптовано з FileldInDielectrics_slides.tex (слайд "Типи діелектриків — Електрети").
+% Файл призначений для вставки командою \input всередині середовища figure; містить дві
+% підфігури (subfigure) --- поле вектора D та поле вектора E зарядженого електрета.
+\tikzset{
+	cylinder/.pic={
+			\begin{scope}
+				\node[cylinder,draw=black,thick,aspect=0.5,minimum height=2cm,minimum
+					width=1.5cm,shape
+					border rotate=90,cylinder uses custom fill, cylinder body
+					fill=red!30,cylinder end
+					fill=red!10] (A) {}; \draw[dashed] let \p1 = ($ (A.after bottom) -
+					(A.before bottom) $),
+				\n1 = {0.5*veclen(\x1,\y1)-\pgflinewidth}, \p2 = ($ (A.bottom) - (A.after
+					bottom)!.5!(A.before bottom) $), \n2 = {veclen(\x2,\y2)-\pgflinewidth}
+				in
+				([xshift=-\pgflinewidth] A.before bottom) arc [start angle=0, end
+						angle=180, x
+						radius=\n1, y radius=\n2];
+			\end{scope}
+		}
+}
+%---------------------------------------------------------
+\begin{subfigure}[t]{0.45\linewidth}\centering
+	\begin{tikzpicture}[>=latex, scale=0.75, transform shape]
+		\pic at (0,0) {cylinder};
+		\node[text=red, circle, inner sep=1pt,  font=\scriptsize, above] at (0, 1)
+		{$+$};
+		\node[text=blue, circle, inner sep=1pt, font=\scriptsize, below] at (0, -1)
+		{$-$};
+		\foreach[count=\c from 0] \x in {0.85, 0.75, 0.70} {
+				\draw[midarrow, blue] (-\x,0) ellipse({0.8-0.2*\c} and {2.5-0.5*\c});
+				\draw[midarrowR, blue, rotate around={180:(\x,0)}] (\x,0)
+				ellipse({0.8-0.2*\c}
+				and
+					{2.5-0.5*\c});
+			}
+	\end{tikzpicture}
+	\caption{\centering Поле вектора електричної індукції $\Dfield$}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.45\linewidth}\centering
+	\begin{tikzpicture}[>=latex, scale=0.75, transform shape]
+		\foreach[count=\c from 0] \x in {0.85, 0.75, 0.70} {
+				\draw[midarrow, red] (-\x,0) ellipse({0.8-0.2*\c} and {2.5-0.5*\c});
+				\draw[midarrowR, red, rotate around={180:(\x,0)}] (\x,0)
+				ellipse({0.8-0.2*\c}
+				and
+					{2.5-0.5*\c});
+			}
+		\pic[] at (0,0) {cylinder};
+		\node[text=red, circle, inner sep=1pt,  font=\scriptsize, above] at (0, 1)
+		{$+$};
+		\node[text=blue, circle, inner sep=1pt, font=\scriptsize, below] at (0, -1)
+		{$-$};
+		\begin{scope}
+			\clip (-0.75, -0.875) -- ++(0, 1.86) -- ++(1.5, 0) -- ++(0, -1.86) -- cycle;
+			\foreach[count=\c from 1] \x in {0.85, 0.75, 0.70} {
+					\foreach \m in {-1,1} {
+							\draw[midarrow, red, xscale=\m] (0,0) ellipse({0.8-0.2*\c}
+							and
+								{2.6-0.5*\c});
+						}
+				}
+		\end{scope}
+	\end{tikzpicture}
+	\caption{\centering Поле вектора напруженості електричного поля $\Efield$}
+\end{subfigure}

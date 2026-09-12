@@ -1,0 +1,28 @@
+% Адаптовано з ElEnergy_slides.tex (слайд "З'єднання конденсаторів")
+\begin{circuitikz}[>=latex]
+	\draw (0,0)
+	node[xshift=5pt, above, font=\tiny, text=red] {$+q$}
+	to[C=$C_1$]
+	node[above, font=\tiny, text=blue] {$-q$}
+	++(1,0)
+	node[xshift=5pt, above, font=\tiny, text=red] {$+q$}
+	to[C=$C_2$]
+	node[above, font=\tiny, text=blue] {$-q$}
+	++(1,0)
+	node[xshift=5pt, above, font=\tiny, text=red] {$+q$}
+	to[C=$C_3$]
+	node[above, font=\tiny, text=blue] {$-q$}
+	++(1,0)
+	node[right] {\ldots} ++(0.5,0)
+	node[xshift=5pt, above, font=\tiny, text=red] {$+q$}
+	to[C=$C_n$]
+	node[above, font=\tiny, text=blue] {$-q$}
+	++(1,0) coordinate (C) node[circle, fill, inner sep=1pt] {} ;
+	\draw (0,0) node[circle, fill, inner sep=1pt] {} -- ++(0, -1);
+	\draw (C) -- ++(0, -1);
+	\draw[<->] ([yshift=-0.75cm]0,0)  -- node[below,
+		font=\scriptsize] {$U = U_1+U_2
+			+U_3 + \ldots +
+			U_n$}
+	([yshift=-0.75cm]C);
+\end{circuitikz}

@@ -1,5 +1,5 @@
-\begin{columns}
-	\begin{column}{0.5\linewidth}\centering
+\begin{subfigure}[t]{0.45\linewidth}
+\centering
 		\begin{tikzpicture}[>=latex, scale=0.75, transform shape]
 			\node[circle, draw=blue, ball color=blue!50, inner sep=0.28cm, text=blue] (O) at
 			(0,0)
@@ -23,12 +23,10 @@
 
 			\draw[->, red, ultra thick] (0,0) -- ++(0, 1.5) node[right] {$\vect{p}$};
 		\end{tikzpicture}
-        \begin{block}{}\footnotesize\centering
-            Дипольний момент\\ молекули \ce{H2O} $p = 1.84$ D
-        \end{block}
-	\end{column}
-    \
-	\begin{column}{0.5\linewidth}\centering
+	\end{subfigure}
+    \hfill
+	\begin{subfigure}[t]{0.45\linewidth}
+    \centering
     \begin{tikzpicture}[>=latex, scale=0.75, transform shape]
             \node[circle, draw=blue, ball color=blue!50, inner sep=0.28cm, text=blue] (N) at
 			(0,0) {\tikz\draw[blue, thick] (0,0) -- ++(0.4, 0);};
@@ -43,8 +41,4 @@
         \draw[dashed] (H1) -- (H2) -- (H3) -- (H1);
        	\draw[->, red, ultra thick] (0,0) -- ++(0, -1.2) node[left] {$\vect{p}$};
     \end{tikzpicture}
-        \begin{block}{}\footnotesize\centering
-            Дипольний момент\\ молекули \ce{NH3} $p = 1.46$ D
-        \end{block}
-	\end{column}
-\end{columns}
+\end{subfigure}

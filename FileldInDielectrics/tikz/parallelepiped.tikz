@@ -1,0 +1,19 @@
+% Адаптовано з FileldInDielectrics_slides.tex (слайд "Властивості вектора поляризації", onlyenv<1>)
+% Використовує стиль pic "parallelepiped", визначений у спільному пакеті Electromagnetism.
+\begin{tikzpicture}[>=latex, scale=0.75, transform shape]
+	\path (0, 0) pic{parallelepiped={a=3, phi=70, xz face={fill=white}, xy face={fill=white},
+					yz face={fill=blue!50}}};
+
+	\coordinate (C) at (4, 1.2);
+	\draw[->, thick, brown] (C) -- ++(2.5,0) coordinate (P1) node[right] {$\vect{P}$};
+	\draw[thick, brown] (C) -- ++(-20:{2.5*cos(20)}) coordinate (P2) node[below]
+		{$P_{n}$};
+	\draw[->, thick, green!50!black] (C) -- ++(-20:1.5) node[below] {$\vect{n}$};
+	\draw[->] (0,-0.2) -- node[below] {$\vect{\ell}$} ++(3,0);
+	\draw[dashed] (P1) -- (P2);
+	\foreach \i in {1,1.75,2.5} {
+			\node[text=blue] at (55:\i) {$-$};
+			\path (3, 0) ++(55:\i) node[text=red] {$+$};
+		}
+	\draw (C) ++(0:1.2) arc(0:-20:1.2) node[pos=0.5, right] {$\theta$};
+\end{tikzpicture}

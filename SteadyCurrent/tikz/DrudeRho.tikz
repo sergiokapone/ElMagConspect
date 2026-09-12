@@ -1,0 +1,5 @@
+\begin{tikzpicture}[>=latex]
+	\draw[->] (0,0) -- ++(2, 0) node[below] {$T$};
+	\draw[->] (0,0) -- ++(0, 2) node[left] {$\rho$};
+	\draw[domain=0:2, red, thick, samples=50] plot (\x, {sqrt(\x)});
+\end{tikzpicture}

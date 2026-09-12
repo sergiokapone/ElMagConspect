@@ -1,0 +1,9 @@
+% Адаптовано з FileldInDielectrics_slides.tex (слайд "Діелектрична проникність")
+\begin{tikzpicture}[>=latex]
+	\fill[gray!50] (0, 0) circle (1.5);
+	\node[circle, ball color=red!50, inner sep=1pt, text=white, font=\scriptsize] (Q) at (0,0)
+	{$+$};
+	\foreach \a in {0,30,...,330} {
+			\draw[thick, ->, red] (Q) -- (\a:1.3);
+		}
+\end{tikzpicture}

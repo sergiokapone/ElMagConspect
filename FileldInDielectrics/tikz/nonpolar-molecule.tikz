@@ -1,0 +1,26 @@
+% Адаптовано з FileldInDielectrics_slides.tex (слайд "Виникнення дипольного моменту неполярних молекул")
+\begin{minipage}[t]{0.48\linewidth}\centering
+	\begin{tikzpicture}[>=latex]
+		\node[circle, draw=red, ball color=red!50, inner sep=0.1cm, text=red] (O) at (0,0)
+		{$+$};
+		\draw[ball color=blue!50, opacity=0.5] (O) circle (1);
+		\node[text=blue] at (135:0.6) {$-$};
+	\end{tikzpicture}
+
+	\footnotesize (а) без поля: $p = 0$
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}\centering
+	\begin{tikzpicture}[>=latex]
+		\node[circle, draw=red, ball color=red!50, inner sep=0.1cm, text=red] (O) at (0,0)
+		{$+$};
+		\draw[ball color=blue!50, opacity=0.5] ([xshift=-0.5cm]O) ellipse (1.5 and 0.75);
+		\node[text=blue] at (180:1) {$-$};
+
+		\foreach \y in {-1,-0.5,...,1}
+			{
+				\draw[->, red, opacity=0.3] (-3, \y) -- ++(5, 0);
+			}
+	\end{tikzpicture}
+
+	\footnotesize (б) у зовнішньому полі $\Efield$: $p \neq 0$
+\end{minipage}

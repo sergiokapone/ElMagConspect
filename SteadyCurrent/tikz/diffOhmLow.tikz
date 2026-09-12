@@ -1,0 +1,24 @@
+\begin{tikzpicture}[>=latex,
+		scale=1.25, transform shape,
+		pencildraw/.style={ %
+				decorate,
+				decoration={random steps,segment length=3pt,amplitude=2pt}
+			}]
+	\pgfmathsetmacro{\r}{0.55}
+	\pgfmathsetmacro{\l}{2}
+	\fill[pencildraw, red!20] (-2, -1) rectangle (2,1);
+	\draw[fill=red!10, thin] (-1,0) circle(0.2 and \r);
+	\draw[fill=red!10, thin] (-1, \r) -- ++(\l, 0) coordinate (A) arc[x
+			radius=0.2, y radius=\r, start angle=90, delta  angle=-180] -- ++(-\l,
+	0) arc[x radius=0.2, y radius=\r, start angle=-90, delta  angle=180];
+	\draw[dashed, thin] (A) arc[x radius=0.2, y radius=\r, start angle=90,
+			delta angle=180];
+	\foreach \y in {-0.8, -0.5,..., 0.8}
+		{
+			\draw[->, jfield] (-1.8, \y) -- ++(3.6,0);
+		}
+	\path (-1.5, 0) node[text=white,
+		scale=1.1, font=\bfseries] {$dS$} node[] {$dS$} ;
+	\path (0, -1) node[text=white,
+		scale=1.1, font=\bfseries] {$dl$} node[] {$dl$} ;
+\end{tikzpicture}

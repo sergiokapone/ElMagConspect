@@ -139,6 +139,10 @@
 % ------------- Кольори секцій ------------------------------
 \definecolor{titlebgdark}{RGB}{0,103,102}
 \definecolor{titlebglight}{RGB}{191,233,251}
+% ------------- Кольори рисунків ----------------------------
+\definecolor{efield}{rgb}{1, 0, 0}
+\definecolor{dfield}{rgb}{0, 0, 1}
+\definecolor{jfield}{named}{teal}
 
 %===============================================================================
 %
@@ -250,6 +254,7 @@
 %===============================================================================
 
 \RequirePackage{tikz, pgfplots, tikz-3dplot}
+\RequirePackage{circuitikz}
 %---------------------------------------------------
 %\usetikzlibrary{external}
 %\usepgfplotslibrary{external}
@@ -324,42 +329,75 @@
 	use tangent/.default=1,
 	>=latex
 }
-% --------------------------- Електричні кола ----------------------------------
-\usetikzlibrary{circuits.ee.IEC}
-\tikzset{circuit ee IEC,
-	every info/.style=red,
-	semithick,
-	every info/.style={font=\footnotesize},
-	small circuit symbols,
-	circuit declare symbol = ocontact,
-	circuit declare symbol = multimeter,
-	circuit declare symbol = ampermeter,
-	circuit declare symbol = voltmeter,
-	circuit declare symbol = galvanometer,
-	circuit declare symbol = ac source,
-	set ocontact graphic = {draw, fill = white, generic circle IEC, shape=circle, minimum size=1mm},
-	set multimeter graphic = {draw,generic circle IEC, minimum size=5mm},
-	set ampermeter graphic = {draw,generic circle IEC, minimum size=5mm,info=center:A},%
-	set voltmeter graphic = {draw,generic circle IEC, minimum size=5mm,info=center:V},
-	set galvanometer graphic = {draw,generic circle IEC, minimum size=5mm,info=center:G},
-	set ac source graphic = ac source IEC graphic,
-	ac source IEC graphic/.style=
-		{
-			transform shape,
-			circuit symbol lines,
-			circuit symbol size = width 3 height 3,
-			shape=generic circle IEC,
-			/pgf/generic circle IEC/before background=
-				{
-					\pgfpathmoveto{\pgfpoint{-0.575pt}{0pt}}
-					\pgfpathsine{\pgfpoint{0.3pt}{0.3pt}}
-					\pgfpathcosine{\pgfpoint{0.3pt}{-0.3pt}}
-					\pgfpathsine{\pgfpoint{0.3pt}{-0.3pt}}
-					\pgfpathcosine{\pgfpoint{0.3pt}{0.3pt}}
-					\pgfusepathqstroke
-				}
-		}
+
+\tikzset{pics/parallelepiped/.style={code={
+				\tikzset{parallelepiped/.cd,#1}
+				\begin{scope}[x={(\pgfkeysvalueof{/tikz/parallelepiped/a}*1cm,0cm)},
+						y={({cos(\pgfkeysvalueof{/tikz/parallelepiped/theta})*\pgfkeysvalueof{/tikz/parallelepiped/b}*1cm},
+								{sin(\pgfkeysvalueof{/tikz/parallelepiped/theta})*\pgfkeysvalueof{/tikz/parallelepiped/b}*1cm})},
+						z={({cos(\pgfkeysvalueof{/tikz/parallelepiped/phi})*\pgfkeysvalueof{/tikz/parallelepiped/c}*1cm},
+								{sin(\pgfkeysvalueof{/tikz/parallelepiped/phi})*\pgfkeysvalueof{/tikz/parallelepiped/c}*1cm})}
+						,/tikz/parallelepiped/pstyle,pic actions,
+						declare function={mysign(\x)=ifthenelse(\x<0,-1,1);}]
+					\path[parallelepiped/fall,parallelepiped/fxz] (0,1,0) -- (1,1,0) -- (1,1,1) -- (0,1,1) -- cycle;
+					\path[parallelepiped/fall,parallelepiped/fyz,shift={({0.5-0.5*mysign(cos(\pgfkeysvalueof{/tikz/parallelepiped/phi}))},0,0)}]
+
+					(0,0,0) -- (0,0,1) -- (0,1,1) -- (0,1,0) -- cycle;
+					\path[parallelepiped/fall,parallelepiped/fxy,shift={(0,0,{0.5-0.5*mysign(sin(\pgfkeysvalueof{/tikz/parallelepiped/theta}))},0,0)}]
+
+					(0,0,0) -- (1,0,0) -- (1,1,0) -- (0,1,0) -- cycle;
+					\path[parallelepiped/fall,parallelepiped/fyz,shift={({0.5+0.5*mysign(cos(\pgfkeysvalueof{/tikz/parallelepiped/phi}))},0,0)}]
+
+					(0,0,0) -- (0,0,1) -- (0,1,1) -- (0,1,0) -- cycle;
+					\path[parallelepiped/fall,parallelepiped/fxy,shift={(0,0,{0.5+0.5*mysign(sin(\pgfkeysvalueof{/tikz/parallelepiped/theta}))},0,0)}]
+
+					(0,0,0) -- (1,0,0) -- (1,1,0) -- (0,1,0) -- cycle;
+					\path[parallelepiped/fall,parallelepiped/fxz] (0,0,0) -- (1,0,0) -- (1,0,1) -- (0,0,1) -- cycle;
+				\end{scope}}},parallelepiped/.cd,a/.initial=4,b/.initial=1.5,c/.initial=2,
+theta/.initial=30,phi/.initial=70,pstyle/.style={draw,thick,fill opacity=0.6,
+		line join=round},fall/.style={draw},all
+faces/.code={\tikzset{parallelepiped/fall/.style={#1}}},
+fxy/.style={fill=red},xy face/.code={\tikzset{parallelepiped/fxy/.style={#1}}},
+fxz/.style={fill=orange},xz face/.code={\tikzset{parallelepiped/fxz/.style={#1}}},
+fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 }
+
+
+% --------------------------- Електричні кола ----------------------------------
+%\tikzset{circuit ee IEC,
+%	every info/.style=red,
+%	semithick,
+%	every info/.style={font=\footnotesize},
+%	small circuit symbols,
+%	circuit declare symbol = ocontact,
+%	circuit declare symbol = multimeter,
+%	circuit declare symbol = ampermeter,
+%	circuit declare symbol = voltmeter,
+%	circuit declare symbol = galvanometer,
+%	circuit declare symbol = ac source,
+%	set ocontact graphic = {draw, fill = white, generic circle IEC, shape=circle, minimum size=1mm},
+%	set multimeter graphic = {draw,generic circle IEC, minimum size=5mm},
+%	set ampermeter graphic = {draw,generic circle IEC, minimum size=5mm,info=center:A},%
+%	set voltmeter graphic = {draw,generic circle IEC, minimum size=5mm,info=center:V},
+%	set galvanometer graphic = {draw,generic circle IEC, minimum size=5mm,info=center:G},
+%	set ac source graphic = ac source IEC graphic,
+%	ac source IEC graphic/.style=
+%		{
+%			transform shape,
+%			circuit symbol lines,
+%			circuit symbol size = width 3 height 3,
+%			shape=generic circle IEC,
+%			/pgf/generic circle IEC/before background=
+%				{
+%					\pgfpathmoveto{\pgfpoint{-0.575pt}{0pt}}
+%					\pgfpathsine{\pgfpoint{0.3pt}{0.3pt}}
+%					\pgfpathcosine{\pgfpoint{0.3pt}{-0.3pt}}
+%					\pgfpathsine{\pgfpoint{0.3pt}{-0.3pt}}
+%					\pgfpathcosine{\pgfpoint{0.3pt}{0.3pt}}
+%					\pgfusepathqstroke
+%				}
+%		}
+%}
 
 % ---------------------------- Паттерни ----------------------------------------
 \usetikzlibrary{patterns}

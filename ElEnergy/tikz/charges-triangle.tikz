@@ -1,0 +1,15 @@
+% Адаптовано з ElEnergy_slides.tex (слайд "Взаємна енергія системи зарядів")
+\begin{tikzpicture}[]
+	\node[circle, ball color=red!50, inner sep=2 pt] (q1) at (0, 0) {}; \node[above] at
+	(q1)
+	{$q_1$};
+	\node[circle, ball color=red!50, inner sep=2 pt] (q2) at (2, 0) {}; \node[above] at
+	(q2)
+	{$q_2$};
+	\node[circle, ball color=red!50, inner sep=2 pt] (q3) at (1, -1) {}; \node[below]
+	at (q3)
+	{$q_3$};
+	\draw (q1) -- node[above, font=\scriptsize] {$r_{12}$} (q2);
+	\draw (q1) -- node[left, font=\scriptsize] {$r_{13}$} (q3);
+	\draw (q2) -- node[right, font=\scriptsize] {$r_{23}$} (q3);
+\end{tikzpicture}

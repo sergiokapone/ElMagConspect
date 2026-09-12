@@ -1,0 +1,9 @@
+\begin{tikzpicture}[>=latex]
+	\draw[gray!50, line width=0.5cm] (-1, +1) coordinate (+) to [bend left] (+2, -1) coordinate (-);
+	\node[circle, ball color = red, inner sep=0.2cm,  text=white, font=\bfseries\large]  (P) at (+)   {$+$};
+	\node[circle, ball color = blue, inner sep=0.2cm, text=white, font=\bfseries\large]  (M) at (-)   {$-$};
+	\draw[->, red] (P) to [bend left=23pt] node[circle, ball color=red, inner sep=1pt, text=white, font=\tiny] {$+$} (M);
+	\draw[->, blue] (M) to [bend left] node[circle, ball color=red, inner sep=1pt, text=white, font=\tiny, opacity=0.75] {$+$}
+	(P);
+	\draw[->, red] (P) to [bend right=23pt] (M);
+\end{tikzpicture}
