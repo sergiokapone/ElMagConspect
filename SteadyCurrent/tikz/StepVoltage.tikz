@@ -1,0 +1,50 @@
+\begin{tikzpicture}[scale=0.7, transform shape]
+	\node  [gray!50, ground, minimum width=7cm,yshift=-0.17cm] (floor1) at (-1,0) {};
+	\draw (floor1.north west) -- (floor1.north east);
+	\node  [gray!50, ground, minimum width=7cm,yshift=-0.17cm] (floor2) at (1,0) {};
+	\draw (floor2.north west) -- (floor2.north east);
+	\draw [ball color=gray!20] (180:1) arc (180:360:1) -- cycle;
+	\draw [-latex] (0,0) -- node [right] {$\frac{D}{2}$}(240:1);
+	% ----------------- Рисування ЛЕП -----------------
+	\draw [gray!50, thick] (-0.5,0) -- (0,  4) foreach \x in  {0,...,10}  {coordinate[pos=0.1*\x]      ({A\x})}
+	-- (0.5,0) foreach \x in  {0,...,10}  {coordinate[pos=1 - 0.1*\x]  ({B\x})};
+	\draw[gray!50] (B0) foreach \x in {1,...,10} {to (\ifodd\x A\x\else B\x\fi)}
+	(A0) foreach \x in {1,...,10} {to (\ifodd\x B\x\else A\x\fi)};
+	% ----------------- Рисування графіка -----------------
+	\draw[-latex] (0,0) -- (0,5) node[right] {$\phi$};
+	\draw[-latex] (-4,0) -- (4,0) node[below] {$r$};
+	\draw [blue] (180:2) arc (180:360:2);
+	\draw [blue] (180:2.4) arc (180:360:2.4);
+	\draw[ultra thick, blue] (0,{3.5*exp(-0.6*1)+0.5}) -- +(1,0);
+	\draw[ultra thick, domain=1:4,smooth,variable=\x,blue, name path = curve] plot ({\x},{3.5*exp(-0.6*\x)+0.5});
+
+	\draw[ultra thick, gray!50] (0,{3.5*exp(-0.6*1)+0.5}) -- +(-1,0);
+	\draw[ultra thick, domain=-4:-1,smooth,variable=\x,gray!50] plot ({\x},{3.5*exp(0.6*\x)+0.5});
+
+	\path[name path global= line] (2.4,0) -- ++(0,4);
+	\draw[dashed, name intersections = {of = curve and line, by = A}] (2.4,0) -- (A);
+	\draw[dashed] (A) -- (A-|0,0) node[below left=-5pt] {$\phi_2$};
+
+	\path[name path global= line] (2,0) -- ++(0,4);и
+	\draw[dashed, name intersections = {of = curve and line, by = B}] (2,0) -- (B);
+	\draw[dashed] (B) -- (B-|0,0) node[above left=-5pt] {$\phi_1$};
+
+	\draw (B-|0,0) -- +(-2,0) coordinate (P1);
+	\draw (A-|0,0) -- +(-2,0) coordinate (P2);
+	\draw[latex-] ([xshift=0.2cm]P1) -- ([shift={(0.2,0.5)}]P1) node[above] {$U_\text{крокова} = \phi_1 - \phi_2$};
+	\draw[latex-] ([xshift=0.2cm]P2) -- ([shift={(0.2,-0.5)}]P2) ;
+
+
+	\draw (2,0) -- +(0,-2);
+	\draw (2.4,0) -- +(0,-2);
+	\draw[-latex] (1,-1.9) -- (2, -1.9);
+	\draw[latex-]  (2.4, -1.9) -- (3.4, -1.9);
+	\path (2,-1.9) -- node[below] {$\ell$} (2.4, -1.9);
+	% ----------------- Рисування людини -----------------
+	\coordinate (M) at (2.2,0.25);
+	\draw[red, thick] (2,0) -- (M) (2.4,0) -- (M);
+	\draw[red, thick] (M) -- ([yshift=0.3cm]M) coordinate (HEAD);
+	\draw[red, thick] ([yshift=0.1cm]HEAD) circle (0.1);
+	\draw[red, thick] (HEAD) -- +(-45:0.3);
+	\draw[red, thick] (HEAD) -- +(-135:0.3);
+\end{tikzpicture}

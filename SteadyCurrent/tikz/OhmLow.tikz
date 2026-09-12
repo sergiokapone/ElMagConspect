@@ -1,0 +1,26 @@
+\begin{circuitikz}[european]
+	\tikzset{pcharge/.pic=
+			{
+				\node[circle, ball color=red, inner sep=0.1pt, text=white, font=\bfseries\tiny] (+) at (0,0) {$+$} ;
+				\draw[-latex, teal] (+) -- ++(0.45,0);
+
+			}
+	}
+	\draw (0,0) node[ocirc] {} node[above] {$\phi_1$}
+	to[battery2, l=$\mathcal{E}$, invert] (2,0)
+	to[R, l=$R$, european] (4,0) node[ocirc] {} node[above] {$\phi_1$} ;
+	\draw (0,0) node[anchor=north] {$1$};
+	\draw (4,0) node[anchor=north] {$2$};
+	\begin{scope}[yshift=-2cm, red, thick]
+		\draw (0,0) node[ocirc] {} node[above, text=black] {$1$} --
+		pic[yshift=3pt, opacity=0.6] {pcharge}
+		(0.9,0) --
+		pic[xshift=-3pt, opacity=0.6, rotate=80] {pcharge}
+		(1.1, 1) --
+		pic[yshift=3pt, opacity=0.6] {pcharge}
+		(2.4, 1) --
+		pic[xshift=7pt, opacity=0.6, rotate=-26] {pcharge}
+		(3.5, 0.5) -- (4,0.5) node[ocirc] {} node[above,
+				text=black] {$2$};
+	\end{scope}
+\end{circuitikz}

@@ -1,0 +1,8 @@
+% Адаптовано з ElEnergy_slides.tex (слайд "Взаємна ємність двох куль")
+\begin{tikzpicture}[]
+	\coordinate (+q)  at (0,0);
+	\coordinate (-q)  at (3,0);
+	\draw[ball color = red!80] (+q) circle (0.5) node[below, text=white] {$+q$};
+	\draw[ball color = red!80] (-q) circle (0.4) node[below, text=white] {$-q$};
+	\draw (+q) -- node[below] {$b$} (-q);
+\end{tikzpicture}

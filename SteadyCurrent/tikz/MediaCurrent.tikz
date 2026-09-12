@@ -1,0 +1,13 @@
+\begin{circuitikz}[>=latex,
+		scale=0.75, transform shape,
+		pencildraw/.style={ %
+				decorate,
+				decoration={random steps,segment length=3pt,amplitude=2pt}
+			}]
+	\pgfmathsetseed{12354}
+	\fill[pencildraw, red!20] (-3, -1.7) rectangle (3,-0.3);
+	\node at (0, -1) {$\lambda$, $\epsilon$};
+	\node[circle, ball color = red!50, minimum size=1cm, text=white, font=\bfseries\huge] (+) at (-2, -1) {$+$};
+	\node[circle, ball color = blue!50, minimum size=1cm, text=white, font=\bfseries\huge] (-) at (2, -1) {$-$};
+	\draw (+) to ++(0, 1.2) to[battery2] ++(4,0) to  (-);
+\end{circuitikz}

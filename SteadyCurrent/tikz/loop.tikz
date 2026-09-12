@@ -1,0 +1,13 @@
+\begin{circuitikz}[scale=0.7, transform shape]
+    \node[circ] (1) at (0, 0) [] {};
+
+    \draw (1) to[battery2, l=$\mathcal{E}_1$, invert] ++(-10:1) to[R, l=$R_1$,european, i>^=$I_1$] ++(-10:3) node[circ] (2) {};
+    \draw (2) to[battery2, l=$\mathcal{E}_2$] ++(-130:1) to[R, l=$R_2$,european, i<^=$I_2$] ++(-130:3) node[circ] (3) {};
+    \draw (3) to[battery2, l=$\mathcal{E}_3$] ++(110:1) to[R, l=$R_3$,european, i>^=$I_3$] (1) {};
+
+    \draw (1) -- ++(160:0.5);
+    \draw (2) -- ++(10:0.5);
+    \draw (3) -- ++(-100:0.5);
+
+    \draw[-latex, red] (1.7,-1.5) [partial ellipse=270:-50:0.5cm];
+\end{circuitikz}

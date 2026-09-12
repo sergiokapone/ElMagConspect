@@ -1,0 +1,36 @@
+\tikzset{pics/plate/.style n args={6}{
+    % #1 thickness
+    % #2 length
+    % #3 angle
+    % #4 width
+    % #5 color
+    code = {
+        \draw[line join = round, #6, fill=#5] (0,-#1) coordinate (A) --
+                                  ++(#2,0) coordinate (B) --
+                                  ++(#3:#4) coordinate (C) --
+                                  ++(-#2,0) coordinate (D) -- (A);
+        \draw[line join = round, #6, fill=#5] (A) -- ++(0,-#1) coordinate (A1) --
+                                  ++(#2,0) coordinate (B1) --
+                                  (B) -- cycle;
+        \draw[line join = round, #6, fill=#5] (B1) -- ++(#3:#4) coordinate (C1) --
+                                  (C) -- (B) -- cycle;
+    }
+}}
+
+\begin{tikzpicture}[>=latex, scale=1.5, transform shape]
+
+\draw  (0,-1)    pic {plate={0.2}{3}{20}{1}{blue!10}{gray}};
+\draw  (1.2,0.29)  pic {plate={0.73}{3}{20}{1}{gray!50}{gray}};
+\draw  (0,0)     pic {plate={0.2}{3}{20}{1}{red!20}{gray}};
+
+\draw[gray, <->] (1,0.3) -- node[above] {$L$} ++(3, 0);
+\draw[gray, <->] (-0, -0.05) -- node[above] {$h$} ++(20:1);
+\draw[gray, <->] (-0.1, -0.4) -- node[left] {$d$} ++(0, -0.8);
+\draw[gray,  <-]  (0,-1.7) node[left] {$x$} -- ++(3,0) ;
+
+\draw [red, decorate,decoration={brace,amplitude=5pt,raise=0ex, mirror}]
+  (1.23,-1.2) -- ++(1.75,0) node[midway, yshift=-10pt]{$x$};
+
+\draw[->, line width=2pt, red] (1.2,-0.75) -- ++(-0.75,0) node[left] {$F$};
+
+\end{tikzpicture}

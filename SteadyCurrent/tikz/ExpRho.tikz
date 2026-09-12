@@ -1,0 +1,8 @@
+\begin{tikzpicture}[>=latex]
+	\draw[->] (0,0) -- ++(2, 0) node[below] {$T$};
+	\draw[->] (0,0) -- ++(0, 2) node[left] {$\rho$};
+	\draw[domain=0:0.5, red, thick] plot (\x, {0*\x});
+	\draw[domain=0.5:2, red, thick] plot (\x, {\x});
+	\draw[red, thick] (0.5, 0) node[below, text=black] {$T_c$} --++ (0,0.5);
+	\draw[red, thick, dotted] (0, 0)  --++ (0.5,0.5);
+\end{tikzpicture}

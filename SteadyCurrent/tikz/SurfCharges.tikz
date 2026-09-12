@@ -1,0 +1,21 @@
+\begin{tikzpicture}[>=latex,
+		scale=1.25, transform shape]
+	\pgfmathsetmacro{\r}{0.55}
+	\pgfmathsetmacro{\l}{2}
+	\draw[fill=red!10, thin] (-1,0) circle(0.2 and \r);
+	\draw[fill=red!10, thin] (-1, \r) -- ++(\l, 0) coordinate (A) arc[x
+			radius=0.2, y radius=\r, start angle=90, delta  angle=-180] -- ++(-\l,
+	0) arc[x radius=0.2, y radius=\r, start angle=-90, delta  angle=180];
+	\draw[dashed, thin] (A) arc[x radius=0.2, y radius=\r, start angle=90,
+			delta angle=180];
+	\draw[->, red, thick] (-0.5,0.35) -- ++(1,0) node[below] {$E_{\tau}$};
+	\draw[->, red, thick] (-0.5,0.65) -- ++(1,0) coordinate (Et)  node[above right]
+		{$E_{\tau}$} ;
+	\draw[->, red, thick] (-0.5,0.65) -- ++(0,1.5) coordinate (En) node[left] {$E_n$};
+	\draw[->, red, thick] (-0.5,0.65) -- ++({atan(1.5)}:{1/(cos(atan(1.5)))})
+	coordinate (E) node[above] {$\vect{E}$};
+	\draw[dashed] (En) -- (E) -- (Et);
+	\foreach \x in {-1, -0.75,..., 1} {
+			\node[inner sep=0, text=red, font=\scriptsize] at ({0.9*\x}, {\r-0.05}) {$+$};
+		}
+\end{tikzpicture}

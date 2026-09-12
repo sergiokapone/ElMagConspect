@@ -1,0 +1,9 @@
+\begin{tikzpicture}[>=latex, scale=2]
+	\draw[->] (0,0) -- ++(3, 0) node[below] {$t$};
+	\draw[->] (0,0) -- ++(0, 1) node[left] {$v$};
+	\foreach \i in {0,...,3}{
+			\draw[red, shift={({\i*cos(45)}, 0)}] (0,0) -- (45:1) -- ++(0, {-sin(45)});
+		}
+	\draw[teal] (0,{0.5*sin(45)}) node[left, text=black] {$\overline{v}$} -- ++(3,
+	0);
+\end{tikzpicture}

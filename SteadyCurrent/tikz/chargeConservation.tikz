@@ -1,0 +1,29 @@
+\begin{tikzpicture}[>=latex,
+		scale=1.25, transform shape,
+		pencildraw/.style={ %
+				decorate,
+				decoration={random steps,segment length=3pt,amplitude=2pt}
+			}]
+
+	\pgfmathsetseed{10}
+	\fill[pencildraw, red!20] (-2, -2) rectangle (2,2);
+	\draw[fill=red!30, name path=metall, smooth, densely dashed, draw=gray!50] plot
+		[smooth
+			cycle,
+			samples=8,domain={1:10}]
+	(\x*360/10+5*rnd:0.5cm+1cm*rnd);
+		\foreach \x in {1,...,10} {
+				\draw[->, line width=1pt, jfield] (0,0)
+				++(\x*360/10+5*rnd:0.5cm+1cm*rnd) --
+				++(\x*360/10+5*rnd:0.7cm+1cm*rnd);
+			}
+
+		\foreach \y in {-3,...,3}{
+				\draw[jfield, midarrow] plot[domain=0.5:3] ({\x-2},
+				0.2*\y+0.05*\y*\x^2);
+			}
+	\path (0, 0) node[text=white,
+		scale=1.1, font=\bfseries] {$V$} node[] {$V$} ;
+	\path (135:1.1) node[text=white,
+		scale=1.1, font=\bfseries] {$S$} node[] {$S$} ;
+\end{tikzpicture}
