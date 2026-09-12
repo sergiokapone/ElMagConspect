@@ -1,0 +1,29 @@
+\begin{tikzpicture}[>=latex]
+	\draw[gray!60, line width=0.21cm] (0,0)  [partial ellipse=90:0:2];
+	\fill[gray!50, draw = gray!70] (0, 2) circle (0.05 and 0.1);
+	\fill[gray!50, rotate=-90, draw = gray!70] (0, 2) circle (0.05 and 0.1);
+
+
+	\foreach \n in {1,...,3} {
+	\draw[rotate = -40, blue!40] (0, 2) [partial ellipse={10-2*\n}:{350+2*\n}:{0.2*\n} and \n];
+	}
+
+	\node[circle, fill, inner sep=0.5pt] (P) at (3.04,3) {};
+	\node[below] at (P) {$P$};
+
+	\draw[red!40, line width=0.21cm] (0,0)  [partial ellipse=55:45:2];
+	\fill[red!40, draw = red!60, rotate=-45] (0, 2) circle (0.05 and 0.1);
+	\fill[red!40, draw = red!60, rotate=-35] (0, 2) circle (0.05 and 0.1);
+	\draw[-{Latex[scale=0.5]}] (55:2)  node[below=1pt] {$\vect{j}dV'$} -- ++({55-90}:0.2);
+	\draw[-{Latex[scale=0.5]}] (50:2.1)  -- node[anchor=south, inner sep=1pt, sloped] {$\vect{\mathcal{r}}$} (P);
+	\draw[->, blue, thick] (P) -- ++(63:0.75) node[anchor=225, text=black] {$d\Bfield$};
+
+	%                \begin{scope}[opacity=0.5]
+	%                    \coordinate (O) at (1.0, -0.5);
+	%                    \draw[->, gray] (O) -- ++(1, 0);
+	%    				\draw[->, gray] (O) -- ++(0, 1) ;
+	%    				\draw[->, gray] (O) -- ++(225:0.75);
+	%    				\draw[->, gray] (O) -- node[anchor=east, inner sep=3pt] {$\vect{r}'$} (50:1.9);
+	%    				\draw[->, gray] (O) -- node[anchor=north, inner sep=3pt] {$\vect{r}$} (P);
+	%                \end{scope}
+\end{tikzpicture}

@@ -53,7 +53,7 @@
 %===============================================================================
 %\setcounter{chapter}{-1}
 %\input{Additions/MaxwellEquation}
-\newcommand{\Chapters}{
+\newcommand{\ChaptersOne}{
 	Charges,
 	SteadyEfield,
     ChargeSystem,
@@ -61,14 +61,41 @@
 	FileldInDielectrics,
     ElEnergy,
     SteadyCurrent,
-	%    Magnetostatics,
+	MagFieldVacuum,
 	%    Electrodynamics,
 	%    ParticleMotion,
 	%	Relativity,
 	%    AlternatingCurrent,
 }
+
 %===============================================================================
-\multiinclude{\Chapters}[]
+\part{Постійне електричне поле}
+\multiinclude{
+	Charges,
+	SteadyEfield,
+    ChargeSystem,
+	FileldInMetall,
+	FileldInDielectrics,
+    MicroscopicDielectricTheory,
+    Dielectrics,
+    ElEnergy,
+}[]
+%===============================================================================
+\part{Постійний електричний струм}
+\multiinclude{
+    SteadyCurrent
+}[]
+%===============================================================================
+\part{Постійне магнітне поле}
+\multiinclude{
+	MagFieldVacuum,
+    MagFieldMedia,
+}[]
+%===============================================================================
+\part{Електродинаміка}
+\multiinclude{
+    ElMagInduction,
+}[]
 %===============================================================================
 %
 %									       Вставка відповідей

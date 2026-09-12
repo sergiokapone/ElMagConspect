@@ -1,0 +1,16 @@
+% Адаптовано з MagFieldVacuum_slides.tex (слайд "Приклади застосування закону Біо-Савара-Лапласа")
+\begin{tikzpicture}[scale=1, transform shape]
+	\draw[arrowpos={0.2}{0pt}{5pt}, line width=1pt, gray] (0,0) -- +(0,4) coordinate (B)
+	node[contact] {};
+	\draw[densely dotted, line width=1pt, gray] (B) -- +(0,1) (0,0) -- +(0,-1);
+	\draw[blue!40, arrowpos={0.5}{0pt}{5pt}] (0, 1.75) [partial ellipse=110:{360+70}:{1.5} and
+	0.2];
+	\draw[-latex] (0, 1.75) -- node [below]  {$\vect{r}$} ++(1.5, 0) coordinate (P);
+	\draw (0, 0) -- (P);
+	\draw (0, 0) ++(0, 0.2) arc (90:{90-atan(1.5/1.75)}:0.2) node[pos=1, anchor=west]
+	{$\alpha_1$};
+
+	\draw (B) -- (P);
+	\draw (B) ++(0, 0.5) arc (90:{-90+atan(1.5/2.25)}:0.5) node[pos=0.5, anchor=west]
+	{$\alpha_2$};
+\end{tikzpicture}

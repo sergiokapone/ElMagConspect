@@ -17,7 +17,10 @@
     }
 }}
 
-\begin{tikzpicture}[>=latex, scale=1.5, transform shape]
+\begin{tikzpicture}[>=latex,
+scale=1.5,
+transform shape
+]
 
 \draw  (0,-1)    pic {plate={0.2}{3}{20}{1}{blue!10}{gray}};
 \draw  (1.2,0.29)  pic {plate={0.73}{3}{20}{1}{gray!50}{gray}};

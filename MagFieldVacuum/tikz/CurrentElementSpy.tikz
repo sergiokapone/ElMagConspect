@@ -1,0 +1,20 @@
+\begin{tikzpicture}[>=latex,
+		spy using outlines={circle, magnification=3, size=3.2cm, connect spies}
+	]
+	\draw[gray!60, line width=0.21cm] (0,0)  [partial ellipse=90:0:2];
+	\fill[gray!50, draw = gray!70] (0, 2) circle (0.05 and 0.1);
+	\fill[gray!50, rotate=-90, draw = gray!70] (0, 2) circle (0.05 and 0.1);
+
+	\draw[red!40, line width=0.21cm] (0,0) [partial ellipse=55:45:2];
+	\draw[{Latex[scale=0.5]}-{Latex[scale=0.5]}] (55:2.2)  arc(55:45:2.1) node[above=-1pt, sloped, pos=0.7, font=\tiny] {$d\ell$};
+	\fill[red!40, draw = red!60, rotate=-45] (0, 2) coordinate (S1) circle (0.05 and 0.1);
+	\fill[red!40, draw = red!60, rotate=-35] (0, 2)  circle (0.05 and 0.1);
+
+	\node[font=\tiny, right, inner sep=0] (S) at (42:2.2) {$S$};
+
+	\draw[{Latex[scale=0.3]}-, ultra thin] (S1) to[out=0] (S.west);
+
+	\draw[-{Latex[scale=0.5]}, teal] (55:2)  node[below=1pt, text=teal, font=\tiny] {$\vect{j}$} -- ++({55-90}:0.2);
+	\spy [gray] on (50:2.1)
+	in node [] at (1.5,4.5);
+\end{tikzpicture}

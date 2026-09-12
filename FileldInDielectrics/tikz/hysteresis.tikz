@@ -1,5 +1,5 @@
 % Адаптовано з FileldInDielectrics_slides.tex (слайд "Гістерезис в сегнетоелектриках")
-\begin{tikzpicture}[>=latex, scale=1.5, transform shape,
+\begin{tikzpicture}[>=latex, scale=1.5,
 		point/.style={circle, draw, inner sep=0.7pt, fill=white}
 	]
 

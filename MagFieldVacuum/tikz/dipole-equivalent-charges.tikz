@@ -1,0 +1,10 @@
+% Адаптовано з MagFieldVacuum_slides.tex (слайд "Магнітний диполь")
+\begin{tikzpicture}[>=latex]
+	\def\t{0.2}
+	\def\h{1.2}
+	\draw[->, blue, thick] (0, {-(\h+0.3)}) -- (0, {\h+0.3}) node[above] {$\vect{p}_m$};
+	\fill[blue!50] (0, -\h) --  (-\t, 0) -- (\t, 0) -- cycle;
+	\fill[red!50] (-\t, 0) -- (0, \h) -- (\t, 0) -- cycle;
+	\node[text=blue] at (0, {-0.55*\h}) {$S$};
+	\node[text=red]  at (0, {0.55*\h})  {$N$};
+\end{tikzpicture}

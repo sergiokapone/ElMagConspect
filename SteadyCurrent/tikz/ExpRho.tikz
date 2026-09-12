@@ -1,4 +1,4 @@
-\begin{tikzpicture}[>=latex]
+\begin{tikzpicture}[>=latex, scale=1.5]
 	\draw[->] (0,0) -- ++(2, 0) node[below] {$T$};
 	\draw[->] (0,0) -- ++(0, 2) node[left] {$\rho$};
 	\draw[domain=0:0.5, red, thick] plot (\x, {0*\x});

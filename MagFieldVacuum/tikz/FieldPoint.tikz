@@ -1,0 +1,21 @@
+\begin{tikzpicture}[>=latex]
+	\draw[gray!60, line width=0.21cm] (0,0)  [partial ellipse=90:0:2];
+	\fill[gray!50, draw = gray!70] (0, 2) circle (0.05 and 0.1);
+	\fill[gray!50, rotate=-90, draw = gray!70] (0, 2) circle (0.05 and 0.1);
+
+	\node[circle, fill, inner sep=0.5pt] (P) at (2.5,3) {};
+	\node[above] at (P) {$P$};
+
+	\draw[red!40, line width=0.21cm] (0,0)  [partial ellipse=80:70:2];
+	\fill[red!40, draw = red!60, rotate=-10] (0, 2) circle (0.05 and 0.1);
+	\fill[red!40, draw = red!60, rotate=-20] (0, 2) circle (0.05 and 0.1);
+	\draw[-{Latex[scale=0.5]}] (80:2)  node[above=1pt] {$\vect{j}$} -- ++({80-90}:0.2);
+	\draw[->] (75:2.1)  -- (P) node[anchor=south east, inner sep=1pt, sloped, pos=0.8] {$\vect{r} - \vect{r}'$} ;
+	%                \draw[->, blue, thick] (P) -- ++(63:0.75) node[anchor=225, text=black] {$d\Bfield$};
+
+	\draw[->] (0, 0) -- ++(1, 0) node[below] {$y$};
+	\draw[->] (0, 0) -- ++(0, 1) node[left] {$z$};
+	\draw[->] (0, 0) -- ++(225:0.75) node[left] {$x$};
+	\draw[->] (0,0) -- node[anchor=west, inner sep=3pt] {$\vect{r}'$} (75:1.8);
+	\draw[->] (0,0) -- node[anchor=north, inner sep=3pt] {$\vect{r}$} (P);
+\end{tikzpicture}

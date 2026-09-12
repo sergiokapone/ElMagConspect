@@ -1,0 +1,20 @@
+\begin{tikzpicture}[scale=0.9, >=latex, midarrow/.style={%
+				postaction={ decorate,
+						decoration={ markings, mark=at position .7 with {\arrow{latex}}}}}]
+	\begin{scope}%[rotate around={45:(0,1)}]
+		\draw[arrowpos={0.5}{2pt}{7pt}, red!40, ultra thick] (1.1,0) [partial ellipse=0:360:0.3 and 1] node[pos=0.5, left] {$I_1$}
+		node[pos=0.25,
+			above, text=black] {$1$};
+	\foreach \y in {-3,...,2}{
+			\draw[blue, midarrow] plot[domain=1:4] (\x, 0.2*\y+0.05*\y*\x^2);
+		}
+	\end{scope}
+	\begin{scope}[shift={(1.5, -0.5)},rotate around={-195:(1.5, -0.5)}]
+		\draw[arrowpos={0.5}{2pt}{7pt}, red!40, ultra thick] (1.1, 0) [partial ellipse=0:360:0.3 and 1] node[pos=0.5, right] {$I_2$}
+		node[pos=0.75,
+			above, text=black] {$2$};
+        \foreach \y in {-3,...,2}{
+			\draw[blue!40, midarrow] plot[domain=1:4] (\x, 0.2*\y+0.05*\y*\x^2);
+		}
+	\end{scope}
+\end{tikzpicture}

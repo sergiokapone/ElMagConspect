@@ -1,0 +1,13 @@
+% Адаптовано з MagFieldVacuum_slides.tex (слайд "Потенціальна енергія диполя в магнітному полі")
+\begin{tikzpicture}[>=latex]
+	\foreach \x in {-2,...,2} {
+			\draw[->, blue] ({0.6*\x}, -1.5) -- ++(0, 3);
+		}
+	\begin{scope}[rotate around={45:(0,0)}]
+		\draw[->, thick, gray] (0, 1) -- ++(-45:-0.7);
+		\draw[->, thick, gray] (0, -1) -- ++(-45:0.7);
+		\draw[arrowpos={0.5}{2pt}{7pt}, red, ultra thick] (0,0) [partial ellipse=0:360:0.3
+		and 1];
+		\draw[->, brown, thick] (0, 0) -- ++(1, 0) node[anchor=south west] {$\vect{p}_m$};
+	\end{scope}
+\end{tikzpicture}

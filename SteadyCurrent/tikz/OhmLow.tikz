@@ -1,4 +1,4 @@
-\begin{circuitikz}[european]
+\begin{circuitikz}[european, scale=1.5]
 	\tikzset{pcharge/.pic=
 			{
 				\node[circle, ball color=red, inner sep=0.1pt, text=white, font=\bfseries\tiny] (+) at (0,0) {$+$} ;
