@@ -8,7 +8,9 @@
     % Вертикальные линии
     \draw[gray] ([xshift=\R cm]A) -- ([xshift=\R cm]B)
     ([xshift=-\R cm]A) -- ([xshift=-\R cm]B);
-    \draw[line width={\R*2cm}, gray!50] (A) -- (B);
+%    \draw[line width={\R*2cm}, gray!50] (A) -- (B);
+     \fill[gray!50] (-\R,-\h/2) rectangle (\R,\h/2);
+
 
     % Верхняя и нижняя части
     \draw[gray, fill=gray!50] (B) circle ({\R} and {0.2*\R});

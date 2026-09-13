@@ -1,4 +1,4 @@
-\begin{tikzpicture}[>=latex, scale=0.7, transform shape]
+\begin{tikzpicture}[>=latex, scale=1.25, transform shape]
 	\draw [in=-105, out=75, looseness=1.25, line width=0.1cm, gray!50] (-1, -1) coordinate (A) to (1, 1.5) coordinate (B);
 
 	\draw[fill=gray!50, ultra thin, rotate around={-10:(B)}] (B) circle(1cm and 0.3cm);

@@ -1,5 +1,5 @@
 % Адаптовано з MaxwellEqns.tex (слайд "Струм зміщення в конденсаторі та магнітне поле")
-\begin{tikzpicture}[>=latex, scale=1.2, transform shape]
+\begin{tikzpicture}[>=latex, scale=2]
 	\draw[thick, red] (-1.5, 0) --  (-0.6, 0) node[pos=0.1, below] {$+$};
 	\draw[fill=red!50] (-0.6, -1) -- (-0.6, 0.4) -- (-0.1, 0.9) -- (-0.1, -0.5) -- cycle;
 	\foreach \x in {-1, 0, +1} {

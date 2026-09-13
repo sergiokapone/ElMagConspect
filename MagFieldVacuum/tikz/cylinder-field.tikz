@@ -1,34 +1,69 @@
-	\begin{subfigure}[t]{0.48\linewidth}
-		\centering
-		\begin{tikzpicture}[>=latex, baseline, scale=1.5]
-			\draw[gray!50, line width=1cm] (0, -1) -- (0,1);
-			\draw[] (-0.5, -1) -- (-0.5,1) (+0.5, -1) -- (+0.5,1);
-			\draw[fill=gray!50] (0,1) circle (0.5 and 0.1);
-			\draw[fill=gray!50] (0,-1) ++(-0.5,0) arc (180:360:0.5 and 0.1);
-			\draw[dotted] (0,-1) ++(+0.5,0) arc (0:180:0.5 and 0.1);
-			\draw[thin, green!50!black, arrowpos={0.1}{0pt}{2pt}, fill=green] (0,0) [partial
-			ellipse=0:360:{0.3*1} and {0.05*1}]
-			node[pos=0.1, above] {$L$};
-			\draw[->] (0,-0.1) -- ++(0, 0.5) node[left] {$\vect{j}$};
-		\end{tikzpicture}
-		\caption{Всередині: \( B = \dfrac{2\pi}{c}jr \)}
-		\label{fig:cyl_inside}
-	\end{subfigure}\hfill
-	% ---------------- Підрисунок (б): зовні ----------------
-	\begin{subfigure}[t]{0.48\linewidth}
-		\centering
-		\begin{tikzpicture}[>=latex, baseline, scale=1.5]
-			\draw[gray!50, line width=1cm] (0, -1) -- (0,1);
-			\draw[] (-0.5, -1) -- (-0.5,1) (+0.5, -1) -- (+0.5,1);
-			\draw[fill=gray!50] (0,1) circle (0.5 and 0.1);
-			\draw[fill=gray!50] (0,-1) ++(-0.5,0) arc (180:360:0.5 and 0.1);
-			\draw[dotted] (0,-1) ++(+0.5,0) arc (0:180:0.5 and 0.1);
-			\draw[thin, green!50!black, arrowpos={0.1}{0pt}{2pt}] (0,0) [partial
-			ellipse=0:360:{0.3*3} and {0.05*3}]
-			node[pos=0.1, above] {$L$};
-			\fill[green] (0,0) [partial ellipse=0:360:{0.5} and {0.05}];
-			\draw[->] (0,-0.1) -- ++(0, 0.5) node[left] {$\vect{j}$};
-		\end{tikzpicture}
-		\caption{Зовні: \( B = \dfrac{2I}{cr} \)}
-		\label{fig:cyl_outside}
-	\end{subfigure}
+% ---------------- Підрисунок (а): всередині ----------------
+\begin{subfigure}[t]{0.48\linewidth}
+    \centering
+    \begin{tikzpicture}[>=latex, baseline={(0,0)}, scale=1.5]
+        % Основні параметри
+        \pgfmathsetmacro\h{2}      % повна висота циліндра
+        \pgfmathsetmacro\R{0.5}    % радіус циліндра
+
+        % Тіло циліндра (сіра середина) — тепер масштабується
+        \fill[gray!50] (-\R, -\h/2) rectangle (\R, \h/2);
+
+        % Вертикальні твірні
+        \draw[] (-\R, -\h/2) -- (-\R, \h/2)
+                ( \R, -\h/2) -- ( \R, \h/2);
+
+        % Верхній торець
+        \draw[fill=gray!50] (0, \h/2) circle ({\R} and {0.2*\R});
+
+        % Нижній торець: видима частина + пунктир
+        \draw[fill=gray!50] (-\R, -\h/2) arc (180:360:{\R} and {0.2*\R});
+        \draw[dotted]       ( \R, -\h/2) arc (0:180:{\R} and {0.2*\R});
+
+        % Контур всередині
+        \draw[thin, green!50!black, arrowpos={0.1}{0pt}{2pt}, fill=green]
+            (0,0) [partial ellipse=0:360:{0.4*\R} and {0.1*\R}]
+            node[pos=0.1, above] {$L$};
+
+        % Струм
+        \draw[->] (0,-0.1) -- ++(0, 0.5) node[above] {$\vect{j}$};
+    \end{tikzpicture}
+    \caption{Всередині: \( B = \dfrac{2\pi}{c}jr \)}
+    \label{fig:cyl_inside}
+\end{subfigure}\hfill
+% ---------------- Підрисунок (б): зовні ----------------
+\begin{subfigure}[t]{0.48\linewidth}
+    \centering
+    \begin{tikzpicture}[>=latex, baseline={(0,0)}, scale=1.5]
+        % Основні параметри
+        \pgfmathsetmacro\h{2}
+        \pgfmathsetmacro\R{0.5}
+
+        % Тіло циліндра
+        \fill[gray!50] (-\R, -\h/2) rectangle (\R, \h/2);
+
+        % Вертикальні твірні
+        \draw[] (-\R, -\h/2) -- (-\R, \h/2)
+                ( \R, -\h/2) -- ( \R, \h/2);
+
+        % Верхній торець
+        \draw[fill=gray!50] (0, \h/2) circle ({\R} and {0.2*\R});
+
+        % Нижній торець
+        \draw[fill=gray!50] (-\R, -\h/2) arc (180:360:{\R} and {0.2*\R});
+        \draw[dotted]       ( \R, -\h/2) arc (0:180:{\R} and {0.2*\R});
+
+        % Зовнішній контур
+        \draw[thin, green!50!black, arrowpos={0.1}{0pt}{2pt}]
+            (0,0) [partial ellipse=0:360:{0.3*8*\R} and {0.05*8*\R}]
+            node[pos=0.1, above] {$L$};
+
+        % Переріз
+        \fill[green] (0, 0) circle ({\R} and {0.2*\R});;
+
+        % Струм
+        \draw[->] (0,-0.1) -- ++(0, 0.5) node[above] {$\vect{j}$};
+    \end{tikzpicture}
+    \caption{Зовні: \( B = \dfrac{2I}{cr} \)}
+    \label{fig:cyl_outside}
+\end{subfigure}

@@ -1,16 +1,16 @@
-\begin{tikzpicture}[scale=0.5, transform shape]
+\begin{tikzpicture}[scale=1]
 
     \coordinate (A) at (0,0);
     \coordinate (B) at (2.5,0);
     \coordinate (C) at (5,0);
     \coordinate (D) at (7.5,0);
 
-    \node[font=\large] at ([yshift=1.5cm]A) {$50$~Гц};
-    \node[font=\large] at ([yshift=1.5cm]B) {$50$~кГц};
-    \node[font=\large] at ([yshift=1.5cm]C) {$1$~МГц};
-    \node[font=\large] at ([yshift=1.5cm]D) {$50$~МГц};
+    \node[font=\normalsize] at ([yshift=1.75cm]A) {$50$~Гц};
+    \node[font=\normalsize] at ([yshift=1.75cm]B) {$50$~кГц};
+    \node[font=\normalsize] at ([yshift=1.75cm]C) {$1$~МГц};
+    \node[font=\normalsize] at ([yshift=1.75cm]D) {$50$~МГц};
 
-    \node[align=center, font=\large] at ({(5+2.5)/2},-1.25) {Для провідника діаметром $0.5$~мм};
+    \node[align=center, font=\normalsize] at ({(5+2.5)/2},-1.5) {Для провідника діаметром $0.5$~мм};
 
     \fill[even odd rule,inner color=red!50,outer color=red] (A) circle(1);
 

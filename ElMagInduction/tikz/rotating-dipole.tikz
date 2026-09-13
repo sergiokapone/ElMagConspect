@@ -1,5 +1,5 @@
 % Адаптовано з ElMagInduction.tex (слайд "Задачі на застосування теореми взаємності", Задача 2)
-\begin{tikzpicture}[scale=1]
+\begin{tikzpicture}[scale=1.5]
 	\tdplotsetmaincoords{0}{0}
 	\begin{scope}[tdplot_main_coords, rotate around x=70, rotate around z=-45]
 		\draw [dashed] (0,0,0) circle (1);
