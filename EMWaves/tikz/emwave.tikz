@@ -1,0 +1,58 @@
+% Electromagnetic wave - colored
+\begin{tikzpicture}[>=latex, x=(-15:1.2), y=(90:1.0), z=(-150:1.0),
+		line cap=round, line join=round,
+		axis/.style={black, thick,->},
+		vector/.style={>=stealth,->}, scale=0.8]
+	\large
+	\def\A{1.5}
+	\def\nNodes{5} % use even number
+	\def\nVectorsPerNode{8}
+	\def\N{\nNodes*40}
+	\def\xmax{\nNodes*pi/2*1.01}
+	\pgfmathsetmacro\nVectors{(\nVectorsPerNode+1)*\nNodes}
+
+
+	\def\drawENode{ % draw E node and vectors with some offset
+		\draw[red,very thick,variable=\t,domain=\iOffset*pi/2:(\iOffset+1)*pi/2*1.01,samples=40]
+		plot (\t,{\A*sin(\t*360/pi)},0);
+		\foreach \k [evaluate={\t=\k*pi/2/(\nVectorsPerNode+1);
+					\angle=\k*90/(\nVectorsPerNode+1);}]
+		in {1,...,\nVectorsPerNode}{
+				\draw[vector, help lines, red!80]  (\iOffset*pi/2+\t,0,0) -- ++(0,{\A*sin(2*\angle+\iOffset*180)},0);
+			}
+	}
+	\def\drawBNode{ % draw B node and vectors with some offset
+		\draw[blue,very thick,variable=\t,domain=\iOffset*pi/2:(\iOffset+1)*pi/2*1.01,samples=40]
+		plot (\t,0,{\A*sin(\t*360/pi)});
+		\foreach \k [evaluate={\t=\k*pi/2/(\nVectorsPerNode+1);
+					\angle=\k*90/(\nVectorsPerNode+1);}]
+		in {1,...,\nVectorsPerNode}{
+				\draw[vector,help lines, blue!80]  (\iOffset*pi/2+\t,0,0) -- ++(0,0,{\A*sin(2*\angle+\iOffset*180)});
+			}
+	}
+
+	% main axes
+	\draw[axis] (0,0,0) -- ++(\xmax*1.1,0,0) node[right] {$x$};
+	\draw[axis] (0,-\A*1.4,0) -- (0,\A*1.4,0) node[right] {$y$};
+	\draw[axis] (0,0,-\A*1.4) -- (0,0,\A*1.4) node[above left] {$z$};
+
+	% small axes
+	\def\xOffset{{(\nNodes-2)*pi/2}}
+	\def\yOffset{\A*1.2}
+	\def\zOffset{\A*1.2}
+	\draw[axis,black] (\xOffset,\yOffset,-\zOffset) -- ++(\A*0.6,0,0) node[right,align=center] {$\k$}; %\\propagation
+	\draw[axis,red]  (\xOffset,\yOffset,-\zOffset) -- ++(0,\A*0.6,0) node[right] {$\Efield$};
+	\draw[axis,blue]   (\xOffset,\yOffset,-\zOffset) -- ++(0,0,\A*0.6) node[above left] {$\Hfield$};
+
+	% equation
+
+
+	% draw (anti-)nodes
+	\foreach \iNode [evaluate={\iOffset=\iNode-1;}] in {1,...,\nNodes}{
+			\ifodd\iNode \drawBNode \drawENode % E overlaps B
+			\else        \drawENode \drawBNode % B overlaps E
+			\fi
+		}
+
+\end{tikzpicture}
+

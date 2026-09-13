@@ -1,0 +1,31 @@
+% Адаптовано з MaxwellEqns.tex (слайд "Оцінка глибини проникнення поля...", контур 1)
+\begin{tikzpicture}[>=latex]
+	\pgfmathsetmacro\h{3}
+	\pgfmathsetmacro\R{1}
+	\coordinate (A) at (0, {-\h/2});
+	\coordinate (B) at (0, {+\h/2});
+	\draw[gray] ([xshift=\R cm]A) -- ([xshift=\R cm]B)
+	([xshift=-\R cm]A) -- ([xshift=-\R cm]B);
+	\draw[line width={\R*2cm}, gray!50] (A) -- (B);
+	\draw[gray, fill=gray!50] (B) circle ({\R} and {0.2*\R});
+	\draw[gray] ([xshift=\R cm]A) arc(0:-180:{\R} and {0.2*\R});
+	\draw[gray, densely dashed] ([xshift=-\R cm]A) arc(180:0:{\R} and {0.2*\R});
+	\fill[gray!50] (A) circle ({\R} and {0.2*\R});
+	\draw[green!70!black, thick,
+		arrowpos={0.15}{2pt}{3pt},
+		arrowpos={0.40}{2pt}{3pt},
+		arrowpos={0.70}{2pt}{3pt},
+		arrowpos={0.90}{2pt}{3pt}
+	] (-1,-0.5) -- ++(0,1) -- ++(0.5, 0) -- ++(0, -1) -- cycle;
+	\def\fLarge{0.95}
+	\foreach \x in {0,0.1,...,0.5}{
+			\draw[->, red, ultra thin] ({\x-1},-0.5) -- ++(0, {1-2*\x});
+		}
+	\foreach \y in {-0.4,0,0.4} {
+			\draw[arrowpos={0.5}{0}{2pt}, blue, ultra thin] (0,{\fLarge*\y})
+			[partial ellipse=91:{360+89}:{\fLarge*\R} and {\fLarge*0.1*\R}];
+		}
+	\node[left, font=\scriptsize, text=red] at (-1, 0.5) {$\Efield$};
+	\node[below, font=\scriptsize] at (-0.75, -0.5) {$\delta$};
+	\node[left, font=\scriptsize] at (-1, 0) {$h$};
+\end{tikzpicture}

@@ -1,0 +1,33 @@
+% Адаптовано з EMWaves.tex (слайд "Формули Френеля для p-поляризації")
+\begin{tikzpicture}[scale=1]
+	\fill[cyan!50, opacity=0.5] (-3, -3) rectangle (0, 3);
+	\draw[->] (0, -3) to (0,3.25) node[above] {$y$};
+	\draw[->] (-3, 0) to (2,0) node[below] {$x$};
+	\draw (-3, -3) -- node[pos = 0.5, inner sep=2pt] (A) {} (0, 0) ;
+	\node[circle, draw, inner sep=2pt, fill=blue] at (A) {};
+	\node[below] at (A) {$\Bfield$};
+	\draw[->, red, double] (A) -- ++(45:1) node[left=5pt] {$\vect{k}$};
+	\draw[->] (-0.5, 0) arc (180:225:0.5) node[left, pos=0.5] {$i$};
+	\draw[->] (A) -- ++(0:{cos(45)}) node[right] {$k_x$};
+	\draw[->] (A) -- ++(90:{sin(45)}) node[above] {$k_y$};
+	\draw[red, ->, double, text=black] (A) -- ++({atan(3/3) + 90}:1) node[above left] {$\vect{E}$};
+
+	\draw (0, 0) -- node[pos = 0.5, inner sep=2pt] (B) {} (-3, 3);
+	\node[circle, draw, inner sep=2pt, fill=blue] at (B) {};
+	\node[below=2pt] at (B) {$\vect{B}'$};
+	\draw[->, red, double] (B) -- ++(135:1) node[right=5pt] {$\vect{k}'$};
+	\draw[->] (-0.5, 0) arc (180:135:0.5) node[left, pos=0.5] {$i'$};
+	\draw[->] (B) -- ++(0:-{cos(45)}) node[left] {$k'_x$};
+	\draw[->] (B) -- ++(90:{sin(45)}) node[above] {$k'_y$};
+	\draw[red, ->, double, text=black] (B) -- ++({-atan(3/3) - 90}:1) node[below left] {$\vect{E}'$};
+
+	\pgfmathsetmacro{\angle}{atan(3/2)}
+	\draw (0, 0) -- node[pos = 0.5, inner sep=2pt] (C) {} (2, 3);
+	\node[circle, draw, inner sep=2pt, fill=blue] at (C) {};
+	\node[below=5pt] at (C) {$\vect{B}''$};
+	\draw[->, red, double] (C) -- ++({atan(3/2)}:1) node[right] {$\vect{k}''$};
+	\draw[->] (0.5, 0) arc (0:\angle:0.5) node[right, pos=0.5] {$r$};
+	\draw[->] (C) -- ++(0:{cos(\angle)}) node[right] {$k''_x$};
+	\draw[->] (C) -- ++(90:{sin(\angle)}) node[above] {$k''_y$};
+	\draw[red, ->, double, text=black] (C) -- ++({\angle + 90}:1) node[above] {$\vect{E}''$};
+\end{tikzpicture}

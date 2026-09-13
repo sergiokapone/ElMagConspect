@@ -1,0 +1,19 @@
+% Адаптовано з MaxwellEqns.tex (слайд "Зарядка конденсатора")
+\begin{tikzpicture}[scale=0.8, >=latex, midarrow/.style={%
+				postaction={ decorate,
+						decoration={ markings, mark=at position .8 with {\arrow{latex}}}}}]
+	\draw[blue] (0,0) circle(0.5 and 0.15);
+	\draw[blue] (0,0) circle(1 and 0.3);
+	\draw[blue] (0,0) circle(2 and 0.6);
+	\foreach \x in {-2,-1,...,2}{
+			\draw[red, midarrow] (\x, -1.5) -- (\x, 1.5);
+		}
+	\draw[blue, arrowpos={0.5}{2pt}{4pt}] (0,0) ++(180:0.5) arc(180:360:0.5 and 0.15);
+	\draw[blue, arrowpos={0.5}{2pt}{4pt}] (0,0) ++(180:1) arc(180:360:1 and 0.3);
+	\draw[blue, arrowpos={0.5}{2pt}{4pt}] (0,0) ++(180:2) arc(180:360:2 and 0.6);
+	\draw[line width=2pt, blue!50] (-2.5, 1.5) -- (2.5, 1.5);
+	\draw[line width=2pt, red!50] (-2.5, -1.5) -- (2.5, -1.5);
+	\draw [blue, ->] (0:2) coordinate (S) -- ++(70:0.5) node[right] {$\Hfield$};
+	\node[left, red] at (2, 1) {$\Efield$};
+	\draw [orange!60!black, ->] (S) -- ++(-0.75,0) node[below] {$\vect{\Pi}$};
+\end{tikzpicture}

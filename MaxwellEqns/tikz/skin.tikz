@@ -1,0 +1,26 @@
+\begin{tikzpicture}[scale=0.5, transform shape]
+
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (2.5,0);
+    \coordinate (C) at (5,0);
+    \coordinate (D) at (7.5,0);
+
+    \node[font=\large] at ([yshift=1.5cm]A) {$50$~Гц};
+    \node[font=\large] at ([yshift=1.5cm]B) {$50$~кГц};
+    \node[font=\large] at ([yshift=1.5cm]C) {$1$~МГц};
+    \node[font=\large] at ([yshift=1.5cm]D) {$50$~МГц};
+
+    \node[align=center, font=\large] at ({(5+2.5)/2},-1.25) {Для провідника діаметром $0.5$~мм};
+
+    \fill[even odd rule,inner color=red!50,outer color=red] (A) circle(1);
+
+    \fill[even odd rule,inner color=white,outer color=red] (B) circle(1);
+    \fill[white] (B) circle(0.5);
+
+    \fill[even odd rule,inner color=white,outer color=red] (C) circle(1);
+    \fill[white] (C) circle(0.8);
+
+    \fill[even odd rule,inner color=white,outer color=red] (D) circle(1);
+    \fill[white] (D) circle(0.95);
+
+\end{tikzpicture}

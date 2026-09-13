@@ -1,0 +1,38 @@
+\begin{tikzpicture}[>=latex, scale=0.7, transform shape]
+	\draw [in=-105, out=75, looseness=1.25, line width=0.1cm, gray!50] (-1, -1) coordinate (A) to (1, 1.5) coordinate (B);
+
+	\draw[fill=gray!50, ultra thin, rotate around={-10:(B)}] (B) circle(1cm and 0.3cm);
+	\draw[fill=gray!50, ultra thin, rotate around={-10:(A)}] (A) circle(0.07 and 0.02);
+	\draw[thick, green!50!black, rotate around={-15:(-0.25:0)}] (-0.25, 0) circle(1 and 0.3);
+    % Bfield
+
+    \draw[thin, blue, rotate around={-15:(-0.25:0)}, arrowpos={0.85}{2pt}{2pt}] (-0.25, 0) circle(0.5 and 0.15);
+    \draw[thin, blue, rotate around={-15:(-0.25:0)}, arrowpos={0.85}{2pt}{2pt}] (-0.25, 0) circle(2 and 0.7);
+
+	\begin{scope}
+		\clip (-1,0) rectangle (1,1);
+		\draw [in=-105, out=75, looseness=1.25, line width=0.1cm, gray!50] (A) to (B) ;
+	\end{scope}
+    \draw [in=-105, out=75, looseness=1.25, gray, , arrowpos={0.2}{2pt}{3pt}] (A) to (B) ;
+	\draw[red!20, pattern=crosshatch, pattern color=red!20, rotate around={-15:(-1:0)}] (-1.25, 0) to[out=80, in=40, looseness=4.8]
+	node[pos=0.1,
+	above, text=red]
+	{$S$} (0.75, 0) arc(0:-180:1 and 0.3) -- cycle;
+	\draw[thick, arrowpos={0.5}{3pt}{4pt}, green!50!black, rotate around={-15:(-1:0)}] (-1.25, 0) arc(180:360:1 and 0.3) node[pos=0.5,
+	below] {$L$};
+    \coordinate (C) at (1.1, 2.2);
+    \coordinate (D) at (2.1, 4);
+    \begin{scope}[shift={(1.2, 1.2)}, rotate around={-10:(1.2, 1.2)}]
+        \foreach \x in {-0.9,-0.7,...,0.9} {
+                            \draw[red, arrowpos={0.4}{2pt}{2pt}] (\x, 0) -- ++(0, 0.7);
+                        }
+    \end{scope}
+    \draw[fill=gray!50, ultra thin, rotate around={-10:(C)}] (C) circle(1cm and 0.3cm);
+    \draw [in=-105, out=85, looseness=1.25, line width=0.1cm, gray!60] (C) to (D);
+    \draw [in=-105, out=85, looseness=1.25, arrowpos={0.4}{2pt}{3pt}, gray] (C) to (D);
+    \draw[ultra  thin, fill=gray!60, rotate around={-10:(C)}] (C) ++(180:0.07) arc(180:360:0.07 and 0.02);
+    \draw[ultra  thin, fill=gray!60, rotate around={-10:(D)}] (D) circle(0.07 and 0.02);
+
+%                \draw (-2, -2) to[grid with coordinates] (3,3);
+%                \clip (-2.25, -1.2) -- (2.2,4.1);
+\end{tikzpicture}

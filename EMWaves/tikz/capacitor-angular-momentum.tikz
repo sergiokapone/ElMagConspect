@@ -1,0 +1,34 @@
+% Адаптовано з EMWaves.tex (слайд "Момент імпульсу поля")
+\begin{tikzpicture}[scale=1.2, >=latex]
+	\draw [fill=gray, fill opacity=.25]
+	(180:1mm) coordinate (a)
+	-- ++(0,-15mm) coordinate (b)
+	arc (180:360:1mm and 0.25mm) coordinate (d)
+	-- (a -| d) coordinate (c) arc (0:180:1mm and 0.25mm);
+	\draw [fill=gray, fill opacity=.25]
+	(0,0) coordinate (t) circle (1mm and 0.25mm);
+	\draw [densely dashed] (d) arc (0:180:1mm and 0.25mm);
+
+	\draw [thick]
+	(180:7.5mm) coordinate (A)
+	-- ++(0,-15mm) coordinate (B)
+	arc (180:360:7.5mm and 2.625mm) coordinate (D)
+	-- (A -| D) coordinate (C) arc (0:180:7.5mm and 2.625mm);
+	\draw [thick]
+	(0,0) coordinate (T) circle (7.5mm and 2.625mm);
+	\draw [densely dashed] (D) arc (0:180:7.5mm and 2.625mm);
+
+	\foreach[count=\j] \i in {-0.5, 0, 0.5} {
+			\draw[blue, <-] (\i,5mm) \ifnum\j=2 node[above] {$\Bfield$} \fi -- ++(0,-25mm);
+		}
+
+	\foreach[count=\j] \i in {0, -0.5, -1, -1.5} {
+			\draw[red, ->] (1mm,\i) -- ++(6.5mm,0) \ifnum\j=2 node[right] {$ \Efield $}\fi;
+			\draw[red, ->] (-1mm,\i) -- ++(-6.5mm,0);
+		}
+
+	\draw (0,0) ellipse (1mm and 0.25mm);
+
+	\draw[green!50!black, <-] (0,-0.75) [partial ellipse=110:430:4mm and 1.3mm] node[above,
+	pos=0.2] {$ \vect{\Pi} $};
+\end{tikzpicture}

@@ -1,0 +1,30 @@
+% Адаптовано з MaxwellEqns.tex (слайд "Струм зміщення в конденсаторі")
+\begin{minipage}[t]{0.48\linewidth}\centering
+	\begin{tikzpicture}[scale=0.7]
+		\clip (-1.5, -2.5) rectangle ++(4, 5.5);
+		\draw[line width=2pt, gray!50, arrowpos={0.7}{0pt}{7pt}] (0, -2) coordinate (A) -- ++(0, 2);
+		\draw[line width=3pt, red!50] (-1, 0) -- (1, 0);
+		\draw[line width=2pt, gray!50, arrowpos={0.7}{0pt}{7pt}] (0, 0.5) -- ++(0, 2) coordinate (B);
+		\draw[line width=3pt, blue!50] (-1, 0.5) -- (1, 0.5)  ;
+		\draw [arrowpos={0.5}{4pt}{4pt}, bend left=120, looseness=2] (B) to (A);
+		\draw[fill=red!50, opacity=0.5] (0, -1.5) circle[x radius=1 cm, y radius= 0.3 cm];
+		\draw[line width=2pt, gray!50] (0, -1.5) -- ++(0, 0.4);
+	\end{tikzpicture}\\
+	\footnotesize Площа $S$ пронизується лише струмом провідності
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}\centering
+	\begin{tikzpicture}[scale=0.7]
+		\clip (-1.5, -2.5) rectangle ++(4, 5.5);
+		\draw[line width=2pt, gray!50, arrowpos={0.7}{0pt}{7pt}] (0, -2) coordinate (A) -- ++(0, 2);
+		\draw[line width=3pt, red!50] (-1, 0) -- (1, 0);
+		\draw[line width=2pt, gray!50, arrowpos={0.7}{0pt}{7pt}] (0, 0.5) -- ++(0, 2) coordinate (B);
+		\draw[line width=3pt, blue!50] (-1, 0.5) -- (1, 0.5)  ;
+		\draw [arrowpos={0.5}{4pt}{4pt}, bend left=120, looseness=2] (B) to (A);
+		\draw[fill=red!50, opacity=0.6] (0, -1.5) circle[x radius=1 cm, y radius= 0.3 cm];
+		\draw[in=55, out=125, looseness=3.9, fill=red!50, opacity=0.5] (-1, -1.5) to (+1, -1.5)
+		arc[x radius=1 cm, y radius= 0.3 cm, start
+				angle=0,
+				delta angle=180] --cycle;
+	\end{tikzpicture}\\
+	\footnotesize Площа $S$ пронизується лише струмом зміщення
+\end{minipage}

@@ -160,6 +160,7 @@
 \definecolor{themecolordark}{RGB}{0,46,100}
 \definecolor{themecolorlight}{RGB}{0,100,170}
 \definecolor{paper}{RGB}{239,227,157}
+\colorlet{glasscol}{cyan!40}
 % ------------- Кольори секцій ------------------------------
 \definecolor{titlebgdark}{RGB}{0,103,102}
 \definecolor{titlebglight}{RGB}{191,233,251}
@@ -532,6 +533,8 @@ fxy/.style={fill=red},xy face/.code={\tikzset{parallelepiped/fxy/.style={#1}}},
 fxz/.style={fill=orange},xz face/.code={\tikzset{parallelepiped/fxz/.style={#1}}},
 fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 }
+
+\tikzstyle{glass}=[top color=glasscol!90!blue,bottom color=glasscol!90!blue,middle color=white,shading angle=40]
 
 
 % --------------------------- Електричні кола (не використовується) ------------

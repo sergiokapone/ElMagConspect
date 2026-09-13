@@ -1,0 +1,39 @@
+\begin{tikzpicture}[>=latex, scale=.5]
+
+% Верхний график
+\draw[->, thick] (0,0) -- (8,0) node[below] {$x$};
+\draw[->, thick] (0,0) -- (0,2.5) node[left] {$u$};
+
+
+% Верхняя волна
+\draw[thick, domain=0:4, smooth, samples=100, red] plot (\x, {2*exp(-2*(\x-2)^2)});
+\draw[->] (6.5,1) -- ++(0.5,0) node[right] {$v$};
+
+% Метка ξ
+%\node[above left] at (0,0) {$O$};
+\node[above] at (2,2) {$f(\xi)$};
+\draw[dash pattern={on 1pt off 0.5pt}] (2,2) -- (2, -3.5);
+\draw[<->] (0,-0.25) -- node[below] {$\xi$} (2,-0.25);
+
+
+
+% Нижний график
+\begin{scope}[yshift=-3.5cm]
+\draw[->, thick] (0,0) -- (8,0) node[below] {$x$};
+\draw[->, thick] (0,0) -- (0,2.5) node[left] {$u$};
+
+% Нижняя волна
+
+\draw[thick, domain=3:7, smooth, samples=100, red] plot (\x, {2*exp(-2*(\x-5)^2)});
+\draw[->] (6.5,1) -- ++(0.5,0) node[right] {$v$};
+
+% Метка x
+\node at (3,0) {|};
+%\node[above=5pt] at (3,0) {$O'$};
+\node[above] at (5,2) {$f(\xi)$};
+\draw[dash pattern={on 1pt off 0.5pt}] (5,2) -- ++(0, -2);
+\draw[<->] (0,-0.25) -- node[below] {$x$} (5,-0.25);
+
+\end{scope}
+\draw[<->] (2, -2) -- node[above] {$vt$} (5, -2);
+\end{tikzpicture}

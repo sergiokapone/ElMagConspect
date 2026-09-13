@@ -1,0 +1,51 @@
+\begin{tikzpicture}[>=latex]
+    % Основные параметры
+    \pgfmathsetmacro\h{3}          % Высота
+    \pgfmathsetmacro\R{1}          % Радиус
+    \coordinate (A) at (0, {-\h/2});
+    \coordinate (B) at (0, {+\h/2});
+
+    % Вертикальные линии
+    \draw[gray] ([xshift=\R cm]A) -- ([xshift=\R cm]B)
+    ([xshift=-\R cm]A) -- ([xshift=-\R cm]B);
+    \draw[line width={\R*2cm}, gray!50] (A) -- (B);
+
+    % Верхняя и нижняя части
+    \draw[gray, fill=gray!50] (B) circle ({\R} and {0.2*\R});
+    \draw[gray] ([xshift=\R cm]A) arc(0:-180:{\R} and {0.2*\R});
+    \draw[gray, densely dashed] ([xshift=-\R cm]A) arc(180:0:{\R} and {0.2*\R});
+    \fill[gray!50] (A) circle ({\R} and {0.2*\R});
+
+    % Стрелка для тока
+    \draw[->] ([yshift={\h*0.3cm}]A) -- ([yshift={-\h*0.3cm}]B) node[above] {$I$};
+
+    % Параметры для витков
+    \def\fLarge{0.8}  % Масштаб большого витка
+    \def\fSmall{0.4}  % Масштаб маленького витка
+
+    % Витки на разных уровнях
+    \foreach \y in {-1.5, -1, ..., +1.5} {
+            \pgfmathtruncatemacro{\c}{round(\y)}
+            \ifnum\c=0 \edef\t{1} \else \edef\t{0.1} \fi % Прозрачность
+            \begin{scope}[opacity=\t]
+
+                % Большой виток
+                \draw[arrowpos={0.4}{0}{3pt}, blue] (0,{0.8*\y})
+                [partial ellipse=91:{360+89}:{\fLarge*\R} and {\fLarge*0.2*\R}];
+
+                \draw[arrowpos={0.5}{2pt}{3pt}, arrowpos={1}{2pt}{3pt}, red, yscale=-1] (0,{0.8*\y})
+                ++(180:{\fLarge*\R}) circle(0.2);
+                \draw[arrowpos={0}{2pt}{3pt}, arrowpos={0.5}{2pt}{3pt}, red] (0,{0.8*\y})
+                ++(0:{\fLarge*\R}) circle(0.2);
+
+                % Маленький виток
+%                \draw[arrowpos={0.4}{0}{2pt}, blue] (0,{0.8*\y})
+%                [partial ellipse=91:{360+89}:{\fSmall*\R} and {\fSmall*0.2*\R}];
+%
+%                \draw[arrowpos={0.5}{1.2pt}{2pt}, red, yscale=-1] (0,{0.8*\y})
+%                ++(180:{\fSmall*\R}) circle(0.1);
+%                \draw[arrowpos={0.5}{1.2pt}{2pt}, red, rotate=180] (0,{0.8*\y})
+%                ++(180:{\fSmall*\R}) circle(0.1);
+            \end{scope}
+        }
+\end{tikzpicture}

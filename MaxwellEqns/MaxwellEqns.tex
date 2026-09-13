@@ -1,0 +1,733 @@
+% !TeX program = lualatex
+% !TeX encoding = utf8
+% !TeX spellcheck = uk_UA
+% !TeX root = ../EMConspect.tex
+
+%=========================================================
+\chapter{Система рівнянь Максвелла}\label{\currfilebase}
+\graphicspath{{\currfilebase/Pictures}}
+%=========================================================
+\epigraph{Кількісне, математичне формулювання законів поля дано в так званих рівняннях Максвелла. Експериментальні факти призвели до
+	формулювання цих рівнянь, але зміст їх значно багатший [\ldots]. Їхня проста форма приховує глибину, що виявляється тільки при ретельному
+	вивченні.
+}{А. Ейнштейн, Л. Інфельд, \enquote{Еволюція фізики}}
+
+\section*{Основоположники теорії електромагнітного поля}
+
+Теорію електромагнітного поля, початки якої заклав \emphx{Фарадей}, математично завершив \emphx{Максвелл}. Однією з найважливіших нових ідей,
+висунутих Максвеллом, була думка про \emphx{симетрію} у взаємозалежності електричного й магнітного полів: якщо змінне магнітне поле породжує
+електричне (закон Фарадея, гл.~\ref{ElMagInduction}), то, за красивою симетрією, змінне електричне поле мусить породжувати магнітне. Саме ця ідея,
+як ми зараз побачимо, і привела Максвелла до відкриття \emphx{струму зміщення} --- останньої відсутньої ланки повної системи рівнянь
+електродинаміки.
+
+\begin{figure}[h!]
+	\centering
+	\begin{minipage}[t]{0.35\linewidth}\centering
+		\includegraphics[height=3cm]{Faraday}\\
+		\footnotesize Майкл Фарадей (1791--1867)
+	\end{minipage}\hfill
+	\begin{minipage}[t]{0.35\linewidth}\centering
+		\includegraphics[height=3cm]{james-clerk-maxwell}\\
+		\footnotesize Джеймс Клерк Максвелл (1831--1879)
+	\end{minipage}
+	\caption{Основоположники класичної теорії електромагнітного поля\label{pic:FaradayMaxwell}}
+\end{figure}
+
+Формулювання рівнянь Максвелла А.~Ейнштейн і Л.~Інфельд у книзі \enquote{Еволюція фізики} назвали \enquote{найважливішою подією з часу Ньютона}
+--- не лише через цінність їхнього змісту, а й тому, що вони дають зразок \emphx{нового типу законів}: \emphx{рівняння Максвелла суть закони, що
+	виражають структуру поля}, а не закони руху окремих частинок.
+
+%% --------------------------------------------------------
+\section{Струм зміщення}
+%% --------------------------------------------------------
+
+\subsection*{Протиріччя в законах магнетизму}
+
+Теорема про циркуляцію для постійного магнітного поля, яку ми встановили в гл.~\ref{MagFieldMedia},
+\begin{equation}\label{eq:CirculationHVacuumOld}
+	\oint\limits_L \Hfield\cdot d\vect r = \frac{4\pi}{c}\iint\limits_S \vect j\cdot d\vect S, \qquad \rot\Hfield = \frac{4\pi}{c}\vect j,
+\end{equation}
+виявляється \emphx{неправильною} у випадку \emphx{змінного} електричного поля (рис.~\ref{pic:CircThm}). Застосуємо операцію $\divg$ до
+диференціальної форми цього рівняння: оскільки дивергенція будь-якого ротора тотожно дорівнює нулю, $\divg\rot\Hfield \equiv 0$, отримуємо
+\begin{equation}\label{eq:DivJZero}
+	\divg\vect j = 0.
+\end{equation}
+
+\begin{figure}[h!]\centering
+	\localinput{circ_thm.tikz}
+	\caption{Контур $L$, натягнута на нього поверхня $S$ та провідник зі струмом, що її
+		пронизує\label{pic:CircThm}}
+\end{figure}
+
+Але, з іншого боку, за законом збереження заряду (рівняння неперервності, гл.~\ref{SteadyCurrent}), якщо густина заряду змінюється з часом,
+$\partial\rho/\partial t \neq 0$, то
+\begin{equation}\label{eq:ContinuityViolation}
+	\divg\vect j = -\frac{\partial\rho}{\partial t} \neq 0.
+\end{equation}
+Рівняння~\eqref{eq:DivJZero} і~\eqref{eq:ContinuityViolation} відверто \emphx{суперечать} одне одному щоразу, коли $\partial\rho/\partial t\neq0$
+--- а отже, теорему про циркуляцію~\eqref{eq:CirculationHVacuumOld} необхідно \emphx{видозмінити}.
+
+\subsection*{Гіпотеза Максвелла}
+
+Щоб усунути цю суперечність, Дж.~Максвелл увів поняття \emphx{струму зміщення} $\vect j_\text{зм}$, доповнивши теорему про циркуляцію так, щоб
+закон збереження заряду виконувався за будь-яких обставин:
+\begin{equation}\label{eq:DisplacementCurrentDef}
+	\rot\Hfield = \frac{4\pi}{c}\left(\vect j+\vect j_\text{зм}\right).
+\end{equation}
+Застосовуючи операцію $\divg$ до цього рівняння:
+\begin{equation*}
+	\divg\left(\vect j+\vect j_\text{зм}\right) = 0 \quad\Rightarrow\quad \divg\vect j_\text{зм} = \frac{\partial\rho}{\partial t}
+\end{equation*}
+(тут ми скористались рівнянням~\eqref{eq:ContinuityViolation}). За теоремою Гаусса для електричного поля, $\rho = \dfrac1{4\pi}\divg\Dfield$
+(гл.~\ref{FileldInDielectrics}), тому
+\begin{equation*}
+	\divg\vect j_\text{зм} = \frac{\partial}{\partial t}\left(\frac1{4\pi}\divg\Dfield\right) = \divg\left(\frac1{4\pi}\frac{\partial\Dfield}{\partial
+	t}\right).
+\end{equation*}
+Найпростіше (і, як показує подальша перевірка експериментом, єдино правильне) розв'язання цього рівняння --- покласти
+\begin{equation}\label{eq:DisplacementCurrentDeriv}
+	\tcbhighmath{
+		\vect j_\text{зм} = \frac1{4\pi}\frac{\partial\Dfield}{\partial t}.
+	}
+\end{equation}
+
+\begin{Attention}
+	Рівняння~$\divg\vect j_\text{зм} = \divg\left(\tfrac1{4\pi}\partial\Dfield/\partial t\right)$ саме собою \emphx{не доводить}, що
+	$\vect j_\text{зм}$ дорівнює точно $\tfrac1{4\pi}\partial\Dfield/\partial t$: до цього виразу можна було б, узагалі кажучи, додати довільне
+	бездивергентне поле ($\divg\vect f=0$). Максвелл обрав \emphx{найпростіший} можливий варіант --- без жодного додаткового доданка; те, що саме
+	цей вибір відповідає дійсності (а не просто математичній зручності), --- це вже суто \emphx{експериментальний} факт, підтверджений, зокрема,
+	дослідами Г.~Герца з випромінювання електромагнітних хвиль (див. закінчення цього розділу).
+\end{Attention}
+
+\subsection*{Теорема про циркуляцію магнітного поля з урахуванням струму зміщення}
+
+Отже, теорема про циркуляцію для магнітного поля, узгоджена із законом збереження заряду, набуває остаточного вигляду:
+\begin{equation}\label{eq:CirculationHFull}
+	\tcbhighmath{
+		\rot\Hfield = \frac{4\pi}{c}\vect j + \frac1c\frac{\partial\Dfield}{\partial t}.
+	}
+\end{equation}
+В інтегральній формі:
+\begin{equation}\label{eq:CirculationHFullInt}
+	\tcbhighmath{
+		\oint\limits_L \Hfield\cdot d\vect r = \frac{4\pi}{c}\iint\limits_S \vect j\cdot d\vect S + \frac1c\iint\limits_S
+		\frac{\partial\Dfield}{\partial t}\cdot d\vect S,
+	}
+\end{equation}
+де
+\begin{equation}\label{eq:DisplacementCurrentIntegral}
+	I_\text{зм} = \frac1{4\pi}\iint\limits_S \frac{\partial\Dfield}{\partial t}\cdot d\vect S
+\end{equation}
+--- струм зміщення, що пронизує поверхню $S$, натягнуту на контур $L$. Отже, згідно з гіпотезою Максвелла, \emphx{змінне електричне поле поряд зі
+	звичайними струмами провідності також створює магнітне поле}.
+
+\subsection*{Порівняння закону Фарадея та гіпотези Максвелла}
+
+Порівняємо закон електромагнітної індукції Фарадея (гл.~\ref{ElMagInduction}) і \enquote{оновлену} теорему про циркуляцію за відсутності струмів
+провідності ($\vect j=0$) у вакуумі ($\epsilon=\mu=1$, тобто $\Efield=\Dfield$, $\Hfield=\Bfield$):
+\begin{equation}\label{eq:FaradayVsMagnetoelectric}
+	\underbrace{\rot\Efield = -\frac1c\frac{\partial\Bfield}{\partial t}}_\text{закон електромагнітної індукції} \qquad\qquad
+	\underbrace{\rot\Bfield = +\frac1c\frac{\partial\Efield}{\partial t}}_\text{\enquote{закон магнітоелектричної індукції}}.
+\end{equation}
+
+\begin{Attention}
+	Ця пара рівнянь --- вершина ідеї Максвелла про \emphx{симетрію} електрики й магнетизму: \emphx{змінне в часі магнітне поле породжує вихрове
+		електричне поле, а змінне в часі електричне поле породжує магнітне поле}. Єдина відмінність --- знак: у законі Фарадея \enquote{мінус}
+	(правило Ленца), у гіпотезі Максвелла --- \enquote{плюс}. Ця відносно невелика асиметрія знаків, утім, має глибокі наслідки: саме вона (разом з
+	рівняннями $\divg\Efield=0$, $\divg\Bfield=0$ у вакуумі) приводить, як буде показано в наступних розділах курсу, до існування
+	\emphx{електромагнітних хвиль}, що біжать зі швидкістю світла $c$, а не до експоненційно загасаючих чи зростаючих розв'язків.
+\end{Attention}
+
+\subsection*{Приклад 1: радіальне стікання заряду з кулі}
+
+Нехай куля несе заряд $Q(t)$, що стікає в зовнішнє (слабко провідне) середовище рівномірно в усіх напрямках (рис.~\ref{pic:RadialLeak}). Чи
+виникає при цьому магнітне поле?
+
+\begin{figure}[h!]\centering
+	\localinput{radial-leak.tikz}
+	\caption{Радіальне стікання заряду з кулі: струм провідності $I$ і струм зміщення
+		$I_\text{зм}$\label{pic:RadialLeak}}
+\end{figure}
+
+Стікання заряду створює радіальний струм провідності $I = -\dfrac{\partial Q}{\partial t}$. Поле кулі на відстані $r$, за теоремою Гаусса,
+$\Efield(r) = \dfrac{Q(t)}{r^3}\vect r$ (і теж спадає з часом), тому крізь будь-яку сферу радіуса $r>R$ додатково тече струм зміщення:
+\begin{equation}\label{eq:RadialLeakCurrent}
+	I_\text{зм} = \frac1{4\pi}\oiint\limits_S \frac{\partial\Efield}{\partial t}\cdot d\vect S = \frac{\partial Q}{\partial t} = -I.
+\end{equation}
+За теоремою про циркуляцію, застосованою до довільного кола $L$, що оточує напрям витікання струму (з відповідною поверхнею $S$, що її
+перетинають і провідність, і струм зміщення):
+\begin{equation}\label{eq:RadialLeakZeroB}
+	\oint\limits_L \Hfield\cdot d\vect r = \frac{4\pi}c\left(I+I_\text{зм}\right) = 0 \quad\Rightarrow\quad \Hfield=\Bfield=0.
+\end{equation}
+
+\begin{Attention}
+	У цій задачі, попри те, що заряд явно \emphx{рухається} (тече струм!), магнітне поле \emphx{не виникає взагалі}: струм зміщення в кожній
+	точці простору точно компенсує струм провідності. Це наочно ілюструє, що струм зміщення --- не якась математична поправка \enquote{про око},
+	а реальний фізичний внесок у джерела магнітного поля, необхідний для узгодженості всієї теорії.
+\end{Attention}
+
+\subsection*{Приклад 2: струм зміщення в конденсаторі}
+
+Розглянемо коло з плоским конденсатором, яке заряджається від джерела струмом $I$ (рис.~\ref{pic:TwoSurfaces}). Візьмемо контур $L$, що охоплює
+провід поблизу конденсатора, і натягнемо на нього \emphx{дві різні} поверхні: одну (ліворуч) --- що перетинає сам провід, і другу (праворуч) ---
+що проходить між обкладками конденсатора, не перетинаючи жодного проводу.
+
+\begin{figure}[h!]\centering
+	\localinput{two-surfaces-loop.tikz}
+	\caption{Дві різні поверхні, натягнуті на один і той самий контур $L$\label{pic:TwoSurfaces}}
+\end{figure}
+
+Для лівої поверхні циркуляція визначається звичайним струмом провідності: $\oint_L\Hfield\cdot d\vect r = \tfrac{4\pi}{c}I$. Для правої
+поверхні провідного струму немає взагалі (вона проходить у проміжку між обкладками, де є лише електричне поле, що змінюється в часі), тому
+циркуляція визначається \emphx{лише} струмом зміщення: $\oint_L\Hfield\cdot d\vect r = \tfrac{4\pi}c I_\text{зм}$.
+
+\begin{equation}\label{eq:CapacitorTwoSurfaces}
+	\tcbhighmath{
+		I = I_\text{зм}
+	}
+\end{equation}
+
+Оскільки циркуляція вектора $\Hfield$ по тому самому контуру $L$ не може залежати від вибору поверхні, натягнутої на цей контур (це --- пряма
+математична властивість теореми Стокса), звідси випливає $I=I_\text{зм}$: \emphx{всередині конденсатора \enquote{протікає} струм зміщення, який
+	замикає коло}. Розглянемо докладніше, яке магнітне поле він створює (рис.~\ref{pic:CapacitorChargingField}).
+
+\begin{figure}[h!]\centering
+	\localinput{capacitor-charging-field.tikz}
+	\caption{Магнітне поле, створене струмом зміщення всередині конденсатора під час його
+		зарядки\label{pic:CapacitorChargingField}}
+\end{figure}
+
+\begin{Attention}
+	\emphx{Струми зміщення замикають струми провідності і створюють магнітне поле точнісінько так само, як і звичайні струми провідності}. Проте
+	вони мають і принципову відмінність: струм зміщення \emphx{не} пов'язаний з тепловиділенням --- до нього незастосовні ні закон Ома, ні закон
+	Джоуля--Ленца (гл.~\ref{SteadyCurrent}), адже він не пов'язаний з переміщенням реальних носіїв заряду проти сил опору, а лише зі зміною
+	електричного поля в просторі.
+\end{Attention}
+
+%% --------------------------------------------------------
+\section{Система рівнянь Максвелла}
+%% --------------------------------------------------------
+
+Доповнивши основні закони електромагнетизму, встановлені в попередніх розділах, гіпотезою про струм зміщення, Максвелл отримав повну систему
+фундаментальних рівнянь електродинаміки. Таких рівнянь --- чотири (табл.~\ref{tab:MaxwellSystem}).
+
+\begin{table}[h!]\small\centering
+	\caption{Система рівнянь Максвелла\label{tab:MaxwellSystem}}
+	\begin{tabular}{lll}
+		\toprule
+		Рівняння                                    & Інтегральна форма                                                                                            & Диференціальна форма                                                    \\
+		\midrule
+		Теорема Гаусса для $\Bfield$                & $\displaystyle\oiint\limits_S\Bfield\cdot d\vect S = 0$                                                     & $\divg\Bfield=0$                                                        \\
+		Циркуляція $\Efield$                        & $\displaystyle\oint\limits_L\Efield\cdot d\vect r = -\frac1c\iint\limits_S\parttime{\Bfield}\cdot d\vect S$ & $\rot\Efield=-\dfrac1c\parttime{\Bfield}$                               \\
+		\midrule
+		Теорема Гаусса для $\Dfield$                 & $\displaystyle\oiint\limits_S\Dfield\cdot d\vect S = 4\pi\!\!\iiint\limits_V\!\!\rho\,dV$                   & $\divg\Dfield=4\pi\rho$                                                 \\
+		Циркуляція $\Hfield$                        & $\displaystyle\oint\limits_L\Hfield\cdot d\vect r = \frac{4\pi}c\iint\limits_S\left(\vect j+\frac1{4\pi}\parttime{\Dfield}\right)\cdot d\vect S$ & $\rot\Hfield=\dfrac{4\pi}c\vect j+\dfrac1c\parttime{\Dfield}$ \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\subsection*{Вираз електричного поля через потенціали}
+
+Рівняння Максвелла природно групуються парами: \emphx{перша} пара (теорема Гаусса для $\Bfield$ і циркуляція $\Efield$) --- рівняння \emphx{без}
+явних джерел (зарядів і струмів), \emphx{друга} пара --- рівняння \emphx{з} джерелами.
+
+Теорема Гаусса для $\Bfield$ дає змогу, як і в магнітостатиці (гл.~\ref{MagFieldVacuum}), ввести вектор-потенціал:
+\begin{equation*}
+	\Bfield = \rot\vect A.
+\end{equation*}
+Підставляючи це в закон індукції, $\rot\Efield = -\dfrac1c\parttime{\Bfield} = -\dfrac1c\parttime{}(\rot\vect A) = -\rot\left(\dfrac1c
+\parttime{\vect A}\right)$, отримуємо
+\begin{equation*}
+	\rot\left(\Efield+\frac1c\parttime{\vect A}\right) = 0.
+\end{equation*}
+Оскільки ротор цього виразу тотожно дорівнює нулю, сам вираз можна подати як градієнт деякої скалярної функції $-\phi$:
+\begin{equation}\label{eq:EFromPotentials}
+	\tcbhighmath{
+		\Efield = -\grad\phi - \frac1c\frac{\partial\vect A}{\partial t}.
+	}
+\end{equation}
+У випадку сталих у часі полів $\parttime{\vect A}=0$, і $\Efield=-\grad\phi$ --- введена тут функція $\phi$ природно збігається зі звичним
+скалярним потенціалом електростатики.
+
+\begin{Attention}
+	Формула~\eqref{eq:EFromPotentials} показує, що в загальному, нестаціонарному випадку електричне поле визначається \emphx{не тільки}
+	скалярним потенціалом $\phi$ (як в електростатиці), а й швидкістю зміни вектор-потенціала $\vect A$: частина $\Efield$ породжується не
+	зарядами напряму, а через посередництво змінного магнітного поля --- це і є, по суті, вихрова, \enquote{індукційна} частина електричного
+	поля, з якою ми вже зустрічались у гл.~\ref{ElMagInduction}.
+\end{Attention}
+
+\subsection*{Стаціонарні поля}
+
+У стаціонарному випадку всі часткові похідні за часом дорівнюють нулю, $\parttime{}=0$, і повна система рівнянь Максвелла розпадається на дві
+\emphx{незалежні} системи --- для електростатики й магнітостатики (рис.~\ref{pic:StaticsComparison}):
+\begin{equation}\label{eq:StaticDecoupling}
+	\underbrace{\begin{cases}
+			\divg\Dfield = 4\pi\rho, \\
+			\rot\Efield = 0
+		\end{cases}}_\text{електростатика} \qquad\qquad
+	\underbrace{\begin{cases}
+			\divg\Bfield = 0, \\
+			\rot\Hfield = \dfrac{4\pi}c\vect j
+		\end{cases}}_\text{магнітостатика}.
+\end{equation}
+
+\begin{figure}[h!]\centering
+	\localinput{statics-comparison.tikz}
+	\caption{У стаціонарному випадку електричне й магнітне поля \enquote{не знають} одне про
+		одного\label{pic:StaticsComparison}}
+\end{figure}
+
+\begin{Attention}
+	Це --- глибокий концептуальний висновок: усі розділи курсу, які передували цьому (електростатика, магнітостатика), --- не окремі теорії, а
+	лише \emphx{частинні випадки} єдиної теорії електромагнітного поля Максвелла, що виникають у граничному випадку, коли поля не залежать від
+	часу. \emphx{Зв'язок} електрики й магнетизму (взаємне породження одне одного) --- принципово \emphx{нестаціонарне} явище, яке зникає, щойно
+	всі процеси застигають у часі.
+\end{Attention}
+
+\subsection*{Матеріальні рівняння}
+
+Рівняння Максвелла --- це рівняння \emphx{загальної} структури поля; щоб розв'язати конкретну задачу, їх необхідно доповнити
+\emphx{матеріальними рівняннями}, що пов'язують поля $\Dfield$ та $\Efield$, з одного боку, і $\Hfield$ та $\Bfield$ --- з іншого, і залежать від
+властивостей конкретного середовища (табл.~\ref{tab:ConstitutiveRelations}).
+
+\begin{table}[h!]\small\centering
+	\caption{Матеріальні рівняння\label{tab:ConstitutiveRelations}}
+	\begin{tabular}{ll}
+		\toprule
+		Вектор індукції електричного поля                                & $\Dfield = \Efield+4\pi\vect P$                        \\
+		Поляризація (лінійні ізотропні речовини)                        & $\vect P = \chi_e\Efield$                              \\
+		Діелектрична проникність (лінійні ізотропні речовини)           & $\epsilon = 1+4\pi\chi_e$                              \\
+		Зв'язок $\Dfield$ та $\Efield$ (лінійні ізотропні речовини)      & $\Dfield = \epsilon\Efield$                            \\
+		\midrule
+		Вектор напруженості магнітного поля                              & $\Hfield = \Bfield-4\pi\vect J$                        \\
+		Намагніченість (лінійні ізотропні речовини)                     & $\vect J = \chi_m\Hfield$                              \\
+		Магнітна проникність (лінійні ізотропні речовини)               & $\mu = 1+4\pi\chi_m$                                   \\
+		Зв'язок $\Hfield$ та $\Bfield$ (лінійні ізотропні речовини)      & $\Bfield = \mu\Hfield$                                 \\
+		\midrule
+		Закон Ома в провідному середовищі                                & $\vect j = \lambda\Efield$                             \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\subsection*{Граничні умови}
+
+Диференціальні рівняння Максвелла необхідно доповнити граничними умовами на межі розділу двох середовищ; ці умови неявно містяться в
+\emphx{інтегральній} формі рівнянь Максвелла і виводяться з них тим самим способом (циліндр Гаусса, контур циркуляції), що й у попередніх
+розділах курсу. Граничні умови для змінних полів мають \emphx{той самий вигляд}, що й для стаціонарних (табл.~\ref{tab:BoundaryConditionsFull}).
+
+\begin{table}[h!]\small\centering
+	\caption{Граничні умови для електромагнітного поля\label{tab:BoundaryConditionsFull}}
+	\begin{tabular}{ll}
+		\toprule
+		Умови для електричних векторів                              & Умови для магнітних векторів                                                        \\
+		\midrule
+		$D_{2n}-D_{1n} = 4\pi\sigma$                                 & $B_{1n}=B_{2n}$                                                                     \\
+		\midrule
+		$E_{1\tau}=E_{2\tau}$                                        & $\left[\vect n\times\Hfield_2\right]-\left[\vect n\times\Hfield_1\right] = \dfrac{4\pi}c\vect i$ \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+Тут $\sigma$ --- поверхнева густина \emphx{вільних} електричних зарядів, а $\vect i$ --- поверхнева густина струму провідності на межі розділу.
+Якщо поверхневих струмів немає, гранична умова для тангенціальної компоненти $\Hfield$ спрощується:
+\begin{equation*}
+	H_{1\tau} = H_{2\tau}.
+\end{equation*}
+
+%% --------------------------------------------------------
+\section{Енергія електромагнітного поля}
+%% --------------------------------------------------------
+
+\subsection*{Закон збереження енергії електромагнітного поля}
+
+Нехай у деякій області простору присутнє електромагнітне поле й заряджені частинки, що з ним взаємодіють (рис.~\ref{pic:EnergyFlowRegion}). Якщо
+ця система \emphx{замкнена}, її енергія зберігається; якщо ж \emphx{незамкнена}, енергія може як \emphx{втікати} в цю область, так і
+\emphx{витікати} з неї. Якісно закон збереження енергії для такої області можна записати так:
+\begin{equation*}
+	(\text{зміна енергії в об'ємі}) = (\text{рух частинок}) + (\text{потік енергії назовні}),
+\end{equation*}
+або, виражаючи цікаву для нас величину --- енергію, витрачену на рух заряджених частинок:
+\begin{equation*}
+	(\text{рух частинок}) = -(\text{зміна енергії в об'ємі}) - (\text{потік енергії назовні}).
+\end{equation*}
+
+\begin{figure}[h!]\centering
+	\localinput{energy-flow-region.tikz}
+	\caption{Заряджені частинки в області, обмеженій замкненою поверхнею: енергія
+		електромагнітного поля може втікати й витікати крізь цю поверхню\label{pic:EnergyFlowRegion}}
+\end{figure}
+
+Рухати заряджені частинки, як ми твердо встановили ще в гл.~\ref{MagFieldVacuum}, може \emphx{лише електричне} поле (магнітне поле роботи не
+виконує). Енергія, яку електричне поле витрачає на розгін частинок в одиниці об'єму за одиницю часу, --- це якраз джоулева потужність
+$\vect j\cdot\Efield$ (гл.~\ref{SteadyCurrent}).
+
+\subsection*{Виведення закону збереження}
+
+Запишемо закон Максвелла для $\rot\Hfield$~\eqref{eq:CirculationHFull}, розв'язавши його відносно $\vect j$:
+\begin{equation*}
+	\vect j = \frac{c}{4\pi}\rot\Hfield - \frac1c\parttime{\Dfield}.
+\end{equation*}
+Помножимо скалярно обидві частини на $\Efield$:
+\begin{equation*}
+	\vect j\cdot\Efield = \frac{c}{4\pi}\Efield\cdot\rot\Hfield - \frac1{4\pi}\Efield\cdot\parttime{\Dfield}.
+\end{equation*}
+Скористаємось тотожністю векторного аналізу $\Efield\cdot\rot\Hfield = -\divg\left[\Efield\times\Hfield\right] + \Hfield\cdot\rot\Efield$ та
+матеріальним рівнянням $\Dfield=\epsilon\Efield$ (так що $\Efield\cdot\parttime{\Dfield} = \epsilon\Efield\cdot\parttime{\Efield} =
+\parttime{}\left(\tfrac12\epsilon E^2\right)$):
+\begin{equation*}
+	\vect j\cdot\Efield = -\divg\left(\frac{c}{4\pi}\left[\Efield\times\Hfield\right]\right) + \frac{c}{4\pi}\Hfield\cdot\rot\Efield -
+	\parttime{}\left(\frac1{8\pi}\epsilon E^2\right).
+\end{equation*}
+Тепер підставимо закон електромагнітної індукції, $\rot\Efield = -\dfrac1c\parttime{\Bfield}$, і матеріальне рівняння $\Bfield=\mu\Hfield$ (так
+що $\Hfield\cdot\parttime{\Bfield} = \parttime{}\left(\tfrac12\mu H^2\right)$):
+\begin{equation*}
+	\vect j\cdot\Efield = -\divg\left(\frac{c}{4\pi}\left[\Efield\times\Hfield\right]\right) - \parttime{}\left(\frac{\epsilon E^2}{8\pi} +
+	\frac{\mu H^2}{8\pi}\right).
+\end{equation*}
+
+\subsection*{Теорема Пойнтінга}
+
+Проаналізуємо отриманий вираз. Позначимо
+\begin{equation}\label{eq:PoyntingVectorDef}
+	\tcbhighmath{
+		\vect\Pi = \frac{c}{4\pi}\left[\Efield\times\Hfield\right]
+	}
+\end{equation}
+--- \emphx{вектор Пойнтінга}, і $w = \dfrac{\epsilon E^2}{8\pi}+\dfrac{\mu H^2}{8\pi} = \dfrac{\Efield\cdot\Dfield}{8\pi}+\dfrac{\Bfield\cdot\Hfield}{8\pi}$
+--- об'ємну густину енергії електромагнітного поля (сума вже відомих нам електричної й магнітної частин, гл.~\ref{ElEnergy},
+гл.~\ref{ElMagInduction}). Тоді
+\begin{equation}\label{eq:PoyntingTheoremDiff}
+	\tcbhighmath{
+		-\parttime{w} = \divg\vect\Pi + \vect j\cdot\Efield.
+	}
+\end{equation}
+Інтегруючи по довільному об'єму $V$, обмеженому поверхнею $S$, і застосовуючи теорему Остроградського--Гаусса, отримуємо \emphx{інтегральну}
+форму --- \emphx{теорему Пойнтінга}:
+\begin{equation}\label{eq:PoyntingTheoremInt}
+	\tcbhighmath{
+		-\frac{dW}{dt} = \oiint\limits_S \vect\Pi\cdot d\vect S + \iiint\limits_V \vect j\cdot\Efield\, dV.
+	}
+\end{equation}
+
+\begin{Attention}
+	\emphx{Теорема Пойнтінга:} зменшення енергії електромагнітного поля за одиницю часу в даному об'ємі дорівнює сумі потоку енергії крізь
+	поверхню, що обмежує цей об'єм, і потужності, яку сили поля виконують над зарядами речовини всередині об'єму. \emphx{Вектор Пойнтінга}
+	$\vect\Pi$ визначає кількість енергії поля, що протікає крізь одиничну площадку за одиницю часу, і вказує \emphx{напрям} руху енергії
+	електромагнітного поля в просторі --- поняття, яке в статичних задачах електростатики й магнітостатики окремо просто не мало сенсу.
+\end{Attention}
+
+\subsection*{Про одиниці вимірювання}
+
+У гауссовій системі одиниць
+\begin{equation*}
+	\left[\Pi\right] = \frac{\text{ерг}}{\text{см}^2\cdot\text{с}}, \qquad \left[w\right] = \frac{\text{ерг}}{\text{см}^3};
+\end{equation*}
+для порівняння, у СІ вектор Пойнтінга (там його частіше позначають $\vect S$) вимірюється у Вт/м$^2$, а густина енергії --- у Дж/м$^3$.
+
+%% --------------------------------------------------------
+\subsection*{Приклад 1: зарядка конденсатора}
+%% --------------------------------------------------------
+
+Плоский конденсатор з пластинами радіуса $R$ заряджається струмом $I$ від зовнішнього джерела (рис.~\ref{pic:CapacitorPoynting}). Якщо в деякий
+момент заряд на нижній пластині дорівнює $q$, то вектор індукції всередині конденсатора
+\begin{equation}\label{eq:CapacitorD}
+	D = 4\pi\sigma = \frac{4\pi q}{\pi R^2},
+\end{equation}
+напрямлений від нижньої пластини до верхньої. Густина струму зміщення в конденсаторі:
+\begin{equation*}
+	j_\text{зм} = \frac{\dot D}{4\pi} = \frac{\dot q}{\pi R^2}.
+\end{equation*}
+Цей струм породжує в конденсаторі магнітне поле, яке знаходимо за теоремою про циркуляцію, взявши за контур $L$ коло радіуса $r$ з центром на
+осі конденсатора:
+\begin{equation*}
+	2\pi r H(r) = \frac{4\pi}{c}\pi r^2 j_\text{зм}(r) \quad\Rightarrow\quad H(r) = \frac{2r}{cR^2}\dot q.
+\end{equation*}
+Оскільки конденсатор заряджається ($\dot q>0$), струм зміщення напрямлений від нижньої обкладки до верхньої, а силові лінії $\Hfield$
+охоплюють вісь конденсатора за правилом правого гвинта (рис.~\ref{pic:CapacitorPoynting}).
+
+\begin{figure}[h!]\centering
+	\localinput{capacitor-poynting.tikz}
+	\caption{Поля $\Efield$, $\Hfield$ і вектор Пойнтінга $\vect\Pi$ при зарядці плоского
+		конденсатора\label{pic:CapacitorPoynting}}
+\end{figure}
+
+Вектор Пойнтінга $\vect\Pi=\dfrac{c}{4\pi}\left[\Efield\times\Hfield\right]$ спрямований \emphx{до осі} конденсатора (перпендикулярно до бічної
+поверхні, всередину) і дорівнює за величиною на межі ($r=R$):
+\begin{equation*}
+	\Pi = \frac{c}{4\pi}EH = \frac{c}{4\pi}\left(\frac{4\pi q}{\epsilon\pi R^2}\right)\left(\frac{2\dot q}{cR}\right) = \frac1{\epsilon\pi
+	R^2}\, 2q\dot q.
+\end{equation*}
+Якщо відстань між пластинами дорівнює $h$, енергія, що втікає в конденсатор за одиницю часу (крізь бічну поверхню площею $2\pi Rh$):
+\begin{equation*}
+	\frac{dW}{dt} = \Pi\cdot 2\pi Rh = \frac1{\epsilon\pi R^2}\, q\dot q\cdot 2\pi Rh = \frac{q\dot q}{C},
+\end{equation*}
+де $C=\epsilon\pi R^2/(4\pi h)$ --- ємність конденсатора (гл.~\ref{ElEnergy}). За кінцевий час, коли заряд на пластині досягає значення $q$,
+енергія, що втекла в конденсатор ззовні, становить
+\begin{equation}\label{eq:CapacitorEnergyResult}
+	\tcbhighmath{
+		W = \frac{q^2}{2C}
+	}
+\end{equation}
+--- ми прийшли, зовсім іншим шляхом, до вже відомої формули для енергії зарядженого конденсатора~\eqref{eq:CapacitorEnergy}!
+
+\begin{Attention}
+	Цей результат надзвичайно повчальний: вся енергія, що зрештою запасається в електричному полі \emphx{всередині} конденсатора, насправді
+	\emphx{втекла туди ззовні} --- крізь бічну поверхню, а не \emphx{вздовж} проводів чи вздовж силових ліній $\Efield$! Теорема Пойнтінга дає
+	абсолютно \emphx{однакову} відповідь на запитання про енергію конденсатора, що й \enquote{наївний} підхід через роботу джерела
+	(гл.~\ref{ElEnergy}), --- але картина \emphx{шляху}, яким ця енергія потрапляє в конденсатор, виявляється зовсім іншою й набагато глибшою.
+\end{Attention}
+
+%% --------------------------------------------------------
+\subsection*{Приклад 2: довгий провідник}
+%% --------------------------------------------------------
+
+Розглянемо довгий прямий провід радіуса $R$ і довжини $\ell$, яким тече струм $I$ (рис.~\ref{pic:WirePoynting}). На зовнішній поверхні проводу
+присутнє магнітне поле $H = 2I/(cR)$ (гл.~\ref{MagFieldVacuum}). Струм у проводі виникає завдяки напрузі $U$ на його кінцях, що створює всередині
+(і, за неперервністю тангенціальної складової, на поверхні) поле $E = U/\ell$.
+
+\begin{figure}[h!]\centering
+	\localinput{wire-poynting.tikz}
+	\caption{Поля $\Efield$, $\Hfield$ і вектор Пойнтінга $\vect\Pi$ на поверхні довгого
+		провідника зі струмом\label{pic:WirePoynting}}
+\end{figure}
+
+Вектор Пойнтінга виявляється спрямованим \emphx{до осі} провідника й дорівнює за величиною
+\begin{equation*}
+	\Pi = \frac{c}{4\pi}EH = \frac{c}{4\pi}\cdot\frac{U}{\ell}\cdot\frac{2I}{cR} = \frac1{2\pi\ell R}\,UI.
+\end{equation*}
+Оскільки площа бічної поверхні провідника дорівнює $S=2\pi\ell R$, повний потік енергії, що втікає в провідник, становить $\Pi S = UI$ --- це в
+точності та сама потужність, що йде на джоулеві втрати в проводі: $\Pi S = \mathcal P = UI$ (гл.~\ref{SteadyCurrent}).
+
+\begin{Attention}
+	Цей результат --- один із найбільш контрінтуїтивних, але при цьому й найглибших висновків класичної електродинаміки: \emphx{електрони
+		отримують енергію, потрібну для подолання опору й виділення тепла, не \enquote{вздовж} проводу від джерела, а ззовні, з поля, що оточує
+		провід}! Енергія, віддана далеким джерелом (батареєю), якимось чином \enquote{розтікається} через навколишній простір і \emphx{втікає}
+	всередину провідника крізь його бічну поверхню, а сам провід відіграє роль лише напрямної труби для цього потоку енергії, а не
+	\enquote{кабелю}, яким енергія тече вздовж. Це разюче суперечить наївному (але дуже поширеному) уявленню, ніби енергія \enquote{тече по
+		дротах} так само, як вода тече по трубі.
+\end{Attention}
+
+%% --------------------------------------------------------
+\section{Скін-ефект}
+%% --------------------------------------------------------
+
+\subsection*{Означення та наслідки}
+
+\emphx{Скін-ефектом} (від англ. \emph{skin} --- шкіра) називають протікання струмів високої частоти переважно в тонкому поверхневому шарі
+провідника (рис.~\ref{pic:SkinIllustration}).
+
+\begin{figure}[h!]\centering
+	\localinput{skin.tikz}
+	\caption{Зменшення ефективної товщини струмонесучого шару зі зростанням
+		частоти\label{pic:SkinIllustration}}
+\end{figure}
+
+Скін-ефект має кілька важливих практичних наслідків:
+\begin{itemize}
+	\item зменшується \emphx{діюча} площа перерізу провідника, а отже, \emphx{зростає} його опір на змінному струмі;
+	\item \emphx{зменшується} індуктивність провідника: оскільки за сильного скін-ефекту струму (а отже, і магнітного поля) всередині
+	      провідника практично немає, магнітна енергія стає меншою на величину енергії поля, яка раніше запасалась усередині провідника;
+	\item електромагнітна хвиля, що потрапляє на поверхню провідника (металу, електроліту, плазми), швидко загасає вглиб нього, проникаючи лише
+	      на невелику глибину --- саме тому \emphx{провідники добре відбивають світло}.
+\end{itemize}
+
+\subsection*{Якісне пояснення}
+
+Змінний струм у провіднику породжує змінне вихрове магнітне поле, силові лінії якого перпендикулярні до осі провідника
+(рис.~\ref{pic:SkinEffectQualitative}). Це змінне магнітне поле, своєю чергою, породжує вихрове електричне поле (гл.~\ref{ElMagInduction}), що
+спричиняє в товщі провідника струми Фуко: на \emphx{поверхні} провідника вихровий струм напрямлений \emphx{у той самий бік}, що й основний струм
+провідності (і \emphx{підсилює} його там), а \emphx{всередині} провідника --- у \emphx{протилежний} бік (і \emphx{послаблює} струм у серцевині).
+У результаті струм \emphx{витісняється} з осі провідника до його поверхні.
+
+\begin{figure}[h!]\centering
+	\localinput{skin-effect.tikz}
+	\caption{Якісний механізм скін-ефекту: вихрові струми Фуко підсилюють струм на поверхні й
+		послаблюють у центрі провідника\label{pic:SkinEffectQualitative}}
+\end{figure}
+
+\subsection*{Чому в металах нехтують струмами зміщення}
+
+У провіднику густина струму провідності й напруженість поля пов'язані законом Ома, $\vect j = \lambda\Efield$. Якщо поле в провіднику змінюється
+гармонічно, $\Efield=\Efield_0\cos(\omega t)$, то поряд зі струмом провідності виникає й струм зміщення:
+\begin{equation*}
+	\vect j_\text{зм} = \frac{\epsilon}{4\pi}\parttime{\Efield} = \frac{\epsilon\omega}{4\pi}E_0\cos\left(\omega t+\frac\pi2\right),
+\end{equation*}
+величину $\dfrac{\epsilon\omega}{4\pi}$ можна формально трактувати як \enquote{питому провідність} для струмів зміщення. Для типових металів
+провідність $\lambda = 10^{15}$--$10^{17}$~с$^{-1}$ (гауссова система), а типова діелектрична проникність металів --- порядку $10$--$100$; тому аж
+до частот порядку $10^{13}$~Гц виконується нерівність
+\begin{equation}\label{eq:SkinDisplacementNegligible}
+	\frac{\epsilon\omega}{4\pi} \ll \lambda,
+\end{equation}
+тобто у широкому діапазоні частот струми зміщення \emphx{не відіграють істотної ролі} у металах порівняно зі струмами провідності --- саме тому
+надалі, аналізуючи скін-ефект у металах, ми зможемо ними знехтувати.
+
+\subsection*{Строге виведення глибини проникнення}
+
+Виведемо глибину проникнення поля в провідник, спираючись безпосередньо на рівняння Максвелла (а не на якісні міркування). Нехай $\epsilon=\const$,
+$\mu=\const$; у провіднику немає некомпенсованого об'ємного заряду, тому теорема Гаусса дає $\divg\Efield=0$. З урахуванням закону Ома, а також
+знехтувавши, за щойно встановленою нерівністю~\eqref{eq:SkinDisplacementNegligible}, струмом зміщення, рівняння Максвелла в металі набувають
+вигляду
+\begin{equation*}
+	\rot\Efield = -\frac{\mu}c\parttime{\Hfield}, \qquad \rot\Hfield = \frac{4\pi\lambda}{c}\Efield, \qquad \divg\Efield=0, \quad \divg\Hfield=0.
+\end{equation*}
+Виключимо $\Hfield$: застосуємо операцію $\rot$ до першого рівняння й підставимо друге:
+\begin{equation*}
+	\rot\rot\Efield = -\frac{\mu}c\parttime{}\left(\rot\Hfield\right) = -\frac{4\pi\mu\lambda}{c^2}\parttime{\Efield}.
+\end{equation*}
+З іншого боку, за тотожністю векторного аналізу і з урахуванням $\divg\Efield=0$: $\rot\rot\Efield = \grad(\divg\Efield)-\nabla^2\Efield =
+-\nabla^2\Efield$. Прирівнюючи, отримуємо \emphx{рівняння скін-ефекту}:
+\begin{equation}\label{eq:SkinWaveEquation}
+	\tcbhighmath{
+		\nabla^2\Efield = \frac{4\pi\mu\lambda}{c^2}\parttime{\Efield}.
+	}
+\end{equation}
+
+\subsection*{Оцінка глибини проникнення}
+
+Рівняння~\eqref{eq:SkinWaveEquation} за математичною формою збігається з рівнянням \emphx{дифузії}, $\nabla^2 F = D\parttime{F}$, з коефіцієнтом
+дифузії $D = c^2/(4\pi\mu\lambda)$. Якщо на поверхні речовини діє джерело, то за час $\tau$ \enquote{хвиля дифузії} проникає на глибину
+$\delta=\sqrt{D\tau}$; якщо джерело діє періодично з періодом $T=2\pi/\omega$, слід узяти $\tau\approx T$, звідки отримуємо \emphx{оцінку} для
+глибини проникнення:
+\begin{equation}\label{eq:SkinDepthEstimate}
+	\delta \sim \frac{c}{\sqrt{4\pi\lambda\mu\omega}}.
+\end{equation}
+
+Переконаємось, що ця оцінка, з точністю до числового множника, дійсно правильна, застосувавши безпосередньо рівняння Максвелла в інтегральній
+формі до тонкого приповерхневого шару завтовшки $\delta$.
+
+\emphx{Циркуляція $\Efield$.} Розглянемо прямокутний контур $L$ висотою $h$ і завширшки $\delta$ уздовж осі провідника
+(рис.~\ref{pic:SkinEstimate1}). За законом електромагнітної індукції, $Eh = -\dfrac1c\dfrac{\Delta\Phi}{\Delta t}$, де магнітний потік крізь цей
+контур $\Phi = -BS = -\mu H h\delta$ (поле $H$ спадає до нуля на глибині $\delta$), а швидкість його зміни за порядком величини $\Delta\Phi/\Delta
+t \approx \omega\Phi$ ($\omega\sim1/T$ --- частота зміни струму). Тому
+\begin{equation}\label{eq:SkinCirculationE}
+	Eh \sim \frac1c\mu H\omega h\delta \quad\Rightarrow\quad E \sim \frac{\mu H\omega\delta}{c}.
+\end{equation}
+
+\begin{figure}[h!]\centering
+	\localinput{skin-estimate-1.tikz}
+	\caption{Контур для оцінки циркуляції $\Efield$ поблизу поверхні провідника\label{pic:SkinEstimate1}}
+\end{figure}
+
+\emphx{Циркуляція $\Hfield$.} Тепер розглянемо контур $L$ на поперечному перерізі провідника, завдовжки $\ell$ уздовж поверхні й завширшки
+$\delta$ углиб (рис.~\ref{pic:SkinEstimate2}). За теоремою про циркуляцію, $H\ell = \dfrac{4\pi}{c}j\ell\delta$, а з огляду на закон Ома,
+$j=\lambda E$:
+\begin{equation}\label{eq:SkinCirculationH}
+	H \sim \frac{4\pi\lambda}{c}E\delta.
+\end{equation}
+
+\begin{figure}[h!]\centering
+	\localinput{skin-estimate-2.tikz}
+	\caption{Контур для оцінки циркуляції $\Hfield$ на перерізі провідника\label{pic:SkinEstimate2}}
+\end{figure}
+
+Підставляючи~\eqref{eq:SkinCirculationH} в~\eqref{eq:SkinCirculationE}:
+\begin{equation*}
+	E \sim \frac{4\pi\mu\lambda\omega\delta^2}{c^2}\, E,
+\end{equation*}
+звідки, скорочуючи на $E$, отримуємо \emphx{глибину скін-шару}:
+\begin{equation}\label{eq:SkinDepthFinal}
+	\tcbhighmath{
+		\delta = \frac{c}{\sqrt{4\pi\lambda\mu\omega}}
+	}
+\end{equation}
+--- той самий результат, що й дала якісна оцінка через аналогію з дифузією~\eqref{eq:SkinDepthEstimate}, тепер уже виведений із перших принципів
+(з точністю до числового множника порядку одиниці, який строгий розв'язок хвильового рівняння~\eqref{eq:SkinWaveEquation} підтверджує рівним
+точно $1/\sqrt{4\pi}$).
+
+\begin{Attention}
+	Отримана формула для $\delta$ --- це результат оцінки \enquote{за порядком величини}, побудованої на спрощених контурних міркуваннях, а не
+	точний математичний розв'язок. Числовий коефіцієнт $1/\sqrt{4\pi}$ у ній --- радше щасливий збіг оцінки з точним результатом, ніж
+	закономірність: строгий аналіз, що спирається безпосередньо на розв'язання хвильового рівняння~\eqref{eq:SkinWaveEquation} (комплексним
+	методом, з експоненційно загасаючим розв'язком $E\propto e^{-x/\delta}\cos(\omega t - x/\delta)$), підтверджує цей самий результат із високою
+	точністю й для різних геометрій. Але в загальному випадку оцінковий підхід не \emphx{гарантує} правильного числового коефіцієнта --- лише
+	правильний порядок величини й правильну залежність від параметрів задачі ($\delta\propto 1/\sqrt{\lambda\mu\omega}$), і збіг тут варто
+	сприймати саме так.
+\end{Attention}
+
+\begin{table}[h!]\small\centering
+	\caption{Глибина скін-шару для деяких металів на частоті $10$~ГГц}
+	\begin{tabular}{lc}
+		\toprule
+		Метал         & Глибина скін-шару, мкм \\
+		\midrule
+		Мідь (\ce{Cu})   & 0.652                    \\
+		Срібло (\ce{Ag}) & 0.634                    \\
+		Золото (\ce{Au}) & 0.753                    \\
+		Алюміній (\ce{Al})& 0.652                   \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\subsection*{Застосування скін-ефекту в техніці}
+
+Існування скін-ефекту завжди враховують у техніці швидкозмінних струмів. Оскільки такі струми практично не йдуть у глибині провідника, лінії
+електропередач для них \emphx{виготовляють із порожнистих труб} --- економлячи метал без істотної втрати в опорі. У радіотехніці надвисоких частот
+багато деталей (хвилеводи, коаксіальні лінії) покривають тонким, добре провідним шаром срібла, оскільки їхній опір практично повністю
+визначається лише поверхневим шаром. Скін-ефект у поєднанні з нагріванням вихровими струмами (гл.~\ref{ElMagInduction}) використовують і для
+\emphx{поверхневого загартування сталі}: деталі піддають дії змінних струмів і потім швидко охолоджують, унаслідок чого розігрів і загартування
+відбуваються лише в поверхневому шарі, а основна маса деталі лишається незагартованою --- це дає вироби з високою стійкістю до стирання поверхні,
+але без крихкості, властивої звичайному наскрізному загартуванню.
+
+%% --------------------------------------------------------
+\section*{Про рівняння Максвелла}
+
+\begin{figure}[h!]\centering
+	\includegraphics[width=0.35\linewidth]{Hertz}
+	\caption{Генріх Рудольф Герц (1857--1894) --- перший експериментально отримав
+		електромагнітні хвилі, теоретично передбачені Максвеллом\label{pic:Hertz}}
+\end{figure}
+
+\begin{quote}\itshape
+	Неможливо позбутися відчуття, що математичні формули живуть власним життям і володіють власним розумом, що вони розумніші за нас, розумніші
+	навіть за тих, хто їх відкрив, що ми отримуємо з цих формул більше, ніж у них було спочатку закладено\ldots
+\end{quote}
+
+%% --------------------------------------------------------
+\section*{Вершина класичної науки}
+
+\emphx{Теорія Максвелла --- це вершина класичної науки про електромагнітне поле}. До цієї висоти ми піднімалися крок за кроком, уточнюючи поняття
+й розкриваючи глибинні принципи цієї науки: кожен пройдений розділ --- електростатика, закони постійного струму, магнітостатика --- був немов
+базовий табір на шляху до вершини.
+
+На вершині перед нами постають рівняння Максвелла --- велична симфонія електричного й магнітного полів, ключ до розуміння електромагнітної
+взаємодії. Але шлях науки триває: з вершини ми спускаємось у простір застосувань --- досліджуємо поширення електромагнітних хвиль, принципи
+випромінювання й закладаємо основи оптики, радіо- й електротехніки. Ця подорож --- не лише тріумф інтелекту, а й людського духу, що прагне
+підкорювати вершини й відкривати нові горизонти.
+
+\begin{figure}[h!]\centering
+	\includegraphics[height=3.5cm]{ontop}
+	\caption{На вершині класичної електродинаміки\label{pic:OnTop}}
+\end{figure}
+
+%% --------------------------------------------------------
+\section{Підсумки розділу}
+%% --------------------------------------------------------
+
+\begin{table}[h!]\small\centering
+	\caption{Повна система рівнянь електродинаміки}
+	\begin{tabular}{lll}
+		\toprule
+		Струм зміщення & $\vect j_\text{зм} = \dfrac1{4\pi}\parttime{\Dfield}$ & \\
+		\midrule
+		\multicolumn{2}{l}{Рівняння Максвелла (диференціальна форма)} & \\
+		$\divg\Bfield=0$ & $\rot\Efield=-\dfrac1c\parttime{\Bfield}$ & \\
+		$\divg\Dfield=4\pi\rho$ & $\rot\Hfield=\dfrac{4\pi}c\vect j+\dfrac1c\parttime{\Dfield}$ & \\
+		\midrule
+		\multicolumn{2}{l}{Матеріальні рівняння} & $\Dfield=\epsilon\Efield$,\ \ $\Bfield=\mu\Hfield$,\ \ $\vect j=\lambda\Efield$ \\
+		\midrule
+		Вектор Пойнтінга & $\vect\Pi = \dfrac{c}{4\pi}\left[\Efield\times\Hfield\right]$ & \\
+		Теорема Пойнтінга & $-\parttime{w} = \divg\vect\Pi+\vect j\cdot\Efield$ & \\
+		Глибина скін-шару & $\delta = \dfrac{c}{\sqrt{4\pi\lambda\mu\omega}}$ & \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\begin{Attention}
+	Уся будівля класичної електродинаміки, зведена нами розділ за розділом --- від закону Кулона до струму зміщення, --- вміщується тепер у
+	чотирьох компактних рівняннях Максвелла, доповнених трьома матеріальними рівняннями середовища. Ці чотири рівняння містять \emphx{усе}:
+	електростатику й магнітостатику як окремі стаціонарні випадки, закон Ома як наслідок для провідних середовищ, електромагнітну індукцію й
+	струм зміщення як дві половини єдиної симетрії, --- і, як буде показано далі, \emphx{електромагнітні хвилі} й саме \emphx{світло} як прямий
+	наслідок цих же рівнянь у вакуумі. Саме в цьому й полягає та \enquote{глибина, що виявляється тільки при ретельному вивченні}, про яку писали
+	Ейнштейн та Інфельд: прості на вигляд чотири рівняння виявляються не описом окремого явища, а повною структурою одного з фундаментальних
+	полів природи.
+\end{Attention}

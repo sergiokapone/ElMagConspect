@@ -1,0 +1,10 @@
+% Адаптовано з MaxwellEqns.tex (слайд "Радіальне стікання заряду з кулі")
+\begin{tikzpicture}[>=latex]
+	\draw[ball color=red!50] (0, 0) circle[radius=0.5cm];
+	\draw[dashed] (0, 0) circle[radius=0.75cm];
+	\foreach \a in {0,45,...,340}{
+			\draw[brown, ->] (0,0) ++(\a:0.75) -- ++(\a:0.25) node[anchor={180+\a}] {$I$};
+			\draw[orange, <-] (0,0) ++({\a+45/2}:0.75) -- ++({\a+45/2}:0.25)
+			node[anchor={180+\a+45/2}] {$I_\text{зм}$};
+		}
+\end{tikzpicture}

@@ -1,0 +1,44 @@
+\begin{tikzpicture}[>=latex, scale=0.75,
+		bord/.style = {rectangle, fill=blue,
+				pattern = north east lines,
+				minimum width=5mm, minimum height=25mm,
+				yshift=15mm,
+				node contents={}},
+		mass/.style = {circle, minimum width=2*0.05, fill=red},
+		spring/.style = {thick,decorate,decoration={zigzag,
+						segment length = 1mm,
+						amplitude=0.7mm,
+						pre length=1mm, post length=1mm}
+			},
+	]
+
+	% Начальная точка
+	\coordinate (m0) at (0,0);
+
+	% Создаём узлы и соединяем их
+	\foreach \i [evaluate=\i as \x using \i*pi/2, evaluate=\i as \y using sin(deg(\x)), count=\j from -1] in {0,...,6} {
+			% Создаём массы на синусоиде
+			\node[mass] (m\i) at (\x, 0) {};
+			\node[mass, opacity=0.1] (um\i) at (\x, \y) {};
+
+			% Рисуем стрелки вверх/вниз для нечётных узлов
+			\ifodd\i
+				\draw[->] (m\i) --++(0, {(-1)^((\i-1)/2)}) node[left, pos=0.5] {$u$};
+			\fi
+
+			% Соединяем соседние узлы пружинами
+			\ifnum\i>0
+				\draw[spring, opacity=0.1] (um\j) -- (um\i);
+				\draw[spring] (m\j) -- (m\i);
+			\fi
+
+			\ifnum\i=1
+				\draw[->, blue] (um\i) --++(1, 0) node[above] {$\vect{v}$};
+			\fi
+		}
+
+	% Рисуем синусоиду
+	\draw[samples=100, domain=0:6*pi/2, smooth] plot(\x, {sin(deg(\x))});
+	\draw[->] (0, -1.2) -- (6*pi/2, -1.2) node[below] {$x$};
+
+\end{tikzpicture}
