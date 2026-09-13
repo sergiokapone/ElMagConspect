@@ -1,0 +1,7 @@
+% Адаптовано з Radiation.tex (слайд "Випромінювання рухомого заряду")
+\begin{tikzpicture}[>=latex]
+	\node[circle, inner sep=0pt, minimum size=1cm, ball color=red, text=white] (+q) at (0,0) {$+q$};
+	\node[circle, inner sep=0pt, minimum size=0.25cm, ball color=blue, text=white] (-q) at (5:4) {};
+	\node[above] at (-q) {$-q$};
+	\draw[-latex] (+q) -- node[anchor=south east] {$\vect{r}'$} (-q);
+\end{tikzpicture}

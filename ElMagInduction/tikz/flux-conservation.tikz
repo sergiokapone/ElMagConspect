@@ -8,7 +8,7 @@
 		\draw[red, line width=2pt, arrowpos={0.5}{3pt}{7pt}] (0,0) ++(180:1) arc[start angle=180, end
 			angle=360, x radius=1cm, y radius=0.3cm];
 	\end{scope}
-	\begin{scope}[yshift=-4.3cm]
+	\begin{scope}[xshift=4cm]
 		\draw[red, line width=2pt] (1,0) circle[x radius=1cm, y radius=0.3cm];
 		\foreach[count=\i from -2] \x in {-0.8,-0.4,...,1} {
 				\begin{scope}[blue, thick, xshift=\x cm]

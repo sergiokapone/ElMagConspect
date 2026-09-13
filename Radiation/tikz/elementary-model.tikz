@@ -1,0 +1,63 @@
+% Адаптовано з Radiation.tex (слайд "Випромінювання заряду")
+\begin{tikzpicture}[
+        scale=1.5,
+		>=latex,
+		chp/.style = {
+				circle,
+				inner sep=1pt,
+				ball color=red,
+				font=\tiny\mathstrut\bfseries,
+				text=white,
+				inner sep=0pt
+			},
+		mydash/.style = {
+				dash pattern={on 1pt off 0.5pt}
+			},
+		myarrow/.style = {
+				->,
+				red
+			},
+		mytext/.style = {
+				align=center,
+				text width=#1,
+				font=\scriptsize\itshape,
+				inner sep=0
+			}
+	]
+	\def\r{1.8}
+	\def\R{2}
+	\def\d{0.5}
+	\def\arrowLength{1}
+	\def\angles{0,22.5,...,340}
+
+	\node[chp, opacity=0.5] (q) at (0,0) {$+$};
+	\node[chp] (q') at (0,\d) {$+$};
+
+	\draw[gray, mydash, name path=innerCircle] (q) circle(\r);
+	\draw[gray, mydash] (q) circle(\R);
+
+	\begin{scope}
+		\clip (q) circle(\r);
+		\foreach[count=\i] \angle in \angles {
+				\draw[red, opacity=0.5, name path global=line\i] (q') -- ++(\angle:{\R + \d});
+			}
+	\end{scope}
+
+	\foreach[count=\i] \angle in \angles {
+			\draw[myarrow] (q) ++(\angle:\R) coordinate (endOfLine\i) -- ++(\angle:\arrowLength);
+			\draw[red, name intersections={of=innerCircle and line\i}] (intersection-1) -- (endOfLine\i);
+		}
+
+	\coordinate (innerViewer) at (-40:{\r-0.5});
+	\coordinate (outerViewer) at (220:{\R+0.5});
+	\coordinate (accRegion) at (265:{(\R+\r)/2});
+
+	\node[mytext=1.2cm] (textOuterViewer) at (220:{\R+1.5}) {Зовнішній\\ спостерігач};
+	\draw[->, gray!80] (textOuterViewer) to[bend left] (outerViewer);
+
+	\node[mytext=1.2cm] (textInnerViewer) at (-45:{\R+1.5}) {Внутрішній\\ спостерігач};
+	\draw[->,  gray!80] (textInnerViewer)  to[bend left] (innerViewer);
+
+	\node[mytext=3cm] (textAccRegionViewer) at (-90:{\R+1.6}) {Область випромінювання \\ під час прискорення};
+	\draw[->,  gray!80] (textAccRegionViewer)  to[bend right] (accRegion);
+\end{tikzpicture}

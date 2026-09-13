@@ -22,12 +22,13 @@
 
 \begin{figure}[h!]
 	\centering
-	\begin{minipage}[t]{0.35\linewidth}\centering
-		\includegraphics[height=3cm]{Faraday}\\
+	\begin{minipage}[t]{0.45\linewidth}\centering
+		\includegraphics[height=4cm]{Faraday}\\
 		\footnotesize Майкл Фарадей (1791--1867)
-	\end{minipage}\hfill
-	\begin{minipage}[t]{0.35\linewidth}\centering
-		\includegraphics[height=3cm]{james-clerk-maxwell}\\
+	\end{minipage}
+    \hfill
+	\begin{minipage}[t]{0.45\linewidth}\centering
+		\includegraphics[height=4cm]{james-clerk-maxwell}\\
 		\footnotesize Джеймс Клерк Максвелл (1831--1879)
 	\end{minipage}
 	\caption{Основоположники класичної теорії електромагнітного поля\label{pic:FaradayMaxwell}}
@@ -53,11 +54,11 @@
 	\divg\vect j = 0.
 \end{equation}
 
-\begin{figure}[h!]\centering
+\begin{SCfigure}[1][h!]\centering
 	\localinput{circ_thm.tikz}
 	\caption{Контур $L$, натягнута на нього поверхня $S$ та провідник зі струмом, що її
 		пронизує\label{pic:CircThm}}
-\end{figure}
+\end{SCfigure}
 
 Але, з іншого боку, за законом збереження заряду (рівняння неперервності, гл.~\ref{SteadyCurrent}), якщо густина заряду змінюється з часом,
 $\partial\rho/\partial t \neq 0$, то
@@ -213,17 +214,31 @@ $\Efield(r) = \dfrac{Q(t)}{r^3}\vect r$ (і теж спадає з часом), 
 
 \begin{table}[h!]\small\centering
 	\caption{Система рівнянь Максвелла\label{tab:MaxwellSystem}}
-	\begin{tabular}{lll}
-		\toprule
-		Рівняння                                    & Інтегральна форма                                                                                            & Диференціальна форма                                                    \\
-		\midrule
-		Теорема Гаусса для $\Bfield$                & $\displaystyle\oiint\limits_S\Bfield\cdot d\vect S = 0$                                                     & $\divg\Bfield=0$                                                        \\
-		Циркуляція $\Efield$                        & $\displaystyle\oint\limits_L\Efield\cdot d\vect r = -\frac1c\iint\limits_S\parttime{\Bfield}\cdot d\vect S$ & $\rot\Efield=-\dfrac1c\parttime{\Bfield}$                               \\
-		\midrule
-		Теорема Гаусса для $\Dfield$                 & $\displaystyle\oiint\limits_S\Dfield\cdot d\vect S = 4\pi\!\!\iiint\limits_V\!\!\rho\,dV$                   & $\divg\Dfield=4\pi\rho$                                                 \\
-		Циркуляція $\Hfield$                        & $\displaystyle\oint\limits_L\Hfield\cdot d\vect r = \frac{4\pi}c\iint\limits_S\left(\vect j+\frac1{4\pi}\parttime{\Dfield}\right)\cdot d\vect S$ & $\rot\Hfield=\dfrac{4\pi}c\vect j+\dfrac1c\parttime{\Dfield}$ \\
-		\bottomrule
-	\end{tabular}
+		\begin{tblr}%
+			{
+			colspec={|Q[l,m, 4cm, bg=yellow!10, font=\small]|[1pt, white]X[l,m, bg=red!10]|[1pt, white]Q[l,m, 4cm, bg=blue!10]|},
+			row{1}={c, fg=white, bg=cyan, font=\bfseries\small},
+			cell{2-5}{2-Z}={l, m, mode=dmath, font=\small},
+			%hlines,
+			}
+			\hline
+			Рівняння                                                                 & Інтегральна форма                                                                       & Диференціальна форма \\
+			\hline\hline
+			Теорема Гаусса для магнітного поля                                       & \oiint\limits_S \Bfield\cdot d\vect{S} =  0                                             & \Div\Bfield = 0      \\
+			\hline
+			Теорема про циркуляцію для електричного поля                             & \oint\limits_L \Efield\cdot d\vect{r} = -
+			\frac1c\iint\limits_S \frac{\partial\Bfield}{\partial t} \cdot d\vect{S} & \Rot\Efield = - \frac1c \frac{\partial\Bfield}{\partial t}                                                     \\
+			\hline\hline
+			Теорема Гаусса для електричного поля                                     & \oiint\limits_S \Dfield\cdot d\vect{S} = 4\pi \iiint\limits_{V} \rho dV                 & \Div\Dfield =
+			4\pi\rho                                                                                                                                                                                  \\
+			\hline
+			Теорема про циркуляцію для магнітного поля                               & \oint\limits_L \Hfield\cdot d\vect{r} = \frac{4\pi}{c} \iint\limits_S \left( \vect{j} +
+			\frac1{4\pi}\frac{\partial\Dfield}{\partial t} \right) \cdot d\vect{S}   & \Rot\Hfield = \frac{4\pi}{c}\vect{j} + \frac1c
+			\frac{\partial\Dfield}{\partial
+				t}
+			\\
+			\hline
+		\end{tblr}
 \end{table}
 
 \subsection*{Вираз електричного поля через потенціали}
@@ -292,21 +307,26 @@ $\Efield(r) = \dfrac{Q(t)}{r^3}\vect r$ (і теж спадає з часом), 
 
 \begin{table}[h!]\small\centering
 	\caption{Матеріальні рівняння\label{tab:ConstitutiveRelations}}
-	\begin{tabular}{ll}
-		\toprule
-		Вектор індукції електричного поля                                & $\Dfield = \Efield+4\pi\vect P$                        \\
-		Поляризація (лінійні ізотропні речовини)                        & $\vect P = \chi_e\Efield$                              \\
-		Діелектрична проникність (лінійні ізотропні речовини)           & $\epsilon = 1+4\pi\chi_e$                              \\
-		Зв'язок $\Dfield$ та $\Efield$ (лінійні ізотропні речовини)      & $\Dfield = \epsilon\Efield$                            \\
-		\midrule
-		Вектор напруженості магнітного поля                              & $\Hfield = \Bfield-4\pi\vect J$                        \\
-		Намагніченість (лінійні ізотропні речовини)                     & $\vect J = \chi_m\Hfield$                              \\
-		Магнітна проникність (лінійні ізотропні речовини)               & $\mu = 1+4\pi\chi_m$                                   \\
-		Зв'язок $\Hfield$ та $\Bfield$ (лінійні ізотропні речовини)      & $\Bfield = \mu\Hfield$                                 \\
-		\midrule
-		Закон Ома в провідному середовищі                                & $\vect j = \lambda\Efield$                             \\
-		\bottomrule
-	\end{tabular}
+		\begin{tblr}%
+			{
+			colspec={|X[l,m, bg=yellow!10, font=\small]|[1pt, white]Q[l,m, 0.2\linewidth,bg=red!10]|},
+			row{1}={c, fg=white, bg=cyan, font=\bfseries},
+			cell{2-Z}{2-Z}={l, m, mode=dmath, font=\small},
+			hlines,
+			}
+			                                                                                           & Вираз                            \\
+			Вектор індукції електричного поля                                                          & \Dfield = \Efield + 4\pi\vect{P} \\
+			Вектор поляризації (для лінійних ізотропних речовин)                                       & \vect{P} = \chi_e\Efield         \\
+			Діелектрична проникніть  (для лінійних ізотропних речовин)                                 & \epsilon = 1 + 4\pi \chi_e       \\
+			Зв'язок $\Dfield$ та $\Efield$ (для лінійних ізотропних речовин)                           & \Dfield = \epsilon\Efield        \\
+			\hline
+			Вектор напруженості магнітного поля                                                        & \Hfield = \Bfield - 4\pi\vect{J} \\
+			Вектор намагнічування (для лінійних ізотропних речовин)                                    & \vect{J} = \chi_e\Hfield         \\
+			Магнітна проникніть  (для лінійних ізотропних речовин)                                     & \mu = 1 + 4\pi \chi_m            \\
+			Зв'язок $\Hfield$ та $\Bfield$ (для лінійних ізотропних речовин)                           & \Bfield = \mu\Hfield             \\
+			\hline
+			У разі струму, спричиненого електричним полем у провідному середовищі, має місце закон Ома & \vect{j} = \lambda\Efield
+		\end{tblr}
 \end{table}
 
 \subsection*{Граничні умови}
@@ -317,15 +337,28 @@ $\Efield(r) = \dfrac{Q(t)}{r^3}\vect r$ (і теж спадає з часом), 
 
 \begin{table}[h!]\small\centering
 	\caption{Граничні умови для електромагнітного поля\label{tab:BoundaryConditionsFull}}
-	\begin{tabular}{ll}
-		\toprule
-		Умови для електричних векторів                              & Умови для магнітних векторів                                                        \\
-		\midrule
-		$D_{2n}-D_{1n} = 4\pi\sigma$                                 & $B_{1n}=B_{2n}$                                                                     \\
-		\midrule
-		$E_{1\tau}=E_{2\tau}$                                        & $\left[\vect n\times\Hfield_2\right]-\left[\vect n\times\Hfield_1\right] = \dfrac{4\pi}c\vect i$ \\
-		\bottomrule
-	\end{tabular}
+		\begin{tblr}%
+			{
+			colspec={|X[l,m, bg=yellow!10, font=\small]|[1pt, white]X[c,m, bg=red!10]|},
+			row{1}={c, fg=white, bg=cyan, font=\bfseries},
+			cell{2-Z}{1-Z}={c, m, mode=dmath, font=},
+			%hlines,
+			}
+			\hline
+			Умови для електричних векторів & Умови для магнітних векторів \\
+			\hline
+			D_{2n} - D_{1n} = 4\pi\sigma
+			                               &
+			B_{1n} = B_{2n}
+			\\
+			\hline
+			\hline
+			E_{1\tau} = E_{2\tau}
+			                               &
+			\left[\vect{n}\times\Hfield_2\right] - \left[\vect{n}\times\Hfield_1\right] = \frac{4\pi}{c}\vect{i}
+			\\
+			\hline
+		\end{tblr}
 \end{table}
 
 Тут $\sigma$ --- поверхнева густина \emphx{вільних} електричних зарядів, а $\vect i$ --- поверхнева густина струму провідності на межі розділу.
@@ -671,56 +704,34 @@ $j=\lambda E$:
 %% --------------------------------------------------------
 \section*{Про рівняння Максвелла}
 
-\begin{figure}[h!]\centering
-	\includegraphics[width=0.35\linewidth]{Hertz}
-	\caption{Генріх Рудольф Герц (1857--1894) --- перший експериментально отримав
-		електромагнітні хвилі, теоретично передбачені Максвеллом\label{pic:Hertz}}
-\end{figure}
-
-\begin{quote}\itshape
-	Неможливо позбутися відчуття, що математичні формули живуть власним життям і володіють власним розумом, що вони розумніші за нас, розумніші
-	навіть за тих, хто їх відкрив, що ми отримуємо з цих формул більше, ніж у них було спочатку закладено\ldots
-\end{quote}
-
-%% --------------------------------------------------------
-\section*{Вершина класичної науки}
 
 \emphx{Теорія Максвелла --- це вершина класичної науки про електромагнітне поле}. До цієї висоти ми піднімалися крок за кроком, уточнюючи поняття
 й розкриваючи глибинні принципи цієї науки: кожен пройдений розділ --- електростатика, закони постійного струму, магнітостатика --- був немов
 базовий табір на шляху до вершини.
+
+\begin{SCfigure}[4][h!]\centering
+	\includegraphics[height=4cm]{Hertz}
+	\caption{Генріх Рудольф Герц (1857--1894) --- перший експериментально отримав
+		електромагнітні хвилі, теоретично передбачені Максвеллом\label{pic:Hertz}}
+\end{SCfigure}
 
 На вершині перед нами постають рівняння Максвелла --- велична симфонія електричного й магнітного полів, ключ до розуміння електромагнітної
 взаємодії. Але шлях науки триває: з вершини ми спускаємось у простір застосувань --- досліджуємо поширення електромагнітних хвиль, принципи
 випромінювання й закладаємо основи оптики, радіо- й електротехніки. Ця подорож --- не лише тріумф інтелекту, а й людського духу, що прагне
 підкорювати вершини й відкривати нові горизонти.
 
-\begin{figure}[h!]\centering
-	\includegraphics[height=3.5cm]{ontop}
-	\caption{На вершині класичної електродинаміки\label{pic:OnTop}}
-\end{figure}
 
-%% --------------------------------------------------------
-\section{Підсумки розділу}
-%% --------------------------------------------------------
 
-\begin{table}[h!]\small\centering
-	\caption{Повна система рівнянь електродинаміки}
-	\begin{tabular}{lll}
-		\toprule
-		Струм зміщення & $\vect j_\text{зм} = \dfrac1{4\pi}\parttime{\Dfield}$ & \\
-		\midrule
-		\multicolumn{2}{l}{Рівняння Максвелла (диференціальна форма)} & \\
-		$\divg\Bfield=0$ & $\rot\Efield=-\dfrac1c\parttime{\Bfield}$ & \\
-		$\divg\Dfield=4\pi\rho$ & $\rot\Hfield=\dfrac{4\pi}c\vect j+\dfrac1c\parttime{\Dfield}$ & \\
-		\midrule
-		\multicolumn{2}{l}{Матеріальні рівняння} & $\Dfield=\epsilon\Efield$,\ \ $\Bfield=\mu\Hfield$,\ \ $\vect j=\lambda\Efield$ \\
-		\midrule
-		Вектор Пойнтінга & $\vect\Pi = \dfrac{c}{4\pi}\left[\Efield\times\Hfield\right]$ & \\
-		Теорема Пойнтінга & $-\parttime{w} = \divg\vect\Pi+\vect j\cdot\Efield$ & \\
-		Глибина скін-шару & $\delta = \dfrac{c}{\sqrt{4\pi\lambda\mu\omega}}$ & \\
-		\bottomrule
-	\end{tabular}
-\end{table}
+\begin{tornpage}\small\itshape
+	Неможливо позбутися відчуття, що математичні формули живуть власним життям і володіють власним розумом, що вони розумніші за нас, розумніші
+	навіть за тих, хто їх відкрив, що ми отримуємо з цих формул більше, ніж у них було спочатку закладено\ldots\\
+   \\hfill{Г. Герц}.
+\end{tornpage}
+
+%\begin{figure}[h!]\centering
+%	\includegraphics[height=3.5cm]{ontop}
+%	\caption{На вершині класичної електродинаміки\label{pic:OnTop}}
+%\end{figure}
 
 \begin{Attention}
 	Уся будівля класичної електродинаміки, зведена нами розділ за розділом --- від закону Кулона до струму зміщення, --- вміщується тепер у
