@@ -1,0 +1,14 @@
+% Адаптовано з MaxwellEqns.tex (слайд "Закон збереження енергії електромагнітного поля")
+\begin{tikzpicture}[>=latex, scale=0.75]
+	\pgfmathsetseed{55}
+	\foreach \a in {0,10,...,350}
+		{
+			\pgfmathparse{1.2*abs(rand)}
+			\node[inner sep=1pt, circle, ball color=red!50] at (\a:{\pgfmathresult}) {};
+			\draw[->] (0,0) ++(\a:2) -- ++(\a:0.5);
+		}
+	\draw[ball color=gray!5, name path=metall, smooth, opacity=0.5] plot
+		[smooth cycle,
+			samples=8,domain={1:10}]
+	(\x*360/10+5*rnd:1cm+1cm*rnd);
+\end{tikzpicture}

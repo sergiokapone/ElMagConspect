@@ -1,0 +1,30 @@
+% Адаптовано з MaxwellEqns.tex (слайд "Струм зміщення в конденсаторі та магнітне поле")
+\begin{tikzpicture}[>=latex, scale=1.2, transform shape]
+	\draw[thick, red] (-1.5, 0) --  (-0.6, 0) node[pos=0.1, below] {$+$};
+	\draw[fill=red!50] (-0.6, -1) -- (-0.6, 0.4) -- (-0.1, 0.9) -- (-0.1, -0.5) -- cycle;
+	\foreach \x in {-1, 0, +1} {
+			\begin{scope}[xshift=\x cm]
+				\draw[dash pattern=on 2pt off 0.7pt, blue, arrowpos={0.4}{2pt}{2pt}] (0,0) circle
+				(0.2 and 0.6);
+				\draw[dash pattern=on 2pt off 0.7pt, blue, arrowpos={0.4}{2pt}{2pt}] (0,0) circle
+				(0.14 and 0.4);
+				\draw[dash pattern=on 2pt off 0.7pt, blue, arrowpos={0.4}{2pt}{2pt}] (0,0) circle
+				(0.05 and 0.2);
+			\end{scope}
+		}
+	\draw[thick, red] (-1, 0) --  (-0.6, 0) ;
+	\foreach \y in {0, -0.5, -1} {
+			\begin{scope}[yshift=\y cm]
+				\draw[arrowpos={0.4}{2pt}{2pt}, red, thin] (-0.2, 0.6) -- ++(0.8,0);
+				\draw[arrowpos={0.4}{2pt}{2pt}, red, thin] (-0.3, 0.5) -- ++(0.8,0);
+				\draw[arrowpos={0.4}{2pt}{2pt}, red, thin] (-0.4, 0.4) -- ++(0.8,0);
+			\end{scope}
+		}
+	\begin{scope}[xshift=0.83cm]
+		\draw[fill=blue!50] (-0.6, -1) -- (-0.6, 0.4) -- (-0.1, 0.9) -- (-0.1, -0.5) -- cycle;
+	\end{scope}
+	\draw[thick, blue] (0.5, 0) --  (1.5, 0) node[pos=0.9, below] {$-$};
+	\draw[->] (-1.4, -1.2) -- node[below] {$I$} ++(0.6, 0);
+	\draw[->] (-0.4, -1.2) -- node[below] {$\parttime\Dfield$} ++(0.6, 0);
+	\draw[->] (1, -1.2) -- node[below] {$I$} ++(0.6, 0);
+\end{tikzpicture}
