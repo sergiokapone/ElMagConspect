@@ -1,0 +1,312 @@
+% !TeX program = lualatex
+% !TeX encoding = utf8
+% !TeX spellcheck = uk_UA
+% !TeX root =../ClassicalElectrodynamics.tex
+
+% chktex-file 3
+% chktex-file 21
+% chktex-file 25
+% chktex-file 46
+
+\clearpage
+
+%% --------------------------------------------------------
+\section{Основні формули векторного аналізу}\label{Vanaliz}
+% --------------------------------------------------------
+
+%% --------------------------------------------------------
+\subsection{Диференціальні операції в різних системах координат}
+%% --------------------------------------------------------
+
+%% --------------------------------------------------------
+\subsubsection{Декартова система координат}
+%% --------------------------------------------------------
+
+\begin{align}\label{cartesian}
+	\mathrm{grad}\,\psi \equiv \vect{\nabla}\psi & = \frac{\partial \psi}{\partial x} \vect{e}_x + \frac{\partial \psi}{\partial y} \vect{e}_y +
+	\frac{\partial \psi}{\partial z} \vect{e}_z \\
+	\mathrm{div}\,\left(\mathrm{grad}\,\psi\right) \equiv \Laplasian\psi    & = \frac{\partial^2 \psi}{\partial x^2} + \frac{\partial^2 \psi}{\partial y^2} + \frac{\partial^2 \psi }{\partial z^2}               \\
+	\mathrm{div}\,\vect{A} \equiv \divg\vect{A}     & = \frac{\partial A_x}{\partial x}  + \frac{\partial A_y}{\partial y} + \frac{\partial A_z}{\partial z}                              \\
+	\mathrm{rot}\,\vect{A} \equiv  \rot\vect{A}      & = \left( \frac{\partial A_z}{\partial y}  - \frac{\partial A_y}{\partial z}\right)  \vect{e}_x +
+	\left( \frac{\partial A_x}{\partial z}  - \frac{\partial A_z}{\partial x}\right)  \vect{e}_y +
+	\left( \frac{\partial A_y}{\partial x}  - \frac{\partial A_x}{\partial y}\right)  \vect{e}_z
+\end{align}
+
+%% --------------------------------------------------------
+\subsubsection{Циліндрична система координат}
+%% --------------------------------------------------------
+
+\begin{align}\label{cylindric}
+		\vect{\nabla}\psi & = \frac{\partial \psi}{\partial \rho} \vect{e}_{\rho} + \frac{1}{\rho}\frac{\partial \psi}{\partial \phi} \vect{e}_{\phi} + \frac{\partial \psi}{\partial z} \vect{e}_{z}                                                                                       \\
+	\Laplasian\psi    & = \frac{1}{r} \frac{\partial }{\partial r} \left( r \frac{\partial \psi}{\partial r} \right) + \frac{1}{r^2} \frac{\partial^2 \psi}{\partial \phi^2} + \frac{\partial^2 \psi}{\partial z^2}                                                                   \\
+	\divg\vect{A}     & = \frac{1}{\rho}\frac{\partial \left(\rho A_{\rho }\right)}{\partial \rho }+\frac{1}{\rho }\frac{\partial A_{\phi } }{\partial \phi }+\frac{\partial A_{z}}{\partial z}                                                                                    \\
+	\rot\vect{A}      & =\left({\frac {1}{\rho }}{\frac {\partial A_{z}}{\partial \phi }}-{\frac {\partial A_{\phi }}{\partial z}}\right)\vect{e}_{\rho}+\left({\frac {\partial A_{\rho }}{\partial z}}-{\frac {\partial A_{z}}{\partial \rho }}\right)\vect{e}_{\phi} + \nonumber \\
+	                  & +
+	{\frac {1}{\rho }}\left({\frac {\partial (\rho A_{\phi })}{\partial \rho }}-{\frac {\partial A_{\rho }}{\partial \phi }}\right)\vect{e}_{z}
+\end{align}
+Орти циліндричної системи координат зв'язані з декартовими ортами як:
+\begin{align}\label{}
+    \vect{e}_r &= \cos\phi\, \vect{e}_x + \sin\phi\, \vect{e}_y, \\
+    \vect{e}_{\phi} &= -\sin\phi\, \vect{e}_x + \cos\phi\, \vect{e}_y, \\
+    \vect{e}_{z} &= \vect{e}_z.
+\end{align}
+
+%% --------------------------------------------------------
+\subsubsection{Сферична система координат}
+%% --------------------------------------------------------
+
+\begin{align}\label{spheric}
+    \vect{\nabla}\psi & = \frac{\partial \psi}{\partial r} \vect{e}_{r} + \frac{1}{r}\frac{\partial \psi}{\partial \theta} \vect{e}_{\theta} + \frac{1}{r\sin\theta}\frac{\partial \psi}{\partial \phi} \vect{e}_{\phi}                                                                                                            \\
+	\Laplasian\psi    & = \frac{1}{r^2} \frac{\partial}{\partial r} \left( r^2 \frac{\partial \psi}{\partial r} \right) + \frac{1}{r^2 \sin \theta} \frac{\partial \psi}{\partial \theta} \left( \sin \theta \frac{\partial \psi}{\partial \theta} \right) + \frac{1}{r^2\sin^2 \theta} \frac{\partial^2 \psi}{\partial \phi^2} \\
+	\divg\vect{A}     & =\frac{1}{r^2}\frac{\partial \left(r^2A_r\right)}{\partial r}
+	+
+	\frac{1}{r\sin \theta }\frac{\partial}{\partial \theta }\left(A_{\theta }\sin \theta \right)
+	+
+	\frac{1}{r\sin\theta}\frac{\partial A_{\phi}}{\partial \phi }                                                                                                                                                                                                                                                            \\
+	\rot\vect{A}      & = \frac{1}{r\sin \theta }\left(\frac{\partial}{\partial \theta }\left(A_{\phi }\sin \theta \right)-\frac{\partial A_{\theta }}{\partial \phi }\right)\vect{e}_{r}
+	+
+	\frac{1}{r}\left(\frac{1}{\sin \theta }\frac{\partial A_{r}}{\partial \phi }-\frac{\partial}{\partial r}\left(rA_{\phi }\right)\right)\vect{e}_{\theta}
+	+ \nonumber                                                                                                                                                                                                                                                                                                                    \\
+	                  & + \frac{1}{r}\left(\frac{\partial}{\partial r}\left(rA_{\theta }\right)-\frac{\partial A_{r}}{\partial \theta }\right)\vect{e}_{\phi}
+\end{align}
+Орти сферичної системи координат зв'язані з декартовими ортами як:
+\begin{align}\label{}
+    \vect{e}_r &= \sin\theta\cos\phi\, \vect{e}_x + \sin\theta\sin\phi\, \vect{e}_y + \cos\theta\, \vect{e}_z, \\
+    \vect{e}_{\theta} &= \cos\theta\cos\phi\, \vect{e}_x + \cos\theta\sin\phi\, \vect{e}_y - \sin\theta\, \vect{e}_z, \\
+    \vect{e}_{\phi} &= -\sin\phi\, \vect{e}_x + \cos\phi\, \vect{e}_y. \\
+\end{align}
+
+
+
+%% --------------------------------------------------------
+\subsection{Другі похідні}
+%% --------------------------------------------------------
+
+\begin{align}
+	\mathrm{rot}\,\mathrm{grad}\,\phi    & = \rot(\vect{\nabla}\phi)  = 0                                             \\
+	\mathrm{div}\,\mathrm{rot}\,\vect{A} & = \divg(\rot\vect{A})  = 0                                                 \\
+	\mathrm{rot}\,\mathrm{rot}\,\vect{A} & = \rot(\rot\vect{A})  = \vect{\nabla}(\divg\vect{A}) - \Laplasian \vect{A}
+\end{align}
+
+%% --------------------------------------------------------
+\subsection{Похідні від добутків}
+%% --------------------------------------------------------
+
+\begin{align}
+	\mathrm{grad}\,(\phi \psi)             & = \psi\,\mathrm{grad}\,\phi +\phi\, \mathrm{grad}\,\psi                                                                                                                           \\
+	\mathrm{div}\,(\phi \vect{A})          & = \phi\,\mathrm{div}\,\vect{A} + \vect{A}\,\mathrm{grad}\,\phi                                                                                                                    \\
+	\mathrm{rot}\,(\phi \vect{A})          & = \phi\,\mathrm{rot}\,\vect{A} + \mathrm{grad}\,\phi \times \vect{A}                                                                                                              \\
+	\mathrm{grad}\,(\vect{A}\cdot\Bfield) & = \Bfield\times\mathrm{rot}\,\vect{A} + \vect{A}\times\mathrm{rot}\,\Bfield + \left( \Bfield\vect{\nabla}\right)\vect{A} + \left( \vect{A}\vect{\nabla}\right)\Bfield         \\
+	\mathrm{div}\,(\vect{A}\times\Bfield) & = \Bfield\cdot\mathrm{rot}\,\vect{A} - \vect{A}\cdot\mathrm{rot}\,\Bfield                                                                                                       \\
+	\mathrm{rot}\,(\vect{A}\times\Bfield) & = \left( \Bfield\vect{\nabla}\right)\vect{A} - \left( \vect{A}\vect{\nabla}\right)\Bfield + 	\vect{A}\,\mathrm{div}\,\Bfield - \Bfield\,\mathrm{div}\,\vect{A} \label{rotvect} \\
+	\frac12\mathrm{grad}\,A^2              & =  \left( \vect{A}\vect{\nabla}\right)\vect{A} + \vect{A}\times\mathrm{rot}\,\vect{A}
+\end{align}
+
+
+
+%% --------------------------------------------------------
+\subsection{Індексна нотація формул векторного аналізу}
+%% --------------------------------------------------------
+
+Нагадаємо співвідношення з векторного аналізу, що будуть потрібні далі.
+Латинські індекси $i$, $j$, $k$ пробігатимуть допустимі значення $1$,$2$,$3$. Якщо індекси
+у виразі повторюються, це означатиме суму по цих індексах (правило
+Ейнштейна).
+
+%% --------------------------------------------------------
+\subsubsection{Тривимірний символ Леві-Чівіти}\label{Levi-Chiv}
+%% --------------------------------------------------------
+
+Тривимірний символ Леві-Чівіти визначений співвідношеннями
+\begin{equation}\label{eq:Levi-Chiv}
+\epsilon_{ijk} =  - \epsilon_{jik} =  - \epsilon_{ikj}.
+\end{equation}
+
+Деякі співвідношення з цим символом:
+\begin{align}
+    \epsilon_{ijk}\epsilon_{kpq} &= \delta_{ip}\delta_{jq} - \delta_{iq}\delta_{jp}, \\
+    \epsilon_{iqk}\epsilon_{pqk} &= 2\delta _{ip}.
+\end{align}
+
+Ротор та векторний добуток у декартових координатах $\{x,y,z\} = \{x_1, x_2, x_3\}$:
+\begin{align}
+\left[\rot\vect{A} \right]_i &= \epsilon_{ijk}{\partial_j}{A_k}, \\
+\left[ \vect{A} \times \Bfield \right]_i &= \epsilon_{ijk}{A_j}{B_k},
+\end{align}
+всі індекси пробігають значення $1$, $2$, $3$.
+
+%% --------------------------------------------------------
+\subsubsection{Диференціальні операції в декартових координатах}
+%% --------------------------------------------------------
+
+
+У декартових координатах \( x_1, x_2, x_3 \) дивергенція:
+
+\begin{equation*}
+\Div \vect{A} \equiv \partial_j A_j;
+\end{equation*}
+%
+градієнт:
+
+\begin{equation*}
+(\grad F)_i \equiv \partial_i F,
+\end{equation*}
+
+тут і надалі \((X)_i = X_i\) означає \(i\)-ту компоненту вектора \(\vect{r}\);
+
+та оператор Лапласа:
+
+\begin{equation*}
+\Laplasian F \equiv \partial_j \partial_j F.
+\end{equation*}
+
+
+
+За допомогою~\eqref{eq:Levi-Chiv} можна записати \(i\)-ту компоненту векторного добутку:
+
+\begin{equation*}
+[\vect{A} \times \Bfield]_i = \varepsilon_{ijk} A_j B_k
+\end{equation*}
+%
+де \((A_i, B_i\) --- компоненти векторів \(\vect{A}\) та \(\Bfield)\), а також ротор:
+
+\begin{equation*}
+\Rot(\vect{A})_i = \varepsilon_{ijk} \partial_j A_k.
+\end{equation*}
+
+%% --------------------------------------------------------
+\subsubsection{Добуток скалярної та векторної функцій}
+%% --------------------------------------------------------
+
+Легко перевірити такі співвідношення для добутку скалярної функції \( F(\vect{r}) \) та векторної \( \vect{A}(\vect{r}) \):
+
+\begin{equation*}
+\Div(F \vect{A}) = \partial_i (F A_i) = A_i \partial_i F + F \partial_i A_i = \vect{A} \cdot \grad F + F \Div \vect{A};
+\end{equation*}
+
+\begin{equation*}
+\Rot(F \vect{A})_i = \varepsilon_{ijk} \partial_j (F A_k) = \varepsilon_{ijk} (\grad F)_j A_k + F \varepsilon_{ijk} \partial_j A_k,
+\end{equation*}
+%
+або
+
+\begin{equation*}
+\Rot(F \vect{A}) = [\grad F \times \vect{A}] + F \Rot \vect{A}.
+\end{equation*}
+
+\subsubsection{Дивергенція векторного добутку}
+
+Дивергенція векторного добутку:
+
+\begin{multline*}
+\Div[\vect{A} \times \Bfield] = \partial_i (\varepsilon_{ijk} A_j B_k) = B_k \varepsilon_{ijk} \partial_i A_j + A_j \varepsilon_{ijk} \partial_i B_k =
+B_k \varepsilon_{kij} \partial_i A_j - A_j \varepsilon_{ijk} \partial_i B_k = \\ = \Bfield \cdot \Rot \vect{A} - \vect{A} \cdot \Rot \Bfield.
+\end{multline*}
+
+%% --------------------------------------------------------
+\subsubsection{Згортка символів \texorpdfstring{\(\epsilon_{ijk}\)}{}}
+%% --------------------------------------------------------
+
+Далі будуть потрібні формули для \emph{згортки двох символів} \(\varepsilon_{ijk}\). Користуючись властивостями визначника, легко перевірити, що:
+
+\begin{equation*}
+\varepsilon_{ijk} =
+\begin{vmatrix}
+\delta_{i1} & \delta_{i2} & \delta_{i3} \\
+\delta_{j1} & \delta_{j2} & \delta_{j3} \\
+\delta_{k1} & \delta_{k2} & \delta_{k3}
+\end{vmatrix},
+\end{equation*}
+%
+де \(\delta_{ij}\) --- символ Кронекера, а також:
+
+\begin{equation*}
+\varepsilon_{ijk} \varepsilon_{pqr} =
+\begin{vmatrix}
+\delta_{ip} & \delta_{iq} & \delta_{ir} \\
+\delta_{jp} & \delta_{jq} & \delta_{jr} \\
+\delta_{kp} & \delta_{kq} & \delta_{kr}
+\end{vmatrix}
+\end{equation*}
+
+Якщо в останньому співвідношенні розкрити визначник за правилом трикутників:
+
+\begin{equation*}
+\varepsilon_{ijk} \varepsilon_{pqr} = \delta_{ip} \delta_{jq} \delta_{kr} + \delta_{iq} \delta_{jr} \delta_{kp} + \delta_{ir} \delta_{jp} \delta_{kq} -
+\delta_{ip} \delta_{jr} \delta_{kq} - \delta_{iq} \delta_{jp} \delta_{kr} - \delta_{ir} \delta_{jq} \delta_{kp},
+\end{equation*}
+
+та взяти суму по \( k = r \), отримаємо формулу згортки:
+
+\begin{equation}
+\varepsilon_{ijk} \varepsilon_{pqk} = \delta_{ip} \delta_{jq} - \delta_{iq} \delta_{jp}.
+\label{eq:epsilon_contraction}
+\end{equation}
+
+%% --------------------------------------------------------
+\subsubsection{Подвійний векторний добуток}
+%% --------------------------------------------------------
+
+Отримаємо за допомогою~\eqref{eq:epsilon_contraction} правило для подвійного векторного добутку:
+
+\begin{equation*}
+([\vect{A} \times [\Bfield \times \vect{C}]])_i \equiv \varepsilon_{ijk} A_j ([\Bfield \times \vect{C}])_k \equiv \varepsilon_{ijk} A_j
+\varepsilon_{kpq} B_p C_q.
+\end{equation*}
+
+Завдяки~\eqref{eq:epsilon_contraction}:
+
+\begin{equation*}
+([\vect{A} \times [\Bfield \times \vect{C}]])_i \equiv (\delta_{ip} \delta_{jq} - \delta_{iq} \delta_{jp}) A_j B_p C_q = B_i A_q C_q - C_i A_p B_p,
+\end{equation*}
+
+тобто маємо відому формулу:
+
+\begin{equation*}
+[\vect{A} \times [\Bfield \times \vect{C}]] = \Bfield(\vect{A} \cdot \vect{C}) - \vect{C}(\vect{A} \cdot \Bfield).
+\end{equation*}
+
+
+%% --------------------------------------------------------
+\subsubsection{Подвійний ротор}
+%% --------------------------------------------------------
+
+Обчислимо за допомогою~\eqref{eq:epsilon_contraction} подвійний ротор:
+
+\begin{equation*}
+(\Rot \Rot \vect{A})_i = \varepsilon_{ijk} \partial_j (\Rot \vect{A})_k = \varepsilon_{ijk} \partial_j \varepsilon_{kpq} \partial_p A_q.
+\end{equation*}
+
+Завдяки~\eqref{eq:epsilon_contraction}:
+
+\begin{equation*}
+(\Rot \Rot \vect{A})_i = (\delta_{ip} \delta_{jq} - \delta_{iq} \delta_{jp}) \partial_j \partial_p A_q = \partial_i \partial_j A_j - \partial_j
+\partial_j A_i.
+\end{equation*}
+
+За означенням, \(\partial_j A_j \equiv \Div \vect{A}\) та \(\partial_j \partial_j A_i \equiv \Laplasian A_i\). Звідси маємо:
+
+\begin{equation*}
+\Rot \Rot \vect{A} = \grad \Div \vect{A} - \Laplasian \vect{A}.
+\end{equation*}
+
+%% --------------------------------------------------------
+\subsection{Інтегральні характеристики та теореми}
+%% --------------------------------------------------------
+
+Теорема Ос\-тро\-град\-сько\-го-Гауса:
+\begin{equation}\label{OGTheorem}
+	\oint\limits_{\partial \Omega} \vect{A}\cdot d\vect{S} = \int\limits_{\Omega} \Div\vect{A} dV,
+\end{equation}
+де $\Omega$~--- об'єм, $\partial\Omega$ --- його межа.
+
+Теорема Стокса:
+\begin{equation}\label{Stoksheorem}
+	\oint\limits_{\partial S} \vect{A}\cdot d\vect{l} = \int\limits_S \Rot\vect{A} \cdot d\vect{S},
+\end{equation}
+де $S$~--- поверхня, що спирається на контур $\partial S$.
+
+Теорема Гріна:
+\begin{equation}\label{Grin}
+	\int\limits_{\Omega}(\phi \nabla ^{2}\psi -\psi \nabla ^{2}\phi )\ dV=\int \limits_{\partial \Omega}(\phi \Grad \psi -\psi \Grad\phi )\cdot d\vect{S}.
+\end{equation}

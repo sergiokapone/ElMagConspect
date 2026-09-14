@@ -1,5 +1,5 @@
 % Адаптовано з ElMagInduction.tex (слайд "Вихрове електричне поле")
-\begin{tikzpicture}[rotate=90, scale=0.9, >=latex, midarrow/.style={%
+\begin{tikzpicture}[rotate=90, scale=1.25, >=latex, midarrow/.style={%
 				postaction={ decorate,
 						decoration={ markings, mark=at position .7 with {\arrow{latex}}}}}]
 	\begin{scope}[xshift=0.3cm]
