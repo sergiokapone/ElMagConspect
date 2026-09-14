@@ -130,6 +130,8 @@
 %
 %===============================================================================
 
+\RequirePackage[]{pageslts}
+\pagenumbering{arabic}
 \RequirePackage{microtype}   % мікротипографія (protrusion, expansion) — акуратніші рядки
 %\RequirePackage[nosingleletter, hyphenation, lastparline]{impnattypo}
 %\usepackage[defaultlines=4,all]{nowidow}
@@ -161,6 +163,8 @@
 \definecolor{themecolorlight}{RGB}{0,100,170}
 \definecolor{paper}{RGB}{239,227,157}
 \colorlet{glasscol}{cyan!40}
+\definecolor{rowfill}{RGB}{219, 229, 241}
+\definecolor{infotablecolor}{RGB}{149,179,215}
 % ------------- Кольори секцій ------------------------------
 \definecolor{titlebgdark}{RGB}{0,103,102}
 \definecolor{titlebglight}{RGB}{191,233,251}

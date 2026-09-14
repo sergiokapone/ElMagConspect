@@ -21,7 +21,7 @@
 }
 %---------------------------------------------------------
 \begin{subfigure}[t]{0.45\linewidth}\centering
-	\begin{tikzpicture}[>=latex, scale=0.75, transform shape]
+	\begin{tikzpicture}[>=latex, scale=1, transform shape]
 		\pic at (0,0) {cylinder};
 		\node[text=red, circle, inner sep=1pt,  font=\scriptsize, above] at (0, 1)
 		{$+$};
@@ -39,7 +39,7 @@
 \end{subfigure}
 \hfill
 \begin{subfigure}[t]{0.45\linewidth}\centering
-	\begin{tikzpicture}[>=latex, scale=0.75, transform shape]
+	\begin{tikzpicture}[>=latex, scale=1, transform shape]
 		\foreach[count=\c from 0] \x in {0.85, 0.75, 0.70} {
 				\draw[midarrow, red] (-\x,0) ellipse({0.8-0.2*\c} and {2.5-0.5*\c});
 				\draw[midarrowR, red, rotate around={180:(\x,0)}] (\x,0)
