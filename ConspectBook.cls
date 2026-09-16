@@ -940,6 +940,28 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 		},
 	drop fuzzy shadow,#1}
 
+\newtcolorbox{Example}[2][]{
+    enhanced,
+    breakable,
+    title=#2,
+    before skip=2mm, after skip=3mm,
+    before upper={\parindent15pt},
+    boxrule=0.4pt, left=5mm, right=2mm, top=1mm, bottom=1mm,
+    colback=white,
+    colframe=blue!50!gray,
+    colbacktitle=themecolordark,
+    coltitle=white,
+    fonttitle=\bfseries,
+    fontupper=\itshape\small,
+    sharp corners, rounded corners=southeast, arc is angular, arc=3mm,
+    underlay={%
+        \path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+        \path[draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+        \path[fill=themecolordark,draw=none] (interior.south west) rectangle node[text=white]{\Large\bfseries *} ([xshift=4mm]interior.north west);
+    },
+    drop fuzzy shadow,
+    #1
+}
 
 % ---- Допоміжна графіка для "пергаментного" боксу tornpage нижче ----
 % Шар "background", на якому малюється пергамент, уже оголошено й активовано

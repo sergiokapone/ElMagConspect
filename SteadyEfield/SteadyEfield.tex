@@ -302,9 +302,6 @@ $T(\vect{r})$ є скалярним полем, оскільки кожній т
 
 
 
-
-
-
 Густота силових ліній пропорційна величині напруженості: чим більша напруженість, тим більше ліній перетинають одиницю площі, що перпендикулярна до них.
 
 Зображуючи силові лінії поля, ми отримуємо своєрідні графіки або карти поля, які відразу наочно показують, чому дорівнює напруженість у різних частинах
@@ -321,21 +318,65 @@ $T(\vect{r})$ є скалярним полем, оскільки кожній т
 	d\vect{\ell} = p\Efield,
 \end{equation}
 або в проекціях:
-\begin{equation*}
+\begin{equation}\label{eq:field_lines_equation}
 	\frac{dx}{E_x} = \frac{dy}{E_y} = \frac{dz}{E_z}.
-\end{equation*}
+\end{equation}
 
+\begin{Example}{Приклад аналітичного знаходження силових ліній}
+Нехай задано двовимірне електростатичне поле з напруженістю:
+\begin{equation}
+    \vec{E}(x, y) = A y \vec{i} + A x \vec{j},
+\end{equation}
+де $A = \text{const}$. Знайдемо геометричний вигляд його силових ліній.
 
-На рис.~\ref{pic:force_line} як приклад наведено картину силових ліній пари точкових зарядів.
+Запишемо рівняння силових ліній у проекціях на осі $Ox$ та $Oy$:
+\begin{equation}
+    \frac{dx}{E_x} = \frac{dy}{E_y}.
+\end{equation}
 
+Підставивши проекції поля $E_x = A y$ та $E_y = A x$, маємо:
+\begin{equation}
+    \frac{dx}{A y} = \frac{dy}{A x}.
+\end{equation}
+
+Скоротивши коефіцієнт $A$ та розділивши змінні, отримуємо:
+\begin{equation}
+    x \, dx = y \, dy.
+\end{equation}
+
+Проінтегруємо обидві частини рівняння:
+\begin{equation}
+    \int x \, dx = \int y \, dy \implies \frac{x^2}{2} = \frac{y^2}{2} + C_0,
+\end{equation}
+де $C_0$ --- довільна стала інтегрування.
+
+Перенесши $y^2/2$ в ліву частину та позначивши $C = 2 C_0$, отримуємо рівняння сімейства силових ліній:
+\begin{equation}
+    x^2 - y^2 = C.
+\end{equation}
+Таким чином, силові лінії даного поля являють собою сімейство рівносторонніх гіпербол.
+\end{Example}
+
+На рис.~\ref{pic:force_line} як приклад наведено картину силових ліній пари точкових зарядів, розрахованими чисельними методами за формулою \eqref{eq:field_lines_equation}.
 
 \begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.75\linewidth]{fieldlines}
+  \centering
+  \begin{subfigure}[t]{0.45\linewidth}
+    \centering
+    \localinput{like.tikz}
+    \caption{Два однойменні заряди}
+    \label{fig:like}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.45\linewidth}
+    \centering
+    \localinput{opposite.tikz}
+    \caption{Два різноймення заряди}
+    \label{fig:opposite}
+  \end{subfigure}
 	\caption{Вигляд силових ліній системи двох зарядів}
 	\label{pic:force_line}
 \end{figure}
-
 
 
 
