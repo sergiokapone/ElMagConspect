@@ -1,4 +1,4 @@
-\begin{tikzpicture}[>=latex, scale=0.85]
+\begin{tikzpicture}[>=latex, scale=1.5]
 %\node[anchor=center] at (-0.8,0.04) {\includegraphics[width=6cm]{Elmagpresure}};
         \fill[glass] (-0.65, 1.1) coordinate (A) -- ++(-15:1.35) coordinate (B) -- ++(0, -1.75) coordinate (C) -- ++(-195:1.35) -- cycle;
         \fill[glass, draw=blue!10] (A) -- (B) -- ++(15:0.2) coordinate (B1)-- ++(165:1.35) -- cycle;

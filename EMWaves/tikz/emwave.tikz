@@ -40,7 +40,7 @@
 	\def\xOffset{{(\nNodes-2)*pi/2}}
 	\def\yOffset{\A*1.2}
 	\def\zOffset{\A*1.2}
-	\draw[axis,black] (\xOffset,\yOffset,-\zOffset) -- ++(\A*0.6,0,0) node[right,align=center] {$\k$}; %\\propagation
+	\draw[axis,black] (\xOffset,\yOffset,-\zOffset) -- ++(\A*0.6,0,0) node[right,align=center] {$\vect{k}$}; %\\propagation
 	\draw[axis,red]  (\xOffset,\yOffset,-\zOffset) -- ++(0,\A*0.6,0) node[right] {$\Efield$};
 	\draw[axis,blue]   (\xOffset,\yOffset,-\zOffset) -- ++(0,0,\A*0.6) node[above left] {$\Hfield$};
 

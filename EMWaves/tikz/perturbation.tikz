@@ -1,4 +1,4 @@
-\begin{tikzpicture}[>=latex, scale=.5]
+\begin{tikzpicture}[>=latex, scale=1]
 
 % Верхний график
 \draw[->, thick] (0,0) -- (8,0) node[below] {$x$};

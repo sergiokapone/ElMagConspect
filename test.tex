@@ -1,60 +1,44 @@
 \documentclass[]{ConspectBook}
-\usetikzlibrary {backgrounds, 3d}
+
 
 \begin{document}
 
+\begin{center}
 
-\subsection*{Циліндричний електрет: напрямки $\Efield$ і $\Dfield$ з граничних умов}
+\begin{tikzpicture}[scale=1.5,
+every node/.style={font=\scriptsize},
+declare function={
+a=25;
+pl=2;
+t=-60;
+plx=pl*cos(a);
+ply=pl*sin(a);
+elpx = pl*cos(t);
+elpy = pl/2*sin(t);
+},
+]
 
-Розглянемо циліндр висоти $h$, радіуса $R$, з однорідною поляризацією вздовж осі $\vect P = P\hat z$. Вільних зарядів немає ніде: $\rho_{\text{вільні}}\equiv0$, $\sigma_{\text{вільні}}\equiv0$.
 
-\paragraph{Зв'язані джерела.}
-Об'ємний заряд відсутній ($\rho_{\text{зв}}=-\nabla\cdot\vect P=0$, бо $\vect P$ однорідне). Поверхневий заряд $\sigma_{\text{зв}}=\vect P\cdot\hat n$:
-\[
-	\sigma_{\text{зв}} =
-	\begin{cases}
-		+P, & \text{верхня основа } (\hat n = \hat z),\\
-		-P, & \text{нижня основа } (\hat n = -\hat z),\\
-		0, & \text{бічна поверхня } (\hat n \perp \vect P).
-	\end{cases}
-\]
+\draw[>=latex, ->, blue] (0,0) -- (0, 3) node[above] {$\Bfield$};
 
-\paragraph{Напрямок $\Efield$: <<кулонівська>> модель.}
-Оскільки завжди $\nabla\times\Efield=0$, тангенціальна компонента $\Efield$ неперервна скрізь. Нормальна компонента стрибає лише там, де є заряд --- тобто \emphx{тільки на основах}:
-\[
-	E_{n,\,\text{зовні}}-E_{n,\,\text{всередині}} = 4\pi\sigma_{\text{зв}} =
-	\begin{cases}
-		+4\pi P, & \text{верхня основа},\\
-		-4\pi P, & \text{нижня основа},
-	\end{cases}
-\]
-а на бічній поверхні нормальна компонента $\Efield$ неперервна (заряду там немає).
+\draw[ultra thick, rotate around={a:(0,0)}, arrowpos={-0.25}{0pt}{-10}, red!30]
+  (0,0) ellipse[x radius = 2, y radius = 1]
+  (elpx, elpy) node[circle, ball color=red, inner sep=2pt] (e) {};
 
-Отже, задача для $\Efield$ \emphx{еквівалентна плоскому конденсатору}: два диски радіуса $R$, заряджені з поверхневою густиною $+P$ (зверху) та $-P$ (знизу), розділені відстанню $h$. Лінії $\Efield$ починаються на $+$-основі та закінчуються на $-$-основі --- \emphx{всередині циліндра поле йде від $+$ до $-$, тобто напрямлене проти $\vect P$} (деполяризуюче поле), а зовні --- огинає циліндр, з'єднуючи основи в петлю (рис.~б).
+\draw[->, ultra thick] (0,0) -- ({90+a}:pl) node[left] {$\vect{p}_m$};
 
-\paragraph{Напрямок $\Dfield$: <<амперівська>> модель.}
-Тут ключова відмінність: вільного заряду немає \emphx{ніде}, тож $\nabla\cdot\Dfield\equiv0$ \emphx{у всьому просторі без винятку} --- нормальна компонента $\Dfield$ неперервна на \emphx{всіх} поверхнях, включно з основами. У $\Dfield$ просто немає точок, де лінії могли б починатися чи закінчуватися --- лінії $\Dfield$ \emphx{обов'язково замкнені}.
+\draw[dashed, rotate around={-a:(0,0)}, arrowpos={-0.4}{0pt}{-5}, red!40, gray!50]
+  (0,0) ellipse[x radius = 2, y radius = 1];
+\draw[->, dashed, gray!50] (0,0) -- ({90-a}:pl);
 
-Щоб знайти їхню форму, скористаємось точною математичною аналогією. Із $\Dfield=\Efield+4\pi\vect P$ та системою рівнянь
-\[
-	\nabla\times\Efield=0,\qquad \nabla\cdot\Dfield=0
-\]
-видно, що ця пара рівнянь \emphx{буквально співпадає} з магнітостатичною парою $\nabla\times\Hfield=0$, $\nabla\cdot\Bfield=0$ для однорідно намагніченого тіла з $\vect M=\vect P$ (розділ~\nameref{MagFieldMedia}). А для намагніченого циліндра є другий, <<амперівський>>, спосіб знайти джерела --- через поверхневий зв'язаний \emphx{струм} $\vect K_{\text{зв}}=c\,\vect M\times\hat n$ замість заряду:
-\[
-	\vect K_{\text{зв}} =
-	\begin{cases}
-		c\,P\,\hat\varphi, & \text{бічна поверхня } (\hat n = \hat r,\ \vect M\times\hat r = M\hat\varphi),\\
-		0, & \text{основи } (\hat n \parallel \vect M).
-	\end{cases}
-\]
-Це точнісінько поверхневий струм \emphx{соленоїда} --- циркулює по бічній поверхні, відсутній на основах. Тож $\Dfield$-поле нашого електрета \emphx{за формою тотожне} $\Bfield$-полю скінченного соленоїда з такою ж геометрією: усередині лінії йдуть уздовж осі \emphx{в напрямку $\vect P$} (густо й майже однорідно, з крайовими ефектами біля основ), а зовні --- розходяться від верхнього торця, огинають циліндр і замикаються на нижньому (рис.~а).
+\draw[densely dashed, arrowpos={0.3}{0pt}{-5}]
+  (0, {plx}) ellipse[x radius = {ply}, y radius = {0.5*ply}];
 
-\paragraph{Підсумок.}
-\begin{itemize}
-	\item $\Efield$ шукаємо через \emphx{стрибок нормальної компоненти на зарядах} (джерела --- на основах, задача $=$ конденсатор): усередині $\Efield\upuparrows(-\vect P)$.
-	\item $\Dfield$ шукаємо через \emphx{неперервність нормальної компоненти всюди} (джерел за дивергенцією нема), а форму ліній --- через дуальну <<струмову>> модель (джерела --- на бічній поверхні, задача $=$ соленоїд): усередині $\Dfield\upuparrows\vect P$.
-\end{itemize}
-Саме ця відповідність (заряд $\leftrightarrow$ основи $\leftrightarrow$ $\Efield$; струм $\leftrightarrow$ бічна поверхня $\leftrightarrow$ $\Dfield$) --- точна причина, чому на рис.~\ref{pic:Electret} лінії $\Dfield$ виглядають як поле соленоїда/магніту, а лінії $\Efield$ --- як поле зарядженого конденсатора/диполя.
+\draw[->, ultra thick, green!50! black] (0, {plx}) -- ++({-ply}, 0) node[pos=0.5, below] {$\rho$};
+\draw[->, ultra thick, orange] (0, {plx}) -- ++(0, -0.4)  node[pos=0.25, right] {$\vect{\omega}_L$};
 
+\end{tikzpicture}
+
+\end{center}
 
 \end{document}
