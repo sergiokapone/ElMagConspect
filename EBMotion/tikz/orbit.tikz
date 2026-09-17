@@ -1,0 +1,51 @@
+\tdplotsetmaincoords{65}{125}
+\begin{tikzpicture}[
+>=latex,
+declare function = {
+    R = 1;
+    w = 1;
+    v0 = 0.05;         % початкова поздовжня швидкість
+    a = 0.015;         % коефіцієнт прискорення вздовж осі Z
+    x(\t) = R*sin(w*\t r);
+    y(\t) = R*cos(w*\t r);
+    z(\t) = v0*\t + a*\t*\t; % квадратичне зростання кроку
+},
+tdplot_main_coords]
+
+    % Координатні осі
+    \coordinate (O) at (0,0,0);
+    \coordinate (z) at (0,0,6.5);
+    \coordinate (x) at (2.2,0,0);
+    \coordinate (y) at (0,2.2,0);
+
+    \draw[->] (O) -- (z) node[anchor=south] {$z$};
+    \draw[->] (O) -- (x) node[anchor=south] {$x$};
+    \draw[->] (O) -- (y) node[anchor=south] {$y$};
+
+    % Спіраль зі зростаючим кроком
+    \draw[blue, thick, variable=\t, domain=0:5.2*pi, samples=200, ->]
+        plot ({x(\t)}, {y(\t)}, {z(\t)});
+
+    % Переріз та розклад швидкості у довільній точці \k
+    \def\k{2.5*pi}
+%    \draw[canvas is xy plane at z={z(\k)}, dashed, fill=orange!50, opacity=0.5] (0,0) circle (R);
+
+    % Протон (позитивний заряд)
+    \node[circle, ball color=red, inner sep=0pt, font=\tiny, text=white] (T) at ({x(\k)}, {y(\k)}, {z(\k)}) {$+$};
+
+    % Поперечна швидкість v_perp (стала за модулем)
+    \draw[->, red, thick] (T) -- ++({y(\k)}, {-x(\k)}, {0}) coordinate (A) node[below, text=black, font=\tiny] {$\vect{v}_\perp$};
+
+    % Поздовжня швидкість v_parallel (зросла через прискорення)
+    \def\vz{0.75}
+    \draw[->, red, thick] (T) -- ++(0, 0, {\vz}) coordinate (C) node[above right=-4pt, text=black, font=\tiny] {$\vect{v}_\parallel$};
+
+    % Повний вектор швидкості v
+    \draw[->, red, thick] (T) -- ++({y(\k)}, {-x(\k)}, {\vz}) coordinate (B) node[above, text=black, font=\tiny] {$\vect{v}$};
+
+    \draw[densely dashed] (A) -- (B) -- (C);
+
+    % Радіус-вектор розвороту
+%    \draw[canvas is xy plane at z={z(\k)}, ->, blue] (0,0) -- (T) node[above=-2pt, font=\tiny, pos=0.3] {$\vec\rho$};
+
+\end{tikzpicture}

@@ -8,6 +8,6 @@
 					text=white] (q)
 			{$+$} ;
 		}
-	\draw[->, green!50!black, thick] (q) -- ++(3:1) node[above] {$\vect{v}_{\perp}$};
+	\draw[->, green!50!black, thick] (q) -- ++(3:1) node[above] {$\vect{v}$};
 	\draw[gray, ->] (q) -- (O) node[anchor=west] {$\vect{F}$};
 \end{tikzpicture}

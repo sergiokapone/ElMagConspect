@@ -1,5 +1,5 @@
 % Адаптовано з ElMagInduction.tex (tikz/Solenoid.tex, standalone-файл, витягнуто внутрішню tikzpicture)
-\begin{tikzpicture}[scale=1, >=latex,
+\begin{tikzpicture}[scale=0.5, >=latex,
 		midarrow/.style = {postaction=decorate, decoration={markings,mark=at position .52 with
 					\arrow{stealth}}}]
 	\def\dy{0.45}
@@ -14,13 +14,13 @@
 	\foreach \i in {0,1,2,...,10}
 	{
 		\draw[very thick] (8,9-\i*\dy) circle [radius=2mm];
-		\node at (8,9-\i*\dy) {\huge$\times$};
+		\node at (8,9-\i*\dy) {$\times$};
 	}
 	\draw[dashed, blue, line width = 2] (8,9) arc (0:180: 2 and 0.4);
-	\node at (3.4, 6.5) [rotate=90] {\huge $l$};
+	\node at (3.2, 6.5) [rotate=90] {$l$};
 	\draw[very thick] (4,9) -- (4,2) (3.55,9) -- (3.55,2);
 	\draw[latex-latex, very thick] (3.55,2) -- (4,2);
-	\node at (6, 9.8) {\huge$R$};
+	\node at (6, 9.8) {$R$};
 	\draw[very thick] (4,9) -- (4,9.5) (6,9) -- (6,9.5);
 	\draw[latex-latex, very thick] (4,9.4) -- (6,9.4);
 	\foreach \i in {0,1,2,...,10}
@@ -32,5 +32,5 @@
 		\draw[red!50, line width = 4, ->] (6.05,8.6-2*\i*\dy) -- (6.230,8.6-2*\i*\dy);
 	}
 	\draw[dashed, red!50, line width = 2] (8,9) arc (0:180: 2 and 0.4);
-	\node at (5.8,3.8) {\huge$I$};
+	\node at (5.8,3.8) {$I$};
 \end{tikzpicture}

@@ -3,42 +3,6 @@
 
 \begin{document}
 
-\begin{center}
-
-\begin{tikzpicture}[scale=1.5,
-every node/.style={font=\scriptsize},
-declare function={
-a=25;
-pl=2;
-t=-60;
-plx=pl*cos(a);
-ply=pl*sin(a);
-elpx = pl*cos(t);
-elpy = pl/2*sin(t);
-},
-]
-
-
-\draw[>=latex, ->, blue] (0,0) -- (0, 3) node[above] {$\Bfield$};
-
-\draw[ultra thick, rotate around={a:(0,0)}, arrowpos={-0.25}{0pt}{-10}, red!30]
-  (0,0) ellipse[x radius = 2, y radius = 1]
-  (elpx, elpy) node[circle, ball color=red, inner sep=2pt] (e) {};
-
-\draw[->, ultra thick] (0,0) -- ({90+a}:pl) node[left] {$\vect{p}_m$};
-
-\draw[dashed, rotate around={-a:(0,0)}, arrowpos={-0.4}{0pt}{-5}, red!40, gray!50]
-  (0,0) ellipse[x radius = 2, y radius = 1];
-\draw[->, dashed, gray!50] (0,0) -- ({90-a}:pl);
-
-\draw[densely dashed, arrowpos={0.3}{0pt}{-5}]
-  (0, {plx}) ellipse[x radius = {ply}, y radius = {0.5*ply}];
-
-\draw[->, ultra thick, green!50! black] (0, {plx}) -- ++({-ply}, 0) node[pos=0.5, below] {$\rho$};
-\draw[->, ultra thick, orange] (0, {plx}) -- ++(0, -0.4)  node[pos=0.25, right] {$\vect{\omega}_L$};
-
-\end{tikzpicture}
-
-\end{center}
+\input{EMOscillations/EMOscillations.tex}
 
 \end{document}
