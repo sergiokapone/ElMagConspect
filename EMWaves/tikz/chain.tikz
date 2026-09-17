@@ -1,4 +1,4 @@
-\begin{tikzpicture}[>=latex, scale=0.75,
+\begin{tikzpicture}[>=latex, scale=1,
 		bord/.style = {rectangle, fill=blue,
 				pattern = north east lines,
 				minimum width=5mm, minimum height=25mm,

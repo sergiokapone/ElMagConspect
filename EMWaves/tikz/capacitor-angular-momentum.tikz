@@ -1,5 +1,5 @@
 % Адаптовано з EMWaves.tex (слайд "Момент імпульсу поля")
-\begin{tikzpicture}[scale=1.2, >=latex]
+\begin{tikzpicture}[scale=2, >=latex]
 	\draw [fill=gray, fill opacity=.25]
 	(180:1mm) coordinate (a)
 	-- ++(0,-15mm) coordinate (b)
