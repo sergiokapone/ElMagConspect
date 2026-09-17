@@ -1,5 +1,5 @@
 % Адаптовано з MaxwellEqns.tex (слайд "Довгий провідник")
-\begin{tikzpicture}[>=latex]
+\begin{tikzpicture}[>=latex, scale=2]
 	\draw[fill=gray!50] (0, 0) -- ++(0,2) arc(180:360:1 and 0.3) -- ++(0, -2) arc(0:-180:1 and 0.3);
 	\draw[fill=gray!50] (1, 2) circle (1 and 0.3);
 	\draw[blue, arrowpos={0.5}{2pt}{4pt}] (1, 1) [partial ellipse=155:385:1.1 and 0.3]
