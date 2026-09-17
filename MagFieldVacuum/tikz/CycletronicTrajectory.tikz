@@ -1,4 +1,4 @@
-\begin{tikzpicture}[>=latex, every node/.style={font=\scriptsize}, scale=1.4]
+\begin{tikzpicture}[>=latex, every node/.style={font=\scriptsize}, scale=1.5]
 	\foreach \x in {0,...,2} {
 			\draw[->, blue] (\x, 0) -- ++(0, 2) \ifnum\x=1 node[right] {$\Bfield$}\fi;
 			\draw[->, blue] ({\x+0.5}, -0.5) -- ++(0, 2);
@@ -8,6 +8,6 @@
 					text=white] (q)
 			{$+$} ;
 		}
-	\draw[->, green!50!black, thick] (q) -- ++(3:1) node[above] {$\vect{v}$};
+	\draw[->, green!50!black, thick] (q) -- ++(3:1) node[above] {$\vect{v}_{\perp}$};
 	\draw[gray, ->] (q) -- (O) node[anchor=west] {$\vect{F}$};
 \end{tikzpicture}

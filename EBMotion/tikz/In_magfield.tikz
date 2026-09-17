@@ -1,0 +1,45 @@
+\begin{tikzpicture}[scale=1.2, >=Stealth]
+  % Початковий вектор швидкості v0
+  \draw[thick, ->] (-0.8, 0) -- (-0.1, 0) node[above=2pt] {$\mathbf{v}_0$};
+  \draw[thick] (-0.1, 0) -- (1, 0);
+
+  % Пунктирна вісь x
+  \draw[dashed, ->] (1, 0) -- (7.2, 0) node[below] {$x$};
+
+  % Кругова область магнітного поля M
+  \draw[thick, blue] (2, 0) circle (1);
+%  \node at (2.3, 1.25) {\Large M};
+
+  % Магнітне поле (хрестики B "за лист")
+  \begin{scope}
+    \clip (2, 0) circle (0.97);
+    \foreach \x in {1.15, 1.55, ..., 2.95} {
+      \foreach \y in {-0.8, -0.5, ..., 0.8} {
+        \node[font=\small, scale=0.75, blue] at (\x,\y) {$\otimes$};
+      }
+    }
+  \end{scope}
+
+
+
+  % Траєкторія: коловий арк у полі + прямолінійна ділянка до екрана
+  \draw[thick] (1, 0) arc[start angle=-90, end angle=-68, radius=5] coordinate (A);
+  \draw[thick, decoration={markings, mark=at position 0.55 with {\arrow{>}}}, postaction={decorate}]
+    (A) -- (6.5, 1.76);
+
+  % Дуга кута відхилення
+  \draw (4.3, 0) arc (0:39:1.3) node[pos=0.5, anchor=west] {$\beta$};
+
+  % Екран (вісь y)
+  \draw[thick, ->] (6.5, -0.8) -- (6.5, 2.2) node[right] {$y$};
+  \node[right] at (6.5, 0.3) {$0$};
+  \node[below right] at (6.5, -0.8) {\Large Э};
+
+  % Виносні лінії та розміри (l, L)
+  \draw[dashed, gray] (1, 0)    -- (1, -1.5);
+  \draw[dashed, gray] (3, 0.35) -- (3, -1.5);
+  \draw[dashed, gray] (6.5, 0)  -- (6.5, -1.5);
+
+  \draw[<->] (1, -1.3) -- (3, -1.3) node[midway, below] {$l$};
+  \draw[<->] (3, -1.3) -- (6.5, -1.3) node[midway, below] {$L$};
+\end{tikzpicture}

@@ -1,0 +1,36 @@
+\begin{tikzpicture}[
+    declare function={
+    w = 1;
+    v = 0.5;
+    v0 = 1;
+    x(\t,\k)=v*\t-v0/(\k*w)*sin((\k*w)*\t r);
+    y(\t,\k)=v0/(\k*w)*(1-cos((\k*w)*\t r));
+    },
+    ]
+    \draw[-latex] (0, 0) -- ++(0, 4) node[right] {$y$};
+    \draw[->, red] (0, 0) -- ++(0, 2) node[left, text=red] {$\vect{E}$};
+
+    \draw[-latex] (0, 0) -- ++(9, 0) node[below] {$x$};
+    \draw[-latex] (0, 0) -- ++(-135:2) node[below right] {$z$};
+    \draw[->, blue] (0, 0) -- ++(-135:1) node[above left, text=blue] {$\vect{B}$};
+
+    \draw[-latex] (0, -1.5) -- ++(2,0) node[right] {$\vect{u} = c\frac{\vect{E}\times\vect{B}}{B^2}$};
+
+    \draw[blue, thick, domain=0:5*pi, variable=\t, samples=150,
+    decoration={
+                markings,
+                mark=at position 0.05 with {\arrow{latex}},
+                mark=at position 0.85 with {\arrow{latex}},
+                },
+                postaction={decorate}
+    ] plot ({x(\t, 1)}, {y(\t, 1)} );
+
+    \draw[red, thick, domain=0:5*pi, variable=\t, samples=550,
+    decoration={
+                markings,
+                mark=at position 0.05 with {\arrow[xshift=5pt]{latex}},
+                mark=at position 0.85 with {\arrow[xshift=5pt]{latex}},
+                },
+                postaction={decorate}
+    ] plot ({x(\t, -3)}, {y(\t, -3)} );
+\end{tikzpicture}

@@ -1,0 +1,441 @@
+% !TeX program = lualatex
+% !TeX encoding = utf8
+% !TeX spellcheck = uk_UA
+% !TeX root = ../EMConspect.tex
+
+%=========================================================
+\chapter{Рух заряджених частинок в електричних і магнітних полях}\label{\currfilebase}
+\graphicspath{{\currfilebase/Pictures}}
+%=========================================================
+
+
+%% --------------------------------------------------------
+\section{Рух частинок в однорідних полях}
+%% --------------------------------------------------------
+
+%% --------------------------------------------------------
+\subsection*{Рух в однорідному електричному полі}
+%% --------------------------------------------------------
+
+Якщо напруженість поля $\Efield = \const$, то з рівняння руху
+\begin{equation}\label{eq:motion_E}
+	m\dot{\vect{v}} = q\Efield
+\end{equation}
+випливає
+\begin{equation}\label{eq:motion_E_solution}
+	\vect{v} = \vect{v}_0 + \frac{q\Efield}{m}t, \qquad
+	\vect{r} = \vect{r}_0 + \vect{v}_0 t + \frac{q\Efield}{2m}t^2,
+\end{equation}
+тобто має місце рівноприскорений рух з прискоренням, напрямленим уздовж вектора напруженості поля.
+
+
+%% --------------------------------------------------------
+\subsection*{Рух в однорідному магнітному полі}
+%% --------------------------------------------------------
+
+На частинку діє сила Лоренца, так що рівняння руху має вигляд
+\begin{equation}\label{eq:Lorentz_motion}
+	m\dot{\vect{v}} = \frac{q}{c}\vect{v} \times \vect{B}.
+\end{equation}
+Очевидно, що $\dot{\vect{v}} \perp \vect{v}$, $\dot{\vect{v}} \perp \vect{B}$. Розкладемо вектор швидкості на складові, паралельну і перпендикулярну полю: $\vect{v} = \vect{v}_{\parallel} + \vect{v}_{\perp}$. Для цих складових маємо рівняння
+\begin{equation}\label{eq:v_parallel_motion}
+	m\dot{\vect{v}}_{\parallel} = 0,
+\end{equation}
+\begin{equation}\label{eq:v_perp_motion}
+	m\dot{\vect{v}}_{\perp} = \frac{q}{c}\vect{v}_{\perp} \times \vect{B}.
+\end{equation}
+З рівняння \eqref{eq:v_parallel_motion} випливає $\vect{v}_{\parallel} = \const$.
+
+Друге рівняння перепишемо у вигляді
+\begin{equation}\label{eq:v_perp_rotation}
+	\dot{\vect{v}}_{\perp} = \vect{\omega} \times \vect{v}_{\perp}, \qquad
+	\vect{\omega} = -\frac{q\vect{B}}{mc}.
+\end{equation}
+
+Воно описує обертання навколо напрямку магнітного поля з кутовою швидкістю $\omega = qB/mc$, яка називається \emphx{циклотронною частотою}, --- рис.~\ref{tikz:cyclotron}.
+
+\begin{figure}[h!]
+	\centering
+	\localinput{CycletronicTrajectory.tikz}
+	\caption{Обертальний рух частинки із зарядом $q > 0$ навколо напрямку магнітного поля.}
+	\label{tikz:cyclotron}
+\end{figure}
+
+Якщо в момент попадання в область дії поля складова швидкості частинки $\vect{v}_{\perp}$ дорівнювала (за величиною) $v_{\perp}$, то радіус кола виявляється рівним
+\begin{equation}\label{eq:cyclotron_radius}
+	R = \frac{v_{\perp}}{\omega} = \frac{mcv_{\perp}}{qB}.
+\end{equation}
+
+
+%% --------------------------------------------------------
+\subsection*{Рух в однорідних паралельних електричному та магнітному полях ($\Efield \parallel \vect{B}$)}
+%% --------------------------------------------------------
+
+
+В рівнянні руху
+\begin{equation}\label{eq:motion_EB_parallel}
+	m\dot{\vect{v}} = q\Efield + \frac{q}{c}\vect{v} \times \vect{B}
+\end{equation}
+покладемо $\vect{v} = \vect{v}_{\parallel} + \vect{v}_{\perp}$, де компоненти швидкості відповідно $\vect{v}_{\parallel} \parallel \vect{B}$ і $\vect{v}_{\perp} \perp \vect{B}$. Для цих компонент отримуємо рівняння
+\begin{equation}\label{eq:v_parallel_E}
+	m\dot{\vect{v}}_{\parallel} = q\Efield,
+\end{equation}
+\begin{equation}\label{eq:v_perp_B}
+	m\dot{\vect{v}}_{\perp} = \frac{q}{c}\vect{v}_{\perp} \times \vect{B}.
+\end{equation}
+
+\begin{SCfigure}[2][h!]
+	\centering
+	\localinput{orbit.tikz}
+	\caption{Траєкторія частинки в паралельних електричному і магнітному полях.}
+	\label{tikz:helix}
+\end{SCfigure}
+
+Перше з них описує рівноприскорений рух уздовж напрямку електричного поля, а друге рівняння --- обертальний рух навколо напрямку магнітного поля з циклотронною частотою $\omega = qB/mc$. Траєкторія частинки являє собою спіраль зі зростаючим кроком і з віссю, паралельною силовій лінії магнітного поля (рис.~\ref{tikz:helix}).
+
+%% --------------------------------------------------------
+\subsection*{Рух у схрещених полях ($\Efield \perp \vect{B}$)}
+%% --------------------------------------------------------
+
+Як і вище, виділимо компоненти швидкості, паралельну та перпендикулярну вектору магнітного поля: $\vect{v} = \vect{v}_{\parallel} + \vect{v}_{\perp}$ (рис.~\ref{tikz:drift}). Для цих компонент маємо рівняння
+\begin{equation}\label{eq:v_parallel_crossed}
+	m\dot{\vect{v}}_{\parallel} = 0,
+\end{equation}
+\begin{equation}\label{eq:v_perp_crossed}
+	m\dot{\vect{v}}_{\perp} = q\left(\Efield + \frac{1}{c}\vect{v}_{\perp} \times \vect{B}\right).
+\end{equation}
+
+Рівняння \eqref{eq:v_parallel_crossed} дає $\vect{v}_{\parallel} = \const$, що означає рух з постійною швидкістю вздовж вектора $\vect{B}$, яка визначається початковими умовами.
+
+\begin{figure}[h!]
+	\centering
+	\localinput{eldriftplot.tikz}
+	\caption{Електричний дрейф додатно (синя крива) та від'ємно (червона крива) заряджених частинок.}
+	\label{tikz:drift}
+\end{figure}
+
+
+Для знаходження компоненти $\vect{v}_{\perp}$ покладемо $\vect{v}_{\perp} = \vect{u} + \vect{v}'$ і підберемо вектор $\vect{u}$ так, щоб виключити електричне поле:
+\begin{equation}\label{eq:u_condition}
+	\Efield + \frac{1}{c}\vect{u} \times \vect{B} = 0.
+\end{equation}
+У цьому рівнянні можна вважати $\vect{u} \perp \vect{B}$, $\vect{u}\vect{B} = 0$. Для знаходження вектора $\vect{u}$ помножимо почленно рівняння \eqref{eq:u_condition} векторно зліва на $\vect{B}$:
+\begin{equation}\label{eq:u_cross_B}
+	\vect{B} \times \Efield + \frac{1}{c}\vect{B} \times (\vect{u} \times \vect{B}) = 0.
+\end{equation}
+Перетворимо подвійний векторний добуток з урахуванням взаємної ортогональності векторів $\vect{B}$ і $\vect{u}$:
+\begin{equation}\label{eq:double_cross}
+	\vect{B} \times (\vect{u} \times \vect{B}) = \vect{u}B^2 - \vect{B}(\vect{u}\vect{B}) = \vect{u}B^2.
+\end{equation}
+В результаті отримаємо
+\begin{equation}\label{eq:drift_velocity}
+	\tcbhighmath{
+		\vect{u} = c\frac{\Efield \times \vect{B}}{B^2}.
+	}
+\end{equation}
+Цей рух являє собою дрейф (з постійною швидкістю) в напрямку, перпендикулярному обом полям ($\Efield$ і $\vect{B}$) (рис.~\ref{tikz:drift}). Відповідно для компоненти $\vect{v}'$ отримаємо рівняння
+\begin{equation}\label{eq:v_prime_rotation}
+	m\dot{\vect{v}}' = \frac{q}{c}\vect{v}' \times \vect{B},
+\end{equation}
+яке описує обертальний рух з кутовою швидкістю $\omega = -qB/mc$ навколо напрямку магнітного поля.
+
+Сумарний рух являє собою накладення:
+\begin{enumerate}
+	\item рівномірного руху вздовж вектора $\vect{B}$ зі швидкістю $(\vect{v}_{\parallel})_0$, яка дорівнює компоненті швидкості $\vect{v}_{\parallel}$ в початковий момент,
+	\item дрейфового руху зі швидкістю $\vect{u}$,
+	\item обертання навколо напрямку $\vect{B}$.
+\end{enumerate}
+
+Викладений підхід з виділенням дрейфового руху зі швидкістю $\vect{u}$ справедливий тільки у випадку слабких електричних полів $E \ll B$, коли виконується умова нерелятивістського руху $u = cE/B \ll c$. Якщо ж умова $E \ll B$ не виконується, слід розв'язувати релятивістські рівняння руху.
+
+Знайдемо траєкторію шляхом прямого розв'язання рівнянь \eqref{eq:v_perp_crossed}. Для цього запишемо ці рівняння в системі координат, показаній на рис.~\ref{tikz:drift}.
+
+
+
+Введемо орти $\{\vect{i}, \vect{j}, \vect{k}\}$ відповідно вздовж координатних осей $\{x, y, z\}$. Оскільки в розглянутому випадку $\vect{v} \times \vect{B} = \vect{i}B_z v_y - \vect{j}B_z v_x$, то, позначаючи для стислості $E_y = E$, $B_z = B$, маємо:
+\begin{equation}\label{eq:system_components}
+	\text{(а) } \dot{v}_z = 0; \qquad
+	\text{(б) } \dot{v}_x = \frac{qB}{mc}v_y; \qquad
+	\text{(в) } \dot{v}_y = \frac{q}{m}E - \frac{qB}{mc}v_x.
+\end{equation}
+
+Рівняння \eqref{eq:system_components}а описує рівномірний рух уздовж вектора магнітного поля:
+\begin{equation}\label{eq:vz_motion}
+	v_z = v_{\parallel} = \const, \qquad z = z_0 + v_{\parallel}t.
+\end{equation}
+Далі вважаємо $v_{\parallel} = 0$. Для розв'язання рівнянь \eqref{eq:system_components}б і \eqref{eq:system_components}в покладемо
+\begin{equation}\label{eq:Vx_substitution}
+	V_x = v_x - u, \qquad u = cE/B.
+\end{equation}
+Після цього рівняння \eqref{eq:system_components}б, в набирають вигляду
+\begin{equation}\label{eq:Vx_vy_system}
+	\dot{V}_x = \omega v_y, \qquad \dot{v}_y = -\omega V_x,
+\end{equation}
+де введена циклотронна частота $\omega = \sqrt{qB/mc}$. Виключаючи звідси змінну $V_x$, приведемо цю систему до рівняння гармонічного осцилятора:
+\begin{equation}\label{eq:harmonic_oscillator}
+	\ddot{v}_y = -\omega^2 v_y,
+\end{equation}
+звідки знаходимо:
+\begin{equation}\label{eq:vy_solution}
+	v_y = v_0 \cos(\omega t + \varphi_0), \qquad
+	y = y_0 + \frac{v_0}{\omega} \sin(\omega t + \varphi_0).
+\end{equation}
+За допомогою другого рівняння в \eqref{eq:vy_solution} і \eqref{eq:Vx_substitution} знаходимо $v_x(t)$ і $x(t)$:
+\begin{equation}\label{eq:vx_x_solution}
+	\begin{gathered}
+		v_x = u - \frac{1}{\omega}\dot{v}_y = u + v_0 \sin(\omega t + \varphi_0), \\
+		x = x_0 + ut - \frac{v_0}{\omega} \cos(\omega t + \varphi_0).
+	\end{gathered}
+\end{equation}
+Формули \eqref{eq:vy_solution}, \eqref{eq:vx_x_solution} визначають траєкторію частинки за будь-яких початкових умов. Виберемо початок координат так, що $x(0) = 0$, $y(0) = 0$. Тоді
+\begin{equation}\label{eq:trochoid}
+	\begin{cases}
+		x = ut + \frac{v_0}{\omega}[\cos\varphi_0 - \cos(\omega t + \varphi_0)], \\
+		y = \frac{v_0}{\omega}[\sin(\omega t + \varphi_0) - \sin\varphi_0],
+	\end{cases}
+	\qquad
+	\begin{cases}
+		v_x = u + v_0 \sin(\omega t + \varphi_0), \\
+		v_y = v_0 \cos(\omega t + \varphi_0).
+	\end{cases}
+\end{equation}
+Крива, що задається рівняннями \eqref{eq:trochoid}, називається \emphx{трохоїдою}. Її конкретний вигляд залежить від величини $v_0$, яка визначається з початкових умов. Розглянемо частинний випадок, коли початкова швидкість частинки дорівнює нулю:
+\begin{equation}\label{eq:zero_initial_velocity}
+	v_x(0) = v_y(0) = 0.
+\end{equation}
+Тоді $\varphi_0 = \pi/2$, $v_0 = -u$, і з \eqref{eq:trochoid} знаходимо:
+\begin{equation}\label{eq:cycloid}
+	\begin{gathered}
+		v_x = u(1 - \cos\omega t), \qquad v_y = u \sin\omega t; \\
+		x(t) = ut - \frac{u}{\omega}\sin\omega t, \qquad
+		y(t) = \frac{u}{\omega}(1 - \cos\omega t).
+	\end{gathered}
+\end{equation}
+
+Ця траєкторія являє собою \emphx{циклоїду} (рис.~\ref{tikz:drift_cycloide}). Таку траєкторію описує точка на ободі колеса, що котиться без проковзування по площині. Відповідно до сказаного траєкторія являє собою суперпозицію дрейфу вздовж осі $x$ і обертання навколо осі $z$ з циклотронною частотою $\omega = qB/mc$.
+
+\begin{figure}[h!]
+	\centering
+	\localinput{eldriftplot_cycloide.tikz}
+	\caption{Траєкторія частинки у взаємно перпендикулярних полях $\vect{B}$ і $\Efield$ за умови, що початкова швидкість дорівнює нулю.}
+	\label{tikz:drift_cycloide}
+\end{figure}
+
+
+%% --------------------------------------------------------
+\subsection*{Загальний випадок схрещених полів}
+%% --------------------------------------------------------
+
+У загальному випадку є складова вектора електричного поля, паралельна магнітному полю: $\Efield_{\parallel} \neq 0$. Тоді для компоненти швидкості $\vect{v}_{\parallel}$ має місце рівняння
+\begin{equation}\label{eq:v_parallel_general}
+	m\dot{\vect{v}}_{\parallel} = q\Efield_{\parallel}.
+\end{equation}
+Це означає, що на рух, описаний у попередньому пункті, накладається прискорений рух у напрямку $\Efield_{\parallel} \parallel \vect{B}$. Дрейф зі швидкістю $\vect{u} = c\Efield \times \vect{B}/B^2$ зберігається, так само як і обертання з циклотронною частотою $\omega = -qB/mc$.
+
+
+%% --------------------------------------------------------
+\section{Методи вимірювання питомого заряду електрона}
+%% --------------------------------------------------------
+
+\emphx{Питомим зарядом} називається відношення $q/m$, де $m$ --- маса частинки.
+
+Рух частинки за наявності тільки електричних і магнітних полів описується рівнянням
+\begin{equation}\label{eq:q_m_motion}
+	m\frac{d\vect{v}}{dt} = q\left(\Efield + \frac{1}{c}\vect{v} \times \vect{B}\right).
+\end{equation}
+Звідси видно, що воно повністю визначається питомим зарядом $q/m$, а не зарядом і масою окремо.
+
+
+%% --------------------------------------------------------
+\subsection*{Вимірювання $q/m$ за відхиленням траєкторії в електричному полі}
+%% --------------------------------------------------------
+
+У цьому методі пучок частинок пропускається між обкладками зарядженого конденсатора, і за виміряним відхиленням траєкторії визначають відношення $q/m$. Схема досліду показана на рис.~\ref{tikz:condenser_deflection}.
+
+\begin{figure}[h!]
+	\centering
+	\localinput{In_condensator.tikz}
+	\caption{Відхилення зарядженої частинки електричним полем конденсатора. К --- конденсатор, Е --- екран.}
+	\label{tikz:condenser_deflection}
+\end{figure}
+
+В конденсаторі є однорідне електричне поле з напруженістю $\Efield$, напрямлене перпендикулярно початковій швидкості частинки $\vect{v}_0$. Це поле викликає рух з прискоренням
+\begin{equation}\label{eq:a_E}
+	\vect{a} = \frac{q}{m}\Efield, \qquad \vect{a} \perp \vect{v}_0.
+\end{equation}
+Якби поле було відсутнє, то частинки попадали б у точку «0» екрана Е (рис.~\ref{tikz:condenser_deflection}). Під дією поля відхилення частинки в конденсаторі у вертикальному напрямку становить
+\begin{equation}\label{eq:y1_E}
+	y_1 = \frac{at^2}{2} = \frac{qE}{2m}t^2 = \frac{q}{2m}E\frac{l^2}{v_0^2},
+\end{equation}
+де $t = l/v_0$ --- час прольоту конденсатора. Тут враховано, що оскільки поле $\Efield$ напрямлене вздовж осі $y$, то компонента швидкості $v_x = \const = v_0$.
+
+На виході з конденсатора швидкість $v_y$ становитиме
+\begin{equation}\label{eq:vy_E}
+	v_y = at = \frac{qE}{m}\frac{l}{v_0}.
+\end{equation}
+Далі частинка летить прямолінійно, причому траєкторія утворює кут $\alpha$ з віссю $x$ такий, що
+\begin{equation}\label{eq:tg_alpha}
+	\tg\alpha = \frac{v_y}{v_x} = \frac{qE}{m}\frac{l}{v_0^2}; \qquad
+	y_1 = \frac{l}{2}\tg\alpha.
+\end{equation}
+
+Долітаючи до екрана, вона набуває додаткового відхилення
+\begin{equation}\label{eq:y2_E}
+	y_2 = L \tg\alpha.
+\end{equation}
+Повне зміщення частинки в результаті становитиме
+\begin{equation}\label{eq:y_total_E}
+	\tcbhighmath{
+		y = y_1 + y_2 = \left(\frac{1}{2}l + L\right)\tg\alpha = \frac{qE}{mv_0}l\left(\frac{1}{2}l + L\right).
+	}
+\end{equation}
+Таким чином, за виміряним відхиленням частинки $y$ за допомогою формули \eqref{eq:y_total_E} визначається питомий заряд частинки $q/m$.
+
+
+%% --------------------------------------------------------
+\subsection*{Вимірювання $q/m$ за відхиленням траєкторії в магнітному полі}
+%% --------------------------------------------------------
+
+Для вимірювання питомого заряду можна замість електричного поля використати магнітне, також напрямлене перпендикулярно траєкторії частинки (рис.~\ref{tikz:magnetic_deflection}). На частинку діє сила Лоренца $\vect{F} = \frac{q}{c}\vect{v} \times \vect{B}$, створюючи прискорення
+\begin{equation}\label{eq:a_B}
+	\vect{a} = \frac{\vect{F}}{m} = \frac{q}{mc}\vect{v} \times \vect{B}.
+\end{equation}
+
+\begin{figure}[h!]
+	\centering
+	\localinput{In_magfield.tikz}
+	\caption{Відхилення зарядженої частинки магнітним полем. М --- магніт, Е --- екран. Напрямок магнітного поля перпендикулярно площині листа і напрямлено «за лист».}
+	\label{tikz:magnetic_deflection}
+\end{figure}
+
+Нехай швидкість частинки велика, і відхилення за час прольоту поля мале. Тоді можна прийняти
+\begin{equation}\label{eq:a_B_approx}
+	v_x \approx v_0, \qquad
+	\vect{a} \approx \frac{q}{mc}\vect{v}_0 \times \vect{B}, \qquad
+	a = |\vect{a}| \approx \frac{q}{mc}v_0 B.
+\end{equation}
+Відхилення частинки за час прольоту поля $t = l/v_0$ становитиме
+\begin{equation}\label{eq:y1_B}
+	y_1 = \frac{1}{2}at^2 = \frac{q}{2m}B\frac{l^2}{v_0 c}.
+\end{equation}
+Швидкість $v_y$ частинки на виході з області дії поля рівна
+\begin{equation}\label{eq:vy_B}
+	v_y = at = \frac{ql}{mc}B,
+\end{equation}
+а кут, який утворює вектор швидкості з віссю $x$, визначається рівністю
+\begin{equation}\label{eq:tg_beta}
+	\tg\beta = \frac{v_y}{v_x} \approx \frac{v_y}{v_0} = \frac{qlB}{mv_0 c}, \qquad
+	y_1 = \frac{l}{2}\tg\beta.
+\end{equation}
+Долітаючи до екрана, частинка отримує додаткове зміщення
+\begin{equation}\label{eq:y2_B}
+	y_2 = L \tg\beta.
+\end{equation}
+Повне зміщення частинки становитиме
+\begin{equation}\label{eq:y_total_B}
+	\tcbhighmath{
+		y = y_1 + y_2 = \left(\frac{1}{2}l + L\right)\tg\beta = \frac{qB}{mv_0 c}l\left(\frac{1}{2}l + L\right).
+	}
+\end{equation}
+Вимірюючи це зміщення, можна знайти питомий заряд $q/m$ частинки.
+
+
+%% --------------------------------------------------------
+\subsection*{Метод Томсона}
+%% --------------------------------------------------------
+
+Дж.~Дж.~Томсон використав компенсаційну схему, в якій рух частинки управлявся як електричним, так і магнітним полем. Ця схема дозволяла не вимірювати попередньо швидкість частинок $v_0$. Суть методу в наступному. Спочатку Томсон включав тільки магнітне поле (як описано вище) і вимірював відхилення пучка заряджених частинок:
+\begin{equation}\label{eq:Thomson_B}
+	y = \frac{qB}{mv_0 c}l\left(\frac{1}{2}l + L\right).
+\end{equation}
+Потім він додатково включав електричне поле, перпендикулярне магнітному ($\Efield \perp \vect{B}$), і підбирав його величину таким чином, щоб повністю компенсувати відхилення пучка, повернув його в точку $y = 0$. Умовою компенсації була рівність
+\begin{equation}\label{eq:Thomson_compensation}
+	qE = \frac{q}{c}v_0 B, \qquad \text{або} \qquad v_0 = c\frac{E}{B}.
+\end{equation}
+Тому наведений вище вираз для зміщення пучка в магнітному полі переписується у вигляді
+\begin{equation}\label{eq:Thomson_y}
+	y = \frac{q}{m}\frac{B^2}{c^2 E}l\left(\frac{1}{2}l + L\right).
+\end{equation}
+Звідси за відомими значеннями зміщення $y$ і полів $B$ та $E$ визначається питомий заряд $q/m$.
+
+Описаним методом Дж.~Дж.~Томсон в 1897~р. при вивченні катодних променів вперше виміряв питомий заряд електрона. Вимірювання показали, що питомий заряд електрона становить
+\begin{equation}\label{eq:e_m_value}
+	e/m = -5{,}273 \cdot 10^{17} \ \text{од.~СГСЕ} \cdot \text{г}^{-1}
+	= -1{,}795 \cdot 10^{11} \ \text{Кл} \cdot \text{кг}^{-1}.
+\end{equation}
+
+
+%% --------------------------------------------------------
+\section{Досліди Міллікена}
+%% --------------------------------------------------------
+
+У попередніх дослідах вимірювався питомий заряд частинок. Р.~Міллікен в 1909~р. запропонував спосіб безпосереднього вимірювання заряду. Схема його установки показана на рис.~\ref{tikz:Millikan}.
+
+У простір між пластинами конденсатора Міллікен вводив за допомогою пульверизатора найдрібніші крапельки масла. Краплі іонізувалися, і їхнім рухом можна було керувати, змінюючи величину і знак заряду на пластинах конденсатора.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.75\linewidth]{Milliken}
+	\caption{Схема установки Міллікена для вимірювання заряду електрона (сила $q\Efield$ вказана для випадку $q < 0$).}
+	\label{tikz:Millikan}
+\end{figure}
+
+Розглянемо метод докладніше. Будемо для визначеності вважати, що заряд краплі від'ємний, $q < 0$.
+
+На краплю діють такі сили:
+\begin{enumerate}
+	\item сила з боку електричного поля $q\Efield$;
+	\item рівнодійна сили тяжіння і архімедової сили
+	\begin{equation}\label{eq:gravity_force}
+		\vect{F}_{\text{q}} = \frac{4\pi}{3}r^3(\rho - \rho_0)\vect{g},
+	\end{equation}
+	де $r$ --- радіус краплі, $\rho$ і $\rho_0$ --- густини краплі і повітря відповідно;
+	\item сила в'язкого тертя
+	\begin{equation}\label{eq:viscous_force}
+		\vect{F}_{\text{гр}} = -6\pi\eta r\vect{v}.
+	\end{equation}
+\end{enumerate}
+
+За відсутності електричного поля крапля падає з постійною швидкістю $v_0$, яка визначається з умови $P_{\text{гр}} = F_{\text{гр}}$, або
+\begin{equation}\label{eq:falling_equilibrium}
+	\frac{4\pi}{3}r^3(\rho - \rho_0)g = 6\pi\eta r v_0.
+\end{equation}
+
+Увімкнувши електричне поле, змушують краплю підніматися з невеликою швидкістю $v_E$, яку можна знайти з рівняння
+\begin{equation}\label{eq:rising_equilibrium}
+	\frac{4\pi}{3}r^3(\rho - \rho_0)g + 6\pi\eta r v_E = qE.
+\end{equation}
+З урахуванням рівності \eqref{eq:falling_equilibrium} перепишемо це співвідношення у вигляді
+\begin{equation}\label{eq:charge_balance}
+	6\pi\eta r(v_0 + v_E) = qE,
+\end{equation}
+звідки можна знайти заряд краплі:
+\begin{equation}\label{eq:charge_drop}
+	q = 6\pi\eta r\frac{v_0 + v_E}{E}.
+\end{equation}
+
+Практично вимірювання здійснювалося таким способом. За відсутності електричного поля вимірювалася швидкість вільного падіння краплі $v_0$. Потім із співвідношення \eqref{eq:falling_equilibrium} визначався радіус краплі:
+\begin{equation}\label{eq:drop_radius}
+	r = \sqrt{\frac{9\eta v_0}{2g(\rho - \rho_0)}}.
+\end{equation}
+Увімкнувши електричне поле і вимірявши швидкість підйому краплі $v_E$, за формулами \eqref{eq:charge_drop}--\eqref{eq:drop_radius} або
+\begin{equation}\label{eq:charge_full}
+	q = 6\pi\eta\sqrt{\frac{9\eta v_0}{2g(\rho - \rho_0)}}\frac{v_0 + v_E}{E}
+	= 9\pi\sqrt{\frac{2\eta^3 v_0}{g(\rho - \rho_0)}}\frac{v_0 + v_E}{E}
+\end{equation}
+можна знайти заряд $q$.
+
+\begin{Attention}
+В дослідах Міллікена мікроскопічні краплі олії набували електричного заряду внаслідок двох послідовних процесів: початкової трибоелектризації через тертя об сопло розпилювача та подальшої адсорбції іонів з газового середовища. У робочій камері приладу повітря піддавали штучній іонізації рентгенівським випромінюванням, яке вибивало електрони з нейтральних молекул газу, утворюючи вільні електрони та позитивно заряджені аероіони. Під час руху в хмарі іонізованого газу дисперсні краплі захоплювали ці носії заряду, причому дискретний характер адсорбції зумовлював стрибкоподібну зміну сумарного заряду краплі на величину, чітко кратну елементарному електричному заряду, що й дозволило експериментально довести дискретність електрики та обчислити заряд електрона.
+\end{Attention}
+
+
+Аналізуючи результати експериментів, Міллікен встановив, що зміни заряду крапель $\Delta q$ і сам заряд $q$ були завжди цілими кратними одній і тій же мінімальній величині:
+\begin{equation}\label{eq:elementary_charge}
+	e \approx 4{,}80 \cdot 10^{-10} \ \text{Фр} = 1{,}602 \cdot 10^{-19} \ \text{Кл}.
+\end{equation}
+За відомими значеннями питомого заряду $e/m$ і заряду $e$ електрона можна знайти масу:
+\begin{equation}\label{eq:electron_mass}
+	\frac{e}{e/m} = m \approx 9{,}11 \cdot 10^{-28} \ \text{г}.
+\end{equation}
+Значення досліду Міллікена полягає в тому, що була експериментально доведена дискретність електричного заряду.

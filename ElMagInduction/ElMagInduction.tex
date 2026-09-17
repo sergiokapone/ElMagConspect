@@ -541,11 +541,11 @@ $R$, з перенесення заряду $dq = I\, dt$:
 (рис.~\ref{pic:SolenoidCrossSection}). Індуктивність соленоїда --- за формулою~\eqref{eq:SolenoidInductance}, $L = 4\pi\mu N^2 S/\ell$, а поле
 всередині --- $B = 4\pi\mu NI/(c\ell)$ (гл.~\ref{MagFieldMedia}). Підставляючи в~\eqref{eq:MagEnergyFormula}:
 
-\begin{figure}[h!]\centering
+\begin{SCfigure}[2][h!]\centering
 	\localinput{solenoid-cross-section.tikz}
 	\caption{Поздовжній переріз довгого соленоїда: однорідне поле всередині, струм у витках
 		обмотки\label{pic:SolenoidCrossSection}}
-\end{figure}
+\end{SCfigure}
 
 \begin{equation*}
 	W = \frac1{c^2}\frac{LI^2}2 = \frac1{c^2}\cdot \frac{(4\pi\mu NI)^2 S\ell}{8\pi\mu \ell^2} = \frac{B^2}{8\pi\mu}\, V = \frac{BH}{8\pi}\, V,
@@ -729,37 +729,37 @@ $\mathcal E_\text{сі} = 0$ (адже $d\Phi/dt=0$), тому $\delta A_\text{�
 \end{Attention}
 
 %% --------------------------------------------------------
-\section{Підсумки розділу}
+\section*{Підсумки}
 %% --------------------------------------------------------
+%
+%\subsection*{Закон індукції}
+%\begin{itemize}
+%	\item $\displaystyle \mathcal E_\text{інд} = -\frac1c\frac{d\Phi}{dt}$; ЕРС виникає при зміні площі контуру ($\mathcal E=B\ell v/c$, сила
+%	      Лоренца на носії) і при зміні поля (вихрове $\Efield$).
+%	\item Правило Ленца: індукційний струм протидіє зміні потоку, що його породжує.
+%	\item Вихрове електричне поле: $\displaystyle \oint_L\Efield\cdot d\vect\ell = -\frac1c\iint_S \parttime{\Bfield}\cdot d\vect S$, $\rot\Efield
+%	      = -\dfrac1c\parttime{\Bfield}$.
+%	\item Збереження потоку в надпровідному контурі: $\Phi=\const$.
+%\end{itemize}
+%
+%\subsection*{Самоіндукція та взаємна індукція}
+%\begin{itemize}
+%	\item $\Phi = LI/c$, $\mathcal E_\text{сі} = -\dfrac{L}{c^2}\dfrac{dI}{dt}$; $[L]=\text{см}$.
+%	\item Перехідні процеси: $I(t) = \dfrac{\mathcal E}{R}(1-e^{-t/\tau})$ або $I_0e^{-t/\tau}$, $\tau = L/(c^2R)$.
+%	\item Взаємна індукція: $\Phi_{21}=L_{21}I_1/c$; теорема взаємності $L_{12}=L_{21}$.
+%	\item Трансформатор: $\mathcal E_2 = -\eta\mathcal E_1$, $\eta = N_2/N_1$.
+%\end{itemize}
+%
+%\subsection*{Енергія та сили}
+%\begin{itemize}
+%	\item $\displaystyle W = \frac{LI^2}{2c^2} = \frac{I\Phi}{2c} = \frac{\Phi^2}{2L}$; густина енергії $\displaystyle w = \frac{\Bfield\cdot\Hfield}{8\pi}$.
+%	\item Пондеромоторні сили: $\displaystyle F_x = +\left(\frac{dW}{dx}\right)_I = -\left(\frac{dW}{dx}\right)_\Phi$.
+%\end{itemize}
 
-\subsection*{Закон індукції}
-\begin{itemize}
-	\item $\displaystyle \mathcal E_\text{інд} = -\frac1c\frac{d\Phi}{dt}$; ЕРС виникає при зміні площі контуру ($\mathcal E=B\ell v/c$, сила
-	      Лоренца на носії) і при зміні поля (вихрове $\Efield$).
-	\item Правило Ленца: індукційний струм протидіє зміні потоку, що його породжує.
-	\item Вихрове електричне поле: $\displaystyle \oint_L\Efield\cdot d\vect\ell = -\frac1c\iint_S \parttime{\Bfield}\cdot d\vect S$, $\rot\Efield
-	      = -\dfrac1c\parttime{\Bfield}$.
-	\item Збереження потоку в надпровідному контурі: $\Phi=\const$.
-\end{itemize}
 
-\subsection*{Самоіндукція та взаємна індукція}
-\begin{itemize}
-	\item $\Phi = LI/c$, $\mathcal E_\text{сі} = -\dfrac{L}{c^2}\dfrac{dI}{dt}$; $[L]=\text{см}$.
-	\item Перехідні процеси: $I(t) = \dfrac{\mathcal E}{R}(1-e^{-t/\tau})$ або $I_0e^{-t/\tau}$, $\tau = L/(c^2R)$.
-	\item Взаємна індукція: $\Phi_{21}=L_{21}I_1/c$; теорема взаємності $L_{12}=L_{21}$.
-	\item Трансформатор: $\mathcal E_2 = -\eta\mathcal E_1$, $\eta = N_2/N_1$.
-\end{itemize}
+Явище електромагнітної індукції --- та ланка, що остаточно поєднує електрику й магнетизм у єдину теорію: змінне магнітне поле породжує
+вихрове електричне, а сила Лоренца (розд.~\ref{MagFieldVacuum}) показує, що й саме магнітне поле нерозривно пов'язане з рухом заряду в
+електричному. Наступний і останній логічний крок --- запитати, чи вірне й зворотне твердження: чи породжує \emphx{змінне електричне} поле
+магнітне поле навіть за відсутності провідних струмів? Ствердна відповідь Максвелла на це запитання (\emphx{струм зміщення}) завершить
+побудову повної системи рівнянь електродинаміки.
 
-\subsection*{Енергія та сили}
-\begin{itemize}
-	\item $\displaystyle W = \frac{LI^2}{2c^2} = \frac{I\Phi}{2c} = \frac{\Phi^2}{2L}$; густина енергії $\displaystyle w = \frac{\Bfield\cdot\Hfield}{8\pi}$.
-	\item Пондеромоторні сили: $\displaystyle F_x = +\left(\frac{dW}{dx}\right)_I = -\left(\frac{dW}{dx}\right)_\Phi$.
-\end{itemize}
-
-\begin{Attention}
-	Явище електромагнітної індукції --- та ланка, що остаточно поєднує електрику й магнетизм у єдину теорію: змінне магнітне поле породжує
-	вихрове електричне, а сила Лоренца (розд.~\ref{MagFieldVacuum}) показує, що й саме магнітне поле нерозривно пов'язане з рухом заряду в
-	електричному. Наступний і останній логічний крок --- запитати, чи вірне й зворотне твердження: чи породжує \emphx{змінне електричне} поле
-	магнітне поле навіть за відсутності провідних струмів? Ствердна відповідь Максвелла на це запитання (\emphx{струм зміщення}) завершить
-	побудову повної системи рівнянь електродинаміки.
-\end{Attention}
