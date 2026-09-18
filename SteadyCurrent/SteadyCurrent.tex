@@ -316,17 +316,20 @@ $I = \oiint_S \vect j\cdot d\vect S$; оскільки струм --- це ру�
 
 \begin{table}[h!]\small\centering
 	\caption{Питомий опір деяких металів при $20\,^\circ$C}
-	\begin{tabular}{lcc}
-		\toprule
+		\begin{tblr}{
+		colspec={X[l, m]X[c,m]X[c,m]},
+        row{odd} = {gray!10},
+		row{1} = {c, m, fg=white, bg=themecolorlight, font=\bfseries},
+		hlines,
+		vlines
+		}
 		Метал              & $\rho,\ 10^{-8}\,\text{Ом}\cdot\text{м}$ & $\alpha,\ 10^{-3}\,{}^\circ\text{C}^{-1}$ \\
-		\midrule
 		Мідь (\ce{Cu})     & 1.68                                      & 4.3                                        \\
 		Алюміній (\ce{Al}) & 2.82                                      & 4.2                                        \\
 		Залізо (\ce{Fe})   & 9.71                                      & 6.0                                        \\
 		Нікель (\ce{Ni})   & 6.84                                      & 6.5                                        \\
 		Вольфрам (\ce{W})  & 5.65                                      & 5.0                                        \\
-		\bottomrule
-	\end{tabular}
+	\end{tblr}
 \end{table}
 
 \begin{Attention}

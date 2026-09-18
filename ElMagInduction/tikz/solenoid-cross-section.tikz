@@ -1,36 +1,61 @@
-% Адаптовано з ElMagInduction.tex (tikz/Solenoid.tex, standalone-файл, витягнуто внутрішню tikzpicture)
-\begin{tikzpicture}[scale=0.5, >=latex,
-		midarrow/.style = {postaction=decorate, decoration={markings,mark=at position .52 with
-					\arrow{stealth}}}]
-	\def\dy{0.45}
-	\foreach \x in {4.5,5,...,7.5}{
-			\draw[->, blue!50, line width=2pt] (\x, 3) -- ++(0, 7);
-		}
-	\foreach \i in {0,1,2,...,10}
-	{
-		\draw[very thick] (4,9-\i*\dy) circle [radius=0.2];
-		\filldraw[very thick] (4,9-\i*\dy) circle [radius=0.08];
-	}
-	\foreach \i in {0,1,2,...,10}
-	{
-		\draw[very thick] (8,9-\i*\dy) circle [radius=2mm];
-		\node at (8,9-\i*\dy) {$\times$};
-	}
-	\draw[dashed, blue, line width = 2] (8,9) arc (0:180: 2 and 0.4);
-	\node at (3.2, 6.5) [rotate=90] {$l$};
-	\draw[very thick] (4,9) -- (4,2) (3.55,9) -- (3.55,2);
-	\draw[latex-latex, very thick] (3.55,2) -- (4,2);
-	\node at (6, 9.8) {$R$};
-	\draw[very thick] (4,9) -- (4,9.5) (6,9) -- (6,9.5);
-	\draw[latex-latex, very thick] (4,9.4) -- (6,9.4);
-	\foreach \i in {0,1,2,...,10}
-	{
-		\draw[red, line width = 2] (4,9-\i*\dy) arc (180:360: 2 and 0.4);
-	}
-	\foreach \i in {0,1,2,...,5}
-	{
-		\draw[red!50, line width = 4, ->] (6.05,8.6-2*\i*\dy) -- (6.230,8.6-2*\i*\dy);
-	}
-	\draw[dashed, red!50, line width = 2] (8,9) arc (0:180: 2 and 0.4);
-	\node at (5.8,3.8) {$I$};
+\begin{tikzpicture}[
+    scale=0.75,
+    >=latex,
+    midarrow/.style={
+        postaction={decorate},
+        decoration={markings, mark=at position 0.52 with {\arrow{stealth}}}
+    }
+]
+    % === ПАРАМЕТРИ ===
+    \def\R{2}          % Радіус соленоїда
+    \def\ry{0.4}       % Мала піввісь еліпса (перспектива)
+    \def\dy{0.45}      % Крок між витками
+    \def\N{10}         % Кількість витків (0..10)
+    \def\xL{4}         % Ліва координата X
+    \def\yT{9}         % Верхня координата Y
+
+    \pgfmathsetmacro{\xR}{\xL + 2*\R}
+    \pgfmathsetmacro{\xC}{\xL + \R}
+    \pgfmathsetmacro{\yB}{\yT - \N*\dy}
+
+    % === СИЛОВІ ЛІНІЇ (сині стрілки) ===
+    \foreach \x in {4.5, 5.0, ..., 7.5} {
+        \draw[->, blue!50, thick] (\x, \yB - 1.5) -- ++(0, 7);
+    }
+
+    % === ВИТКИ СОЛЕНОЇДА ===
+    % Задня пунктирна дуга верхнього витка
+    \draw[dashed, red!50, line width=2] (\xR, \yT) arc (0:180: \R\space and \ry);
+
+    % Передні червоні дуги зі стрілками струму
+    \foreach \i in {0,1,...,\N} {
+        \pgfmathsetmacro{\y}{\yT - \i*\dy}
+        \ifnum\i=\N
+            % На останньому витку садимо підпис струму I безпосередньо на шлях
+            \draw[red, line width=1, midarrow] (\xL, \y) arc (180:360: \R\space and \ry) node[midway, below] {$I$};
+        \else
+            \draw[red, line width=1, midarrow] (\xL, \y) arc (180:360: \R\space and \ry);
+        \fi
+    }
+
+    % === ПЕРЕРІЗ ВИТКІВ ===
+    \foreach \i in {0,1,...,\N} {
+        \pgfmathsetmacro{\y}{\yT - \i*\dy}
+        % Ліва сторона: струм на нас (крапка)
+        \draw[thick, fill=white] (\xL, \y) circle [radius=0.2];
+        \filldraw[thick] (\xL, \y) circle [radius=0.08];
+
+        % Права сторона: струм від нас (хрестик прямо в ноді шляху)
+        \draw[thick, fill=white] (\xR, \y) circle [radius=0.2] node {\tiny $\times$};
+    }
+
+    % === РОЗМІРИ ТА ПІДПИСИ НА ШЛЯХАХ ===
+    % Радіус R
+    \draw[thick] (\xL, \yT) -- ++(0, 0.5)  (\xC, \yT) -- ++(0, 0.5);
+    \draw[latex-latex, thick] (\xL, \yT + 0.4) -- node[above] {$R$} (\xC, \yT + 0.4);
+
+    % Довжина l
+    \draw[thick] (\xL, \yT) -- ++(-0.5, 0)  (\xL, \yB) -- ++(-0.5, 0);
+    \draw[latex-latex, thick] (\xL - 0.45, \yT) -- node[rotate=90, above] {$l$} (\xL - 0.45, \yB);
+
 \end{tikzpicture}

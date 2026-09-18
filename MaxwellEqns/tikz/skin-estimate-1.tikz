@@ -1,12 +1,13 @@
 % Адаптовано з MaxwellEqns.tex (слайд "Оцінка глибини проникнення поля...", контур 1)
-\begin{tikzpicture}[>=latex]
+\begin{tikzpicture}[>=latex, scale=1.5]
 	\pgfmathsetmacro\h{3}
 	\pgfmathsetmacro\R{1}
 	\coordinate (A) at (0, {-\h/2});
 	\coordinate (B) at (0, {+\h/2});
 	\draw[gray] ([xshift=\R cm]A) -- ([xshift=\R cm]B)
 	([xshift=-\R cm]A) -- ([xshift=-\R cm]B);
-	\draw[line width={\R*2cm}, gray!50] (A) -- (B);
+	% Тіло циліндра (сіра середина) — тепер масштабується
+     \fill[gray!50] (-\R, -\h/2) rectangle (\R, \h/2);
 	\draw[gray, fill=gray!50] (B) circle ({\R} and {0.2*\R});
 	\draw[gray] ([xshift=\R cm]A) arc(0:-180:{\R} and {0.2*\R});
 	\draw[gray, densely dashed] ([xshift=-\R cm]A) arc(180:0:{\R} and {0.2*\R});

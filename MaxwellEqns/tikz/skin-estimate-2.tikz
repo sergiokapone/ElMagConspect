@@ -1,5 +1,5 @@
 % Адаптовано з MaxwellEqns.tex (слайд "Оцінка глибини проникнення поля...", контур 2)
-\begin{tikzpicture}[>=latex]
+\begin{tikzpicture}[>=latex, scale=1.5]
 	\draw[gray, fill=gray!50] (0,0) circle(1.5);
 	\draw[green!60!black, thick,
 		arrowpos={0.15}{2pt}{4pt},

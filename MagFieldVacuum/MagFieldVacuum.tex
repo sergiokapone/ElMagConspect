@@ -502,16 +502,19 @@ $NI$:
 
 \begin{table}[h!]\small\centering
 	\caption{Порівняння теорем електро- та магнітостатики у вакуумі\label{tab:ElMagCompare}}
-	\begin{tblr}{Xcc}
-		\toprule
+	\begin{tblr}{
+		colspec={X[l, m]X[c,m]X[c,m]},
+        row{odd} = {gray!10},
+		row{1} = {c, m, fg=white, bg=themecolorlight, font=\bfseries},
+		hlines,
+		vlines
+		}
 		                          & Електростатика                                                & Магнітостатика                                                \\
-		\midrule
 		Потенціал                & $\Efield = -\grad\phi$ (потенціальне поле)                   & $\Bfield = \rot\vect A$ (вихрове поле)                        \\
 		Теорема Гаусса (диф.)    & $\divg\Efield = 4\pi\rho$                                     & $\divg\Bfield = 0$                                            \\
 		Теорема Гаусса (інт.)    & $\displaystyle\oiint_S \Efield\cdot d\vect S = 4\pi \!\!\iiint\limits_V\!\! \rho\, dV$ & $\displaystyle\oiint_S \Bfield\cdot d\vect S = 0$             \\
 		Теорема про циркуляцію (диф.) & $\rot\Efield = 0$                                        & $\rot\Bfield = \dfrac{4\pi}c\vect j$                          \\
-		Теорема про циркуляцію (інт.) & $\displaystyle\oint_L \Efield\cdot d\vect r = 0$          & $\displaystyle\oint_L \Bfield\cdot d\vect r = \dfrac{4\pi}c\!\!\iint\limits_S\!\!\vect j\cdot d\vect S$ \\
-		\bottomrule
+		Теорема про циркуляцію (інт.) & $\displaystyle\oint_L \Efield\cdot d\vect r = 0$          & $\displaystyle\oint_L \Bfield\cdot d\vect r = \dfrac{4\pi}c\!\!\iint\limits_S\!\!\vect j\cdot d\vect S$
 	\end{tblr}
 \end{table}
 
@@ -653,14 +656,17 @@ $NI$:
 
 \begin{table}[h!]\small\centering
 	\caption{Порівняння електричного і магнітного точкових диполів}
-	\begin{tabular}{lcc}
-		\toprule
+		\begin{tblr}{
+		colspec={X[l, m]X[c,m]X[c,m]},
+        row{odd} = {gray!10},
+		row{1} = {c, m, fg=white, bg=themecolorlight, font=\bfseries},
+		hlines,
+		vlines
+		}
 		         & Електричний диполь                                                    & Магнітний диполь                                                     \\
-		\midrule
 		Потенціал & $\phi = \dfrac{\vect p_e\cdot\vect r}{r^3}$                          & $\vect A = \dfrac{\vect p_m\times\vect r}{r^3}$                      \\
 		Поле      & $\Efield = \dfrac{3(\vect p_e\cdot\vect r)\vect r}{r^5} - \dfrac{\vect p_e}{r^3}$ & $\Bfield = \dfrac{3(\vect p_m\cdot\vect r)\vect r}{r^5} - \dfrac{\vect p_m}{r^3}$ \\
-		\bottomrule
-	\end{tabular}
+	\end{tblr}
 \end{table}
 
 %% --------------------------------------------------------
