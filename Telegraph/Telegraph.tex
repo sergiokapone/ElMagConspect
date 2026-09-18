@@ -273,7 +273,7 @@
 \section{Польова картина. Зв'язок з рівняннями Максвелла}
 %% --------------------------------------------------------
 
-Теорія довгих ліній оперує макроскопічними величинами — напругою $u(z,t)$ та струмом $i(z,t)$. Проте з фундаментальної точки зору електромагнітна енергія передається не «всередині» металевих провідників, а в \emphx{діелектричному просторі навколо них} у вигляді електромагнітного поля.
+Теорія довгих ліній оперує макроскопічними величинами --- напругою $u(z,t)$ та струмом $i(z,t)$. Проте з фундаментальної точки зору електромагнітна енергія передається не «всередині» металевих провідників, а в \emphx{просторі навколо них} у вигляді електромагнітного поля.
 
 Зв'язок між характеристиками поля ($\Efield, \Hfield$) та величинами в колі ($u, i$) визначається інтегральними співвідношеннями в поперечному перерізі лінії:
 \begin{equation}\label{eq:field_to_circuit}
@@ -376,16 +376,210 @@
 
 Застосовуючи теорему Гаусса та закон Ампера для перерізу кабелю:
 \begin{equation}
-	E(r) = \frac{q'}{2\pi\varepsilon r}, \qquad H(r) = \frac{i}{2\pi r},
+	E(r) = \frac{q'}{2\pi\epsilon_0\epsilon r}, \qquad H(r) = \frac{i}{2\pi r},
 \end{equation}
 де $q'$ — погонний заряд. Знаходячи напругу $u = \int_a^b E(r)\,dr$ та магнітний потік $\Phi' = \int_a^b \mu H(r)\,dr$, отримуємо погонні параметри:
-\begin{equation}
-	C_0 = \frac{2\pi\varepsilon}{\ln(b/a)}, \qquad
-	L_0 = \frac{\mu}{2\pi}\ln\left(\frac{b}{a}\right).
+\begin{equation}\label{eq:C0L0}
+	C_0 = \frac{2\pi\epsilon_0\epsilon}{\ln(b/a)}, \qquad
+	L_0 = \frac{\mu_0\mu}{2\pi}\ln\left(\frac{b}{a}\right).
 \end{equation}
 
 Легко перевірити, що $L_0 C_0 = \varepsilon \mu$. Хвильовий опір такого кабелю $Z_{\text{хв}} = \sqrt{L_0/C_0}$ дорівнює:
 \begin{equation}\label{eq:coax_impedance}
-	Z_{\text{хв}} = \frac{1}{2\pi}\sqrt{\frac{\mu}{\varepsilon}} \ln\left(\frac{b}{a}\right) = \frac{\eta}{2\pi} \ln\left(\frac{b}{a}\right),
+	Z_{\text{хв}} = \frac{1}{2\pi}\sqrt{\frac{\mu_0\mu}{\epsilon_0\epsilon}} \ln\left(\frac{b}{a}\right) = \frac{\eta}{2\pi} \ln\left(\frac{b}{a}\right),
 \end{equation}
-де $\eta = \sqrt{\mu/\varepsilon}$ — хвильовий опір самого діелектрика (для вакууму $\eta_0 = \sqrt{\mu_0/\varepsilon_0} \approx 377~\text{Ом}$).
+де $\eta = \sqrt{\frac{\mu_0\mu}{\epsilon_0\epsilon}}$ -- хвильовий опір самого діелектрика (для вакууму $\eta_0 = \sqrt{\mu_0/\varepsilon_0} \approx 377~\text{Ом}$).
+
+%% --------------------------------------------------------
+\section*{Задачі}
+%% --------------------------------------------------------
+
+
+\begin{problem}
+	Коаксіальний кабель має внутрішню жилу радіусом $a = 0.5$ мм та зовнішній екран радіусом $b = 2.0$ мм. Діелектрик між ними --- поліетилен із відносною діелектричною проникністю $\varepsilon = 2.25$; магнітна проникність $\mu \approx \mu_0$. Обчисліть:
+	\begin{enumerate}
+		\item погонну ємність $C_0$ та погонну індуктивність $L_0$;
+		\item хвильовий опір $Z_{\text{хв}}$;
+		\item фазову швидкість $v_{\text{ф}}$ та показник заломлення $\sqrt{\varepsilon}$.
+	\end{enumerate}
+\end{problem}
+
+\begin{solution}
+	За формулами \eqref{eq:C0L0}:
+	\[
+		C_0 = \frac{2\pi\varepsilon}{\ln(b/a)}, \qquad
+		L_0 = \frac{\mu_0}{2\pi}\ln\left(\frac{b}{a}\right).
+	\]
+
+	Обчислимо геометричний множник:
+	\[
+		\ln\left(\frac{b}{a}\right) = \ln\left(\frac{2.0}{0.5}\right) = \ln 4 \approx 1.386.
+	\]
+
+	Погонна ємність:
+	\[
+		C_0 = \frac{2\pi \cdot 8.85\times10^{-12} \cdot 2.25}{1.386}
+		    \approx \frac{1.251\times10^{-10}}{1.386}
+		    \approx 9.03\times10^{-11}~\text{Ф/м}
+		    \approx 90.3~\text{пФ/м}.
+	\]
+
+	Погонна індуктивність:
+	\[
+		L_0 = \frac{4\pi\times10^{-7}}{2\pi} \cdot 1.386
+		    = 2\times10^{-7} \cdot 1.386
+		    \approx 2.77\times10^{-7}~\text{Гн/м}
+		    \approx 277~\text{нГн/м}.
+	\]
+
+	\[
+		Z_{\text{хв}} = \sqrt{\frac{L_0}{C_0}}
+		              = \sqrt{\frac{2.77\times10^{-7}}{9.03\times10^{-11}}}
+		              \approx \sqrt{3.07\times10^{3}}
+		              \approx 55.4~\text{Ом}.
+	\]
+
+	Або безпосередньо через формулу \eqref{eq:coax_impedance}:
+	\[
+		Z_{\text{хв}} = \frac{\eta_0}{2\pi\sqrt{\varepsilon}} \ln\left(\frac{b}{a}\right)
+		              = \frac{377}{2\pi \cdot 1.5} \cdot 1.386
+		              \approx 55.4~\text{Ом}.
+	\]
+
+	\[
+		v_{\text{ф}} = \frac{c}{\sqrt{\varepsilon}}
+		             = \frac{3\times10^8}{\sqrt{2.25}}
+		             = \frac{3\times10^8}{1.5}
+		             = 2\times10^8~\text{м/с}.
+	\]
+
+	Показник заломлення хвилі:
+	\[
+		\frac{\lambda_0}{\lambda} = \sqrt{\varepsilon} = 1.5.
+	\]
+\end{solution}
+
+\begin{problem}
+	Доведіть, що для довільної лінії з двох провідників в однорідному діелектрику з параметрами $\varepsilon$, $\mu$ виконується універсальне співвідношення $L_0 C_0 = \epsilon_0\epsilon\mu_0\mu$, скориставшись енергетичним балансом біжучої ТЕМ-хвилі. Як наслідок, покажіть, що фазова швидкість у такій лінії не залежить від геометрії провідників і дорівнює $v_{\text{ф}} = c/\sqrt{\varepsilon\mu}$.
+\end{problem}
+
+\begin{solution}
+	Розглянемо біжучий гармонічний сигнал у лінії без втрат. Нехай у перерізі $z$ миттєві значення напруги та струму дорівнюють $u$ та $i$. Запишемо енергію електричного й магнітного полів, що припадає на одиницю довжини лінії, двома способами.
+
+ Енергія зарядженого конденсатора та індуктивності на одиницю довжини:
+	\[
+		W_E' = \frac{1}{2} C_0 u^2, \qquad
+		W_H' = \frac{1}{2} L_0 i^2.
+	\]
+
+	З іншого боку, інтегруючи густину енергії по площі поперечного перерізу $S$:
+	\[
+		W_E' = \frac{1}{2}\int_S \epsilon_0\epsilon E^2 \, dS, \qquad
+		W_H' = \frac{1}{2}\int_S \mu_0\mu H^2 \, dS.
+	\]
+
+	Для біжучої ТЕМ-хвилі напруга й струм пов'язані хвильовим опором $u = Z_{\text{хв}} i$, а енергії електричного та магнітного полів рівні: $W_E' = W_H'$. Звідси:
+	\[
+		\frac{1}{2} C_0 u^2 = \frac{1}{2} L_0 i^2
+		\quad\Longrightarrow\quad
+		C_0 Z_{\text{хв}}^2 i^2 = L_0 i^2
+		\quad\Longrightarrow\quad
+		Z_{\text{хв}}^2 = \frac{L_0}{C_0},
+	\]
+	що ми вже знаємо.
+
+	Тепер скористаємося тим, що структура $\Efield(x,y)$ у перерізі збігається з електростатичною, а структура $\Hfield(x,y)$ — з магнітостатичною. Обидві визначаються одним гармонічним потенціалом $\varphi(x,y)$, який задовольняє рівняння Лапласа. Це дає локальний зв'язок між напруженостями в кожній точці перерізу:
+	\[
+		\sqrt{\epsilon_0\epsilon}\, E(x,y) = \sqrt{\mu_0\mu}\, H(x,y)
+	\]
+	(з точністю до сталого множника, який скорочується при інтегруванні).
+
+	Тоді потік енергії через переріз:
+	\[
+		P = \int_S (\Efield \times \Hfield)\cdot d\vect{S}
+		  = \int_S E H \, dS
+		  = \sqrt{\frac{\epsilon_0\epsilon}{\mu_0\mu}} \int_S E^2 \, d\vect{S}
+		  = \sqrt{\frac{\mu_0\mu}{\epsilon_0\epsilon}} \int_S H^2 \, d\vect{S}.
+	\]
+
+	З іншого боку, потужність, що переноситься хвилею, дорівнює $P = u\,i$. Прирівнюючи обидва вирази й підставляючи $u = Z_{\text{хв}} i$, після скорочень отримуємо:
+	\[
+		L_0 C_0 = \epsilon_0\epsilon\mu_0\mu.
+	\]
+
+	Тоді фазова швидкість:
+	\[
+		v_{\text{ф}} = \frac{1}{\sqrt{L_0 C_0}}
+		             = \frac{c}{\sqrt{\varepsilon \mu}},
+	\]
+	де $c = 1/\sqrt{\varepsilon_0\mu_0}$. Бачимо, що $v_{\text{ф}}$ залежить лише від властивостей діелектрика й не залежить від геометрії провідників — це і є фундаментальний результат, який підкреслює, що сигнал у лінії поширюється зі швидкістю світла в даному середовищі.
+\end{solution}
+
+\begin{problem}
+	Коаксіальний кабель має внутрішню жилу радіусом $a$, зовнішній екран радіусом $b = 3a$ та діелектрик із $\varepsilon = 2.25$, $\mu = 1$.
+	\begin{enumerate}
+		\item Виведіть формули для погонних параметрів $C_0$ і $L_0$ через $a$, $b$, $\varepsilon$, $\mu$.
+		\item Перевірте, що $L_0 C_0 = \varepsilon\mu$ незалежно від $a$ і $b$.
+		\item Обчисліть $Z_{\text{хв}}$ і $v_{\text{ф}}/c$, якщо $a = 0.5$ мм.
+		\item Як зміниться $Z_{\text{хв}}$, якщо збільшити $b$ удвічі, не змінюючи діелектрика? Чи вплине це на $v_{\text{ф}}$?
+	\end{enumerate}
+\end{problem}
+
+\begin{solution}
+	За теоремою Гаусса для циліндричної симетрії:
+	\[
+		E(r) = \frac{q'}{2\pi\varepsilon r}, \qquad
+		u = \int_a^b E(r)\,dr = \frac{q'}{2\pi\varepsilon}\ln\left(\frac{b}{a}\right).
+	\]
+	З означення погонної ємності $q' = C_0 u$:
+	\[
+		C_0 = \frac{2\pi\epsilon_0\epsilon}{\ln(b/a)}.
+	\]
+
+	За законом Ампера:
+	\[
+		H(r) = \frac{i}{2\pi r}, \qquad
+		\Phi' = \int_a^b \mu H(r)\,dr = \frac{\mu i}{2\pi}\ln\left(\frac{b}{a}\right).
+	\]
+	З означення погонної індуктивності $\Phi' = L_0 i$:
+	\[
+		L_0 = \frac{\mu}{2\pi}\ln\left(\frac{b}{a}\right).
+	\]
+
+	\[
+		L_0 C_0 = \frac{\mu}{2\pi}\ln\left(\frac{b}{a}\right) \cdot \frac{2\pi\varepsilon}{\ln(b/a)}
+		        = \varepsilon\mu.
+	\]
+	Геометричний множник $\ln(b/a)$ скорочується — співвідношення справді універсальне.
+
+	При $b/a = 3$, $\varepsilon = 2.25$:
+	\[
+		\ln 3 \approx 1.099.
+	\]
+	\[
+		C_0 = \frac{2\pi \cdot 8.85\times10^{-12} \cdot 2.25}{1.099}
+		    \approx 1.14\times10^{-10}~\text{Ф/м} = 114~\text{пФ/м}.
+	\]
+	\[
+		L_0 = \frac{4\pi\times10^{-7}}{2\pi} \cdot 1.099
+		    \approx 2.20\times10^{-7}~\text{Гн/м} = 220~\text{нГн/м}.
+	\]
+	\[
+		Z_{\text{хв}} = \sqrt{\frac{L_0}{C_0}}
+		              = \sqrt{\frac{2.20\times10^{-7}}{1.14\times10^{-10}}}
+		              \approx 43.9~\text{Ом}.
+	\]
+	\[
+		\frac{v_{\text{ф}}}{c} = \frac{1}{\sqrt{\varepsilon}} = \frac{1}{1.5} \approx 0.667.
+	\]
+
+	Якщо $b \to 2b$, то $\ln(b/a) \to \ln(2b/a) = \ln 2 + \ln(b/a)$. Оскільки $C_0 \propto 1/\ln(b/a)$, а $L_0 \propto \ln(b/a)$, то:
+	\[
+		Z_{\text{хв}} = \sqrt{\frac{L_0}{C_0}} \propto \ln\left(\frac{b}{a}\right).
+	\]
+	Отже, $Z_{\text{хв}}$ зросте. Конкретно, при $b/a = 3 \to 6$:
+	\[
+		\frac{Z_{\text{хв}}'}{Z_{\text{хв}}} = \frac{\ln 6}{\ln 3} = \frac{1.792}{1.099} \approx 1.63,
+	\]
+	тобто $Z_{\text{хв}}' \approx 71.6$ Ом.
+\end{solution}
