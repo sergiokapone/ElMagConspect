@@ -255,9 +255,8 @@ v\cdot\left[\vect v\times\Bfield\right] = \Bfield\cdot\left[\vect v\times\vect v
 	$v\ll c$) наближення до точного релятивістського закону перетворення полів.
 \end{Attention}
 
-\subsection*{Приклади застосування закону Біо--Савара--Лапласа}
-
-\emphx{Задача 1. Поле нескінченного прямого провідника.} Знайдемо магнітне поле на відстані $r$ від нескінченно довгого прямолінійного провідника
+\begin{Example}{Поле нескінченного прямого провідника.}
+Знайдемо магнітне поле на відстані $r$ від нескінченно довгого прямолінійного провідника
 зі струмом $I$. Скориставшись результатом задачі про поле зарядженої нитки (гл. про електростатичне поле) як геометричною підказкою, --- інтеграл
 за формою той самий, --- виконаємо пряме інтегрування закону Біо--Савара--Лапласа вздовж провідника. Нехай точка спостереження перебуває на
 відстані $r$ від провідника; параметризуємо елемент струму кутом $\alpha$ між $\vect{\mathcal r}$ і перпендикуляром, опущеним із точки
@@ -269,24 +268,23 @@ v\cdot\left[\vect v\times\Bfield\right] = \Bfield\cdot\left[\vect v\times\vect v
 \end{equation*}
 Отже,
 \begin{equation}\label{eq:InfiniteWireResult}
-	\tcbhighmath{
 		B = \frac{2I}{cr}.
-	}
 \end{equation}
+\end{Example}
 
-\emphx{Задача 2. Поле відрізка провідника.} Визначимо магнітне поле в точці $P$ на відстані $r$ від \emphx{короткого} провідника зі струмом,
+\begin{Example}{Поле відрізка провідника}
+Визначимо магнітне поле в точці $P$ на відстані $r$ від \emphx{короткого} провідника зі струмом,
 положення якої визначається кутами $\alpha_1$ та $\alpha_2$, під якими видно кінці провідника з точки $P$ (рис.~\ref{pic:FiniteWireAngles}).
 Обчислення повторює задачу~1, тільки тепер межі інтегрування скінченні:
-\begin{SCfigure}[2][h!]\centering
-	\localinput{finite-wire-angles.tikz}
-	\caption{Геометрія задачі про поле скінченного відрізка провідника\label{pic:FiniteWireAngles}}
-\end{SCfigure}
 \begin{equation}\label{eq:FiniteWireResult}
-	\tcbhighmath{
 		B = \frac{I}{cr}\left(\sin\alpha_2 - \sin\left(-\alpha_1\right)\right) = \frac{I}{cr}\left(\sin\alpha_1+\sin\alpha_2\right).
-	}
 \end{equation}
 При $\alpha_1,\alpha_2 \to \pi/2$ (провідник стає нескінченним в обидва боки) ця формула, як і мало бути, переходить у результат~\eqref{eq:InfiniteWireResult}.
+\begin{center}
+	\localinput{finite-wire-angles.tikz}
+	\captionof{figure}{Геометрія задачі про поле скінченного відрізка провідника\label{pic:FiniteWireAngles}}
+\end{center}
+\end{Example}
 
 \subsection*{Досліди Ампера. Взаємодія струмів}
 
@@ -298,9 +296,7 @@ v\cdot\left[\vect v\times\Bfield\right] = \Bfield\cdot\left[\vect v\times\vect v
 Скориставшись результатом~\eqref{eq:InfiniteWireResult} і законом Ампера~\eqref{eq:AmpereForceLin}, легко отримати кількісний вираз для сили
 взаємодії двох нескінченних паралельних провідників зі струмами $I_1$ і $I_2$ на відстані $d$ один від одного, у розрахунку на одиницю довжини:
 \begin{equation}\label{eq:AmpereParallelWires}
-	\tcbhighmath{
 		\frac{F}{\ell} = \frac{2I_1I_2}{c^2 d}.
-	}
 \end{equation}
 
 \begin{Attention}
