@@ -1,5 +1,5 @@
 % Адаптовано з MaxwellEqns.tex (слайд "Закон збереження енергії електромагнітного поля")
-\begin{tikzpicture}[>=latex, scale=0.75]
+\begin{tikzpicture}[>=latex, scale=1]
 	\pgfmathsetseed{55}
 	\foreach \a in {0,10,...,350}
 		{

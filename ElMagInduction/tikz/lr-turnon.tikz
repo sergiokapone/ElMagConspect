@@ -1,7 +1,7 @@
 % Адаптовано з ElMagInduction.tex (слайд "Перехідні процеси в колі з індуктивністю", встановлення струму)
 \begin{circuitikz}[scale=1.25, transform shape]
 	\draw
-	(0,0) to[L, l=$L$] ++(0,2) to[battery2, l=$\mathcal{E}$] ++(2.5, 0) to[R, l=$R$] ++(0, -2)
+	(0,0) to[L, l=$L$] ++(0,2) to[battery2, l=$\emf$] ++(2.5, 0) to[R, l=$R$] ++(0, -2)
 	to[closing switch, l=$S$, mirror] ++(-2.5, 0) -- cycle
 	;
 \end{circuitikz}

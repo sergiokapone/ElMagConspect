@@ -96,17 +96,20 @@ $\epsilon$ і від чого вона залежить на мікроскоп�
 \begin{table}[h!]
 	\centering
 	\caption{Дипольні моменти деяких полярних молекул\label{tab:dipoles}}
-	\begin{tabular}{lc}
-		\toprule
+	\begin{tblr}{
+		colspec={X[l, m]X[c,m]},
+        row{odd} = {gray!10},
+		row{1} = {c, m, fg=white, bg=themecolorlight, font=\bfseries},
+		hlines,
+		vlines
+		}
 		Молекула                    & Дипольний момент (Дебай) \\
-		\midrule
 		Вода ($\ce{H2O}$)           & 1.84                      \\
 		Аміак ($\ce{NH3}$)          & 1.46                      \\
 		Вуглекислий газ ($\ce{CO2}$) & 0.00                     \\
 		Хлороводень ($\ce{HCl}$)    & 1.08                      \\
 		Метанол ($\ce{CH3OH}$)      & 1.70                      \\
-		\bottomrule
-	\end{tabular}
+	\end{tblr}
 \end{table}
 
 Показовим є приклад вуглекислого газу $\ce{CO2}$: незважаючи на те, що кожен зв'язок C=O є полярним, молекула лінійна і симетрична, тому дипольні
@@ -527,9 +530,10 @@ $\Efield$ (яка, нагадаємо, є універсальним закон�
 
 Для орієнтації наведемо порядки величин $\epsilon$ для кількох типових речовин (постійне поле, кімнатна температура):
 \begin{center}
-		\begin{tblr}{
+	\begin{tblr}{
 		colspec={X[l, m]X[c,m]},
-		row{1} = {c, m, fg=white, bg=cyan, font=\bfseries},
+        row{odd} = {gray!10},
+		row{1} = {c, m, fg=white, bg=themecolorlight, font=\bfseries},
 		hlines,
 		vlines
 		}

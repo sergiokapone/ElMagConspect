@@ -42,7 +42,7 @@
 пропорційна швидкості зміни магнітного потоку, який пронизує площу, охоплену цим контуром:
 \begin{equation}\label{eq:FaradayLawInt}
 	\tcbhighmath{
-		\mathcal E_\text{інд} = -\frac1c\frac{d\Phi}{dt} = -\frac1c\frac{d}{dt}\iint\limits_S \Bfield\cdot d\vect S.
+		\emf_\text{інд} = -\frac1c\frac{d\Phi}{dt} = -\frac1c\frac{d}{dt}\iint\limits_S \Bfield\cdot d\vect S.
 	}
 \end{equation}
 Знак \enquote{мінус} у цьому законі --- не формальність, а прояв \emphx{правила Ленца}, з яким ми детальніше познайомимось нижче.
@@ -62,7 +62,7 @@
 
 Нехай контур деформується (наприклад, рухається одна з його ділянок), а магнітне поле $\Bfield$ залишається сталим. Тоді
 \begin{equation}\label{eq:EMFAreaChange}
-	\mathcal E_\text{інд} = -\frac1c\frac{d\Phi}{dt} = -\frac1c\Bfield\cdot\frac{d}{dt}\iint\limits_S d\vect S = -\frac1c\Bfield\cdot\frac{dS}{dt}.
+	\emf_\text{інд} = -\frac1c\frac{d\Phi}{dt} = -\frac1c\Bfield\cdot\frac{d}{dt}\iint\limits_S d\vect S = -\frac1c\Bfield\cdot\frac{dS}{dt}.
 \end{equation}
 Розглянемо конкретний приклад: П-подібний провідник, вздовж якого може ковзати перемичка $bc$ завдовжки $\ell$, зі швидкістю $v$
 (рис.~\ref{pic:AreaChange}). Зміна площі контуру при русі перемички:
@@ -72,7 +72,7 @@
 тому ЕРС індукції
 \begin{equation}\label{eq:EMFMovingRod}
 	\tcbhighmath{
-		\mathcal E_\text{інд} = \frac{B\ell v}{c}.
+		\emf_\text{інд} = \frac{B\ell v}{c}.
 	}
 \end{equation}
 
@@ -110,12 +110,12 @@
 тому в рамці виникає ЕРС індукції
 \begin{equation}\label{eq:GeneratorEMF}
 	\tcbhighmath{
-		\mathcal E_\text{інд} = \frac{BS\omega}{c}\sin(\omega t),
+		\emf_\text{інд} = \frac{BS\omega}{c}\sin(\omega t),
 	}
 \end{equation}
 а якщо на щітки підключити навантаження опором $R$, у колі потече \emphx{змінний} індукційний струм
 \begin{equation}\label{eq:GeneratorCurrent}
-	I(t) = \frac{\mathcal E_\text{інд}}{R} = \frac{BS\omega}{cR}\sin(\omega t),
+	I(t) = \frac{\emf_\text{інд}}{R} = \frac{BS\omega}{cR}\sin(\omega t),
 \end{equation}
 що змінюється за законом синуса з частотою $\omega$ --- частотою обертання рамки. Саме такий принцип лежить в основі роботи практично всіх
 електростанцій, що генерують змінний струм.
@@ -129,7 +129,7 @@
 Розглянемо тепер принципово інший випадок: контур нерухомий і незмінний за формою, а змінюється саме магнітне поле, що його пронизує
 (рис.~\ref{pic:FieldChange}):
 \begin{equation}\label{eq:FaradayFieldChange}
-	\mathcal E_\text{інд} = -\frac1c\frac{d\Phi}{dt} = -\frac1c\parttime{\Bfield}\cdot\vect S.
+	\emf_\text{інд} = -\frac1c\frac{d\Phi}{dt} = -\frac1c\parttime{\Bfield}\cdot\vect S.
 \end{equation}
 
 \begin{figure}[h!]\centering
@@ -185,7 +185,7 @@
 Розглянемо замкнений провідний контур із опором $R$, що перебуває в зовнішньому магнітному полі. Струм, який виникає при будь-якій зміні
 магнітного поля,
 \begin{equation*}
-	I = \frac{\mathcal E_\text{інд}}{R} = -\frac1{cR}\frac{d\Phi}{dt}.
+	I = \frac{\emf_\text{інд}}{R} = -\frac1{cR}\frac{d\Phi}{dt}.
 \end{equation*}
 Якщо опір контуру дорівнює нулю (надпровідник), то, щоб струм залишався скінченним, необхідно
 \begin{equation}\label{eq:FluxConservationZeroR}
@@ -206,7 +206,7 @@
 \subsection*{Вихрове електричне поле}
 
 Повернімося до питання, яке ми залишили відкритим: що саме прискорює нерухомі заряди при зміні $\Bfield$? Оскільки $\Phi = \iint_S \Bfield\cdot
-d\vect S$, а ЕРС, за означенням~\eqref{eq:EMFDef} (гл.~\ref{SteadyCurrent}), дорівнює $\mathcal E = \oint_L \Efield\cdot d\vect\ell$, із закону
+d\vect S$, а ЕРС, за означенням~\eqref{eq:EMFDef} (гл.~\ref{SteadyCurrent}), дорівнює $\emf = \oint_L \Efield\cdot d\vect\ell$, із закону
 індукції безпосередньо випливає:
 \begin{equation}\label{eq:CurlEInt}
 	\tcbhighmath{
@@ -272,7 +272,7 @@ d\vect S$, а ЕРС, за означенням~\eqref{eq:EMFDef} (гл.~\ref{St
 виникає \emphx{ЕРС самоіндукції}:
 \begin{equation}\label{eq:SelfInductionEMF}
 	\tcbhighmath{
-		\mathcal E_\text{сі} = -\frac{L}{c^2}\frac{dI}{dt}.
+		\emf_\text{сі} = -\frac{L}{c^2}\frac{dI}{dt}.
 	}
 \end{equation}
 
@@ -312,11 +312,11 @@ d\vect S$, а ЕРС, за означенням~\eqref{eq:EMFDef} (гл.~\ref{St
 
 \subsection*{Перехідні процеси в колі з індуктивністю}
 
-\emphx{Встановлення струму в $LR$-колі.} Розглянемо коло з послідовно з'єднаних джерела ЕРС $\mathcal E$, котушки індуктивності $L$, резистора $R$
-і ключа $S$ (рис.~\ref{pic:LRTurnOn}). Після замикання ключа закон Ома для кола, $\mathcal E + \mathcal E_\text{сі} = IR$, з урахуванням
+\emphx{Встановлення струму в $LR$-колі.} Розглянемо коло з послідовно з'єднаних джерела ЕРС $\emf$, котушки індуктивності $L$, резистора $R$
+і ключа $S$ (рис.~\ref{pic:LRTurnOn}). Після замикання ключа закон Ома для кола, $\emf + \emf_\text{сі} = IR$, з урахуванням
 формули~\eqref{eq:SelfInductionEMF}, набуває вигляду
 \begin{equation}\label{eq:LRTurnOnEq}
-	\frac{L}{c^2}\frac{dI}{dt} + IR = \mathcal E.
+	\frac{L}{c^2}\frac{dI}{dt} + IR = \emf.
 \end{equation}
 
 \begin{figure}[h!]\centering
@@ -325,17 +325,17 @@ d\vect S$, а ЕРС, за означенням~\eqref{eq:EMFDef} (гл.~\ref{St
 \end{figure}
 
 Це рівняння --- повний аналог рівняння зарядки конденсатора (гл.~\ref{SteadyCurrent}), і його розв'язок (з початковою умовою $I(0)=0$) --- струм,
-що асимптотично наближається до стаціонарного значення $\mathcal E/R$:
+що асимптотично наближається до стаціонарного значення $\emf/R$:
 \begin{equation}\label{eq:LRTurnOnSolution}
 	\tcbhighmath{
-		I(t) = \frac{\mathcal E}{R}\left(1-e^{-t/\tau}\right), \qquad \tau = \frac{L}{c^2R}
+		I(t) = \frac{\emf}{R}\left(1-e^{-t/\tau}\right), \qquad \tau = \frac{L}{c^2R}
 	}
 \end{equation}
 --- сталу часу $\tau$ називають \emphx{часом релаксації} $LR$-кола.
 
 \emphx{Екстраструми при розмиканні.} Нехай тепер котушка з індуктивністю $L$ і власним (внутрішнім) опором обмотки $r$ спочатку під'єднана до
-джерела ЕРС $\mathcal E$ через ключ $S$ і резистор $R$, під'єднаний паралельно котушці (рис.~\ref{pic:LRTurnOff}); у сталому режимі через котушку
-тече струм $I_0 = \mathcal E/r$.
+джерела ЕРС $\emf$ через ключ $S$ і резистор $R$, під'єднаний паралельно котушці (рис.~\ref{pic:LRTurnOff}); у сталому режимі через котушку
+тече струм $I_0 = \emf/r$.
 
 \begin{figure}[h!]\centering
 	\localinput{lr-turnoff.tikz}
@@ -343,7 +343,7 @@ d\vect S$, а ЕРС, за означенням~\eqref{eq:EMFDef} (гл.~\ref{St
 \end{figure}
 
 Після розмикання ключа $S$ (відключення джерела) магнітне поле котушки, а отже, і потік крізь неї, починають спадати. Це, за законом Ленца,
-збуджує ЕРС самоіндукції $\mathcal E_\text{сі}$ і підтримуваний нею \emphx{екстраструм розмикання} --- індукційний струм, що тепер тече вже через
+збуджує ЕРС самоіндукції $\emf_\text{сі}$ і підтримуваний нею \emphx{екстраструм розмикання} --- індукційний струм, що тепер тече вже через
 резистор $R$ (замкнене коло $L$--$r$--$R$ без джерела). Закон Ома для цього контуру: $I(R+r) = -\dfrac{L}{c^2}\dfrac{dI}{dt}$, звідки
 \begin{equation}\label{eq:LRTurnOffSolution}
 	\tcbhighmath{
@@ -353,8 +353,8 @@ d\vect S$, а ЕРС, за означенням~\eqref{eq:EMFDef} (гл.~\ref{St
 
 \begin{Attention}
 	Якщо $R\gg r$ (типова ситуація, коли навантаження має значно більший опір, ніж провід самої котушки), то в момент розмикання ЕРС самоіндукції
-	досягає значення $\mathcal E_\text{сі} = \dfrac{R}{r}\mathcal E\, e^{-t(R+r)c^2/L}$, яке при $R\gg r$ може \emphx{значно перевищувати} ЕРС самого
-	джерела $\mathcal E$! Саме тому раптове розмикання кола з великою індуктивністю (наприклад, вимкнення потужного електромагніту чи реле) часто
+	досягає значення $\emf_\text{сі} = \dfrac{R}{r}\emf\, e^{-t(R+r)c^2/L}$, яке при $R\gg r$ може \emphx{значно перевищувати} ЕРС самого
+	джерела $\emf$! Саме тому раптове розмикання кола з великою індуктивністю (наприклад, вимкнення потужного електромагніту чи реле) часто
 	супроводжується електричним пробоєм або яскравою іскрою на контактах ключа --- індуктивність \enquote{чинить опір} різкому зникненню струму
 	настільки завзято, що готова створити на короткий час дуже високу напругу.
 \end{Attention}
@@ -386,8 +386,8 @@ $L$, це \emphx{алгебраїчні} величини, які можуть �
 З урахуванням взаємної індукції закони Ома для двох контурів набувають вигляду
 \begin{equation}\label{eq:MutualOhm}
 	\begin{cases}
-		I_1R_1 = \mathcal E_1 - \dfrac1{c^2}\dfrac{d}{dt}\left(L_{11}I_1\right) - \dfrac1{c^2}\dfrac{d}{dt}\left(L_{12}I_2\right), \\[1.5ex]
-		I_2R_2 = \mathcal E_2 - \dfrac1{c^2}\dfrac{d}{dt}\left(L_{21}I_1\right) - \dfrac1{c^2}\dfrac{d}{dt}\left(L_{22}I_2\right),
+		I_1R_1 = \emf_1 - \dfrac1{c^2}\dfrac{d}{dt}\left(L_{11}I_1\right) - \dfrac1{c^2}\dfrac{d}{dt}\left(L_{12}I_2\right), \\[1.5ex]
+		I_2R_2 = \emf_2 - \dfrac1{c^2}\dfrac{d}{dt}\left(L_{21}I_1\right) - \dfrac1{c^2}\dfrac{d}{dt}\left(L_{22}I_2\right),
 	\end{cases}
 \end{equation}
 де $L_{11}\equiv L_1$, $L_{22}\equiv L_2$ --- власні індуктивності контурів. Той факт, що зміна струму в одному контурі неминуче породжує ЕРС і в
@@ -417,7 +417,7 @@ $\Phi_2 = N_2 B_1 S$, де $B_1 = \dfrac{4\pi}{c}\mu n_1 I_1$ (гл.~\ref{MagFie
 \emphx{Теорема взаємності} стверджує: ЕРС, що наводиться в контурі 1, коли струм у контурі 2 змінюється з певною швидкістю, дорівнює ЕРС, яка
 наводилася б у контурі 2, якби той самий змінний струм протікав у контурі 1:
 \begin{equation}\label{eq:ReciprocityTheorem}
-	\mathcal E_1 = -\frac{L_{12}}{c^2}\frac{dI}{dt} = \mathcal E_2 = -\frac{L_{21}}{c^2}\frac{dI}{dt}.
+	\emf_1 = -\frac{L_{12}}{c^2}\frac{dI}{dt} = \emf_2 = -\frac{L_{21}}{c^2}\frac{dI}{dt}.
 \end{equation}
 Звідси прямий наслідок --- \emphx{коефіцієнти взаємної індуктивності симетричні}:
 \begin{equation}\label{eq:MutualEqual}
@@ -437,15 +437,15 @@ $\Phi_2 = N_2 B_1 S$, де $B_1 = \dfrac{4\pi}{c}\mu n_1 I_1$ (гл.~\ref{MagFie
 	задачах.
 \end{Attention}
 
-\subsection*{Приклад 1: два коаксіальні кільця}
 
+\begin{Example}{Два коаксіальні кільця}
 Два тонкі колові провідники з спільною віссю лежать в одній площині; радіус зовнішнього --- $R_1$, внутрішнього --- $R_2$, причому $R_2\ll R_1$
 (рис.~\ref{pic:CoaxialLoops}). Знайдемо магнітний потік крізь площу зовнішнього провідника, якщо внутрішнім тече струм $I$.
 
-\begin{figure}[h!]\centering
+\begin{center}
 	\localinput{coaxial-loops.tikz}
-	\caption{Два коаксіальні колові контури різних радіусів\label{pic:CoaxialLoops}}
-\end{figure}
+	\captionof{figure}{Два коаксіальні колові контури різних радіусів\label{pic:CoaxialLoops}}
+\end{center}
 
 Пряме обчислення потоку від маленького кільця крізь велике --- складна геометрична задача (поле маленького кільця складно неоднорідне на
 масштабі великого). Натомість застосуємо \emphx{теорему взаємності}: обчислимо потік у \emphx{зворотному} напрямку --- від великого кільця крізь
@@ -458,23 +458,24 @@ $\Phi_2 = N_2 B_1 S$, де $B_1 = \dfrac{4\pi}{c}\mu n_1 I_1$ (гл.~\ref{MagFie
 \begin{equation*}
 	\Phi_{21} = \Phi_{12} = \frac{2\pi^2 I R_2^2}{cR_1}.
 \end{equation*}
+\end{Example}
 
-\subsection*{Приклад 2: обертовий магнітний диполь}
-
+\begin{Example}{Обертовий магнітний диполь}
 Магнітний диполь з моментом $p_m$ обертається з циклічною частотою $\omega$ навколо осі, що проходить через його центр перпендикулярно до $\vect
 p_m$. На відстані $\ell \gg a$ від диполя розташоване нерухоме плоске колове кільце радіуса $a$ і опору $R$, нормаль якого $\vect n$
 перпендикулярна до осі обертання диполя (рис.~\ref{pic:RotatingDipole}); самоіндукцією кільця знехтуємо. Знайдемо струм у кільці.
 
-\begin{figure}[h!]\centering
+\begin{center}
 	\localinput{rotating-dipole.tikz}
-	\caption{Магнітний диполь, що обертається, і нерухоме кільце на відстані $\ell$\label{pic:RotatingDipole}}
-\end{figure}
+	\captionof{figure}{Магнітний диполь, що обертається, і нерухоме кільце на відстані $\ell$\label{pic:RotatingDipole}}
+\end{center}
 
 За формулою для поля далекого магнітного диполя~\eqref{eq:DipoleFieldB} (гл.~\ref{MagFieldVacuum}), у площині кільця нормальна складова поля
 диполя пропорційна проєкції $p_m$ на напрям $\vect n$, тобто $\propto \sin(\omega t)$ (оскільки диполь обертається в площині, що містить
 $\vect n$); потік крізь кільце виявляється синусоїдальним, $\Phi(t) \propto \sin(\omega t)$ з амплітудою, що спадає як $1/\ell^3$. ЕРС індукції
-$\mathcal E = -\frac1c d\Phi/dt \propto \omega\cos(\omega t)/\ell^3$, а шуканий струм $I(t) = \mathcal E(t)/R$ --- гармонічно змінюється з тією
+$\emf = -\frac1c d\Phi/dt \propto \omega\cos(\omega t)/\ell^3$, а шуканий струм $I(t) = \emf(t)/R$ --- гармонічно змінюється з тією
 самою частотою $\omega$, з якою обертається сам диполь, і амплітудою, пропорційною $p_m\omega a^2/(cR\ell^3)$.
+\end{Example}
 
 \begin{Attention}
 	Цей приклад --- не абстрактна вправа: саме так, у принципі, можна дистанційно \emphx{виявляти обертання} намагніченого тіла (наприклад,
@@ -486,7 +487,7 @@ $\mathcal E = -\frac1c d\Phi/dt \propto \omega\cos(\omega t)/\ell^3$, а шук�
 
 Явище взаємної індукції лежить в основі роботи \emphx{трансформаторів} --- пристроїв для підвищення чи зниження напруги змінного струму
 (рис.~\ref{pic:Transformer}). Первинна й вторинна обмотки з $N_1$ і $N_2$ витками укріплені на спільному замкненому феромагнітному осерді. Змінна
-ЕРС $\mathcal E_1$ у первинній обмотці створює струм $I_1$ і змінний магнітний потік $\Phi$, майже повністю локалізований в осерді (завдяки
+ЕРС $\emf_1$ у первинній обмотці створює струм $I_1$ і змінний магнітний потік $\Phi$, майже повністю локалізований в осерді (завдяки
 великому $\mu$ феромагнетика, гл.~\ref{MagFieldMedia}); цей потік пронизує й витки вторинної обмотки, наводячи в ній ЕРС взаємної індукції, а в
 первинній --- ЕРС самоіндукції.
 
@@ -495,14 +496,14 @@ $\mathcal E = -\frac1c d\Phi/dt \propto \omega\cos(\omega t)/\ell^3$, а шук�
 	\caption{Принципова схема трансформатора\label{pic:Transformer}}
 \end{figure}
 
-Закон Ома для первинного кола: $\mathcal E_1 - \dfrac{d}{dt}(N_1\Phi) = I_1R_1$. У режимі швидкозмінних полів (типовому для трансформаторів)
-$I_1R_1 \ll \mathcal E_1,\ \tfrac{d}{dt}(N_1\Phi)$, тому наближено
+Закон Ома для первинного кола: $\emf_1 - \dfrac{d}{dt}(N_1\Phi) = I_1R_1$. У режимі швидкозмінних полів (типовому для трансформаторів)
+$I_1R_1 \ll \emf_1,\ \tfrac{d}{dt}(N_1\Phi)$, тому наближено
 \begin{equation}\label{eq:TransformerEMF1}
-	\mathcal E_1 \approx N_1\frac{d\Phi}{dt},
+	\emf_1 \approx N_1\frac{d\Phi}{dt},
 \end{equation}
 а ЕРС у вторинній обмотці, оскільки потік $\Phi$ в осерді той самий,
 \begin{equation}\label{eq:TransformerEMF2}
-	\mathcal E_2 = -N_2\frac{d\Phi}{dt} = -\frac{N_2}{N_1}\mathcal E_1
+	\emf_2 = -N_2\frac{d\Phi}{dt} = -\frac{N_2}{N_1}\emf_1
 \end{equation}
 (знак \enquote{мінус} означає протилежність фаз). Відношення
 \begin{equation}\label{eq:TransformationRatio}
@@ -521,10 +522,10 @@ $\eta<1$ --- \emphx{знижувальний} (зменшує ЕРС, збіль
 \subsection*{Енергія контуру зі струмом}
 
 Провідник зі струмом створює магнітне поле, яке з'являється й зникає разом зі струмом; \emphx{магнітне поле --- носій енергії}, що дорівнює роботі
-джерела струму на його створення. Розглянемо роботу джерела ЕРС $\mathcal E$ при замиканні ключа в колі з котушкою індуктивності $L$ й резистором
+джерела струму на його створення. Розглянемо роботу джерела ЕРС $\emf$ при замиканні ключа в колі з котушкою індуктивності $L$ й резистором
 $R$, з перенесення заряду $dq = I\, dt$:
 \begin{equation*}
-	\delta A = \mathcal E\, dq = I^2R\, dt - \mathcal E_\text{сі}I\, dt = \underbrace{I^2R\, dt}_\text{теплота} +
+	\delta A = \emf\, dq = I^2R\, dt - \emf_\text{сі}I\, dt = \underbrace{I^2R\, dt}_\text{теплота} +
 	\underbrace{\frac1{c^2}LI\, dI}_{\text{енергія поля}}.
 \end{equation*}
 Частина роботи джерела йде на теплоту (закон Джоуля--Ленца), а решта --- на створення магнітного поля. Інтегруючи другий доданок від нульового
@@ -632,10 +633,10 @@ $R$, з перенесення заряду $dq = I\, dt$:
 \begin{equation}\label{eq:PonderomotiveWork}
 	\delta A_\text{дж} = \delta Q + dW + \delta A_\text{мех}.
 \end{equation}
-З іншого боку, за законом Ома, робота джерела дорівнює $\delta A_\text{дж} = \delta Q - \mathcal E_\text{сі}I\, dt$ (ЕРС самоіндукції --- частина
+З іншого боку, за законом Ома, робота джерела дорівнює $\delta A_\text{дж} = \delta Q - \emf_\text{сі}I\, dt$ (ЕРС самоіндукції --- частина
 роботи джерела, витрачена на подолання цієї ЕРС). Порівнюючи два вирази для $\delta A_\text{дж}$:
 \begin{equation*}
-	-\mathcal E_\text{сі}I\, dt = dW + \delta A_\text{мех}.
+	-\emf_\text{сі}I\, dt = dW + \delta A_\text{мех}.
 \end{equation*}
 
 \emphx{Випадок $I=\const$} (струм у колі підтримується сталим джерелом). Тоді, за формулою~\eqref{eq:SelfInductionEMF}, $-\mathcal
@@ -648,7 +649,7 @@ $dW = \dfrac{I^2}{2c^2}dL$ (оскільки $I=\const$, а не $\Phi$). Отж
 \end{equation}
 
 \emphx{Випадок $\Phi=\const$} (наприклад, контур з надпровідника, де потік зберігається за формулою~\eqref{eq:FluxConservationZeroR}). Тоді
-$\mathcal E_\text{сі} = 0$ (адже $d\Phi/dt=0$), тому $\delta A_\text{мех} = -dW$, і
+$\emf_\text{сі} = 0$ (адже $d\Phi/dt=0$), тому $\delta A_\text{мех} = -dW$, і
 \begin{equation}\label{eq:ForceConstPhi}
 	\tcbhighmath{
 		F_x = -\left(\frac{dW}{dx}\right)_\Phi.
@@ -734,7 +735,7 @@ $\mathcal E_\text{сі} = 0$ (адже $d\Phi/dt=0$), тому $\delta A_\text{�
 %
 %\subsection*{Закон індукції}
 %\begin{itemize}
-%	\item $\displaystyle \mathcal E_\text{інд} = -\frac1c\frac{d\Phi}{dt}$; ЕРС виникає при зміні площі контуру ($\mathcal E=B\ell v/c$, сила
+%	\item $\displaystyle \emf_\text{інд} = -\frac1c\frac{d\Phi}{dt}$; ЕРС виникає при зміні площі контуру ($\emf=B\ell v/c$, сила
 %	      Лоренца на носії) і при зміні поля (вихрове $\Efield$).
 %	\item Правило Ленца: індукційний струм протидіє зміні потоку, що його породжує.
 %	\item Вихрове електричне поле: $\displaystyle \oint_L\Efield\cdot d\vect\ell = -\frac1c\iint_S \parttime{\Bfield}\cdot d\vect S$, $\rot\Efield
@@ -744,10 +745,10 @@ $\mathcal E_\text{сі} = 0$ (адже $d\Phi/dt=0$), тому $\delta A_\text{�
 %
 %\subsection*{Самоіндукція та взаємна індукція}
 %\begin{itemize}
-%	\item $\Phi = LI/c$, $\mathcal E_\text{сі} = -\dfrac{L}{c^2}\dfrac{dI}{dt}$; $[L]=\text{см}$.
-%	\item Перехідні процеси: $I(t) = \dfrac{\mathcal E}{R}(1-e^{-t/\tau})$ або $I_0e^{-t/\tau}$, $\tau = L/(c^2R)$.
+%	\item $\Phi = LI/c$, $\emf_\text{сі} = -\dfrac{L}{c^2}\dfrac{dI}{dt}$; $[L]=\text{см}$.
+%	\item Перехідні процеси: $I(t) = \dfrac{\emf}{R}(1-e^{-t/\tau})$ або $I_0e^{-t/\tau}$, $\tau = L/(c^2R)$.
 %	\item Взаємна індукція: $\Phi_{21}=L_{21}I_1/c$; теорема взаємності $L_{12}=L_{21}$.
-%	\item Трансформатор: $\mathcal E_2 = -\eta\mathcal E_1$, $\eta = N_2/N_1$.
+%	\item Трансформатор: $\emf_2 = -\eta\emf_1$, $\eta = N_2/N_1$.
 %\end{itemize}
 %
 %\subsection*{Енергія та сили}

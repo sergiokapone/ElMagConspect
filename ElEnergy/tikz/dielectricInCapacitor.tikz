@@ -19,7 +19,6 @@
 
 \begin{tikzpicture}[>=latex,
 scale=1.5,
-transform shape
 ]
 
 \draw  (0,-1)    pic {plate={0.2}{3}{20}{1}{blue!10}{gray}};
