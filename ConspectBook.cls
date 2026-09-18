@@ -172,6 +172,9 @@
 \definecolor{efield}{rgb}{1, 0, 0}   % колір вектора E на рисунках
 \definecolor{dfield}{rgb}{0, 0, 1}   % колір вектора D на рисунках
 \definecolor{jfield}{named}{teal}    % колір густини струму j на рисунках
+% Цвет для тетрадных клеточек (бледно-голубой)
+\definecolor{gridcolor}{rgb}{0.8, 0.88, 0.95}
+
 
 %===============================================================================
 %
@@ -225,6 +228,7 @@
 \let\nfrac\nicefrac
 \allowdisplaybreaks        % дозволити перенос довгих формул (\begin{align} тощо) між сторінками
 
+
 % ------------------------- Визначення математичних команд ---------------------
 % Скорочені позначення, специфічні для курсу електродинаміки: ЕРС, вектори полів,
 % диференціальні оператори (rot, div, grad) та частинні похідні.
@@ -252,6 +256,10 @@
 	\DeclareMathOperator{\Grad}{grad}
 	\DeclareMathOperator{\inv}{inv}
 	\newcommand{\Laplasian}{\Delta}
+    % Оновлена нотація
+	\let\iiint\int         % (если iiint тоже нужно заменить на одиночный)
+    \let\iint\int         % (если iiint тоже нужно заменить на одиночный)
+	\let\oiint\oint        % (если oiint тоже нужно заменить на одиночный)
 }
 
 % \emphx{текст} — виділення терміна малиновим курсивом (означення, важливий термін)
@@ -943,21 +951,35 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 \newtcolorbox{Example}[2][]{
     enhanced,
     breakable,
-    title=#2,
-    before skip=2mm, after skip=3mm,
-    before upper={\parindent15pt},
-    boxrule=0.4pt, left=5mm, right=2mm, top=1mm, bottom=1mm,
-    colback=white,
-    colframe=blue!50!gray,
-    colbacktitle=themecolordark,
-    coltitle=white,
+    title={#2},
+    attach title to upper={.\ },
     fonttitle=\bfseries,
-    fontupper=\itshape\small,
+    coltitle=black,
+    before skip=2mm, after skip=3mm,
+    boxrule=0.4pt,
+    left=7mm,
+    right=2mm, top=2mm, bottom=2mm,
+    colback=white,
+    colframe=themecolordark,
+    fontupper=\small,
+    parbox=false,
     sharp corners, rounded corners=southeast, arc is angular, arc=3mm,
     underlay={%
+        % 1. СЕТКА В КЛЕТОЧКУ (рисуется только в зоне текста, исключая синюю полосу слева)
+        \begin{scope}
+            % Обрезаем сетку строго по внутренним границам блока (с отступом под синюю полосу 5мм)
+            \clip ([xshift=5mm]interior.south west) rectangle (interior.north east);
+            % Рисуем сетку с шагом 5мм (стандартная тетрадная клетка)
+            \draw[step=5mm, gridcolor, thin] ([xshift=5mm]interior.south west) grid (interior.north east);
+        \end{scope}
+
+        % 2. Загнутый уголок снизу справа
         \path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
         \path[draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
-        \path[fill=themecolordark,draw=none] (interior.south west) rectangle node[text=white]{\Large\bfseries *} ([xshift=4mm]interior.north west);
+
+        % 3. Цветная полоса со звездочкой слева (поверх сетки)
+        \path[fill=themecolordark,draw=none] (interior.south west) rectangle ([xshift=5mm]interior.north west);
+        \node[text=white] at ([xshift=2.5mm]interior.west) {\Large\bfseries *};
     },
     drop fuzzy shadow,
     #1

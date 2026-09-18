@@ -1,21 +1,105 @@
-\begin{tikzpicture}[>=latex,
-		scale=1.25, transform shape]
-	\pgfmathsetmacro{\r}{0.55}
-	\pgfmathsetmacro{\l}{2}
-	\draw[fill=red!10, thin] (-1,0) circle(0.2 and \r);
-	\draw[fill=red!10, thin] (-1, \r) -- ++(\l, 0) coordinate (A) arc[x
-			radius=0.2, y radius=\r, start angle=90, delta  angle=-180] -- ++(-\l,
-	0) arc[x radius=0.2, y radius=\r, start angle=-90, delta  angle=180];
-	\draw[dashed, thin] (A) arc[x radius=0.2, y radius=\r, start angle=90,
-			delta angle=180];
-	\draw[->, red, thick] (-0.5,0.35) -- ++(1,0) node[below] {$E_{\tau}$};
-	\draw[->, red, thick] (-0.5,0.65) -- ++(1,0) coordinate (Et)  node[above right]
-		{$E_{\tau}$} ;
-	\draw[->, red, thick] (-0.5,0.65) -- ++(0,1.5) coordinate (En) node[left] {$E_n$};
-	\draw[->, red, thick] (-0.5,0.65) -- ++({atan(1.5)}:{1/(cos(atan(1.5)))})
-	coordinate (E) node[above] {$\vect{E}$};
-	\draw[dashed] (En) -- (E) -- (Et);
-	\foreach \x in {-1, -0.75,..., 1} {
-			\node[inner sep=0, text=red, font=\scriptsize] at ({0.9*\x}, {\r-0.05}) {$+$};
-		}
+\begin{tikzpicture}[>=Stealth, ultra thick, font=\sffamily]
+
+    % --- Параметри рисунка ---
+    \def\h{6}          % Висота пластин
+    \def\w{2}        % Ширина пластин
+    \def\gap{3.0}      % Відстань між пластинами
+
+    \def\xL{\w}        % Внутрішня межа лівої пластини
+    \def\xR{\w + \gap} % Внутрішня межа правої пластини
+
+    % --- Налаштування радіуса циліндрів ---
+    \pgfmathsetmacro{\r}{\w/2}       % Радіус циліндра (половина ширини)
+    \pgfmathsetmacro{\ry}{0.3*\r}    % Овальність еліпса (для 3D-ефекту)
+
+    % --- 1. Лівий вертикальний циліндр ---
+    % Тіло циліндра з нижньою дугою
+    \filldraw[fill=gray! 10, draw=gray!50]
+        (0, 0) arc (180:360:\r\space and \ry) -- (\w, \h) arc (0:180:\r\space and \ry) -- cycle;
+    % Верхня кришка (еліпс)
+    \filldraw[fill=gray! 10, draw=gray!50] (\r, \h) ellipse[x radius = \r, y radius = \ry];
+
+    % --- 2. Правий вертикальний циліндр ---
+    % Тіло циліндра з нижньою дугою
+    \filldraw[fill=gray!10, draw=gray!50]
+        (\xR, 0) arc (180:360:\r\space and \ry) -- (\xR+\w, \h) arc (0:180:\r\space and \ry) -- cycle;
+    % Верхня кришка (еліпс)
+    \filldraw[fill=gray!10, draw=gray!50] (\xR+\r, \h) ellipse[x radius = \r, y radius = \ry];
+
+    % --- 2. Заряди ---
+    % Червоні плюси на лівій пластині
+    \foreach \y in {0, ..., \h} {
+        \node[red!80!black, font=\large\bfseries] at ({0.9*\w}, \y) {+};
+    }
+
+    % Сині мінуси на правій пластині
+    \foreach \y in {0,..., \h} {
+        \node[blue!80!black, font=\large\bfseries] at (\xR + 0.1*\w, \y) {--};
+    }
+
+    % --- 3. Точки прив'язки векторів та ліній ---
+    \def\yz{3.0}
+    \coordinate (OL) at (\xL, \yz);
+    \coordinate (OR) at ({\xR-0.15}, \yz);
+
+    % --- 4. Силові лінії електричного поля ---
+    % Верхня суцільна лінія
+    \draw[line width=1.2pt, midarrow] (OL) to[out=55, in=125] (OR);
+
+    % Пунктирні лінії нижче
+    \foreach \y in {0, 1, ..., \h}
+    {
+        \ifnum\y=\yz\relax
+        \else
+            \draw[gray, line width=1.2pt, dotted, midarrow] (\xL, \y) to[out=50, in=130] (\xR, \y);
+        \fi
+    }
+
+    % --- 5. Густина струму (j та -j) ---
+    % Струм j (ліворуч, вгору)
+    \draw[->, red!80!black] (0.35*\w, 1.5) -- (0.35*\w, 3.5);
+    \node[ left] at (0.35*\w, 2.5) {$\vect{j}$};
+
+    % Струм -j (праворуч, вниз)
+    \draw[->, red!80!black] (\xR + 0.75*\w, {0.9*\h}) -- ++(0, -2) node[left, pos=0.5, text=black] at (\xR + 0.75*\w, 5.5) {$-\vect{j}$};
+
+    % --- 6. Вектори поля (Ліва сторона) ---
+    % E' (всередині лівої пластини, вгору)
+    \draw[->, thick, red!80!black] ([xshift=-0.5cm]OL) -- ++(0, 2.2) node[left] {$\Efield'$};
+
+    % E_tau (тангенціальна, вздовж поверхні вгору)
+    \draw[->, red!80!black] (OL) -- ++(0, 2.2) coordinate (Et_L);
+    \node[above right] at (Et_L) {$\Efield_\tau$};
+
+    % E_n (нормальна, вправо)
+    \draw[->, red!80!black] (OL) -- ++(1.5, 0) coordinate (En_L);
+    \node[below] at (En_L) {$\Efield_n$};
+
+    % E (результуючий вектор)
+    \draw[->, red!80!black] (OL) -- ++(1.5, 2.2) coordinate (E_L);
+    \node[right] at (E_L) {$\Efield$};
+
+    % Допоміжний прямокутник
+    \draw[dashed, thick] (En_L) -- (E_L) -- (Et_L);
+
+    % --- 7. Вектори поля (Права сторона) ---
+    % E_tau (тангенціальна, вниз)
+    \draw[->, red!80!black] (OR) -- ++(0, -2.2) coordinate (Et_R);
+    \node[left] at ($(OR)!0.8!(Et_R)$) {$\Efield_\tau$};
+
+    % E_n (нормальна, вправо вглиб пластини)
+    \draw[->, red!80!black] (OR) -- ++(1.5, 0) coordinate (En_R);
+    \node[right] at (En_R) {$\Efield_n$};
+
+    % E (результуючий вектор)
+    \draw[->, red!80!black] (OR) -- ++(1.5, -2.2) coordinate (E_R);
+    \node[right] at (E_R) {$\Efield$};
+
+    % E' (всередині правої пластини, вниз)
+%    \draw[->, red!80!black] (\xR + 0.35*\w, 2.6) -- (\xR + 0.35*\w, 0.8);
+%    \node[left] at (\xR + 0.35*\w, 1.4) {$\Efield'$};
+
+    % Допоміжний прямокутник
+    \draw[dashed] (En_R) -- ++(0, -2.2) -- (Et_R);
+
 \end{tikzpicture}
