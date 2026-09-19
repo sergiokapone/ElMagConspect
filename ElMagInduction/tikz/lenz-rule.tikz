@@ -1,6 +1,6 @@
 % Адаптовано з ElMagInduction.tex (слайд "Правило Ленца")
 \begin{minipage}[t]{0.48\linewidth}\centering
-	\begin{tikzpicture}[scale=0.9, >=latex, midarrow/.style={%
+	\begin{tikzpicture}[scale=1.25, >=latex, midarrow/.style={%
 					postaction={ decorate,
 							decoration={ markings, mark=at position .7 with {\arrow{latex}}}}}]
 		\begin{scope}[yscale=-1]
@@ -22,7 +22,7 @@
 	\end{tikzpicture}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.48\linewidth}\centering
-	\begin{tikzpicture}[scale=0.9, >=latex, midarrow/.style={%
+	\begin{tikzpicture}[scale=1.25, >=latex, midarrow/.style={%
 					postaction={ decorate,
 							decoration={ markings, mark=at position .7 with {\arrow{latex}}}}}]
 		\draw[red!40, ultra thick] (0,0) circle(1 and 0.3);
