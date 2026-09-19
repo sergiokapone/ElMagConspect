@@ -1059,6 +1059,7 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 	fonttitle=\sffamily\bfseries\LARGE,
 	attach boxed title to top center={yshift*=-\tcboxedtitleheight},
 	coltitle=black,
+    parbox=false,
 	#1
 }
 
