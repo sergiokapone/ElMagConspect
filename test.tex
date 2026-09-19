@@ -1,4 +1,6 @@
 \documentclass[]{ConspectBook}
+\let\enquote\emph
+
 \newcommand{\includechapter}[1]{\input{#1/#1}}
 
 \newcommand{\includetikz}[2]{\input{#1/tikz/#2.tikz}}
@@ -6,7 +8,8 @@
 
 \begin{document}
 
-\includechapter{Waveguides}
+
+\includechapter{ElMagInduction}
 %\includetikz{ElMagInduction}{solenoid-cross-section}
 
 \end{document}

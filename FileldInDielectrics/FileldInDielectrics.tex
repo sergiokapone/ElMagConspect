@@ -796,40 +796,34 @@ $\Efield_\text{лок}\approx\Efield$. Тому поляризація речо�
 \end{Attention}
 
 
-\begin{figure}[h!]\centering
-	\begin{tikzpicture}[>=latex, scale=0.8]
-		\draw[thick, name path=blob]
-			plot [smooth cycle] coordinates {
-				(-2.2,-1.8) (-1.0,-2.3) (0.4,-2.1) (1.6,-2.4)
-				(2.4,-1.4) (2.6,-0.1) (2.0,1.1) (2.5,2.0)
-				(1.2,2.5) (0.0,2.0) (-1.3,2.4) (-2.4,1.2)
-				(-2.7,0.0) (-2.3,-1.0)
-			};
-		\begin{scope}
-			\clip plot [smooth cycle] coordinates {
-				(-2.2,-1.8) (-1.0,-2.3) (0.4,-2.1) (1.6,-2.4)
-				(2.4,-1.4) (2.6,-0.1) (2.0,1.1) (2.5,2.0)
-				(1.2,2.5) (0.0,2.0) (-1.3,2.4) (-2.4,1.2)
-				(-2.7,0.0) (-2.3,-1.0)
-			};
-			\foreach \d in {-4.5,-4.2,...,4.5} {
-				\draw[gray!70, thin] (\d,-3) -- ++(1,1) -- ++(2.5,2.5);
-			}
-			\fill[white] (0,0) circle (1.0);
-		\end{scope}
-		\draw[thick, dashed] (0,0) circle (1.0);
-		\foreach \a in {55,70,90,110,125} {
-			\node[font=\scriptsize] at ({1.15*cos(\a)},{1.15*sin(\a)}) {$-$};
-		}
-		\foreach \a in {235,250,270,290,305} {
-			\node[font=\scriptsize] at ({1.15*cos(\a)},{1.15*sin(\a)}) {$+$};
-		}
-		\draw[->, thick, brown] (0,1.35) -- ++(0,0.7) node[right] {$\vect P$};
-		\draw[->, thick, blue] (0,-0.4) -- ++(0,0.75) node[right] {$\Efield_\text{лок}$};
-		\node[circle, fill=green!70!black, inner sep=0, minimum size=0.2cm] at (0,0) {};
-	\end{tikzpicture}
+\begin{SCfigure}[2][h!]\centering
+    \begin{tikzpicture}[>=latex, scale=0.8]
+    	\draw[fill=gray!50, thick, name path=blob]
+    		plot [smooth cycle] coordinates {
+    			(-2.2,-1.8) (-1.0,-2.3) (0.4,-2.1) (1.6,-2.4)
+    			(2.4,-1.4) (2.6,-0.1) (2.0,1.1) (2.5,2.0)
+    			(1.2,2.5) (0.0,2.0) (-1.3,2.4) (-2.4,1.2)
+    			(-2.7,0.0) (-2.3,-1.0)
+    		};
+    		\fill[white] (0,0) circle (1.0);
+    	\draw[thick, dashed] (0,0) circle (1.0);
+    	\foreach \a in {55,70,90,110,125} {
+    		\node[font=\scriptsize, text=blue] at ({1.15*cos(\a)},{1.15*sin(\a)}) {$-$};
+    	}
+    	\foreach \a in {235,250,270,290,305} {
+    		\node[font=\scriptsize, text=red] at ({1.15*cos(\a)},{1.15*sin(\a)}) {$+$};
+    	}
+    	\draw[->, thick, brown] (-2,0) -- ++(0,0.7) node[right] {$\vect P$};
+
+            \foreach \x in {-0.9, -0.7, ..., 0.9}{
+                \pgfmathsetmacro{\y}{sqrt(1-\x*\x)}
+                \draw[->, red!40] (\x, -\y) -- (\x, \y);
+            }
+    	\fill[ball color=blue!50] (0,0) circle[x radius=6pt, y radius = 8pt];
+        \fill[ball color=red!50] (0,2pt) circle[x radius=2pt, y radius = 2pt];
+    \end{tikzpicture}
 	\caption{Сферична порожнина Лоренца в поляризованому діелектрику\label{pic:CavityField}}
-\end{figure}
+\end{SCfigure}
 
 
 
