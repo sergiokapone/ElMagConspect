@@ -9,7 +9,395 @@
 \begin{document}
 
 
-\includechapter{Relativity}
+\includechapter{EBMotion}
 %\includetikz{ElMagInduction}{solenoid-cross-section}
 
+%\begin{tikzpicture}[
+%    >=Stealth,
+%    scale=1.1,
+%    line join=round,
+%    line cap=round,
+%    font=\small
+%]
+%
+%    % --- Векторний базис ізометрії (як на оригіналі) ---
+%    % x розгортається вправо-вниз, y — вправо-вгору, z — строго вгору
+%    \pgfmathsetmacro{\xAngle}{-10}
+%    \pgfmathsetmacro{\yAngle}{40}
+%
+%    % Допоміжна макро-координата для ізометрії
+%    \tikzset{
+%        3d/x/.style={x={(\xAngle:1.8cm)}},
+%        3d/y/.style={y={(\yAngle:2.2cm)}},
+%        3d/z/.style={z={(0, 1.8cm)}}
+%    }
+%
+%    \begin{scope}[3d/x, 3d/y, 3d/z]
+%
+%        % --- Точки пластини ---
+%        % Товщина d спрямована вниз по z
+%        \coordinate (d_vec) at (0, 0, -0.2);
+%
+%        % Верхня грань (z = 0)
+%        \coordinate (A) at (0, 0, 0);       % Передній лівий кут
+%        \coordinate (B) at (1, 0, 0);       % Передній правий кут
+%        \coordinate (C) at (1, 1.8, 0);     % Задній правий кут
+%        \coordinate (D) at (0, 1.8, 0);     % Задній лівий кут
+%
+%        % Нижня грань (z = -0.2)
+%        \coordinate (A_bot) at ($(A)+(d_vec)$);
+%        \coordinate (B_bot) at ($(B)+(d_vec)$);
+%        \coordinate (C_bot) at ($(C)+(d_vec)$);
+%        \coordinate (D_bot) at ($(D)+(d_vec)$);
+%
+%        % --- Отрисовка 3D паралелепіпеда ---
+%        % Задні/невидимі або затінені грані
+%        \filldraw[fill=gray!25, draw=black] (D) -- (C) -- (C_bot) -- (D_bot) -- cycle;
+%        \filldraw[fill=gray!20, draw=black] (B) -- (C) -- (C_bot) -- (B_bot) -- cycle;
+%
+%        % Передні visible грані
+%        \filldraw[fill=gray!30, draw=black] (A) -- (B) -- (B_bot) -- (A_bot) -- cycle;
+%        \filldraw[fill=gray!35, draw=black] (A) -- (D) -- (D_bot) -- (A_bot) -- cycle;
+%
+%        % Верхня грань
+%        \filldraw[fill=gray!30, draw=black] (A) -- (B) -- (C) -- (D) -- cycle;
+%
+%        % --- Знаки зарядів ---
+%        % Плюси (+) на правій бічній грані
+%        \foreach \t in {0.12, 0.25, 0.38, 0.51, 0.64, 0.77, 0.9} {
+%            \node at ($(B)!\t!(C)+(0.05, 0, -0.05)$) {\tiny $+$};
+%        }
+%        % Мінуси (-) на лівій бічній грані
+%        \foreach \t in {0.12, 0.25, 0.38, 0.51, 0.64, 0.77, 0.9} {
+%            \node at ($(A)!\t!(D)+(-0.05, 0, -0.05)$) {\tiny $-$};
+%        }
+%
+%        % --- Поле E_x та вектор v_y на поверхні ---
+%        % Вектор E_x (напрямлений зправа наліво)
+%        \draw[->, thick] (0.8, 1.2, 0) -- (0.2, 1.2, 0) node[midway, above=-1pt] {$\Efield_H$};
+%
+%        % Електрон
+%        \coordinate (ePos) at (0.3, 0.3, 0);
+%        \node[circle, draw=black, fill=white, inner sep=0.5pt, minimum size=10pt] (e) at (ePos) {$-$};
+%
+%        % Пунктирна стрілка v_y
+%        \draw[->, dashed, line width=0.6pt] (e) -- ++(0, 0.6, 0) node[right=1pt] {$\vect{j}$};
+%
+%        % Закруглена суцільна стрілка відхилення електрона
+%        \draw[->, thick] (e) to[out=40, in=-80] (0.02, 0.85, 0);
+%
+%        % --- Розміри d, W, L ---
+%        % Товщина d (ліворуч)
+%        \draw[<->] ($(A_bot)+(-0.25,0,0)$) -- ($(A)+(-0.25,0,0)$) node[midway, left=-1pt] {$d$};
+%        \draw ($(A_bot)+(0,0,0)$) -- ($(A_bot)+(-0.3,0,0)$);
+%        \draw ($(A)+(0,0,0)$) -- ($(A)+(-0.3,0,0)$);
+%
+%        % Ширина W (знизу)
+%        \draw[<->] ($(A_bot)+(0,-0.3,0)$) -- ($(B_bot)+(0,-0.3,0)$) node[midway, fill=white, inner sep=1pt] {$W$};
+%
+%        % Довжина L (праворуч)
+%        \draw[<->] ($(B)+(0.6,-0.2,0)$) -- ($(C)+(0.6,-0.2,0)$) node[midway, fill=white, inner sep=1pt] {$L$};
+%
+%        % --- Зовнішнє коло з джерелом V_x ---
+%        \coordinate (P_back) at (0.5, 1.8, 0); % підключення ззаду
+%        \coordinate (P_front) at (0.5, 0, -0.1); % підключення спереду
+%
+%        % Задній провід
+%        \draw (P_back) -- ++(0, 0.8, 0) -- ++(2.1, 0, 0) coordinate (LoopR);
+%        % Передній провід
+%        \draw (P_front) -- ++(0, -0.8, 0) -- ++(2.1, 0, 0) coordinate (LoopF);
+%
+%        % Діагональне замикання з джерелом V_x
+%        \draw (LoopR) -- (LoopF);
+%
+%        % Джерело V_x (вбудоване в лінію)
+%        \node[circle, draw, fill=white, inner sep=1pt] at ($(LoopR)!0.5!(LoopF)$) (Vx) {$V_x$};
+%        \node[above right=1pt of Vx] {$+$};
+%        \node[below left=1pt of Vx] {$-$};
+%
+%        % Струм I зі стрілкою
+%        \draw[<-] ($(LoopR)!0.15!(P_back)$) -- ++(0, -0.15, 0) node[above=2pt] {$I$};
+%
+%        % --- Потенціал Холла V_H (зверху) ---
+%        \coordinate (H_left) at (0, 1.0, 0);
+%        \coordinate (H_right) at (1, 1.0, -0.1);
+%
+%        \draw (H_left) -- ++(-0.6, 0, 0) -- ++(0, 0, 1.5) -- ++(1, 0, 0);
+%        \draw (H_right) -- ++(0.3, 0, 0) -- ++(0, 0, 1.5) -- ++(-0.7, 0, 0);
+%
+%        \node[circle, draw, fill=white, inner sep=1pt] (VH) at (0.5, 1.0, 1.5) {$V_H$};
+%        \node[left=1pt of VH] {$-$};
+%        \node[right=1pt of VH] {$+$};
+%
+%        % --- Вектор магнітного поля B_z ---
+%        \draw[->, thick] (-0.9, 0.8, 0.2) -- ++(0, 0, 1.2) node[midway, left] {$B_z$};
+%
+%        % --- Система координат (верхній правий кут) ---
+%        \begin{scope}[shift={(1.0, 2.2, 1.2)}]
+%            \draw[->] (0,0,0) -- (0.5,0,0) node[right=-2pt] {$x$};
+%            \draw[->] (0,0,0) -- (0,0.5,0) node[above right=-2pt] {$y$};
+%            \draw[->] (0,0,0) -- (0,0,0.5) node[above=-2pt] {$z$};
+%        \end{scope}
+%
+%    \end{scope}
+%
+%\end{tikzpicture}
+%
+%
+%\clearpage
+%
+%\begin{tikzpicture}[
+%    >=Stealth,
+%    scale=1.1,
+%    line join=round,
+%    line cap=round,
+%    font=\small
+%]
+%
+%    % ==========================================
+%    % 1. ПАРАМЕТРИ ТА ЗМІННІ (БЕЗ ХАРДКОДУ)
+%    % ==========================================
+%    % Кути та масштаби осей ізометрії
+%    \pgfmathsetmacro{\angX}{-15}
+%    \pgfmathsetmacro{\angY}{40}
+%    \pgfmathsetmacro{\scaleX}{1.8}
+%    \pgfmathsetmacro{\scaleY}{2.2}
+%    \pgfmathsetmacro{\scaleZ}{1.8}
+%
+%    % Розміри пластини (в одиницях 3D)
+%    \pgfmathsetmacro{\pWidth}{1.0}   % Ширина W (вздовж x)
+%    \pgfmathsetmacro{\pLength}{1.8}  % Довжина L (вздовж y)
+%    \pgfmathsetmacro{\pThick}{0.2}   % Товщина d (вздовж -z)
+%
+%    % Зсуви для ліній виносів та провідників
+%    \pgfmathsetmacro{\dimOffset}{0.3}
+%    \pgfmathsetmacro{\wireOutX}{0.5}
+%    \pgfmathsetmacro{\wireOutY}{0.8}
+%    \pgfmathsetmacro{\wireHeightVH}{1.5}
+%
+%    % ==========================================
+%    % 2. НАЛАШТУВАННЯ 3D БАЗИСУ
+%    % ==========================================
+%    \tikzset{
+%        3d/x/.style={x={(\angX:\scaleX cm)}},
+%        3d/y/.style={y={(\angY:\scaleY cm)}},
+%        3d/z/.style={z={(0, \scaleZ cm)}}
+%    }
+%
+%    \begin{scope}[3d/x, 3d/y, 3d/z]
+%
+%        % ==========================================
+%        % 3. ОБЧИСЛЕННЯ ОСНОВНИХ КООРДИНАТ
+%        % ==========================================
+%        % Верхня грань пластини (z = 0)
+%        \coordinate (A) at (0, 0, 0);
+%        \coordinate (B) at (\pWidth, 0, 0);
+%        \coordinate (C) at (\pWidth, \pLength, 0);
+%        \coordinate (D) at (0, \pLength, 0);
+%
+%        % Нижня грань пластини (z = -\pThick)
+%        \coordinate (A_bot) at (0, 0, -\pThick);
+%        \coordinate (B_bot) at (\pWidth, 0, -\pThick);
+%        \coordinate (C_bot) at (\pWidth, \pLength, -\pThick);
+%        \coordinate (D_bot) at (0, \pLength, -\pThick);
+%
+%        % ==========================================
+%        % 4. МАЛЮВАННЯ ПЛАСТИНИ (3D)
+%        % ==========================================
+%        % Задні (невидимі) грані
+%        \filldraw[fill=gray!25, draw=black] (D) -- (C) -- (C_bot) -- (D_bot) -- cycle;
+%        \filldraw[fill=gray!20, draw=black] (B) -- (C) -- (C_bot) -- (B_bot) -- cycle;
+%
+%        % Передні visible грані
+%        \filldraw[fill=gray!30, draw=black] (A) -- (B) -- (B_bot) -- (A_bot) -- cycle;
+%        \filldraw[fill=gray!35, draw=black] (A) -- (D) -- (D_bot) -- (A_bot) -- cycle;
+%
+%        % Верхня грань
+%        \filldraw[fill=gray!30, draw=black] (A) -- (B) -- (C) -- (D) -- cycle;
+%
+%        % ==========================================
+%        % 5. ЗНАКИ ЗАРЯДІВ НА БІЧНИХ ГРАНЯХ
+%        % ==========================================
+%        \foreach \t in {0.12, 0.25, 0.38, 0.51, 0.64, 0.77, 0.9} {
+%            \node at ($(B)!\t!(C) + (0.05, 0, -0.5*\pThick)$) {\tiny $+$};
+%            \node at ($(A)!\t!(D) + (-0.05, 0, -0.5*\pThick)$) {\tiny $-$};
+%        }
+%
+%        % ==========================================
+%        % 6. ПОЛЕ E_x, ВЕКТОР v_y ТА ЕЛЕКТРОН
+%        % ==========================================
+%        % Напруженість електричного поля E_x
+%        \draw[->, thick] ($(D)!0.33!(C)$) -- ($(D)!0.88!(D)$)
+%            node[midway, above=-1pt] {$\Efield_H$};
+%
+%        % Позиція електрона
+%        \coordinate (ePos) at ($(A)!0.3!(B)!0.15!(D)$);
+%        \node[circle, draw=black, fill=white, inner sep=0.5pt, minimum size=10pt] (e) at (ePos) {$-$};
+%
+%        % Вектор швидкості v_y
+%        \draw[->, dashed, line width=0.6pt] (e) -- ++(0, 0.33*\pLength, 0) node[right=1pt] {$v_y$};
+%
+%        % Траєкторія відхилення електрона
+%        \draw[->, thick] (e) to[out=40, in=-80] ($(A)!0.47!(D) + (0.02, 0, 0)$);
+%
+%        % ==========================================
+%        % 7. РОЗМІРИ (d, W, L)
+%        % ==========================================
+%        % Товщина d
+%        \draw[<->] ($(A_bot)+(-\dimOffset, 0, 0)$) -- ($(A)+(-\dimOffset, 0, 0)$)
+%            node[midway, left=-1pt] {$d$};
+%        \draw ($(A_bot)$) -- ($(A_bot)+(-\dimOffset-0.05, 0, 0)$);
+%        \draw ($(A)$) -- ($(A)+(-\dimOffset-0.05, 0, 0)$);
+%
+%        % Ширина W
+%        \draw[<->] ($(A_bot)+(0, -\dimOffset, 0)$) -- ($(B_bot)+(0, -\dimOffset, 0)$)
+%            node[midway, fill=white, inner sep=1pt] {$W$};
+%
+%        % Довжина L
+%        \draw[<->] ($(B)+(\dimOffset, 0, 0)$) -- ($(C)+(\dimOffset, 0, 0)$)
+%            node[midway, fill=white, inner sep=1pt] {$L$};
+%
+%        % ==========================================
+%        % 8. ДЖЕРЕЛО V_x ТА ЗОВНІШНЄ КОЛО
+%        % ==========================================
+%        \coordinate (P_back) at ($(D)!0.5!(C)$);
+%        \coordinate (P_front) at ($(A_bot)!0.5!(B_bot)$);
+%
+%        % Точки виводу за пластину
+%        \coordinate (LoopR) at ($(P_back) + (0, \wireOutY, 0) + (1.1, 0, 0)$);
+%        \coordinate (LoopF) at ($(P_front) + (0, -\wireOutY, 0) + (1.1, 0, 0)$);
+%
+%        % Провідники
+%        \draw (P_back) -- ++(0, \wireOutY, 0) -- (LoopR);
+%        \draw (P_front) -- ++(0, -\wireOutY, 0) -- (LoopF);
+%        \draw (LoopR) -- (LoopF);
+%
+%        % Вольтметр/Джерело V_x
+%        \node[circle, draw, fill=white, inner sep=1pt] (Vx) at ($(LoopR)!0.5!(LoopF)$) {$V_x$};
+%        \node[above right=1pt of Vx] {$+$};
+%        \node[below left=1pt of Vx] {$-$};
+%
+%        % Позначення струму I
+%        \draw[<-] ($(LoopR)!0.15!(P_back)$) -- ++(0, -0.15, 0) node[above=2pt] {$I$};
+%
+%        % ==========================================
+%        % 9. ВОЛЬТМЕТР ХОЛЛА V_H (ДИНАМІЧНЕ ПІДКЛЮЧЕННЯ)
+%        % ==========================================
+%        \coordinate (H_left) at ($(A)!0.55!(D)$);
+%        \coordinate (H_right) at ($(B)!0.55!(C)$);
+%
+%        % Центр вольтметра
+%        \coordinate (VH_center) at ($(H_left)!0.5!(H_right) + (0, 0, \wireHeightVH)$);
+%
+%        % Вузол вольтметра
+%        \node[circle, draw, fill=white, inner sep=1.5pt] (VH) at (VH_center) {$V_H$};
+%        \node[left=2pt of VH] {$-$};
+%        \node[right=2pt of VH] {$+$};
+%
+%        % Підключення проводів строго до країв вузла VH
+%        \draw (H_left) -- ++(-\wireOutX, 0, 0) -- ++(0, 0, \wireHeightVH) -- (VH.west);
+%        \draw (H_right) -- ++(0.3, 0, 0) -- ++(0, 0, \wireHeightVH) -- (VH.east);
+%
+%        % ==========================================
+%        % 10. МАГНІТНЕ ПОЛЕ B_z ТА СИСТЕМА КООРДИНАТ
+%        % ==========================================
+%        % Вектор B_z
+%        \draw[->, thick] ($(A)+(-0.9, 0.8, 0.2)$) -- ++(0, 0, 1.2) node[midway, left] {$B_z$};
+%
+%        % Система координат
+%        \begin{scope}[shift={($(C)+(0, 0.4, 1.2)$)}]
+%            \draw[->] (0,0,0) -- (0.5,0,0) node[right=-2pt] {$x$};
+%            \draw[->] (0,0,0) -- (0,0.5,0) node[above right=-2pt] {$y$};
+%            \draw[->] (0,0,0) -- (0,0,0.5) node[above=-2pt] {$z$};
+%        \end{scope}
+%
+%    \end{scope}
+%
+%\end{tikzpicture}
+%
+%
+%\clearpage
+%
+%\begin{tikzpicture}[>=Stealth, scale=1.1, line join=round, line cap=round, font=\small]
+%
+%    % --- параметри ---
+%    \def\pW{1}     % ширина W
+%    \def\pL{1.8}   % довжина L
+%    \def\pT{0.2}   % товщина d
+%    \def\wire{0.8} % винос дротів зовнішнього кола
+%    \def\hZ{1.5}   % висота вольтметра Холла
+%    \def\yH{1}     % y контактів Холла
+%
+%    \begin{scope}[x={(-15:1.8cm)}, y={(40:2.2cm)}, z={(0,1.8cm)}]
+%
+%        % --- пластина ---
+%        \coordinate (A) at (0,0,0);
+%        \coordinate (B) at (\pW,0,0);
+%        \coordinate (C) at (\pW,\pL,0);
+%        \coordinate (D) at (0,\pL,0);
+%        \coordinate (A') at (0,0,-\pT);
+%        \coordinate (B') at (\pW,0,-\pT);
+%        \coordinate (C') at (\pW,\pL,-\pT);
+%        \coordinate (D') at (0,\pL,-\pT);
+%
+%        % виводи: середина торців
+%        \coordinate (Pb) at (\pW/2, \pL, -\pT/2);
+%        \coordinate (Pf) at (\pW/2, 0,   -\pT/2);
+%
+%        % центр вольтметра Холла
+%        \coordinate (VHc) at (\pW/2, \yH, \hZ);
+%
+%        \filldraw[fill=gray!25] (D)--(C)--(C')--(D')--cycle;
+%        \filldraw[fill=gray!20] (B)--(C)--(C')--(B')--cycle;
+%        \filldraw[fill=gray!30] (A)--(B)--(B')--(A')--cycle;
+%        \filldraw[fill=gray!35] (A)--(D)--(D')--(A')--cycle;
+%        \filldraw[fill=gray!30] (A)--(B)--(C)--(D)--cycle;
+%
+%        % --- заряди ---
+%        \foreach \t in {0.12,0.25,...,0.9} {
+%            \node[font=\tiny] at ($(B)!\t!(C)+(0.05,0,-\pT/4)$) {$+$};
+%            \node[font=\tiny] at ($(A)!\t!(D)+(-0.05,0,-\pT/4)$) {$-$};
+%        }
+%
+%        % --- поле, електрон, j ---
+%        \draw[->, thick] (0.8,1.2,0) -- (0.2,1.2,0) node[midway, above=-1pt] {$\Efield_H$};
+%        \node[circle, draw, fill=white, inner sep=.5pt, minimum size=10pt] (e) at (0.3,0.3,0) {$-$};
+%        \draw[->, dashed] (e) -- ++(0,0.6,0) node[right=1pt] {$\vect{j}$};
+%        \draw[->, thick] (e) to[out=40, in=-80] (0.02,0.85,0);
+%
+%        % --- розміри ---
+%        \draw[<->] ($(A')+(-0.25,0,0)$) -- ($(A)+(-0.25,0,0)$) node[midway, left=-1pt] {$d$};
+%        \draw (A') -- ++(-0.3,0,0);
+%        \draw (A)  -- ++(-0.3,0,0);
+%        \draw[<->] ($(A')+(0,-0.3,0)$) -- ($(B')+(0,-0.3,0)$) node[midway, fill=white, inner sep=1pt] {$W$};
+%        \draw[<->] ($(B)+(0.3,0,0)$) -- ($(C)+(0.3,0,0)$) node[midway, fill=white, inner sep=1pt] {$L$};
+%
+%        % --- зовнішнє коло ---
+%        \draw (Pb) -- ++(0,\wire,0) -- ++(1.1,0,0) coordinate (LoopR);
+%        \draw (Pf) -- ++(0,-\wire,0) -- ++(1.1,0,0) coordinate (LoopF);
+%        \draw (LoopR) -- (LoopF);
+%        \node[circle, draw, fill=white, inner sep=1pt] (Vx) at ($(LoopR)!.5!(LoopF)$) {$V_x$};
+%        \node[above right=1pt of Vx] {$+$};
+%        \node[below left=1pt of Vx] {$-$};
+%        \draw[<-] ($(LoopR)!0.15!(Pb)$) -- ++(0,-0.15,0) node[above=2pt] {$I$};
+%
+%        % --- вольтметр Холла: спочатку дроти до центру, потім кружок поверх ---
+%        \draw (0,\yH,0)   -- ++(-0.6,0,0) -- ++(0,0,\hZ) -- (VHc);
+%        \draw (\pW,\yH,0) -- ++(0.3,0,0)  -- ++(0,0,\hZ) -- (VHc);
+%        \node[circle, draw, fill=white, inner sep=1pt] (VH) at (VHc) {$V_H$};
+%        \node[left=1pt of VH]  {$-$};
+%        \node[right=1pt of VH] {$+$};
+%
+%        % --- B_z і осі ---
+%        \draw[->, thick] (-0.9,0.8,0.2) -- ++(0,0,1.2) node[midway, left] {$B_z$};
+%        \begin{scope}[shift={(C)}, shift={(0,0.4,1.2)}]
+%            \draw[->] (0,0,0) -- (0.5,0,0) node[right=-2pt] {$x$};
+%            \draw[->] (0,0,0) -- (0,0.5,0) node[above right=-2pt] {$y$};
+%            \draw[->] (0,0,0) -- (0,0,0.5) node[above=-2pt] {$z$};
+%        \end{scope}
+%
+%    \end{scope}
+%\end{tikzpicture}
+
 \end{document}
+
