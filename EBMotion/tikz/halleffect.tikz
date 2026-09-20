@@ -1,0 +1,81 @@
+\begin{tikzpicture}[>=Stealth, scale=1.1, line join=round, line cap=round, font=\small]
+
+    % --- параметри ---
+    \def\pW{1}     % ширина W
+    \def\pL{1.8}   % довжина L
+    \def\pT{0.2}   % товщина d
+    \def\wire{0.8} % винос дротів зовнішнього кола
+    \def\hZ{1.5}   % висота вольтметра Холла
+    \def\yH{1}     % y контактів Холла
+
+    \begin{scope}[x={(-15:1.8cm)}, y={(40:2.2cm)}, z={(0,1.8cm)}]
+
+        % --- пластина ---
+        \coordinate (A) at (0,0,0);
+        \coordinate (B) at (\pW,0,0);
+        \coordinate (C) at (\pW,\pL,0);
+        \coordinate (D) at (0,\pL,0);
+        \coordinate (A') at (0,0,-\pT);
+        \coordinate (B') at (\pW,0,-\pT);
+        \coordinate (C') at (\pW,\pL,-\pT);
+        \coordinate (D') at (0,\pL,-\pT);
+
+        % виводи: середина торців
+        \coordinate (Pb) at (\pW/2, \pL, -\pT/2);
+        \coordinate (Pf) at (\pW/2, 0,   -\pT/2);
+
+        % центр вольтметра Холла
+        \coordinate (VHc) at (\pW/2, \yH, {\hZ-0.1});
+
+        \filldraw[fill=gray!25] (D)--(C)--(C')--(D')--cycle;
+        \filldraw[fill=gray!20] (B)--(C)--(C')--(B')--cycle;
+        \filldraw[fill=gray!30] (A)--(B)--(B')--(A')--cycle;
+        \filldraw[fill=gray!35] (A)--(D)--(D')--(A')--cycle;
+        \filldraw[fill=gray!30] (A)--(B)--(C)--(D)--cycle;
+
+        % --- заряди ---
+        \foreach \t in {0.12,0.25,...,0.9} {
+            \node[font=\tiny, red] at ($(B)!\t!(C)+(0.05,0,-\pT/4)$) {$+$};
+            \node[font=\tiny, blue] at ($(A)!\t!(D)+(-0.05,0,-\pT/4)$) {$-$};
+        }
+
+        % --- поле, електрон, j ---
+        \draw[->, thick] (0.8,1.2,0) -- (0.2,1.2,0) node[midway, above=-1pt] {$\Efield_H$};
+        \node[circle, ball color=blue!50, inner sep=.5pt, minimum size=10pt, text=white] (e) at (0.5,0.3,0) {$-$};
+        \draw[<-] (e) -- ++(0,0.6,0) node[right=1pt] {$\vect{j}$};
+        \draw[->, thick] (e) to[out=40, in=-80] (0.02,1,0);
+
+        % --- розміри ---
+        \draw[<->] ($(A')+(-0.25,0,0)$) -- ($(A)+(-0.25,0,0)$) node[midway, left=-1pt] {$d$};
+        \draw (A') -- ++(-0.3,0,0);
+        \draw (A)  -- ++(-0.3,0,0);
+        \draw[<->] ($(A')+(0,-0.3,0)$) -- ($(B')+(0,-0.3,0)$) node[midway, fill=white, inner sep=1pt] {$h$};
+        \draw[<->] ($(B)+(0.6,-0.2, 0)$) -- ($(C)+(0.6,-0.2,0)$) node[midway, fill=white, inner sep=1pt] {$L$};
+
+        % --- зовнішнє коло ---
+        \draw (Pb) -- ++(0,\wire,0) -- ++(2.1,0,0) coordinate (LoopR);
+        \draw (Pf) -- ++(0,-\wire,0) -- ++(2.1,0,0) coordinate (LoopF);
+        \draw (LoopR) -- (LoopF);
+        \node[circle, draw, fill=white, inner sep=1pt] (Vx) at ($(LoopR)!.5!(LoopF)$) {$V_x$};
+        \node[above right=1pt of Vx] {$+$};
+        \node[below left=1pt of Vx] {$-$};
+        \draw[<-, red] ($(LoopR)!0.15!(LoopF)$) -- ++(0,-0.15,0) node[above=2pt] {$I$};
+
+        % --- вольтметр Холла: спочатку дроти до центру, потім кружок поверх ---
+%        \draw (0,\yH,0)   -- ++(-0.6,0,0) -- ++(0,0,\hZ) -- (VHc);
+%        \draw (\pW,\yH,0) -- ++(0.3,0,0)  -- ++(0,0,\hZ) -- (VHc);
+          \draw (\pW,\yH,-0.1) -- ++(0.3,0,0)  -- ++(0,0,\hZ) -- ++(-{\pW-0.6},0,0) -- ++(0,0,-\hZ) -- (0,\yH,-0.1);
+        \node[circle, draw, fill=white, inner sep=1pt] (VH) at (VHc) {$V_H$};
+%        \node[left=1pt of VH]  {$-$};
+%        \node[right=1pt of VH] {$+$};
+
+        % --- B_z і осі ---
+        \draw[->, thick] (-0.9,0.8,0.2) -- ++(0,0,1.2) node[midway, left] {$B_z$};
+        \begin{scope}[shift={(C)}, shift={(0,0.4,1.2)}]
+            \draw[->] (0,0,0) -- (0.5,0,0) node[right=-2pt] {$x$};
+            \draw[->] (0,0,0) -- (0,0.5,0) node[above right=-2pt] {$y$};
+            \draw[->] (0,0,0) -- (0,0,0.5) node[above=-2pt] {$z$};
+        \end{scope}
+
+    \end{scope}
+\end{tikzpicture}
