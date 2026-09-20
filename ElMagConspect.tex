@@ -35,7 +35,7 @@
 \makeinfopage
 %===============================================================================
 %
-\clearpage\clearpage\pagestyle{main}
+\clearpage\pagestyle{plain}
 \tableofcontents%				   Зміст
 %
 %===============================================================================
@@ -55,6 +55,10 @@
 %\input{Additions/MaxwellEquation}
 
 %===============================================================================
+\addtocontents{toc}{\protect\vfill}
+\input{Preface}
+\clearpage
+\pagestyle{main}
 \part{Постійне електричне поле}
 \multiinclude{
 	Charges,
