@@ -26,7 +26,7 @@
 \end{equation}
 де $\vect{r}_i$ --- радіус-вектор $i$-го заряду.
 
-Дипольний момент --- перша (після сумарного заряду) характеристика в такому описі; якщо і сумарний заряд, і дипольний момент виявляються нульовими, слід звернутися до наступного члена розкладу --- квадрупольного моменту (розд.~\ref{sec:Quadrupole}).
+Дипольний момент --- перша (після сумарного заряду) характеристика в такому описі; якщо і сумарний заряд, і дипольний момент виявляються нульовими, слід звернутися до наступного члена розкладу --- квадрупольного моменту \eqref{eqLquadrupole_momentum}.
 
 
 У загальному випадку дипольний момент залежить від вибору початку відліку. Однак якщо система
@@ -189,7 +189,7 @@
 	\frac1{2r^5}\, r_\alpha r_\beta \sum_i q_i\left(3r_{i\alpha}r_{i\beta} - r_i^2\delta_{\alpha\beta}\right).
 \end{equation*}
 Величину, що стоїть під знаком суми, називають \emphx{тензором квадрупольного моменту} системи зарядів:
-\begin{equation}
+\begin{equation}\label{eqLquadrupole_momentum}
 	\tcbhighmath{
 		D_{\alpha\beta} = \sum_i q_i\left(3r_{i\alpha}r_{i\beta} - r_i^2\delta_{\alpha\beta}\right).
 	}
@@ -280,23 +280,23 @@ $z$, для кожного заряду $r_{ix}=r_{iy}=0$, $r_{iz}=z_i$, $r_i^2=
 
 Досі ми цікавились полем, яке диполь \emph{створює}. Тепер розглянемо обернену задачу: як диполь поводиться, потрапивши у \emph{зовнішнє} електричне поле --- яка сила й момент сил на нього діють і яку енергію він при цьому має.
 
-\begin{Attention}
-    Далі нам знадобиться допоміжний математичний факт, який варто нагадати заздалегідь.
-	Для двох близьких точок $\vect r$ і $\vect r + \vect\ell$ ($|\vect\ell|\to0$) різницю значень довільної скалярної функції $f(\vect r)$ можна
-	записати за допомогою розкладу в ряд Тейлора, обмежившись першим порядком малості:
-	\begin{equation}\label{eq:sc_diff}
-		\Delta f = f(\vect r + \vect\ell) - f(\vect r) \approx
-		\ell_x\frac{\partial f}{\partial x} + \ell_y\frac{\partial f}{\partial y} + \ell_z\frac{\partial f}{\partial z}
-		= \vect\ell\cdot\vect\nabla f.
-	\end{equation}
-	Та сама формула, застосована покомпонентно до кожної декартової складової векторного поля $\vect A(\vect r)$, дає аналогічний вираз для
-	різниці векторної функції:
-	\begin{equation}\label{eq:vec_diff}
-		\Delta\vect A = \vect A(\vect r + \vect\ell) - \vect A(\vect r) \approx
-		\ell_x\frac{\partial\vect A}{\partial x} + \ell_y\frac{\partial\vect A}{\partial y} + \ell_z\frac{\partial\vect A}{\partial z}
-		= (\vect\ell\cdot\vect\nabla)\vect A.
-	\end{equation}
-\end{Attention}
+%\begin{Attention}
+%    Далі нам знадобиться допоміжний математичний факт, який варто нагадати заздалегідь.
+%	Для двох близьких точок $\vect r$ і $\vect r + \vect\ell$ ($|\vect\ell|\to0$) різницю значень довільної скалярної функції $f(\vect r)$ можна
+%	записати за допомогою розкладу в ряд Тейлора, обмежившись першим порядком малості:
+%	\begin{equation}\label{eq:sc_diff}
+%		\Delta f = f(\vect r + \vect\ell) - f(\vect r) \approx
+%		\ell_x\frac{\partial f}{\partial x} + \ell_y\frac{\partial f}{\partial y} + \ell_z\frac{\partial f}{\partial z}
+%		= \vect\ell\cdot\vect\nabla f.
+%	\end{equation}
+%	Та сама формула, застосована покомпонентно до кожної декартової складової векторного поля $\vect A(\vect r)$, дає аналогічний вираз для
+%	різниці векторної функції:
+%	\begin{equation}\label{eq:vec_diff}
+%		\Delta\vect A = \vect A(\vect r + \vect\ell) - \vect A(\vect r) \approx
+%		\ell_x\frac{\partial\vect A}{\partial x} + \ell_y\frac{\partial\vect A}{\partial y} + \ell_z\frac{\partial\vect A}{\partial z}
+%		= (\vect\ell\cdot\vect\nabla)\vect A.
+%	\end{equation}
+%\end{Attention}
 
 %% --------------------------------------------------------
 \subsection*{Момент сил, що діє на диполь в однорідному полі}
