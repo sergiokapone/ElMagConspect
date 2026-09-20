@@ -849,6 +849,7 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 %   Theory    — блок теоретичних відомостей з автонумерацією;
 %   pict      — рамка навколо окремого рисунка;
 %   Attention — жовтий блок-попередження зі знаком оклику;
+%   Questions — бірюзовий блок «Контрольні питання» (самоперевірка);
 %   tornpage  — декоративний "пергаментний" фон (сторінка "під старовину").
 
 % Theory — виділений блок теорії; заголовок винесено в окремий "жирний" бокс
@@ -956,6 +957,32 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
     },
     drop fuzzy shadow,
     #1
+}
+
+% Questions — блок «Контрольні питання» для самоперевірки в кінці глави/параграфа.
+% Палітра: спокійний бірюзовий (titlebgdark), що відрізняється від синьої теорії,
+% жовтого попередження й клітинки прикладів; світло-бірюзовий фон не втомлює очі
+% та добре читається і в кольорі, і при чорно-білому друці.
+% Пункти нумеруються кружечками (quizlist). Необов'язковий аргумент — власний заголовок:
+%   \begin{Questions}[Контрольні питання до §2] \begin{quizlist} \item ... \end{quizlist} \end{Questions}
+\colorlet{quizmain}{titlebgdark}
+\colorlet{quizlight}{titlebgdark!7!white}
+\newcommand{\quizbadge}[2][]{%
+	\tikz[baseline=(qb.base)]\node[circle,fill=quizmain,text=white,inner sep=0pt,minimum size=1.5em,font=\sffamily\bfseries\small,#1](qb){#2};}
+\newlist{quizlist}{enumerate}{1}
+\setlist[quizlist]{label=\quizbadge{\arabic*},leftmargin=2.4em,labelsep=0.6em,itemsep=0.9ex,topsep=0.3ex,parsep=0pt,partopsep=0pt}
+\newtcolorbox{Questions}[1][Контрольні питання]{%
+    sharp corners,
+	enhanced,breakable,
+	before skip=4mm,after skip=3mm,
+	arc=2mm,outer arc=2mm,
+	colback=quizlight,colframe=quizmain,boxrule=0.6pt,
+	colbacktitle=quizmain,coltitle=white,
+	fonttitle=\sffamily\bfseries,
+	title={\quizbadge[fill=white,text=quizmain]{?}\hspace{0.7em}#1},
+	toptitle=1mm,bottomtitle=1mm,
+	left=3mm,right=3mm,top=2.5mm,bottom=2mm,
+	fontupper=\small,before upper={\parindent0pt},
 }
 
 % ---- Допоміжна графіка для "пергаментного" боксу tornpage нижче ----
