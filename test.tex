@@ -8,8 +8,40 @@
 
 \begin{document}
 
+\begin{tikzpicture}[>=latex, scale=2]
+	% --- параметри циліндра ---
+	\def\cylR{1}      % радіус циліндра
+	\def\cylH{2}      % висота циліндра
+	\def\cylRy{0.3}   % стиснення еліпса основи (перспектива)
+	\pgfmathsetmacro{\cylD}{2*\cylR}        % діаметр
+	\pgfmathsetmacro{\cylHL}{0.9*\cylD/2.0} % положення межі відблиску (частка діаметра)
+	\pgfmathsetmacro{\fieldR}{1.1*\cylR}    % радіус контуру поля H (трохи більший за циліндр)
 
-\includechapter{EBMotion}
+	% бічна поверхня циліндра: тінь -- відблиск -- тінь (як у освітленого зліва циліндра)
+	\begin{scope}
+		\clip (0, 0) -- ++(0,\cylH) arc(180:360:\cylR{} and \cylRy) -- ++(0, -\cylH) arc(0:-180:\cylR{} and \cylRy);
+		\shade[left color=gray!55, right color=gray!12]
+			(-0.1,-\cylRy-0.1) rectangle (\cylHL, \cylH+0.1);
+		\shade[left color=gray!12, right color=gray!78]
+			(\cylHL,-\cylRy-0.1) rectangle (\cylD+0.1, \cylH+0.1);
+	\end{scope}
+	% твірні (бічні контурні лінії)
+	\draw (0,0) -- ++(0,\cylH);
+	\draw (\cylD,0) -- ++(0,\cylH);
+	% видима (передня) частина нижньої основи
+	\draw (0,0) arc(180:360:\cylR{} and \cylRy);
+	% верхня основа -- світліше заповнення з тонкою обвідкою для ефекту освітленої поверхні
+	\shade[ball color=gray!20] (\cylR, \cylH) circle (\cylR{} and \cylRy);
+	\draw (\cylR, \cylH) circle (\cylR{} and \cylRy);
+
+	\draw[blue, arrowpos={0.5}{2pt}{4pt}] (\cylR, \cylH/2) [partial ellipse=155:385:{\fieldR} and \cylRy]
+	node[pos=0.5, below] {$\Hfield$};
+	\draw[->, red, thick] (\cylR, \cylH/2) -- ++(0, 0.5) node[left] {$\Efield$};
+	\draw[->, orange!60!black, thick] (\cylD/2+\fieldR, \cylH/2) -- ++(-0.5, 0) node[above] {$\vect{\Pi}$};
+\end{tikzpicture}
+
+
+%\includechapter{ChargeSystem}
 %\includetikz{ElMagInduction}{solenoid-cross-section}
 
 %\begin{tikzpicture}[

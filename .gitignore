@@ -15,6 +15,7 @@ tmp/
 *.snm
 *.out
 *.fls
+*.tmp
 *.fdb_latexmk
 test.pdf
 *.avi

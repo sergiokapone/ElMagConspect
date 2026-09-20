@@ -12,7 +12,7 @@
 
 	\draw[->, red, thick] (qn) -- (qp) node[pos=0.6, below, text=black] {$\vect{p}$};
 
-    \coordinate (P) at (55:6);
+    \coordinate (P) at (55:5);
     \node[right] at (P) {$P$};
 
     \draw (qn) -- node[left] {$\vect{r}_-$}(P);
