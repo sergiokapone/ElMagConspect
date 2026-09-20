@@ -1,4 +1,4 @@
-\begin{tikzpicture}[>=latex, scale=1, transform shape]
+\begin{tikzpicture}[>=latex, scale=1.5, transform shape]
 	\def\R{0.2}
 	\draw[ball color=red!60] (0,0) circle (\R);
 	\foreach \a in {20,40,...,340} {

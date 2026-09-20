@@ -287,7 +287,7 @@
 \setlength{\aboverulesep}{0pt}
 \setlength{\belowrulesep}{0pt}
 \setlength{\extrarowheight}{0.75ex}
-\RequirePackage[justification=centering,labelsep=period]{caption}  % "Рис. 1." — крапка, центрування підпису
+\RequirePackage[justification=centering,labelsep=period, belowskip=1em]{caption}  % "Рис. 1." — крапка, центрування підпису
 \usepackage[outercaption, wide]{sidecap}  % підписи збоку від рисунка (в маргіналії)
 \sidecaptionvpos{figure}{c}               % вертикальне вирівнювання бічного підпису — по центру
 \RequirePackage{subcaption}       % підрисунки (a), (b)... в межах одного figure
@@ -726,6 +726,8 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 
 \titleclass{\part}{top}          % частина завжди починається "з верху" нової сторінки
 \newcommand\partbreak{\clearpage} % ручний розрив перед частиною (за потреби у тексті)
+\RequirePackage{etoolbox}
+\pretocmd{\part}{\clearpage}{}{}
 
 % Заголовок глави: величезний номер глави ліворуч (\chapnumb завширшки), назва
 % та горизонтальна лінія праворуч від нього
@@ -831,35 +833,6 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 		\renewcommand{\bibname}{Література}%
 	}
 \fi
-
-%===============================================================================
-%
-%									 HYPERREF
-%
-%===============================================================================
-% Підключається майже наприкінці преамбули (як і рекомендує документація hyperref),
-% після titlesec/titletoc/biblatex, щоб коректно перехопити всі потрібні команди.
-\RequirePackage[%
-	bookmarks = true,
-	bookmarksnumbered=true,
-	unicode,
-	linktocpage = true,
-	hypertexnames=false,
-	pdftoolbar=true,
-	pdfpagelayout=TwoPageRight,
-	pdfauthor={Ponomarenko S.M.},
-	pdfdisplaydoctitle=true,
-	pdfkeywords={Electrostatics, Magnetostatics, Electrodynamics, Current, Field},
-	pdfencoding=auto
-]%
-{hyperref}
-\RequirePackage[all]{hypcap}   % посилання на рисунок/таблицю ведуть на верх об'єкта, а не на підпис
-
-% --------------- Патч для україомовної назви розділу для nameref ----------- %
-\addto\extrasukrainian{%
-	\renewcommand{\chapterautorefname}{}%
-}
-% --------------------------------------------------------------------------------
 
 % Якщо \inlinetitle визначено (див. закоментовану частину \RenewDocumentCommand{\title}
 % вище) — використати його як заголовок PDF-документа замість стандартного \@title
@@ -1168,6 +1141,34 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 	\end{answerbox}
 }
 
+%===============================================================================
+%
+%									 HYPERREF
+%
+%===============================================================================
+% Підключається майже наприкінці преамбули (як і рекомендує документація hyperref),
+% після titlesec/titletoc/biblatex, щоб коректно перехопити всі потрібні команди.
+\RequirePackage[%
+	bookmarks = true,
+	bookmarksnumbered=true,
+	unicode,
+	linktocpage = true,
+	hypertexnames=false,
+	pdftoolbar=true,
+	pdfpagelayout=TwoPageRight,
+	pdfauthor={Ponomarenko S.M.},
+	pdfdisplaydoctitle=true,
+	pdfkeywords={Electrostatics, Magnetostatics, Electrodynamics, Current, Field},
+	pdfencoding=auto
+]%
+{hyperref}
+\RequirePackage[all]{hypcap}   % посилання на рисунок/таблицю ведуть на верх об'єкта, а не на підпис
+
+% --------------- Патч для україомовної назви розділу для nameref ----------- %
+\addto\extrasukrainian{%
+	\renewcommand{\chapterautorefname}{}%
+}
+% --------------------------------------------------------------------------------
 
 %===============================================================================
 %
