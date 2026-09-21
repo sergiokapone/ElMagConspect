@@ -21,3 +21,4 @@ del test.pdf
 del *.curve.table
 del *.curve.gnuplot
 del *.vrb
+del *.tmp

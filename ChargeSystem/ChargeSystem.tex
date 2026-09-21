@@ -66,7 +66,7 @@
 
 
 %% --------------------------------------------------------
-\section{Поле точкового диполя}
+\section{Поле точкового диполя}\label{sec:DipoleField}
 %% --------------------------------------------------------
 
 
@@ -92,7 +92,25 @@
 		\vect{r}_+ =  \vect{r} - \vect{r}'_+
 	\end{cases}, \quad |\vect{r}'_-| = |\vect{r}'_+| = \frac{\ell}2.
 \end{equation*}
-\begin{equation}
+Виразимо $\vect r_\pm$ через плече диполя $\vect{\ell}$ (воно напрямлене від $-q$ до $+q$): $\vect r_\pm=\vect r\mp\vect{\ell}/2$. Оскільки $\ell\ll r$, ці вектори лише трохи відрізняються від $\vect r$, тому знаменники $r_\pm^3$ зручно розкласти за малим зсувом. Для довільного вектора $\vect a$ з $|\vect a|\ll r$
+\begin{equation*}
+	|\vect r-\vect a|^2 = r^2-2\,\vect r\cdot\vect a+a^2 \approx r^2\left(1-\frac{2\,\vect r\cdot\vect a}{r^2}\right)
+\end{equation*}
+(доданок $a^2$ має другий порядок малості за $a/r$ і відкидається). Скориставшись наближенням $(1+x)^\alpha\approx1+\alpha x$ при $|x|\ll1$, одержуємо
+\begin{equation}\label{eq:shift_first_order}
+	\frac1{|\vect r-\vect a|^{n}} \approx \frac1{r^{n}}\left(1+n\,\frac{\vect r\cdot\vect a}{r^2}\right).
+\end{equation}
+Для поля диполя потрібне $n=3$ (для потенціалу в розд.~\ref{sec:DipolePotential} буде $n=1$). Для $r_+=|\vect r-\vect{\ell}/2|$ беремо $\vect a=\vect{\ell}/2$, для $r_-=|\vect r+\vect{\ell}/2|$ --- $\vect a=-\vect{\ell}/2$, і суперпозицію записуємо як $\Efield=q\left(\vect r_+/r_+^3-\vect r_-/r_-^3\right)$:
+\begin{equation*}
+	\Efield \approx \frac{q}{r^3}\left[\left(\vect r-\frac{\vect{\ell}}2\right)\left(1+\frac{3\,\vect r\cdot\vect{\ell}}{2r^2}\right)
+	- \left(\vect r+\frac{\vect{\ell}}2\right)\left(1-\frac{3\,\vect r\cdot\vect{\ell}}{2r^2}\right)\right].
+\end{equation*}
+Розкриваючи дужки, зберігаємо лише члени першого порядку за $\ell$: добутки виду $\vect{\ell}\,(\vect r\cdot\vect{\ell})$ мають другий порядок і відкидаються. Доданки з $\vect r$ --- це поля двох зарядів, взятих окремо, --- взаємно скорочуються, тож головний внесок дає саме перший порядок:
+\begin{equation*}
+	\Efield = \frac{q}{r^3}\left[\frac{3\,(\vect r\cdot\vect{\ell})\,\vect r}{r^2}-\vect{\ell}\right].
+\end{equation*}
+Множник $3$ походить від показника степеня в $r_\pm^{-3}$. У границі точкового диполя ($\ell\to0$, $\vect p=q\vect{\ell}$ фіксований) відкинуті члени зникають, і наближена рівність стає точною. Підставляючи $\vect p=q\vect{\ell}$, одержуємо:
+\begin{equation}\label{eq:dipole_field}
 	\tcbhighmath{
 		\Efield = \frac{3(\vect{p}\cdot\vect{r})\vect{r}}{r^5} -
 		\frac{\vect{p}}{r^3}.
@@ -109,7 +127,7 @@
 
 
 %% --------------------------------------------------------
-\section{Потенціал поля точкового диполя}
+\section{Потенціал поля точкового диполя}\label{sec:DipolePotential}
 %% --------------------------------------------------------
 
 %\begin{SCfigure}[2][h!]
@@ -130,7 +148,13 @@
 		\vect{r}_+ =  \vect{r} - \vect{r}'_+
 	\end{cases}, \quad |\vect{r}'_-| = |\vect{r}'_+| = \frac{\ell}2.
 \end{equation*}
-\begin{equation}
+Скористаємося розкладом \eqref{eq:shift_first_order} при $n=1$, узявши $\vect a=\pm\vect{\ell}/2$ для $r_\pm=|\vect r\mp\vect{\ell}/2|$:
+\begin{equation*}
+	\phi = q\left(\frac1{r_+}-\frac1{r_-}\right) \approx \frac qr\left[\left(1+\frac{\vect r\cdot\vect{\ell}}{2r^2}\right)-\left(1-\frac{\vect r\cdot\vect{\ell}}{2r^2}\right)\right]
+	= \frac{q\,\vect{\ell}\cdot\vect r}{r^3}.
+\end{equation*}
+Доданки $1/r$ (кулонівські потенціали двох зарядів окремо) скорочуються через протилежні знаки зарядів, тому потенціал диполя спадає швидше за кулонівський. Врахувавши $\vect p=q\vect{\ell}$, маємо:
+\begin{equation}\label{eq:potential_dipole}
 	\tcbhighmath{
 		\phi = \frac{\vect{p}\cdot\vect{r}}{r^3}.
 	}
@@ -141,6 +165,30 @@
 \begin{equation*}
 	\phi \sim 1/{r^2}.
 \end{equation*}
+
+Знаючи вираз для потенціалу точкового диполя \eqref{eq:potential_dipole}, можна отримати вираз для поля \eqref{eq:dipole_field} використовуючи формулу зв'язку потенціалу і напруженості $\Efield=-\vect\nabla\phi$.
+
+\begin{Example}{Виведення}
+Запишемо $\phi=(\vect p\cdot\vect r)\,r^{-3}$ і застосуємо правило диференціювання добутку:
+\begin{equation*}
+	\vect\nabla\phi=r^{-3}\,\vect\nabla(\vect p\cdot\vect r)+(\vect p\cdot\vect r)\,\vect\nabla r^{-3}.
+\end{equation*}
+Знайдемо обидва градієнти. Оскільки $\vect p\cdot\vect r=p_x x+p_y y+p_z z$, де $\vect p$ --- сталий вектор, то частинні похідні за $x$, $y$, $z$ дорівнюють $p_x$, $p_y$, $p_z$, тобто $\vect\nabla(\vect p\cdot\vect r)=\vect p$. Далі, $r=\sqrt{x^2+y^2+z^2}$, тому $\dfrac{\partial r}{\partial x}=\dfrac xr$, і аналогічно для $y$ та $z$; отже, $\vect\nabla r=\dfrac{\vect r}{r}$. За правилом диференціювання складної функції
+\begin{equation*}
+	\vect\nabla r^{-3}=-3r^{-4}\,\vect\nabla r=-\frac{3\vect r}{r^5}.
+\end{equation*}
+Підставляючи, одержуємо
+\begin{equation*}
+	\Efield=-\vect\nabla\phi=\frac{3(\vect p\cdot\vect r)\,\vect r}{r^5}-\frac{\vect p}{r^3},
+\end{equation*}
+що збігається з \eqref{eq:dipole_field}.
+\end{Example}
+
+%\begin{Attention}
+%Оскільки $\vect\nabla(\vect p\cdot\vect r)=\vect p$, а $\vect\nabla r^{-3}=-3\vect r/r^5$, зі зв'язку потенціалу і напруженості $\Efield=-\vect\nabla\phi$ отримуємо формулу для поля диполя \eqref{eq:dipole_field}.
+%\end{Attention}
+
+
 
 
 %% --------------------------------------------------------
@@ -162,7 +210,16 @@
 	\phi(\vect{r}) = \sum_i \frac{q_i}{|\vect{r} - \vect{r}_i|}.
 \end{equation*}
 Початок системи координат вибираємо всередині системи зарядів і знайдемо потенціал на відстанях, що набагато більші за розмір області, в якій
-локалізуються заряди ($r_i \ll r$). Тоді, утримуючи в розкладі $1/|\vect r - \vect r_i|$ доданки до другого порядку малості за $r_i/r$ включно:
+локалізуються заряди ($r_i \ll r$). У розд.~\ref{sec:DipolePotential} ми зберігали в розкладі $1/|\vect r-\vect r_i|$ лише члени першого порядку малості за $r_i/r$ \eqref{eq:shift_first_order} --- для диполя цього досить. Але якщо $q=0$ і $\vect p=0$, ці члени нічого не дають, тому потрібне наступне наближення. Отримаємо його тим самим прийомом, не відкидаючи тепер квадратичних доданків:
+\begin{equation*}
+	\frac1{|\vect r-\vect r_i|} = \frac1r\,(1+\varepsilon)^{-1/2}, \qquad
+	\varepsilon = -\frac{2\,\vect r\cdot\vect r_i}{r^2}+\frac{r_i^2}{r^2}\ll1.
+\end{equation*}
+Розкладаємо за малим $\varepsilon$: $(1+\varepsilon)^{-1/2}\approx1-\frac{\varepsilon}2+\frac{3\varepsilon^2}8$. Доданок $-2\,\vect r\cdot\vect r_i/r^2$ у $\varepsilon$ має перший порядок за $r_i/r$, а $r_i^2/r^2$ --- другий, тому в $\varepsilon^2$ залишаємо лише $4(\vect r\cdot\vect r_i)^2/r^4$:
+\begin{equation*}
+	(1+\varepsilon)^{-1/2}\approx 1+\frac{\vect r\cdot\vect r_i}{r^2}-\frac{r_i^2}{2r^2}+\frac{3(\vect r\cdot\vect r_i)^2}{2r^4}.
+\end{equation*}
+Доданок $-r_i^2/(2r^2)$ породжує $-r^2r_i^2$ у чисельнику третього члена; саме він у підсумку робить тензор квадрупольного моменту безслідним (див. нижче). Помноживши на $1/r$, маємо розклад до другого порядку за $r_i/r$ включно:
 \begin{equation}\label{eq:multipole_second_order}
 	\frac1{|\vect r - \vect r_i|} \approx \frac1r + \frac{\vect r\cdot\vect r_i}{r^3} +
 	\frac{3(\vect r\cdot\vect r_i)^2 - r^2 r_i^2}{2r^5}.
