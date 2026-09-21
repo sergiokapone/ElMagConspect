@@ -9,5 +9,9 @@
     \draw (2) -- ++(10:0.5);
     \draw (3) -- ++(-100:0.5);
 
+    \node[above] at (1) {$\phi_1$};
+    \node[above] at (2) {$\phi_2$};
+    \node[below] at (3) {$\phi_3$};
+
     \draw[-latex, red] (1.7,-1.5) [partial ellipse=270:-50:0.5cm];
 \end{circuitikz}
