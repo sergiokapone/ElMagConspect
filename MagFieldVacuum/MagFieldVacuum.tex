@@ -57,11 +57,11 @@ $\Bfield$ --- через момент сил, що діє на магнітни�
 	\vect M = \left[\vect p_m\times\Bfield\right], \qquad M_{\max} = p_m B.
 \end{equation}
 Отже,
-\begin{equation}\label{eq:BDef}
+\begin{equation*}
 	\tcbhighmath{
 		B = \frac{M_{\max}}{p_m}:
 	}
-\end{equation}
+\end{equation*}
 величина вектора індукції чисельно дорівнює максимальному обертальному моменту, що діє на одиничний магнітний момент, вміщений у це поле.
 
 \begin{Attention}
@@ -73,9 +73,9 @@ $\Bfield$ --- через момент сил, що діє на магнітни�
 \end{Attention}
 
 У гауссовій системі одиниць величину магнітного поля вимірюють у \emphx{гаусах} (Гс), а в СІ --- у \emphx{теслах} (Тл):
-\begin{equation}\label{eq:BUnits}
+\begin{equation*}
 	1\ \text{Тл} = 10^4\ \text{Гс}.
-\end{equation}
+\end{equation*}
 Для орієнтиру: магнітне поле Землі на поверхні --- близько $0.5$~Гс, поле звичайного постійного магніту --- сотні Гс, поле надпровідного магніту
 в томографі --- одиниці Тл.
 
@@ -93,11 +93,11 @@ $\Bfield$ --- через момент сил, що діє на магнітни�
 \end{equation}
 Повна сила, що діє на заряд у присутності як електричного, так і магнітного поля (власне і є \emphx{сила Лоренца}), --- це сума електричної та
 магнітної складових:
-\begin{equation}\label{eq:LorentzFull}
+\begin{equation*}
 	\tcbhighmath{
 		\vect F = q\left(\Efield + \left[\frac{\vect v}{c}\times\Bfield\right]\right).
 	}
-\end{equation}
+\end{equation*}
 
 \emphx{Силою Ампера} називають силу, що діє з боку магнітного поля не на окремий заряд, а на струм. Якщо в елементі об'єму $dV$ провідника
 густина струму дорівнює $\vect j$, то, підсумовуючи внесок~\eqref{eq:LorentzMagnetic} від усіх носіїв заряду в цьому об'ємі ($dq\,\vect v \to
@@ -241,10 +241,10 @@ v\cdot\left[\vect v\times\Bfield\right] = \Bfield\cdot\left[\vect v\times\vect v
 спостерігача $B$, відносно якого заряд рухається зі швидкістю $\vect v$. Відносно спостерігача $A$ заряд нерухомий, тому магнітного поля навколо
 нього немає (є лише електричне поле $\Efield$). Відносно ж спостерігача $B$, за законом Біо--Савара--Лапласа для точкового заряду ($\vect j\, dV
 \to q\vect v$),
-\begin{equation}\label{eq:BRelativity}
+\begin{equation*}
 	\Bfield = \frac1c\, \frac{q\vect v\times\vect{\mathcal r}}{\mathcal r^3} = \frac{\vect v}{c}\times \frac{q\vect{\mathcal r}}{\mathcal r^3} =
 	\frac{\vect v}{c}\times\Efield.
-\end{equation}
+\end{equation*}
 
 \begin{Attention}
 	Той самий заряд для одного спостерігача створює \emphx{лише} електричне поле, а для іншого --- \emphx{і} електричне, \emphx{і} магнітне.
@@ -276,9 +276,9 @@ v\cdot\left[\vect v\times\Bfield\right] = \Bfield\cdot\left[\vect v\times\vect v
 Визначимо магнітне поле в точці $P$ на відстані $r$ від \emphx{короткого} провідника зі струмом,
 положення якої визначається кутами $\alpha_1$ та $\alpha_2$, під якими видно кінці провідника з точки $P$ (рис.~\ref{pic:FiniteWireAngles}).
 Обчислення повторює задачу~1, тільки тепер межі інтегрування скінченні:
-\begin{equation}\label{eq:FiniteWireResult}
+\begin{equation*}
 		B = \frac{I}{cr}\left(\sin\alpha_2 - \sin\left(-\alpha_1\right)\right) = \frac{I}{cr}\left(\sin\alpha_1+\sin\alpha_2\right).
-\end{equation}
+\end{equation*}
 При $\alpha_1,\alpha_2 \to \pi/2$ (провідник стає нескінченним в обидва боки) ця формула, як і мало бути, переходить у результат~\eqref{eq:InfiniteWireResult}.
 \begin{center}
 	\localinput{finite-wire-angles.tikz}
@@ -328,11 +328,11 @@ v\cdot\left[\vect v\times\Bfield\right] = \Bfield\cdot\left[\vect v\times\vect v
 	\frac{\vect j(\vect r')\, dV'}{|\vect r-\vect r'|}.
 \end{equation*}
 Отже, магнітне поле можна подати у вигляді ротора деякого допоміжного векторного поля:
-\begin{equation}\label{eq:BCurlA}
+\begin{equation*}
 	\tcbhighmath{
 		\Bfield = \rot\vect A,
 	}
-\end{equation}
+\end{equation*}
 де $\vect A$ називають \emphx{вектор-потенціалом} магнітного поля:
 \begin{equation}\label{eq:VectorPotentialDef}
 	\tcbhighmath{
@@ -377,11 +377,11 @@ $f$. Цю свободу вибору (\emphx{калібрувальну сво�
 	}
 \end{equation}
 Застосовуючи теорему Остроградського--Гаусса, отримуємо інтегральну форму:
-\begin{equation}\label{eq:GaussMagInt}
+\begin{equation*}
 	\tcbhighmath{
 		\oiint\limits_S \Bfield\cdot d\vect S = 0.
 	}
-\end{equation}
+\end{equation*}
 
 \begin{Attention}
 	Теорема Гаусса для $\Bfield$ --- це математичний вираз того самого факту, з якого ми почали розділ: \emphx{вільних магнітних зарядів немає}.
@@ -399,10 +399,10 @@ $f$. Цю свободу вибору (\emphx{калібрувальну сво�
 \end{equation}
 З іншого боку, підставивши $\vect A$ з формули~\eqref{eq:VectorPotentialDef} у рівняння Пуассона можна показати (за прямою аналогією з
 електростатикою), що кожна декартова компонента вектора $\vect A$ задовольняє рівняння Пуассона з джерелом $\vect j$:
-\begin{equation}\label{eq:PoissonAnalogy}
+\begin{equation*}
 	\nabla^2\phi = -4\pi\rho, \quad \phi = \iiint\limits_{V'} \frac{\rho\, dV'}{|\vect r-\vect r'|} \qquad\Longleftrightarrow\qquad \nabla^2\vect A
 	= -\frac{4\pi}c\vect j, \quad \vect A = \frac1c \iiint\limits_{V'} \frac{\vect j\, dV'}{|\vect r-\vect r'|}.
-\end{equation}
+\end{equation*}
 
 \begin{Attention}
 	\emphx{Однакові за формою рівняння мають однакові за формою розв'язки} --- це загальний і дуже потужний принцип математичної фізики: рівняння
@@ -424,11 +424,11 @@ $f$. Цю свободу вибору (\emphx{калібрувальну сво�
 Застосовуючи до~\eqref{eq:CirculationDiff} теорему Стокса, отримуємо інтегральну форму: циркуляція вектора $\Bfield$ по довільному замкненому
 контуру $L$ пропорційна повному струму, що протікає крізь будь-яку поверхню $S$, натягнуту на цей контур
 (рис.~\ref{pic:CirculationLoop}):
-\begin{equation}\label{eq:CirculationInt}
+\begin{equation*}
 	\tcbhighmath{
 		\oint\limits_L \Bfield\cdot d\vect r = \frac{4\pi}c \iint\limits_S \vect j\cdot d\vect S.
 	}
-\end{equation}
+\end{equation*}
 
 \begin{SCfigure}[2][h!]\centering
 	\localinput{circulation-loop.tikz}
@@ -471,22 +471,22 @@ $\oint_L \Bfield\cdot d\vect r = B\cdot 2\pi r$, а циркуляція охо�
 протилежна --- далеко зовні (де поле соленоїда, як показує експеримент і докладніший аналіз, прямує до нуля). Циркуляція набирається лише з
 внутрішньої сторони довжиною $\ell$, $\oint_L \Bfield \cdot d\vect r = B\ell$, а контур охоплює $N$ витків із струмом $I$ кожен, тобто повний струм
 $NI$:
-\begin{equation}\label{eq:SolenoidField}
+\begin{equation*}
 	\tcbhighmath{
 		B = \frac{4\pi}{c}\frac{N}{\ell}I = \frac{4\pi}{c}nI,
 	}
-\end{equation}
+\end{equation*}
 де $n = N/\ell$ --- число витків на одиницю довжини соленоїда. Поле всередині нескінченного соленоїда \emphx{однорідне}, зовні --- дорівнює нулю.
 
 \emphx{Поле всередині й поза нескінченним циліндричним провідником} (рис.~\ref{pic:CylinderField}), по якому тече струм зі сталою по перерізу
 густиною $j$. Усередині (на відстані $r$ від осі, $r<R$) контур $L$ охоплює лише частину струму, $I(r) = j\pi r^2$, тому
-\begin{equation}\label{eq:CylinderInside}
+\begin{equation*}
 	B\cdot 2\pi r = \frac{4\pi}{c}\, j\pi r^2 \quad\Rightarrow\quad B = \frac{2\pi}{c}\,jr \qquad (r < R);
-\end{equation}
+\end{equation*}
 поле всередині зростає \emphx{лінійно} з відстанню від осі. Зовні ($r>R$) контур охоплює весь струм $I = j\pi R^2$, тому
-\begin{equation}\label{eq:CylinderOutside}
+\begin{equation*}
 	B = \frac{2I}{cr} \qquad (r > R)
-\end{equation}
+\end{equation*}
 --- поле спадає так само, як і поле нескінченно тонкого провідника з тим самим повним струмом $I$ (порівняйте з формулою~\eqref{eq:InfiniteWireResult}).
 
 \begin{figure}[h!]\centering
@@ -535,17 +535,17 @@ $NI$:
 Магнітний момент системи рухомих зарядів визначають за прямою аналогією з моментом імпульсу $\vect L = \iiint_V \vect r\times \rho\vect v\, dV$
 для розподіленої маси, що рухається: якщо момент імпульсу --- це \enquote{момент кількості руху}, то магнітний
 момент --- \enquote{момент кількості струму}:
-\begin{equation}\label{eq:AngularMomentum}
+\begin{equation*}
 	\vect L = \iiint\limits_V \vect r\times\rho\vect v\, dV, \qquad \vect p_m = \frac1{2c}\iiint\limits_V \vect r\times\rho\vect v\, dV.
-\end{equation}
+\end{equation*}
 
 Оскільки густина струму $\vect j = \rho\vect v$, а $\vect j\, dV$ --- елемент струму (див.~\eqref{eq:LinearCurrentElement}), формулу магнітного
 моменту можна записати для різних випадків розподілу струму:
-\begin{equation}\label{eq:MagMomentVol}
+\begin{equation*}
 	\tcbhighmath{
 		\vect p_m = \frac1{2c}\iiint\limits_V \vect r\times\vect j\, dV \qquad \text{(об'ємні струми)},
 	}
-\end{equation}
+\end{equation*}
 \begin{equation}\label{eq:MagMomentLin}
 	\tcbhighmath{
 		\vect p_m = \frac{I}{2c}\oint\limits_L \vect r\times d\vect\ell \qquad \text{(лінійний замкнений постійний струм)}.
@@ -578,11 +578,11 @@ $NI$:
 \subsection*{Гіромагнітне відношення}
 
 Відношення магнітного моменту зарядженого тіла до його моменту імпульсу називають \emphx{гіромагнітним відношенням}:
-\begin{equation}\label{eq:GyromagneticDef}
+\begin{equation*}
 	\tcbhighmath{
 		\vect p_m = \gamma\vect L.
 	}
-\end{equation}
+\end{equation*}
 Для будь-якого \emphx{класичного} тіла, у якого відношення заряду до маси однакове в кожному елементі об'єму (наприклад, для однорідно
 зарядженої кулі, що обертається, рис.~\ref{pic:GyromagneticSphere}), гіромагнітне відношення не залежить від закону руху й дорівнює
 \begin{equation}\label{eq:GyromagneticClassical}
@@ -604,12 +604,67 @@ $NI$:
 	можна уявляти як маленьку заряджену кульку, що обертається.
 \end{Attention}
 
+%% --------------------------------------------------------
 \subsection*{Вектор-потенціал на далеких відстанях. Поле магнітного диполя}
+%% --------------------------------------------------------
 
 Знайдемо вектор-потенціал системи струмів, зосереджених у малій області простору, на великій відстані від неї ($r \gg r_i$, де $r_i$ ---
 характерний розмір системи). Розкладаючи $1/|\vect r - \vect r_i|$ у формулі~\eqref{eq:VectorPotentialDef} в ряд за малим параметром $r_i/r$ і
 усереднюючи за часом (для стаціонарного, тобто періодичного або усталеного, руху усереднена похідна будь-якої обмеженої величини дорівнює нулю),
-після певних (дещо громіздких, але прямолінійних) векторних перетворень отримують головний, дипольний член розкладу:
+після певних (дещо громіздких, але прямолінійних) векторних перетворень отримують головний, дипольний член розкладу.
+
+Нехай вектор-потенціал системи точкових зарядів $e_i$ визначається формулою~\eqref{eq:VectorPotentialDef}:
+\begin{equation*}
+	\vect A(\vect r) = \frac{1}{c}\sum_i \frac{e_i\vect v_i}{|\vect r - \vect r_i|}.
+\end{equation*}
+Оскільки заряди рухаються, ця формула дає \emph{миттєвий} вектор-по\-тен\-ці\-ал, який явно залежить від часу через $\vect r_i(t)$ і $\vect v_i(t)$.
+Нас, однак, цікавить не миттєве, а усереднене за часом поле системи --- те, що спостерігається макроскопічно, коли рух зарядів фінітний
+(обмежений у просторі) і періодичний або усталений (наприклад, електрони в атомі чи струм у витку). Сенс усереднення в тому, що для
+будь-якої \emph{обмеженої} (фінітної) величини $Q(t)$ її похідна за часом усереднюється до нуля:
+\begin{equation}\label{eq:AveragedDerivativeZero}
+	\overline{\frac{dQ}{dt}} \equiv \frac{1}{T}\int_0^T \frac{dQ}{dt}\,dt = \frac{Q(T)-Q(0)}{T} \to 0,
+\end{equation}
+оскільки чисельник обмежений, а знаменник $T$ зростає (або, для точно періодичного руху, $Q(T)=Q(0)$ й чисельник дорівнює нулю точно). Саме
+ця властивість і дозволяє прибрати нижче доданки, які самі є повними похідними за часом.
+
+Розкладаючи знаменник за малим параметром $r_i/r$,
+\begin{equation*}
+	\frac{1}{|\vect r-\vect r_i|} \approx \frac{1}{r} + \frac{\vect r\cdot\vect r_i}{r^3},
+\end{equation*}
+отримуємо
+\begin{equation}\label{eq:VectorPotentialTwoTerms}
+	\vect A(\vect r) = \frac{1}{cr}\sum_i e_i\vect v_i + \frac{1}{cr^3}\sum_i e_i\vect v_i(\vect r\cdot\vect r_i).
+\end{equation}
+Перший доданок є повною похідною за часом:
+\begin{equation*}
+	\sum_i e_i\vect v_i = \frac{d}{dt}\sum_i e_i\vect r_i,
+\end{equation*}
+причому $\sum_i e_i\vect r_i$ --- це електричний дипольний момент системи, обмежена величина. Тож, згідно з~\eqref{eq:AveragedDerivativeZero},
+цей член зникає після усереднення за часом.
+
+Для другого доданка позначимо $S \equiv \sum_i e_i\vect v_i(\vect r\cdot\vect r_i)$ і розглянемо допоміжну повну похідну
+\begin{equation*}
+	\frac{d}{dt}\sum_i e_i\vect r_i(\vect r\cdot\vect r_i)
+	= \sum_i e_i\vect v_i(\vect r\cdot\vect r_i) + \sum_i e_i\vect r_i(\vect r\cdot\vect v_i)
+	= S + \sum_i e_i\vect r_i(\vect r\cdot\vect v_i),
+\end{equation*}
+середнє від якої також дорівнює нулю (сума $\sum_i e_i\vect r_i(\vect r\cdot\vect r_i)$ обмежена), отже
+\begin{equation}\label{eq:AuxRelation}
+	\sum_i e_i\vect r_i(\vect r\cdot\vect v_i) = -S.
+\end{equation}
+Скориставшись тотожністю подвійного векторного добутку $\vect r\times(\vect v_i\times\vect r_i) = \vect v_i(\vect r\cdot\vect r_i) - \vect r_i(\vect r\cdot\vect v_i)$, підсумовуємо з вагами $e_i$ і враховуємо~\eqref{eq:AuxRelation}:
+\begin{multline}
+	\sum_i e_i\bigl[\vect r\times(\vect v_i\times\vect r_i)\bigr] = S - (-S) = 2S
+	\Longrightarrow\\
+	S = \frac12\,\vect r\times\sum_i e_i(\vect v_i\times\vect r_i) = -\vect r\times\left(\frac12\sum_i e_i(\vect r_i\times\vect v_i)\right).
+\end{multline}
+Означимо магнітний момент системи
+\begin{equation}\label{eq:MagneticMomentDef}
+	\tcbhighmath{
+		\vect p_m \equiv \frac{1}{2c}\sum_i e_i(\vect r_i\times\vect v_i),
+	}
+\end{equation}
+тоді $S = -c\,(\vect r\times\vect p_m) = c\,(\vect p_m\times\vect r)$, і підстановка в~\eqref{eq:VectorPotentialTwoTerms} одразу дає:
 \begin{equation}\label{eq:VectorPotentialFar}
 	\tcbhighmath{
 		\vect A(\vect r) = \frac{\vect p_m\times\vect r}{r^3}.
@@ -617,6 +672,27 @@ $NI$:
 \end{equation}
 Магнітне поле далекої системи струмів знаходимо за формулою $\Bfield = \rot\vect A$, підставляючи~\eqref{eq:VectorPotentialFar} і користуючись
 векторними тотожностями для ротора векторного добутку (з урахуванням $\divg(\vect r/r^3)=0$ при $r\neq 0$):
+
+Скористаємось тотожністю ротора векторного добутку
+\begin{equation*}
+	\rot(\vect a\times\vect w) = \vect a(\divg\vect w) - \vect w(\divg\vect a) + (\vect w\cdot\nabla)\vect a - (\vect a\cdot\nabla)\vect w,
+\end{equation*}
+застосованою до $\vect a=\vect p_m=\const$ і $\vect w = \vect r/r^3$. Оскільки $\vect p_m$ стала, $\divg\vect p_m=0$ і $(\vect w\cdot\nabla)\vect p_m=0$, тож
+\begin{equation*}
+	\Bfield = \rot\vect A = \vect p_m\,\divg\!\left(\frac{\vect r}{r^3}\right) - (\vect p_m\cdot\nabla)\frac{\vect r}{r^3}.
+\end{equation*}
+Перший доданок зникає, бо $\divg(\vect r/r^3)=0$ при $r\neq0$. У другому обчислюємо похідну по компонентах:
+\begin{equation*}
+	(\vect p_m\cdot\nabla)\frac{r_l}{r^3}
+	= p_{m,k}\partial_k\!\left(\frac{r_l}{r^3}\right)
+	= p_{m,k}\left(\frac{\delta_{kl}}{r^3} - \frac{3r_l r_k}{r^5}\right)
+	= \frac{p_{m,l}}{r^3} - \frac{3r_l(\vect p_m\cdot\vect r)}{r^5},
+\end{equation*}
+тобто
+\begin{equation*}
+	(\vect p_m\cdot\nabla)\frac{\vect r}{r^3} = \frac{\vect p_m}{r^3} - \frac{3(\vect p_m\cdot\vect r)\vect r}{r^5}.
+\end{equation*}
+Підставляючи назад, отримуємо шуканий результат:
 \begin{equation}\label{eq:DipoleFieldB}
 	\tcbhighmath{
 		\Bfield = \frac{3(\vect p_m\cdot\vect r)\vect r}{r^5} - \frac{\vect p_m}{r^3}.
@@ -631,17 +707,19 @@ $NI$:
 	струмів.
 \end{Attention}
 
+%% --------------------------------------------------------
 \subsection*{Магнітний диполь і ефективні магнітні заряди}
+%% --------------------------------------------------------
 
 Оскільки формально поле магнітного диполя збігається з полем електричного, точковий магнітний момент можна (лише \emphx{формально}, поза
 областю, зайнятою реальними струмами) розглядати як диполь, складений з \emphx{ефективних магнітних зарядів} --- північного ($N$) і південного
 ($S$), рис.~\ref{pic:DipoleCharges}:
-\begin{equation}\label{eq:DipoleChargeModel}
+\begin{equation*}
 	\vect p_m = q_m\vect\ell,
-\end{equation}
+\end{equation*}
 де $q_m$ --- величина ефективного магнітного заряду, а $\vect\ell$ --- \enquote{плече} диполя.
 
-\begin{SCfigure}[6][h!]\centering
+\begin{SCfigure}[9][h!]\centering
 	\localinput{dipole-equivalent-charges.tikz}
 	\caption{Формальна модель магнітного диполя як пари ефективних магнітних зарядів
 		$N$ і $S$\label{pic:DipoleCharges}}
@@ -650,9 +728,11 @@ $NI$:
 \begin{Attention}
 	Ця модель --- зручна \emphx{розрахункова фікція}, а не фізична реальність: реальних магнітних зарядів немає (теорема Гаусса для $\Bfield$,
 	формула~\eqref{eq:GaussMagDiff}). Модель ефективних зарядів коректно відтворює поле \emphx{зовні} області, зайнятої струмами, але дає хибну
-	картину всередині цієї області (де насправді поле реального витка зі струмом і поле \enquote{стрижня} з ефективними зарядами на кінцях мають
-	протилежний напрям).
+	картину всередині цієї області: лінії $\Bfield$ реального витка зі струмом --- \emphx{замкнені} і всередині витка напрямлені \emphx{в той
+	самий бік}, що й зовні на осі; натомість лінії поля формальної моделі \enquote{стрижня} з ефективними зарядами на кінцях --- \emphx{розімкнені}
+	і всередині йдуть від $N$ до $S$, тобто \emphx{назустріч} справжньому полю витка.
 \end{Attention}
+
 
 \begin{table}[h!]\small\centering
 	\caption{Порівняння електричного і магнітного точкових диполів}
@@ -673,7 +753,9 @@ $NI$:
 \section{Потенціальна енергія диполя та сила, що діє на диполь в магнітному полі}
 %% --------------------------------------------------------
 
+%% --------------------------------------------------------
 \subsection*{Момент сили, що діє на контур в магнітному полі}
+%% --------------------------------------------------------
 
 Розглянемо плоский виток зі струмом $I$ в \emphx{однорідному} зовнішньому полі $\Bfield$ (рис.~\ref{pic:TorqueLoop}). За означенням моменту сили і
 формулою для сили Ампери на елементі витка~\eqref{eq:AmpereForceLin},
@@ -681,24 +763,58 @@ $NI$:
 	\vect M = \frac1c \oint\limits_L \vect r\times\left(I\, d\vect\ell\times\Bfield\right).
 \end{equation*}
 
-\begin{SCfigure}[2][h!]\centering
+\begin{SCfigure}[3][h!]\centering
 	\localinput{torque-loop-orientations.tikz}
 	\caption{Виток зі струмом, довільно орієнтований в однорідному полі\label{pic:TorqueLoop}}
 \end{SCfigure}
 
-Розкриваючи подвійний векторний добуток за формулою \enquote{БАЦ мінус ЦАБ}, $\vect r\times(d\vect r\times\Bfield) = d\vect r\,(\vect r\cdot\Bfield)
-- \Bfield\,(\vect r\cdot d\vect r)$, і враховуючи, що доданок із $\Bfield\, d(r^2/2)$ дає нуль після інтегрування по замкненому контуру (інтеграл
-повного диференціала по замкненому шляху), а також розкладаючи $d\vect r\,(\vect r\cdot\Bfield)$ на симетричну й антисиметричну частини (де
-симетрична частина знову виявляється повним диференціалом і теж інтегрується в нуль), після зведення подібних доданків отримують:
+Розкриваємо подвійний векторний добуток за формулою "БАЦ мінус ЦАБ":
+\begin{equation*}
+	\vect r\times(d\vect r\times\Bfield) = d\vect r\,(\vect r\cdot\Bfield) - \Bfield\,(\vect r\cdot d\vect r),
+\end{equation*}
+звідки
+\begin{equation}\label{eq:TorqueTwoTerms}
+	\vect M = \frac{I}{c}\oint\limits_L d\vect r\,(\vect r\cdot\Bfield) - \frac{I}{c}\Bfield\oint\limits_L(\vect r\cdot d\vect r).
+\end{equation}
+Другий доданок зникає одразу: підінтегральний вираз $\vect r\cdot d\vect r = d(r^2/2)$ --- повний диференціал, а інтеграл повного диференціала
+по замкненому контуру дорівнює нулю:
+\begin{equation}\label{eq:TotalDiffZero1}
+	\oint\limits_L \vect r\cdot d\vect r = \oint\limits_L d\!\left(\frac{r^2}{2}\right) = 0.
+\end{equation}
+
+Залишається обчислити перший доданок, $\oint_L d\vect r\,(\vect r\cdot\Bfield)$. Розкладемо диадний вираз $dr_i\,r_j$ на симетричну й
+антисиметричну за індексами $i,j$ частини:
+\begin{equation*}
+	dr_i\, r_j = \underbrace{\tfrac12(dr_i\,r_j + r_i\,dr_j)}_{\text{симетрична частина}} + \underbrace{\tfrac12(dr_i\,r_j - r_i\,dr_j)}_{\text{антисиметрична частина}}.
+\end{equation*}
+Симетрична частина є повним диференціалом добутку координат, $\tfrac12(dr_i r_j+r_i dr_j)=\tfrac12\,d(r_ir_j)$, і тому інтегрується в нуль по
+замкненому контуру --- так само, як і в~\eqref{eq:TotalDiffZero1}:
+\begin{equation*}
+	\oint\limits_L \tfrac12\,d(r_i r_j)\,B_j = 0.
+\end{equation*}
+Антисиметрична частина виражається через векторний добуток: використовуючи тотожність $r_i\,dr_j - r_j\,dr_i = \varepsilon_{ijk}(\vect r\times
+d\vect r)_k$, отримуємо
+\begin{equation*}
+	\tfrac12(dr_i r_j - r_i dr_j)\,B_j = \tfrac12\bigl[(\vect r\times d\vect r)\times\Bfield\bigr]_i,
+\end{equation*}
+тож
+\begin{equation}\label{eq:AntisymmPart}
+	\oint\limits_L d\vect r\,(\vect r\cdot\Bfield) = \tfrac12\left(\oint\limits_L\vect r\times d\vect r\right)\times\Bfield.
+\end{equation}
+Підставляючи~\eqref{eq:TotalDiffZero1} і~\eqref{eq:AntisymmPart} у~\eqref{eq:TorqueTwoTerms}, після зведення подібних доданків отримують:
 \begin{equation}\label{eq:TorqueLoop}
 	\tcbhighmath{
-		\vect M = \left(\frac{I}{c}\oint\limits_L \vect r\times d\vect r\right)\times\Bfield = \vect p_m\times\Bfield,
+		\vect M = \left(\frac{I}{2c}\oint\limits_L \vect r\times d\vect r\right)\times\Bfield = \vect p_m\times\Bfield,
 	}
 \end{equation}
 --- той самий результат, що й був покладений в означення вектора $\Bfield$ на початку розділу (формула~\eqref{eq:TorqueDipoleAnalogy}), але тепер
-уже \emphx{виведений}, а не постульований, для довільного плоского витка довільної форми.
+уже \emphx{виведений}, а не постульований, для довільного плоского витка довільної форми. Тут $\vect p_m = \frac{I}{2c}\oint_L\vect r\times d\vect
+r = \frac{I}{c}\vect S$, де $\vect S=\frac12\oint_L\vect r\times d\vect r$ --- векторна площа контуру, що узгоджується з магнітним моментом,
+означеним раніше через~\eqref{eq:MagneticMomentDef}.
 
+%% --------------------------------------------------------
 \subsection*{Потенціальна енергія диполя в магнітному полі}
+%% --------------------------------------------------------
 
 Момент сил $\vect M = \vect p_m\times\Bfield$ прагне зорієнтувати магнітний момент витка вздовж поля. З означення потенціальної енергії (робота
 момента сил при повороті дорівнює зменшенню потенціальної енергії) знаходять

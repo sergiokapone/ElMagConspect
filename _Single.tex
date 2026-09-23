@@ -1,0 +1,18 @@
+% Універсальний лаунчер для компіляції ОДНОГО розділу книги.
+% Не редагувати вручну назву розділу — вона підставляється ззовні
+% через  lualatex -jobname=<Розділ> _Single.tex
+%
+% Магічний коментар % !TeX root у самих файлах розділів лишається
+% незайманим — цей файл у їхню компіляцію не втручається.
+
+\documentclass[biblatex]{ConspectBook}
+
+\addbibresource{d:/Projects/LaTeX/MyPackages/bib/MyBase.bib}
+
+\begin{document}
+% Розділ лежить у <Розділ>/<Розділ>.tex (як і \multiinclude в майстер-файлі).
+% \graphicspath окремо тут не потрібен — сам файл розділу виставляє його
+% через \graphicspath{{\currfilebase/Pictures}}, а \currfilebase коректно
+% визначиться як ім'я розділу, бо файл реально \input-иться саме звідти.
+\input{\jobname/\jobname}
+\end{document}
