@@ -1,0 +1,65 @@
+% !TeX root = ../../test.tex
+
+
+\begin{tikzpicture}[>=latex, every node/.style={font=\scriptsize}, scale=1.5]
+
+%    \draw[midarrow, red!40] (1.24,0) to[bend left] ++(75:3);
+%    \draw[midarrow, red!40] (1.6,0) to[bend left=20pt] ++(70:3);
+%    \draw[midarrow, red!40] (1.86,-0.35) to[bend left=40pt] ++(55:3);
+
+	% осі
+	\draw[->] (-1,2) -- ++(0.5,0) node[right] {$x$};
+	\draw[->] (-1,2) -- ++(0,0.5) node[above] {$y$};
+
+	% контур
+	\coordinate (A) at (0.7,0.7);
+	\coordinate (B) at (2.7,0.7);
+	\coordinate (C) at (2.7,2.7);
+	\coordinate (D) at (0.7,2.7);
+
+	\draw[green!50!black, thick,->] (A) -- ($(A)!0.55!(B)$);
+	\draw[green!50!black, thick] ($(A)!0.55!(B)$) -- (B);
+	\draw[green!50!black, thick,->] (B) -- ($(B)!0.55!(C)$);
+	\draw[green!50!black, thick] ($(B)!0.55!(C)$) -- (C);
+	\draw[green!50!black, thick,->] (C) -- ($(C)!0.55!(D)$);
+	\draw[green!50!black, thick] ($(C)!0.55!(D)$) -- (D);
+	\draw[green!50!black, thick,->] (D) -- ($(D)!0.55!(A)$);
+	\draw[green!50!black, thick] ($(D)!0.55!(A)$) -- (A);
+
+	\node[below left]  at (A) {$1$};
+	\node[below right] at (B) {$2$};
+	\node[above right] at (C) {$3$};
+	\node[above left]  at (D) {$4$};
+
+	\node[below] at ($(A)!0.5!(B)$) {$dx$};
+	\node[left]  at ($(D)!0.5!(A)$) {$dy$};
+
+	% нижня сторона: E(r), тангенційна компонента E_x(x,y)
+	\coordinate (M12) at ($(A)!0.5!(B)$);
+	\draw[->, red] (M12) -- ++(-60:1.1) coordinate (v12);
+	\node[red, below] at (v12) {$\Efield(\vect r)$};
+	\draw[red] (M12) -- ++(0:{1.1*cos(60)}) coordinate (v12s);
+	\draw[dashed] (v12) -- node[red, right] {$E_x(x,y)$} (v12s);
+
+	% права сторона: E(r+dx), тангенційна компонента E_y(x+dx,y)
+	\coordinate (M23) at ($(B)!0.5!(C)$);
+	\draw[->, red] (M23) -- ++(30:1.1) coordinate (v23);
+	\node[red, right] at (v23) {$\Efield(\vect r + d\vect x)$};
+	\draw[red] (M23) -- ++(90:{1.1*sin(30)}) coordinate (v23s);
+	\draw[dashed] (v23) -- node[red, above] {$E_y(x+dx,y)$} (v23s);
+
+	% верхня сторона: E(r+dy), тангенційна компонента E_x(x,y+dy)
+	\coordinate (M34) at ($(C)!0.5!(D)$);
+	\draw[->, red] (M34) -- ++(120:1.1) coordinate (v34);
+	\node[red, above] at (v34) {$\Efield(\vect r + d\vect y)$};
+	\draw[red] (M34) -- ++(0:{-1.1*cos(60)}) coordinate (v34s);
+	\draw[dashed] (v34) -- node[red, left] {$E_x(x,y+dy)$} (v34s);
+
+	% ліва сторона: E(r), тангенційна компонента E_y(x,y)
+	\coordinate (M41) at ($(D)!0.5!(A)$);
+	\draw[->, red] (M41) -- ++(210:1.1) coordinate (v41);
+	\node[red, left] at (v41) {$\Efield(\vect r)$};
+	\draw[red] (M41) -- ++(90:{-1.1*sin(30)}) coordinate (v41s);
+	\draw[dashed] (v41) -- node[red, below]  {$E_y(x,y)$} (v41s);
+
+\end{tikzpicture}

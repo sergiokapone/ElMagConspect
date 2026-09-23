@@ -521,8 +521,27 @@ $k_y = k\sin i$, $k'_y=k'\sin i'$):
 
 \subsection*{Формули Френеля для $s$-поляризації}
 
-Використовуючи умову неперервності тангенціальної складової $\Hfield$ (з урахуванням зв'язку $B=nE/1$ та законів~\eqref{eq:SnellReflection}--\eqref{eq:SnellRefraction}), можна отримати амплітуди відбитої й заломленої хвиль через амплітуду падаючої --- \emphx{формули Френеля} для
-$s$-поляризації:
+Крім уже отриманої граничної умови для $\Efield$ (яка звелась до $E_m+E'_m=E''_m$), потрібна ще одна --- гранична умова для $\Hfield$. Для
+$s$-поляризованої хвилі $\Efield=E\vect e_z$ напрямлений уздовж осі $z$ (перпендикулярно до площини падіння $xy$); амплітуда й напрям
+магнітного поля плоскої хвилі в середовищі з показником заломлення $n$ зв'язані з електричним співвідношенням $\Bfield=n(\hat{\vect
+k}\times\Efield)$, де $\hat{\vect k}=\vect k/k$ --- одиничний вектор напрямку поширення хвилі (сам хвильовий вектор $\vect k=k\hat{\vect k}$ має
+модуль $k=n\omega/c$), звідки, зокрема, $B_m=nE_m$. Оскільки одиничні вектори напрямку поширення падаючої, відбитої й заломленої хвиль дорівнюють $\hat{\vect
+k}=(\cos i,\sin i,0)$, $\hat{\vect k}'=(-\cos i,\sin i,0)$, $\hat{\vect k}''=(\cos r,\sin r,0)$ (вісь $x$ --- нормаль до межі, $y$ --- уздовж
+межі в площині падіння), безпосереднє обчислення $\hat{\vect k}\times\vect e_z$ дає для тангенціальної (уздовж $y$) складової $\Bfield=\Hfield$
+(з огляду на $\mu_1=\mu_2\approx1$):
+\begin{equation*}
+	H_y = -n_1E_m\cos i, \qquad H'_y = n_1E'_m\cos i, \qquad H''_y = -n_2E''_m\cos r.
+\end{equation*}
+Гранична умова неперервності $H_{\tau_1}=H_{\tau_2}$, тобто $H_y+H'_y=H''_y$, набуває вигляду
+\begin{equation}\label{eq:FresnelSBoundaryH}
+	n_1\cos i\,(E_m-E'_m) = n_2\cos r\,E''_m.
+\end{equation}
+Виражаючи $n_1=n_2\sin r/\sin i$ за законом Снелла~\eqref{eq:SnellRefraction} і підставляючи $E''_m=E_m+E'_m$, отримуємо
+\begin{equation*}
+	\sin r\cos i\,(E_m-E'_m) = \sin i\cos r\,(E_m+E'_m) \quad\Longrightarrow\quad E_m\sin(r-i) = E'_m\sin(i+r),
+\end{equation*}
+де використано формулу різниці синусів. Підставляючи знайдене $E'_m$ назад у $E''_m=E_m+E'_m$ й скориставшись
+$\sin(i+r)-\sin(i-r)=2\cos i\sin r$, остаточно дістаємо \emphx{формули Френеля} для $s$-поляризації:
 \begin{equation}\label{eq:FresnelSReflection}
 	\tcbhighmath{
 		E'_\perp = -\frac{\sin(i-r)}{\sin(i+r)}\, E_\perp,
@@ -536,8 +555,25 @@ $s$-поляризації:
 
 \subsection*{Формули Френеля для $p$-поляризації}
 
-Аналогічний розрахунок для $p$-поляризованої хвилі (рис.~\ref{pic:PPolarization}), виходячи з неперервності тангенціальних складових $\Hfield$
-та $\Efield$, дає:
+Для $p$-поляризованої хвилі (рис.~\ref{pic:PPolarization}), навпаки, у площині падіння $xy$ лежить вектор $\Efield$, а $\Bfield=B\vect e_z$
+напрямлений уздовж осі $z$. Обираючи напрям $\Efield$ так, щоб трійка $\Efield,\Bfield,\hat{\vect k}$ лишалась правою (тобто за тим самим
+правилом $\Bfield=n(\hat{\vect k}\times\Efield)$, як і для $s$-поляризації), одиничний вектор $\Efield$ дорівнює $\hat{\vect e}_E=\vect
+z\times\hat{\vect k}$, що для падаючої, відбитої й заломленої хвиль дає тангенціальні (уздовж $y$) складові
+\begin{multline*}
+	E_y = E_m\cos i,\quad E'_y=-E'_m\cos i,\quad E''_y=E''_m\cos r; \\ B_z=n_1E_m,\quad B'_z=n_1E'_m,\quad B''_z=n_2E''_m
+\end{multline*}
+(складова $B_z$ тут цілком тангенціальна, оскільки $\Bfield\parallel\vect e_z$). Неперервність тангенціальних складових $\Efield$ і
+$\Hfield=\Bfield$ дає систему двох рівнянь
+\begin{equation}\label{eq:FresnelPBoundary}
+	\cos i\,(E_m-E'_m) = \cos r\,E''_m, \qquad n_1(E_m+E'_m)=n_2E''_m.
+\end{equation}
+Виключаючи з другого рівняння $n_1=n_2\sin r/\sin i$ (закон Снелла) і підставляючи в нього $E''_m$ з першого рівняння, маємо
+\begin{multline*}
+	\sin r\cos r\,(E_m+E'_m) = \sin i\cos i\,(E_m-E'_m) \quad\Longrightarrow\\E_m\big[\sin2i-\sin2r\big] = E'_m\big[\sin2i+\sin2r\big]
+\end{multline*}
+(тут використано $\sin2\alpha=2\sin\alpha\cos\alpha$). Застосувавши до різниці й суми синусів подвійних кутів формули $\sin2i-\sin2r=2\cos(i+r)\sin(i-r)$
+та $\sin2i+\sin2r=2\sin(i+r)\cos(i-r)$, знаходимо $E'_m/E_m=\tg(i-r)/\tg(i+r)$; підстановка цього результату в $E''_m=\dfrac{n_1}{n_2}(E_m+E'_m)=\dfrac{\sin
+r}{\sin i}(E_m+E'_m)$ дає $E''_m$. Разом це --- \emphx{формули Френеля} для $p$-поляризації:
 \begin{equation}\label{eq:FresnelPReflection}
 	\tcbhighmath{
 		E'_\parallel = \frac{\tg(i-r)}{\tg(i+r)}\, E_\parallel,
@@ -568,7 +604,7 @@ $s$-поляризації:
 тобто $i<r$: кут заломлення завжди \emphx{більший} за кут падіння (рис.~\ref{pic:TotalReflection}).
 
 \begin{figure}[h!]\centering
-	\includegraphics[width=0.4\linewidth]{totrefr}
+	\localinput{total-reflection-geometry.tikz}
 	\caption{Заломлений промінь наближається до поверхні розділу при зростанні кута
 		падіння\label{pic:TotalReflection}}
 \end{figure}
@@ -586,15 +622,16 @@ $s$-поляризації:
 \subsection*{Що відбувається за граничним кутом: загасаюча хвиля}
 
 З'ясуємо, що відбувається з \enquote{заломленим променем} формально, за законами хвильової оптики, при $i>i_b$. Заломлена хвиля
-$\Efield'' = \Efield''_m\, e^{i(\omega t-k''_xx-k''_yy)}$ повинна задовольняти співвідношення $k^2/n^2 = {k''_x}^2+{k''_y}^2$ (де $k=\omega/c$), а
-з граничної умови $k_y=k''_y$ і $\sin i = k_y/k$ маємо
+$\Efield'' = \Efield''_m\, e^{i(\omega t-k''_xx-k''_yy)}$ повинна задовольняти дисперсійне співвідношення для другого середовища,
+$k''^2={k''_x}^2+{k''_y}^2$, де $k''=n_2\omega/c$. З граничної умови $k_y=k''_y$ (а $k_y=k\sin i$, де $k=n_1\omega/c$ --- хвильове число
+падаючої хвилі в першому середовищі) маємо
 \begin{equation*}
-	{k''_x}^2 = \frac{k^2}{n^2}\left(1-n^2\sin^2i\right) = \frac{\omega^2}{c^2}\left(1-n^2\sin^2i\right).
+	{k''_x}^2 = k''^2-k_y^2 = \left(\frac{n_2\omega}c\right)^{\!2}-\left(\frac{n_1\omega}c\right)^{\!2}\sin^2i = \frac{\omega^2}{c^2}\left(n_2^2-n_1^2\sin^2i\right).
 \end{equation*}
-Оскільки при $i>i_b$ виконується $n^2\sin^2i>1$, вираз у дужках --- \emphx{від'ємний}, тому ${k''_x}^2<0$, тобто $k''_x$ --- \emphx{уявне} число:
-$k''_x = iK$, де
+Оскільки при $i>i_b$ виконується $n_1\sin i>n_2$ (тобто й $n_1^2\sin^2i>n_2^2$), вираз у дужках --- \emphx{від'ємний}, тому ${k''_x}^2<0$, тобто
+$k''_x$ --- \emphx{уявне} число: $k''_x = iK$, де, повертаючись до позначення $n=n_1/n_2$ з формули~\eqref{eq:CriticalAngle},
 \begin{equation*}
-	K = \frac\omega c\sqrt{n^2\sin^2i-1} > 0.
+	K = \frac\omega c\sqrt{n_1^2\sin^2i-n_2^2} = \frac{n_2\omega}c\sqrt{n^2\sin^2i-1} > 0.
 \end{equation*}
 Розв'язок рівнянь Максвелла в другому середовищі при цьому набуває вигляду
 \begin{equation}\label{eq:EvanescentWave}
