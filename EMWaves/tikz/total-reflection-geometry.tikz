@@ -1,3 +1,5 @@
+% !TeX root = ..//../test.tex
+
 % Адаптовано з EMWaves.tex (рис. "Повне внутрішнє відбивання"), стиль узгоджено з
 % p-polarization-geometry.tikz. Показано три промені, що падають з оптично густішого
 % середовища ($n_1$) в менш густе ($n_2$) під кутами $i_1<i_b$, $i_b$ та $i_2>i_b$.
@@ -13,20 +15,20 @@
 	\node[circle, draw, inner sep=1.5pt, fill=blue] (O) at (0, 0) {};
 
 	% --- промінь 1: i_1 < i_b -- часткове заломлення ---
-	\draw[<-, red, double] (O) -- ++(245:2.4);
-	\draw[->, red, double] (O) -- ++(56.5:2.4);
-	\draw[->] (0,-0.45) arc (270:245:0.45) node[pos=0.5, below left] {$i_1$};
-	\draw[->] (0, 0.45) arc (90:56.5:0.45) node[pos=0.6, above right] {$r_1$};
+	\draw[<-, red!45] (O) -- ++(245:2.4);
+	\draw[->, red!45] (O) -- ++(56.5:2.4);
+	\draw[->, red!45] (0,-1.4) arc (270:245:1.4) node[pos=0.5, below] {$i_1$};
+	\draw[->, red!45] (0, 0.45) arc (90:56.5:0.45) node[pos=0.6, above] {$r_1$};
 
 	% --- промінь 2: i = i_b -- заломлений промінь ковзає вздовж межі ---
-	\draw[<-, red, double] (O) -- ++(220:2.4);
-	\draw[->, red, double] (O) -- ++(0:2.4);
-	\draw[->] (0,-0.7) arc (270:220:0.7) node[pos=0.5, below left] {$i_b$};
+	\draw[<-, red] (O) -- ++(220:2.4);
+	\draw[->, red] (O) -- ++(0:2.4);
+	\draw[->, red] (0,-0.7) arc (270:220:0.7) node[pos=0.5, below left] {$i_b$};
 	\node[above] at (1.2, 0.05) {$r=90^\circ$};
 
 	% --- промінь 3: i_2 > i_b -- повне внутрішнє відбивання ---
-	\draw[<-, red, double] (O) -- ++(205:2.4);
-	\draw[->, red, double] (O) -- ++(335:2.4);
-	\draw[->] (0,-0.95) arc (270:205:0.95) node[pos=0.5, left] {$i_2$};
-	\draw[->] (0,-0.95) arc (270:335:0.95) node[pos=0.5, right] {$i_2$};
+	\draw[<-, red!60!black] (O) -- ++(205:2.4);
+	\draw[->, red!60!black] (O) -- ++(335:2.4);
+	\draw[->, red!60!black] (0,-1.95) arc (270:205:1.95) node[pos=0.5, left] {$i_2$};
+	\draw[->, red!60!black] (0,-1.85) arc (270:335:1.85) node[pos=0.5, right] {$i_2$};
 \end{tikzpicture}

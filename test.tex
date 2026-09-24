@@ -10,77 +10,79 @@
 
 %\includetikz{EMWaves}{total-reflection-geometry}
 
-%% --------------------------------------------------------
-\subsection*{Введення ротора через циркуляцію}
-%% --------------------------------------------------------
+\includechapter{EMWaves}
 
-Виділимо в площині нескінченно малий прямокутний контур зі
-сторонами $dx$, $dy$, що паралельні до координатних осей (рис.~\ref{tikz:rot}).
-
-\begin{SCfigure}[][h!]
-	\centering
-
-	\includetikz{SteadyEfield}{rot}
-
-	\caption{До введення ротора через циркуляцію}
-	\label{tikz:rot}
-\end{SCfigure}
-
-Обчислимо циркуляцію вектора $\Efield$ вздовж контуру $1\to2\to3\to4\to1$
-проти годинникової стрілки.
-
-На стороні $1$--$2$ (нижня, обхід у позитивному напрямку осі $x$) дотична
-складова поля дає внесок $E_x(x,y)\,dx$. На протилежній стороні $3$--$4$
-(верхня) обхід іде у від'ємному напрямку осі $x$, тому внесок дорівнює
-$-E_x(x, y+dy)\,dx$. Сума цих двох внесків:
-\begin{equation*}
-	-\left[E_x(x, y+dy) - E_x(x,y) \right] dx = -\left( \frac{\partial
-		E_x}{\partial y} dy\right) dx = -\frac{\partial
-		E_x}{\partial y} dS.
-\end{equation*}
-Тут використано формулу \eqref{eq:sc_diff}, де $f(y) = E_x(x,y)$, а $\epsilon_y = dy$,
-а $dS = dx\,dy$ --- площа контуру.
-
-Аналогічно, на стороні $2$--$3$ (права, обхід у позитивному напрямку осі
-$y$) внесок дорівнює $E_y(x+dx, y)\,dy$, а на стороні $4$--$1$ (ліва, обхід
-у від'ємному напрямку осі $y$) внесок дорівнює $-E_y(x,y)\,dy$. Сума:
-\begin{equation*}
-	\left[E_y(x+dx, y) - E_y(x,y) \right] dy = \left( \frac{\partial
-		E_y}{\partial x} dx\right) dy = \frac{\partial
-		E_y}{\partial x} dS.
-\end{equation*}
-
-Повна циркуляція вздовж усього контуру:
-\begin{equation*}
-	d\Gamma = \oint \Efield \cdot d\vect{l} = \left( \frac{\partial
-		E_y}{\partial x} - \frac{\partial E_x}{\partial y} \right) dS =
-	(\rot\Efield)_z\, dS.
-\end{equation*}
-
-Величину $(\rot\Efield)_z$ можна розглядати як $z$-компоненту вектора
-$\rot\Efield$ (ротора вектора $\Efield$), який визначається як границя
-відношення циркуляції вектора вздовж малого замкненого контуру до площі
-цього контуру, коли нормаль до контуру $\vec n$ напрямлена вздовж
-відповідної осі (тут --- вздовж осі $z$, за правилом правого гвинта
-відносно напрямку обходу):
-\begin{equation*}
-	(\rot\Efield)_n = \lim_{dS \to 0} \frac{1}{dS}\oint \Efield \cdot d\vect{l}.
-\end{equation*}
-
-Проводячи аналогічні міркування для контурів у площинах $yz$ та $zx$,
-отримаємо решту компонент, і в результаті повний вираз для ротора у
-декартових координатах:
-\begin{equation}
-	\rot\Efield = \left( \frac{\partial E_z}{\partial y} - \frac{\partial
-		E_y}{\partial z} \right)\vect{i} + \left( \frac{\partial
-		E_x}{\partial z} - \frac{\partial E_z}{\partial x} \right)\vect{j} +
-	\left( \frac{\partial E_y}{\partial x} - \frac{\partial E_x}{\partial y}
-	\right)\vect{k}.
-\end{equation}
-
-\begin{Attention}
-	Ротор вектора --- це вектор!
-\end{Attention}
+%%% --------------------------------------------------------
+%\subsection*{Введення ротора через циркуляцію}
+%%% --------------------------------------------------------
+%
+%Виділимо в площині нескінченно малий прямокутний контур зі
+%сторонами $dx$, $dy$, що паралельні до координатних осей (рис.~\ref{tikz:rot}).
+%
+%\begin{SCfigure}[][h!]
+%	\centering
+%
+%	\includetikz{SteadyEfield}{rot}
+%
+%	\caption{До введення ротора через циркуляцію}
+%	\label{tikz:rot}
+%\end{SCfigure}
+%
+%Обчислимо циркуляцію вектора $\Efield$ вздовж контуру $1\to2\to3\to4\to1$
+%проти годинникової стрілки.
+%
+%На стороні $1$--$2$ (нижня, обхід у позитивному напрямку осі $x$) дотична
+%складова поля дає внесок $E_x(x,y)\,dx$. На протилежній стороні $3$--$4$
+%(верхня) обхід іде у від'ємному напрямку осі $x$, тому внесок дорівнює
+%$-E_x(x, y+dy)\,dx$. Сума цих двох внесків:
+%\begin{equation*}
+%	-\left[E_x(x, y+dy) - E_x(x,y) \right] dx = -\left( \frac{\partial
+%		E_x}{\partial y} dy\right) dx = -\frac{\partial
+%		E_x}{\partial y} dS.
+%\end{equation*}
+%Тут використано формулу \eqref{eq:sc_diff}, де $f(y) = E_x(x,y)$, а $\epsilon_y = dy$,
+%а $dS = dx\,dy$ --- площа контуру.
+%
+%Аналогічно, на стороні $2$--$3$ (права, обхід у позитивному напрямку осі
+%$y$) внесок дорівнює $E_y(x+dx, y)\,dy$, а на стороні $4$--$1$ (ліва, обхід
+%у від'ємному напрямку осі $y$) внесок дорівнює $-E_y(x,y)\,dy$. Сума:
+%\begin{equation*}
+%	\left[E_y(x+dx, y) - E_y(x,y) \right] dy = \left( \frac{\partial
+%		E_y}{\partial x} dx\right) dy = \frac{\partial
+%		E_y}{\partial x} dS.
+%\end{equation*}
+%
+%Повна циркуляція вздовж усього контуру:
+%\begin{equation*}
+%	d\Gamma = \oint \Efield \cdot d\vect{l} = \left( \frac{\partial
+%		E_y}{\partial x} - \frac{\partial E_x}{\partial y} \right) dS =
+%	(\rot\Efield)_z\, dS.
+%\end{equation*}
+%
+%Величину $(\rot\Efield)_z$ можна розглядати як $z$-компоненту вектора
+%$\rot\Efield$ (ротора вектора $\Efield$), який визначається як границя
+%відношення циркуляції вектора вздовж малого замкненого контуру до площі
+%цього контуру, коли нормаль до контуру $\vec n$ напрямлена вздовж
+%відповідної осі (тут --- вздовж осі $z$, за правилом правого гвинта
+%відносно напрямку обходу):
+%\begin{equation*}
+%	(\rot\Efield)_n = \lim_{dS \to 0} \frac{1}{dS}\oint \Efield \cdot d\vect{l}.
+%\end{equation*}
+%
+%Проводячи аналогічні міркування для контурів у площинах $yz$ та $zx$,
+%отримаємо решту компонент, і в результаті повний вираз для ротора у
+%декартових координатах:
+%\begin{equation}
+%	\rot\Efield = \left( \frac{\partial E_z}{\partial y} - \frac{\partial
+%		E_y}{\partial z} \right)\vect{i} + \left( \frac{\partial
+%		E_x}{\partial z} - \frac{\partial E_z}{\partial x} \right)\vect{j} +
+%	\left( \frac{\partial E_y}{\partial x} - \frac{\partial E_x}{\partial y}
+%	\right)\vect{k}.
+%\end{equation}
+%
+%\begin{Attention}
+%	Ротор вектора --- це вектор!
+%\end{Attention}
 
 %% capacitor-angular-momentum.tikz
 %% Заряджений циліндричний конденсатор в аксіальному полі B:
