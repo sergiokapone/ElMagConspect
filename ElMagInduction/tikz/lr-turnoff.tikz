@@ -1,7 +1,7 @@
 % Адаптовано з ElMagInduction.tex (слайд "Перехідні процеси в колі з індуктивністю", екстраструми при розмиканні)
 \begin{circuitikz}[
-		resistor = european,
-		scale=1.25, transform shape]
+		european resistors,
+		scale=1.25]
 	\draw (0,0) -- (0,1) coordinate (A) -- (0, 2) to[R, l=$R$] (3, 2) -- (3,1) coordinate (A') -- (3,
 	0);
 	\draw (3, 0) to[battery2, l=$\emf$] (1.5, 0) to[opening switch, l=$S$, mirror]  (0, 0);

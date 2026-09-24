@@ -28,7 +28,24 @@
 
 %\includetikz{EMWaves}{total-reflection-geometry}
 
-\includechapter{SteadyCurrent}
+%\includechapter{SteadyCurrent}
+
+% Адаптовано з ElMagInduction.tex (слайд "Перехідні процеси в колі з індуктивністю", екстраструми при розмиканні)
+\begin{circuitikz}[
+		european resistors,
+		scale=1.25]
+	\draw (0,0) -- (0,1) coordinate (A) -- (0, 2) to[R, l=$R$] (3, 2) -- (3,1) coordinate (A') -- (3,
+	0);
+	\draw (3, 0) to[battery2, l=$\emf$] (1.5, 0) to[opening switch, l=$S$, mirror]  (0, 0);
+	\draw (A) to[L, l={$L$, $r$}] (A');
+\end{circuitikz}
+\begin{tikzpicture}[scale=1.25, >=latex]
+	\draw[->] (0,0) -- ++(2,0) node[below] {$t$};
+	\draw[->] (0,0) -- ++(0,2) node[left] {$I$};
+	\node[left] at (0, 1.6) {$I_0$};
+	\draw[domain=0:1.8, red, thick] plot (\x, {1.6*exp(-1.5*\x)});
+\end{tikzpicture}
+
 
 %%% --------------------------------------------------------
 %\subsection*{Введення ротора через циркуляцію}
