@@ -7,7 +7,7 @@
 			}
 	}
 	\draw (0,0) node[ocirc] {} node[above] {$\phi_1$}
-	to[battery2, l=$\mathcal{E}$, invert] (2,0)
+	to[battery2, l=$\emf$, invert] (2,0)
 	to[R, l=$R$, european] (4,0) node[ocirc] {} node[above] {$\phi_1$} ;
 	\draw (0,0) node[anchor=north] {$1$};
 	\draw (4,0) node[anchor=north] {$2$};
