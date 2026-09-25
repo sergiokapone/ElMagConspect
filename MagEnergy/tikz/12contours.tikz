@@ -1,4 +1,4 @@
-\begin{tikzpicture}[scale=1.25, >=latex, midarrow/.style={%
+\begin{tikzpicture}[scale=1.5, >=latex, midarrow/.style={%
 				postaction={ decorate,
 						decoration={ markings, mark=at position .7 with {\arrow{latex}}}}}]
 	\begin{scope}%[rotate around={45:(0,1)}]
