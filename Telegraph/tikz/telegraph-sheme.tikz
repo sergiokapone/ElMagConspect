@@ -1,0 +1,18 @@
+\begin{circuitikz}[european resistors, scale=1.3, thick]
+	% Верхня шина
+	\draw (0,0) to[short, o-] (0.5,0)
+    to[R, l=$R_0\,dz$] (2.5,0)
+    to[L, l=$L_0\,dz$] (4.5,0)
+    to[short, -o] (5.5,0);
+	% Нижня шина
+	\draw (0,-2) to[short, o-] (5.5,-2);
+	% Паралельні елементи
+	\draw (4.5,0) to[C, l_=$C_0\,dz$, *-*] (4.5,-2);
+	\draw (3.0,0) to[R, l_=$G_0\,dz$, *-*] (3.0,-2);
+	% Напруги
+	\draw (0,0) to[open, v^={$u(z,t)$}] (0,-2);
+	\draw (5.5,0) to[open, v^={$u(z+dz,t)$}] (5.5,-2);
+	% Струми
+	\draw[->, >=latex] (0.2,0.4) -- (0.8,0.4) node[midway, above] {$i(z,t)$};
+	\draw[->, >=latex] (5.0,0.4) -- (5.6,0.4) node[midway, above] {$i(z+dz,t)$};
+\end{circuitikz}

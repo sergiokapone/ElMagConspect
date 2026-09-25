@@ -1,0 +1,29 @@
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.95\textwidth, height=6.5cm,
+    xlabel={$t$, ум. од.},
+    ylabel={$u(t)$},
+    domain=-3:18,
+    samples=500,
+    grid=both,
+    legend pos=north east,
+    thick,
+    every axis plot/.append style={very thick}
+]
+% Вхідний імпульс (гаусіан)
+\addplot[black] {exp(-x^2)};
+\addlegendentry{$z=0$ — вхідний}
+
+% Після 100 км — помірне розширення
+\addplot[blue] {0.75*exp(-(x-5)^2/2.25)};
+\addlegendentry{$z=100$ км}
+
+% Після 300 км — сильне розширення
+\addplot[red, dashed] {0.4*exp(-(x-12)^2/9)};
+\addlegendentry{$z=300$ км}
+
+% Після 1000 км — майже «розмазаний» прямокутник
+\addplot[orange, dotted] {0.18*exp(-(x-15)^2/25)};
+\addlegendentry{$z=1000$ км}
+\end{axis}
+\end{tikzpicture}

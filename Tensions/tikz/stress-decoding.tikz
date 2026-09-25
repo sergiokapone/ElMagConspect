@@ -1,0 +1,17 @@
+\begin{tikzpicture}[>=Latex, scale=1.3, every node/.style={font=\small}]
+	% поле вздовж x
+	\foreach \y in {-1.2, -0.6, ...,1.2}{
+		\draw[red!30, thick, -{Latex[length=2mm]}] (-2.2,\y) -- (2.2,\y);
+	}
+	\node[red!60] at (2.4,0) {$\Efield$};
+
+	% майданчик n = e_x
+	\draw[very thick, blue!60!black] (1.0,-0.9) -- (1.0,0.9);
+	\draw[->, very thick, blue!60!black] (1.0,0) -- (0.3,0) node[below] {$\vect n=\vect e_x$};
+	\draw[->, ultra thick, green!50!black] (1.0,0) -- (1.7,0) node[above] {натяг};
+
+	% майданчик n = e_y
+	\draw[very thick, blue!60!black] (-1.0,-0.5) -- (0.5,-0.5);
+	\draw[->, very thick, blue!60!black] (-0.25,-0.5) -- (-0.25,-1.1) node[right] {$\vect n=\vect e_y$};
+	\draw[->, ultra thick, orange!85!black] (-0.25,-0.5) -- (-0.25,-1.3) node[below] {тиск};
+\end{tikzpicture}

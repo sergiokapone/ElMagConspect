@@ -1,0 +1,37 @@
+% !TeX root = ../../test.tex
+
+
+\begin{tikzpicture}[>=Latex, thick]
+
+  % ---------- Параметри ----------
+  \def\d{2}     % півдистанція між провідниками
+  \def\rc{0.65} % радіус перерізу провідника
+
+  % ---------- Провідники ----------
+  \node[circle, fill=gray!60, inner sep=0, minimum size=\rc cm] (Out) at (-\d,0) {$\times$};
+  \node[circle, fill=gray!60, inner sep=0, minimum size=\rc cm] (In) at ( +\d,0) {$\cdot$};
+  \node at (-\d,0) {$\times$};
+  \node at ( \d,0) {$\cdot$};
+
+  % ---------- Лінії B: концентричні кола + маленька стрілка-мітка напрямку ----------
+  % провідник: струм
+  \foreach \r in {0.55,0.95,1.55, 2.6}{
+    \draw[blue!70!black, midarrowR] ({-\d-\r*0.3},0) circle (\r);
+    \draw[blue!70!black, arrowpos={0}{5pt}{7pt}] ({+\d+\r*0.3},0) circle (\r);
+  }
+
+
+  % ---------- Лінії E між провідниками: пучок вкладених дуг, одна формула на всі ----------
+\foreach \ang in {-65, -20, 0 , 20, 65}{
+    \draw[midarrow, red] (Out) to[out=\ang, in={180-\ang}] (In);
+}
+
+  % ---------- Зовнішні (розімкнені) лінії E: хвиля, що йде на випромінювання ----------
+
+    \draw[midarrow, red]  (In) to[bend right] ++(45:4);
+    \draw[midarrow, red]  (In) to[bend left] ++(-45:4);
+    \draw[midarrow, red]  (Out) to[bend left] ++({90+45}:4);
+    \draw[midarrow, red]  (Out) to[bend right] ++({-90-45}:4);
+
+
+\end{tikzpicture}

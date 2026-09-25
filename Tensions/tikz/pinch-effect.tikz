@@ -1,0 +1,16 @@
+\begin{tikzpicture}[>=Latex, scale=1.2, every node/.style={font=\small}]
+	% плазмовий шнур
+	\draw[fill=orange!20, draw=orange!60!black, thick] (0,-1.8) -- (0,1.8);
+	\draw[fill=orange!20, draw=orange!60!black, thick] (1.2,-1.8) -- (1.2,1.8);
+	\node at (0.6,-2.0) {плазма};
+
+	% колові лінії поля
+	\foreach \y in {-1.2, -0.4, 0.4, 1.2}{
+		\draw[blue!50, thick, -{Latex[length=2mm]}] (0.6,\y) ellipse (0.35 and 0.25);
+	}
+
+	% стрілки тиску до осі
+	\draw[->, ultra thick, red!70!black] (1.1,0) -- (0.7,0);
+	\draw[->, ultra thick, red!70!black] (0.1,0) -- (0.5,0);
+	\node[red!70!black] at (0.6,0.35) {тиск};
+\end{tikzpicture}
