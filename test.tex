@@ -10,15 +10,16 @@
 %  7) EMWaves
 %  8) FileldInDielectrics
 %  9) FileldInMetall
-% 10) MagFieldMedia
-% 11) MagFieldVacuum
-% 12) MaxwellEqns
-% 13) Radiation
-% 14) Relativity
-% 15) SteadyCurrent
-% 16) SteadyEfield
-% 17) Telegraph
-% 18) Waveguides
+% 10) MagEnergy
+% 11) MagFieldMedia
+% 12) MagFieldVacuum
+% 13) MaxwellEqns
+% 14) Radiation
+% 15) Relativity
+% 16) SteadyCurrent
+% 17) SteadyEfield
+% 18) Telegraph
+% 19) Waveguides
 
 \newcommand{\includechapter}[1]{\input{#1/#1}}
 \newcommand{\includetikz}[2]{\input{#1/tikz/#2.tikz}}
@@ -28,23 +29,8 @@
 
 %\includetikz{EMWaves}{total-reflection-geometry}
 
-%\includechapter{SteadyCurrent}
+\includechapter{MagEnergy}
 
-% Адаптовано з ElMagInduction.tex (слайд "Перехідні процеси в колі з індуктивністю", екстраструми при розмиканні)
-\begin{circuitikz}[
-		european resistors,
-		scale=1.25]
-	\draw (0,0) -- (0,1) coordinate (A) -- (0, 2) to[R, l=$R$] (3, 2) -- (3,1) coordinate (A') -- (3,
-	0);
-	\draw (3, 0) to[battery2, l=$\emf$] (1.5, 0) to[opening switch, l=$S$, mirror]  (0, 0);
-	\draw (A) to[L, l={$L$, $r$}] (A');
-\end{circuitikz}
-\begin{tikzpicture}[scale=1.25, >=latex]
-	\draw[->] (0,0) -- ++(2,0) node[below] {$t$};
-	\draw[->] (0,0) -- ++(0,2) node[left] {$I$};
-	\node[left] at (0, 1.6) {$I_0$};
-	\draw[domain=0:1.8, red, thick] plot (\x, {1.6*exp(-1.5*\x)});
-\end{tikzpicture}
 
 
 %%% --------------------------------------------------------
