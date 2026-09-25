@@ -1,0 +1,26 @@
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.9\textwidth, height=6.5cm,
+    xlabel={$z/\lambda$},
+    ylabel={$u(z,t)$},
+    domain=0:1.5,
+    samples=400,
+    legend style={at={(0.5,-0.3)}, anchor=north, legend columns=-1, font=\small},
+    grid=both,
+    minor tick num=1,
+    thick,
+    every axis plot/.append style={very thick}
+]
+% Падаюча хвиля (V+ = 1)
+\addplot[blue] {cos(deg(2*pi*x))};
+\addlegendentry{$|V^+|\cos(\omega t - \beta z)$}
+
+% Відбита хвиля (|V-| = 0.6, зсув фази pi)
+\addplot[red, dashed] {0.6*cos(deg(2*pi*x) + 180)};
+\addlegendentry{$|V^-|\cos(\omega t + \beta z + \pi)$}
+
+% Сумарна напруга — стояча хвиля
+\addplot[black] {cos(deg(2*pi*x)) + 0.6*cos(deg(2*pi*x) + 180)};
+\addlegendentry{$u(z,t)$ — сумарна}
+\end{axis}
+\end{tikzpicture}

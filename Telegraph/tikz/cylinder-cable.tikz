@@ -1,0 +1,51 @@
+\begin{tikzpicture}[scale=1.3, >=latex]
+	% --- СТИЛІ ЛІНІЙ ПОЛЯ ---
+	\tikzset{
+		Eline/.style={->, >=stealth, red!75!black, thick},
+		Hline/.style={blue!80!black, thick, dashed},
+		Harrow/.style={->, >=stealth, blue!80!black, solid, thick}
+	}
+
+	% --- ПРОВІДНИКИ ТА ДІЕЛЕКТРИК ---
+	% Заповнення діелектрика між жилою та екраном
+	\fill[gray!10] (0,0) circle (2.2);
+
+	% Внутрішній провідник (жила)
+	\fill[gray!30] (0,0) circle (0.6);
+	\draw[thick] (0,0) circle (0.6);
+
+	% Зовнішній провідник (екран)
+	\fill[gray!35, even odd rule] (0,0) circle (2.5) (0,0) circle (2.2);
+	\draw[thick] (0,0) circle (2.2);
+	\draw[thick] (0,0) circle (2.5);
+
+	% --- СТРУМИ В ПРОВІДНИКАХ ---
+	% Струм "до спостерігача" у внутрішній жилі (\odot)
+	\fill (0,0) circle (2pt);
+	\draw (0,0) circle (5pt);
+
+	% Струм "від спостерігача" у зовнішньому екрані (\otimes)
+	\foreach \angle in {30, 75, 120, 165, 210, 255, 300, 345} {
+		\node at (\angle:2.35) {\tiny $\times$};
+	}
+
+	% --- ЛІНІЇ ЕЛЕКТРИЧНОГО ПОЛЯ \Efield (РАДІАЛЬНІ) ---
+	\foreach \angle in {0, 45, 90, 135, 180, 225, 270, 315} {
+		\draw[Eline] (\angle:0.6) -- (\angle:2.18);
+	}
+	\node[red!75!black, above right] at (50:1.4) {$\Efield$};
+
+	% --- ЛІНІЇ МАГНІТНОГО ПОЛЯ \Hfield (КОНЦЕНТРИЧНІ КОЛА) ---
+	\foreach \r in {1.1, 1.75} {
+		\draw[Hline] (0,0) circle (\r);
+		% Стрілки напрямку магнітного поля (за правилом свердлика / правої руки)
+		\draw[Harrow] (80:\r) arc (80:95:\r);
+		\draw[Harrow] (260:\r) arc (260:275:\r);
+	}
+	\node[blue!80!black, above left] at (140:1.1) {$\Hfield$};
+
+	% --- ПОЗНАЧЕННЯ РАДІУСІВ a та b ---
+	\draw[<->, >=stealth, semithick] (0,0) -- (-35:0.6) node[midway, below left] {\small $a$};
+	\draw[<->, >=stealth, semithick] (0,0) -- (-35:2.2) node[midway, above right] {\small $b$};
+
+	\end{tikzpicture}

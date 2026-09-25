@@ -1,0 +1,24 @@
+\begin{tikzpicture}[>=Latex, scale=1.5, every node/.style={font=\small}]
+	% однорідне поле
+	\foreach \y in {-1.8, -1.4, ...,1.8}{
+		\draw[red!25, thick, -{Latex[length=2mm]}] (-2.4,\y) -- (2.1,\y);
+	}
+	\node[red!55] at (2.1,1.8) {$\Efield$};
+
+	\coordinate (O) at (0,0);
+	\draw[black, fill=blue!50, opacity=0.5, rotate around={-25:(O)}] (O) circle(0.25 and 0.5);
+
+	\coordinate (N) at (-25:1);
+	\draw[->, very thick] (O) -- (N);
+	\node[above=1pt] at (N) {$\vect n$};
+
+	\coordinate (F) at (-55:{2/cos((-55+25))});
+	\draw[->, ultra thick, red!70!black] (O) -- (F)
+		node[below right, red!70!black] {$d\vect F=\hat T\,\vect n\,dS$};
+
+	\coordinate (Q) at (-25:2);
+	\draw[dashed] (O) -- (Q) node[pos=0.9, above] {$dF_n$};
+	\draw[dashed] (Q) -- (F) node[midway, right=2pt] {$dF_t$};
+
+	\fill (O) circle (1.1pt);
+\end{tikzpicture}

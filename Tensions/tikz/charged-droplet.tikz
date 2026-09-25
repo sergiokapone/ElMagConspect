@@ -1,0 +1,17 @@
+\begin{tikzpicture}[>=Latex, scale=1.2, every node/.style={font=\small}]
+	% крапля
+	\shade[ball color=blue!40] (0,0) circle (1.0);
+	\node at (0,0) {$+Q$};
+
+	% радіальні силові лінії
+	\foreach \a in {0,30,...,330}{
+		\draw[red!50, thick, -{Latex[length=2mm]}] (\a:1.0) -- (\a:2.0);
+	}
+	\node[red!60] at (2.1,0) {$\Efield$};
+
+	% тиск назовні
+	\foreach \a in {45,135,225,315}{
+		\draw[->, ultra thick, orange!85!black] (\a:0.9) -- (\a:1.4);
+	}
+	\node[orange!85!black] at (1.5,1.5) {тиск};
+\end{tikzpicture}

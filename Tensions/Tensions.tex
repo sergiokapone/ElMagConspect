@@ -1,30 +1,9 @@
-\documentclass[]{ConspectBook}
-\let\enquote\emph
+% !TeX program = lualatex
+% !TeX encoding = utf8
+% !TeX spellcheck = uk_UA
+% !BIB program = biber
+% !TeX root = ../test.tex
 
-%  1) Charges
-%  2) ChargeSystem
-%  3) EBMotion
-%  4) ElEnergy
-%  5) ElMagInduction
-%  6) EMOscillations
-%  7) EMWaves
-%  8) FileldInDielectrics
-%  9) FileldInMetall
-% 10) MagFieldMedia
-% 11) MagFieldVacuum
-% 12) MaxwellEqns
-% 13) Radiation
-% 14) Relativity
-% 15) SteadyCurrent
-% 16) SteadyEfield
-% 17) Telegraph
-% 18) Waveguides
-
-\newcommand{\includechapter}[1]{\input{#1/#1}}
-\newcommand{\includetikz}[2]{\input{#1/tikz/#2.tikz}}
-
-
-\begin{document}
 
 %% ==========================================================
 %% Вставити після рядка 541 (після Attention "...дротах, так само, як вода тече по трубі.")
@@ -59,7 +38,7 @@
 напрям і характер механічних сил у полі, не обчислюючи їх явно} --- досить подивитися на орієнтацію силових ліній відносно поверхні.
 
 \begin{figure}[h!]\centering
-%	\localinput{field-lines-tension.tikz}
+	\localinput{field-lines-tension.tikz}
 	\caption{Силові лінії поля як пружні нитки: уздовж лінії --- натяг (нитка прагне скоротитися), між сусідніми паралельними
 		лініями --- бічний тиск (нитки взаємно відштовхуються)\label{pic:FieldLinesTension}}
 \end{figure}
@@ -76,43 +55,124 @@
 Щоб описати силу на площадку довільної орієнтації, натяг і тиск зручно об'єднати в один об'єкт --- \emphx{тензор натягів Максвелла}. Для
 площадки з одиничною нормаллю $\vect n$ сила, що діє на неї з боку поля (рис.~\ref{pic:StressElement}),
 \begin{equation}\label{eq:StressDefinition}
-	d\vect F = \hat{T}\,\vect n\, dS,
+	d\vect F = \hat{T}\cdot d\vect S, \qquad d\vect S = \vect n\,dS,
 \end{equation}
-де $\hat{T}$ --- тензор другого рангу; для електричного поля
+де $\hat{T}$ --- тензор другого рангу, а крапка позначає згортку тензора з вектором за одним індексом:
+\begin{equation}\label{eq:StressComponent}
+	dF_i = \sum_k T_{ik}\,dS_k.
+\end{equation}
+
+Для електричного поля компоненти тензора натягів дорівнюють
 \begin{equation}\label{eq:MaxwellStressTensor}
 	\tcbhighmath{
 		T_{ik} = \frac{\epsilon}{4\pi}\left(E_iE_k - \frac12\delta_{ik}E^2\right),
 	}
 \end{equation}
-а для магнітного (заміною $\Efield\to\Hfield$, $\epsilon\to\mu$) ---
+а для магнітного (заміною $\Efield\to\Hfield$, $\epsilon\to1/\mu$) ---
 \begin{equation}\label{eq:MaxwellStressTensorB}
 	\tcbhighmath{
 		T_{ik} = \frac{1}{4\pi\mu}\left(H_iH_k - \frac12\delta_{ik}H^2\right).
 	}
 \end{equation}
 
+У матричному вигляді для електричного поля:
+\begin{equation}\label{eq:MaxwellStressTensorMatrix}
+	\hat{T}_E =
+	\frac{\epsilon}{4\pi}
+	\begin{pmatrix}
+		\dfrac{E_x^2 - E_y^2 - E_z^2}{2} & E_xE_y & E_xE_z \\[2mm]
+		E_yE_x & \dfrac{E_y^2 - E_x^2 - E_z^2}{2} & E_yE_z \\[2mm]
+		E_zE_x & E_zE_y & \dfrac{E_z^2 - E_x^2 - E_y^2}{2}
+	\end{pmatrix},
+\end{equation}
+а для магнітного:
+\begin{equation}\label{eq:MaxwellStressTensorBMatrix}
+	\hat{T}_H =
+	\frac{1}{4\pi\mu}
+	\begin{pmatrix}
+		\dfrac{H_x^2 - H_y^2 - H_z^2}{2} & H_xH_y & H_xH_z \\[2mm]
+		H_yH_x & \dfrac{H_y^2 - H_x^2 - H_z^2}{2} & H_yH_z \\[2mm]
+		H_zH_x & H_zH_y & \dfrac{H_z^2 - H_x^2 - H_y^2}{2}
+	\end{pmatrix}.
+\end{equation}
+
+Слід тензора дорівнює взятій зі знаком мінус густині енергії відповідного поля:
+\begin{equation}\label{eq:StressTrace}
+	\operatorname{Tr}\hat{T}_E = T_{xx}+T_{yy}+T_{zz} = -\frac{\epsilon E^2}{8\pi} = -w_E,
+	\qquad
+	\operatorname{Tr}\hat{T}_H = -\frac{H^2}{8\pi\mu} = -w_H.
+\end{equation}
+
 \begin{figure}[h!]\centering
-%	\localinput{stress-element.tikz}
-	\caption{Довільно орієнтований майданчик $dS$ з нормаллю $\vect n$ у полі: результуюча сила $d\vect F=\hat T\vect n\,dS$ в
+	\localinput{stress-element.tikz}
+	\caption{Довільно орієнтований майданчик $dS$ з нормаллю $\vect n$ у полі: результуюча сила $d\vect F=\hat T\cdot d\vect S$ в
 		загальному випадку не колінеарна нормалі\label{pic:StressElement}}
 \end{figure}
 
-Переконаймося, що це узгоджується з уже відомим результатом (рис.~\ref{pic:StressDecoding}). Нехай $\Efield=E\vect e_x$. Тоді
-з~\eqref{eq:MaxwellStressTensor}
+\subsection*{Окремий випадок: поле вздовж однієї осі}
+
+Нехай $\Efield=E\vect e_x$ (поле напрямлене вздовж осі $x$). Тоді $E_y=E_z=0$, $E^2=E^2$, і матриця~\eqref{eq:MaxwellStressTensorMatrix}
+набуває діагонального вигляду:
+\begin{equation}\label{eq:StressDiagonal}
+	\hat{T}_E =
+	\begin{pmatrix}
+		+w_E & 0 & 0 \\
+		0 & -w_E & 0 \\
+		0 & 0 & -w_E
+	\end{pmatrix},
+	\qquad w_E = \frac{\epsilon E^2}{8\pi}.
+\end{equation}
+Це наочно демонструє обидва ефекти: компонента $T_{xx}=+w_E$ описує \emphx{натяг уздовж поля}, а компоненти $T_{yy}=T_{zz}=-w_E$ ---
+\emphx{тиск упоперек поля}.
+
+Переконаймося, що це узгоджується з уже відомим результатом (рис.~\ref{pic:StressDecoding}). Для майданчика $\vect n=\vect e_x$
+(перпендикулярного полю) $d\vect S=\vect e_x\,dS$, і
 \begin{equation*}
-	T_{xx} = \frac{\epsilon E^2}{8\pi} = w_E, \qquad T_{yy}=T_{zz}=-\frac{\epsilon E^2}{8\pi}=-w_E,
+	d\vect F = \hat{T}_E\cdot d\vect S =
+	\begin{pmatrix}
+		+w_E & 0 & 0 \\
+		0 & -w_E & 0 \\
+		0 & 0 & -w_E
+	\end{pmatrix}
+	\begin{pmatrix}
+		dS \\ 0 \\ 0
+	\end{pmatrix}
+	= +w_E\,dS\,\vect e_x
 \end{equation*}
-а недіагональні компоненти дорівнюють нулю. Для майданчика $\vect n=\vect e_x$ (перпендикулярного полю) сила
-$d\vect F=T_{xx}\vect e_x\,dS=+w_E\vect e_x\,dS$ напрямлена вздовж поля --- це натяг, який тягне обкладки конденсатора
-(гл.~\ref{ElEnergy}). Для майданчика $\vect n=\vect e_y$ (паралельного полю) сила $d\vect F=T_{yy}\vect e_y\,dS=-w_E\vect e_y\,dS$ напрямлена
-проти нормалі --- це тиск, який розпирає обмотку соленоїда (гл.~\ref{ElMagInduction}). Обидва вже знайомі результати --- лише два окремі
-майданчики одного й того самого тензора, тепер \eqref{eq:MaxwellStressTensor} одразу дає силу для будь-якої орієнтації площадки.
+--- сила напрямлена вздовж поля, це натяг, який тягне обкладки конденсатора (гл.~\ref{ElEnergy}). Для майданчика $\vect n=\vect e_y$
+(паралельного полю) $d\vect S=\vect e_y\,dS$, і
+\begin{equation*}
+	d\vect F = \hat{T}_E\cdot d\vect S =
+	\begin{pmatrix}
+		+w_E & 0 & 0 \\
+		0 & -w_E & 0 \\
+		0 & 0 & -w_E
+	\end{pmatrix}
+	\begin{pmatrix}
+		0 \\ dS \\ 0
+	\end{pmatrix}
+	= -w_E\,dS\,\vect e_y
+\end{equation*}
+--- сила напрямлена проти нормалі, це тиск, який розпирає обмотку соленоїда (гл.~\ref{ElMagInduction}). Обидва вже знайомі результати ---
+лише два окремі майданчики одного й того самого тензора, тепер~\eqref{eq:MaxwellStressTensor} одразу дає силу для будь-якої орієнтації
+площадки.
 
 \begin{figure}[h!]\centering
-%	\localinput{stress-decoding.tikz}
+	\localinput{stress-decoding.tikz}
 	\caption{Однорідне поле вздовж осі $x$: майданчик $\vect n=\vect e_x$ відчуває натяг (сила вздовж поля, всередину), а
 		майданчик $\vect n=\vect e_y$ --- тиск (сила проти нормалі, назовні)\label{pic:StressDecoding}}
 \end{figure}
+
+\begin{Attention}
+	Якщо присутні обидва поля, повний тензор натягів --- сума $\hat{T}=\hat{T}_E+\hat{T}_H$. У матричному вигляді це означає, що
+	відповідні компоненти просто додаються:
+	\begin{equation*}
+		T_{ik} = \frac{\epsilon}{4\pi}\left(E_iE_k - \frac12\delta_{ik}E^2\right)
+		+ \frac{1}{4\pi\mu}\left(H_iH_k - \frac12\delta_{ik}H^2\right).
+	\end{equation*}
+	Для однорідних полів, напрямлених вздовж однієї осі, діагональні компоненти повного тензора дорівнюють $+w_E+w_H$ (уздовж спільного
+	напрямку) і $-(w_E+w_H)$ (упоперек).
+\end{Attention}
 
 \subsection*{Приклад: прямий провідник в однорідному магнітному полі}
 
@@ -123,7 +183,7 @@ $d\vect F=T_{xx}\vect e_x\,dS=+w_E\vect e_x\,dS$ напрямлена вздов
 \emphx{назустріч} одна одній, частково компенсуючись, --- і сумарне поле там \emphx{розріджується}.
 
 \begin{figure}[h!]\centering
-%	\localinput{wire-in-uniform-field.tikz}
+	\localinput{wire-in-uniform-field.tikz}
 	\caption{Прямий провідник зі струмом в однорідному магнітному полі: складання власного поля струму (концентричні кола) з
 		однорідним полем $\Hfield_0$ дає згущення ліній з одного боку провідника й розрідження --- з іншого\label{pic:WireInField}}
 \end{figure}
@@ -143,7 +203,7 @@ $d\vect F=T_{xx}\vect e_x\,dS=+w_E\vect e_x\,dS$ напрямлена вздов
 це означає \emphx{тиск, спрямований до осі шнура}: поле стискає плазму, немов обруч.
 
 \begin{figure}[h!]\centering
-%	\localinput{pinch-effect.tikz}
+	\localinput{pinch-effect.tikz}
 	\caption{Пінч-ефект: колові силові лінії магнітного поля навколо струму в плазмовому шнурі створюють тиск, спрямований
 		до осі шнура\label{pic:PinchEffect}}
 \end{figure}
@@ -164,7 +224,7 @@ $d\vect F=T_{xx}\vect e_x\,dS=+w_E\vect e_x\,dS$ напрямлена вздов
 штовхає поверхню назовні, \enquote{роздуваючи} краплю.
 
 \begin{figure}[h!]\centering
-%	\localinput{charged-droplet.tikz}
+	\localinput{charged-droplet.tikz}
 	\caption{Заряджена крапля: радіальні силові лінії створюють тиск, спрямований назовні, якому протидіє поверхневий
 		натяг рідини\label{pic:ChargedDroplet}}
 \end{figure}
@@ -182,6 +242,3 @@ $d\vect F=T_{xx}\vect e_x\,dS=+w_E\vect e_x\,dS$ напрямлена вздов
 	на все, крізь що проходить. Коли пізніше ми дійдемо до електромагнітних хвиль, побачимо, що й тиск хвилі при її поглинанні речовиною --- не
 	окремий ефект, а той самий натяг поля, який хвиля \enquote{несе} з собою.
 \end{Attention}
-
-\end{document}
-
