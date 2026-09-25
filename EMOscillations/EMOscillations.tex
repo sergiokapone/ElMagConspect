@@ -57,7 +57,7 @@
 облік цього елемента кола в лівій частині рівності вже не
 потрібен. Будемо вважати також, що весь опір кола об'єднано в
 один елемент $R$. Виберемо за додатний напрямок обходу контуру
-той, що вказано на рис.~\ref{tikz:LCR_circuit} для струму $J$.
+той, що вказано на рис.~\ref{tikz:LCR_circuit} для струму $I$.
 
 \begin{figure}[h!]
 	\centering
@@ -78,7 +78,7 @@
 		\draw[] (C) to[R, l_=$R$] (D);
 
 		\draw[->, >=latex] ($(C)!0.325!(D) + (0,-0.5)$) -- ($(C)!0.675!(D) + (0,-0.5)$)
-		node[midway, below] {$J$};
+		node[midway, below] {$I$};
 
 		\draw (D) to[C, l_=$C$] (A);
 
@@ -116,13 +116,13 @@
 
 Розглянемо ділянку контуру 23. На цій ділянці з не врахованих
 раніше елементів присутні тільки провідники з опором $R$, тому
-\begin{equation}\label{eq:JR}
-	\int\limits_{(23)} E_l \, dl = JR.
+\begin{equation}\label{eq:IR}
+	\int\limits_{(23)} E_l \, dl = IR.
 \end{equation}
 
 Ділянка контуру 34 містить конденсатор. Вважаємо, що на верхній
 пластині є заряд $(+q)$, а на нижній $(-q)$. Тоді струм у додатному
-напрямку пов'язаний із зарядом $q$ співвідношенням $J = dq/dt$ і
+напрямку пов'язаний із зарядом $q$ співвідношенням $I = dq/dt$ і
 відповідає заряджанню верхньої пластини конденсатора. За означенням
 напруга на конденсаторі є $V = \varphi_3 - \varphi_4$. З урахуванням цього маємо
 \begin{equation}\label{eq:capacitor_voltage}
@@ -132,13 +132,13 @@
 
 З урахуванням сказаного отримуємо
 \begin{equation}\label{eq:circuit_equation_raw}
-	-\emf + JR + \frac{q}{C} = -\frac{d\Phi}{dt}.
+	-\emf + IR + \frac{q}{C} = -\frac{d\Phi}{dt}.
 \end{equation}
 Перепишемо це рівняння, маючи на увазі зв'язок магнітного потоку і струму
-$\Phi = LJ$:
+$\Phi = LI$:
 \begin{equation}\label{eq:circuit_equation}
 	\tcbhighmath{
-		L\frac{dJ}{dt} + JR + \frac{q}{C} = \emf.
+		L\frac{dI}{dt} + IR + \frac{q}{C} = \emf.
 	}
 \end{equation}
 
@@ -149,13 +149,13 @@ $\Phi = LJ$:
 Нехай у замкненому колі, показаному на рис.~\ref{tikz:LCR_circuit}, відсутнє
 джерело ЕРС. Тоді рівняння \eqref{eq:circuit_equation} набирає вигляду
 \begin{equation}\label{eq:free_oscillation_raw}
-	L\frac{dJ}{dt} + JR + \frac{q}{C} = 0.
+	L\frac{dI}{dt} + IR + \frac{q}{C} = 0.
 \end{equation}
 Введемо позначення
 \begin{equation}\label{eq:definitions}
 	2\gamma = \frac{R}{L}, \qquad \omega_0^2 = \frac{1}{LC}
 \end{equation}
-і врахуємо, що $J = dq/dt$. Тоді отримаємо таке рівняння:
+і врахуємо, що $I = dq/dt$. Тоді отримаємо таке рівняння:
 \begin{equation}\label{eq:free_oscillation}
 	\tcbhighmath{
 		\ddot{q} + 2\gamma\dot{q} + \omega_0^2 q = 0.
@@ -325,17 +325,17 @@ $\Phi = LJ$:
 	\dot{q}\ddot{q} = \frac{d}{dt}\left(\frac{1}{2}\dot{q}^2\right), \qquad
 	\dot{q}q = \frac{d}{dt}\left(\frac{1}{2}q^2\right).
 \end{equation}
-Оскільки $\dot{q} = J$, то отримуємо рівність
+Оскільки $\dot{q} = I$, то отримуємо рівність
 \begin{equation}\label{eq:energy_balance}
 	\tcbhighmath{
-		\frac{d}{dt}\left(\frac{LJ^2}{2} + \frac{q^2}{2C}\right) = -RJ^2.
+		\frac{d}{dt}\left(\frac{LI^2}{2} + \frac{q^2}{2C}\right) = -RI^2.
 	}
 \end{equation}
 Величина в дужках
 \begin{equation}\label{eq:total_energy}
-	W = W_L + W_C, \qquad W_L = \frac{LJ^2}{2}, \qquad W_C = \frac{q^2}{2C}
+	W = W_L + W_C, \qquad W_L = \frac{LI^2}{2}, \qquad W_C = \frac{q^2}{2C}
 \end{equation}
-є повна енергія контуру, запасена в котушці індуктивності ($W_L$) і в конденсаторі ($W_C$). Доданок у правій частині рівності ($-N = -RJ^2$) описує, згідно із законом Джоуля---Ленца, втрати енергії. Таким чином, отримуємо
+є повна енергія контуру, запасена в котушці індуктивності ($W_L$) і в конденсаторі ($W_C$). Доданок у правій частині рівності ($-N = -RI^2$) описує, згідно із законом Джоуля---Ленца, втрати енергії. Таким чином, отримуємо
 \begin{equation}\label{eq:energy_loss}
 	\tcbhighmath{
 		\frac{dW}{dt} = -N.
@@ -351,12 +351,12 @@ $N = 0$, і енергія зберігається. При цьому заря�
 колі змінюються за законом
 \begin{equation}\label{eq:lossless_oscillations}
 	q(t) = q_0 \cos(\omega_0 t), \qquad
-	J(t) = \dot{q}(t) = -J_0 \sin(\omega_0 t) = J_0 \cos\left(\omega_0 t + \frac{\pi}{2}\right),
+	I(t) = \dot{q}(t) = -I_0 \sin(\omega_0 t) = I_0 \cos\left(\omega_0 t + \frac{\pi}{2}\right),
 \end{equation}
-де введена амплітуда струму $J_0 = \omega_0 q_0$. Звідси видно, що фази $q(t)$ і
-$J(t)$ зсунуті на $\pi/2$. Відповідно для доданків в енергії знаходимо:
+де введена амплітуда струму $I_0 = \omega_0 q_0$. Звідси видно, що фази $q(t)$ і
+$I(t)$ зсунуті на $\pi/2$. Відповідно для доданків в енергії знаходимо:
 \begin{equation}\label{eq:WL_WC_oscillations}
-	W_L = \frac{LJ^2}{2} = \frac{LJ_0^2}{2} \cos^2\left(\omega_0 t + \frac{\pi}{2}\right) = \frac{LJ_0^2}{2} \frac{1 - \cos(2\omega_0 t)}{2},
+	W_L = \frac{LI^2}{2} = \frac{LI_0^2}{2} \cos^2\left(\omega_0 t + \frac{\pi}{2}\right) = \frac{LI_0^2}{2} \frac{1 - \cos(2\omega_0 t)}{2},
 \end{equation}
 \begin{equation}\label{eq:WC_oscillations}
 	W_C = \frac{q^2}{2C} = \frac{q_0^2}{2C} \cos^2(\omega_0 t) = \frac{q_0^2}{2C} \frac{1 + \cos(2\omega_0 t)}{2}.
@@ -364,19 +364,19 @@ $J(t)$ зсунуті на $\pi/2$. Відповідно для доданків
 Очевидно, що
 \begin{equation}\label{eq:energy_conservation}
 	\tcbhighmath{
-		W_L + W_C = \frac{LJ^2}{2} + \frac{q^2}{2C} = \frac{LJ_0^2}{2} + \frac{q_0^2}{2C} = \const.
+		W_L + W_C = \frac{LI^2}{2} + \frac{q^2}{2C} = \frac{LI_0^2}{2} + \frac{q_0^2}{2C} = \const.
 	}
 \end{equation}
-Крім того, в силу співвідношень $J_0 = \omega_0 q_0$, $\omega_0^2 = 1/LC$ отримуємо
+Крім того, в силу співвідношень $I_0 = \omega_0 q_0$, $\omega_0^2 = 1/LC$ отримуємо
 \begin{equation}\label{eq:energy_amplitudes}
-	W_L^{(0)} = \frac{LJ_0^2}{2} = \frac{L\omega_0^2}{2} q_0^2 = \frac{q_0^2}{2C} = W_C^{(0)}.
+	W_L^{(0)} = \frac{LI_0^2}{2} = \frac{L\omega_0^2}{2} q_0^2 = \frac{q_0^2}{2C} = W_C^{(0)}.
 \end{equation}
 Таким чином, запаси енергії в котушці індуктивності і в конденсаторі здійснюють коливання з однаковою амплітудою, але в протифазі,
 причому періодично відбувається повне перекачування енергії з індуктивності в ємність і назад.
 
 Якщо контур неідеальний ($R \neq 0$), то енергія втрачається. Максимальна швидкість втрат досягається в ті моменти, коли струм у колі
 максимальний, оскільки в ці моменти максимальні джоулеві втрати
-($N = RJ^2$).
+($N = RI^2$).
 
 %% --------------------------------------------------------
 \subsection*{Характеристики згасаючих коливань}
@@ -907,13 +907,13 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 \subsection*{Закон Ома в комплексній формі. Імпеданс}
 %% --------------------------------------------------------
 
-У попередньому розділі ми знайшли комплексну амплітуду напруги на конденсаторі~\eqref{eq:V0_frequency_response}. Тепер нас цікавить не напруга, а струм у колі. Оскільки $J = \dot{q}$ і $V = q/C$, комплексні амплітуди цих величин пов'язані співвідношенням
-\begin{equation}\label{eq:J_from_V}
-	\hat{J}_0 = i\omega C \hat{V}_0.
+У попередньому розділі ми знайшли комплексну амплітуду напруги на конденсаторі~\eqref{eq:V0_frequency_response}. Тепер нас цікавить не напруга, а струм у колі. Оскільки $I = \dot{q}$ і $V = q/C$, комплексні амплітуди цих величин пов'язані співвідношенням
+\begin{equation}\label{eq:I_from_V}
+	\hat{I}_0 = i\omega C \hat{V}_0.
 \end{equation}
 Підставляючи сюди \eqref{eq:V0_frequency_response} і враховуючи, що $\omega_0^2 = 1/(LC)$, отримуємо
-\begin{equation}\label{eq:J0_explicit}
-	\hat{J}_0 = \frac{i\omega / L}{\omega_0^2 - \omega^2 + 2i\gamma\omega}\emf_0.
+\begin{equation}\label{eq:I0_explicit}
+	\hat{I}_0 = \frac{i\omega / L}{\omega_0^2 - \omega^2 + 2i\gamma\omega}\emf_0.
 \end{equation}
 Перепишемо знаменник у вигляді
 \begin{equation}\label{eq:denominator_impedance}
@@ -922,7 +922,7 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 що легко перевірити розкриттям дужок. Тоді
 \begin{equation}\label{eq:Ohm_complex_derived}
 	\tcbhighmath{
-		\hat{J}_0 = \frac{\emf_0}{R + i\left(\omega L - \dfrac{1}{\omega C}\right)}.
+		\hat{I}_0 = \frac{\emf_0}{R + i\left(\omega L - \dfrac{1}{\omega C}\right)}.
 	}
 \end{equation}
 Отже, комплексна амплітуда струму пов'язана з комплексною амплітудою ЕРС тим самим співвідношенням, що й у законі Ома для постійного струму, --- але замість активного опору $R$ тут стоїть величина
@@ -934,7 +934,7 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 яка називається \emphx{імпедансом}\footnote{Імпеданс --- від англ. \emph{impede} --- метати, перешкоджати.}, або \emphx{комплексним опором}, електричного кола. У компактному вигляді отримане співвідношення записують як
 \begin{equation}\label{eq:Ohm_complex}
 	\tcbhighmath{
-		\hat{J}_0 Z = \emf_0,
+		\hat{I}_0 Z = \emf_0,
 	}
 \end{equation}
 і називають \emphx{законом Ома в комплексній формі}: комплексна амплітуда струму дорівнює комплексній амплітуді ЕРС, поділеній на імпеданс. Це той самий закон Ома, що й для постійного струму, лише записаний для комплексних амплітуд гармонічних величин.
@@ -958,7 +958,7 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 %		\draw[fill=green!50!black] (C) to[R, l_=$R$, color=green!50!black] (D);
 %
 %		\draw[->, >=latex] ($(C)!0.325!(D) + (0,-0.5)$) -- ($(C)!0.675!(D) + (0,-0.5)$)
-%		node[midway, below] {$J$};
+%		node[midway, below] {$I$};
 %
 %		\draw (D) to[C, l_=$C$, color=red] (A);
 %
@@ -989,13 +989,13 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 \end{equation}
 Це співвідношення за формою повністю збігається з правилом складання опорів для послідовного кола постійного струму: там теж $R = R_1 + R_2 + \dots$. Різниця лише в тому, що тепер опори --- комплексні величини, і замість простого додавання дійсних чисел доводиться додавати комплексні, враховуючи їхні фази. Саме в цьому й полягає основна зручність методу комплексних амплітуд: усі правила для кіл постійного струму зберігають свою форму, якщо замінити $R$ на $Z$.
 
-Запишемо струм у вигляді $J = J_0 e^{i\omega t}$ і помножимо його на імпеданс кожного елемента:
+Запишемо струм у вигляді $I = I_0 e^{i\omega t}$ і помножимо його на імпеданс кожного елемента:
 \begin{align}
-	U_R &= R J_0 e^{i\omega t}, \label{eq:UR_phase} \\[4pt]
-	U_C &= -\frac{i}{\omega C} J_0 e^{i\omega t}
-	      = \frac{J_0}{\omega C} e^{i(\omega t - \pi/2)}, \label{eq:UC_phase} \\[4pt]
-	U_L &= i\omega L J_0 e^{i\omega t}
-	      = \omega L J_0 e^{i(\omega t + \pi/2)}. \label{eq:UL_phase}
+	U_R &= R I_0 e^{i\omega t}, \label{eq:UR_phase} \\[4pt]
+	U_C &= -\frac{i}{\omega C} I_0 e^{i\omega t}
+	      = \frac{I_0}{\omega C} e^{i(\omega t - \pi/2)}, \label{eq:UC_phase} \\[4pt]
+	U_L &= i\omega L I_0 e^{i\omega t}
+	      = \omega L I_0 e^{i(\omega t + \pi/2)}. \label{eq:UL_phase}
 \end{align}
 Звідси видно, що напруга на резисторі збігається за фазою зі струмом, на конденсаторі --- відстає на $\pi/2$, а на котушці --- випереджає на $\pi/2$. Множення на $i$ у комплексній площині означає поворот на $+\pi/2$, а на $-i$ --- на $-\pi/2$; саме тому реактивні елементи зсувають фазу, а активний --- ні.
 
@@ -1003,9 +1003,9 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 
 Комплексні амплітуди можна зображати векторами на комплексній площині. Тоді додавання струмів і напруг стає додаванням векторів, а закон Ома \eqref{eq:Ohm_complex} --- твердженням про їхню \emphx{векторну} суму. Така побудова називається \emphx{векторною діаграмою}.
 
-На рис.~\ref{tikz:vector_diagram_full} показано векторну діаграму для послідовного $LCR$-контуру. Вектор струму $J$ напрямлений уздовж дійсної осі; доданки $RJ$, $i\omega L J$ і $-iJ/(\omega C)$ утворюють прямокутний трикутник, гіпотенуза якого дорівнює вектору ЕРС $\emf$. З діаграми відразу видно, що
+На рис.~\ref{tikz:vector_diagram_full} показано векторну діаграму для послідовного $LCR$-контуру. Вектор струму $I$ напрямлений уздовж дійсної осі; доданки $RI$, $i\omega L I$ і $-iI/(\omega C)$ утворюють прямокутний трикутник, гіпотенуза якого дорівнює вектору ЕРС $\emf$. З діаграми відразу видно, що
 \[
-	\emf_0^2 = R^2 J_0^2 + \left(\omega L - \frac{1}{\omega C}\right)^2 J_0^2,
+	\emf_0^2 = R^2 I_0^2 + \left(\omega L - \frac{1}{\omega C}\right)^2 I_0^2,
 \]
 --- тобто векторна діаграма дає той самий результат, що й алгебраїчний підхід, але без обчислень. Саме тому нею зручно користуватися для швидкої якісної оцінки: вона показує, як співвідносяться між собою напруги на елементах і як зсунуті їхні фази.
 
@@ -1028,13 +1028,13 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
             \draw[->] (-0.5,0) -- (\uR + 1.2, 0);
             \draw[->] (0, -\uC - 0.5) -- (0, \uL + 0.6);
 
-            \draw[red, ->, thick] (O2) -- (UL_OY) node[left=2pt] {$i\omega L J$};
+            \draw[red, ->, thick] (O2) -- (UL_OY) node[left=2pt] {$i\omega L I$};
 
-            \draw[blue, ->, thick] (O2) -- (UC_OY) node[left=2pt] {$-i \frac{J}{\omega C}$};
+            \draw[blue, ->, thick] (O2) -- (UC_OY) node[left=2pt] {$-i \frac{I}{\omega C}$};
 
-            \draw[red, ->, thick] (O2) -- (A) node[midway, below=2pt] {$RJ$};
+            \draw[red, ->, thick] (O2) -- (A) node[midway, below=2pt] {$RI$};
 
-            \draw[green!50!black, ->, thick] (A) -- (C) node[right=2pt] {$i\left(\omega L - \frac{1}{\omega C}\right)J$};
+            \draw[green!50!black, ->, thick] (A) -- (C) node[right=2pt] {$i\left(\omega L - \frac{1}{\omega C}\right)I$};
 
             \draw[purple, ->, ultra thick] (O2) -- (C) node[midway, above left] {$\mathcal{E}$};
 
@@ -1053,82 +1053,82 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 %% --------------------------------------------------------
 
 Відповідно до закону Джоуля-Ленца (в інтегральній формі)
-потужність, що розсіюється струмом у провідному середовищі, рівна $Q = \emf J$. У
+потужність, що розсіюється струмом у провідному середовищі, рівна $Q = \emf I$. У
 випадку змінних періодично змінюваних струмів і напруг
 інтерес представляє середнє значення потужності за період коливань:
 \begin{equation}\label{eq:average_power}
-	\overline{Q} = \overline{\emf J} = \frac{1}{T}\int\limits_{t}^{t+T} \emf(t_1)J(t_1) \, dt_1.
+	\overline{Q} = \overline{\emf I} = \frac{1}{T}\int\limits_{t}^{t+T} \emf(t_1)I(t_1) \, dt_1.
 \end{equation}
 У цю формулу входять дійсні величини. Тому користуватися
 комплексним представленням слід більш обережно. Покладемо
 \begin{equation}\label{eq:real_parts}
 	\emf(t) = \frac{1}{2}\left(\hat{\emf}(t) + \hat{\emf}^*(t)\right), \qquad
-	J(t) = \frac{1}{2}\left(\hat{J}(t) + \hat{J}^*(t)\right).
+	I(t) = \frac{1}{2}\left(\hat{I}(t) + \hat{I}^*(t)\right).
 \end{equation}
 Звідси знаходимо
 \begin{equation}\label{eq:product_expansion}
 	\begin{aligned}
-		\emf(t)J(t) & = \frac{1}{4}\left(\hat{\emf}(t) + \hat{\emf}^*(t)\right)\left(\hat{J}(t) + \hat{J}^*(t)\right) =                                         \\
-		            & = \frac{1}{4}\left[\hat{\emf}(t)\hat{J}(t) + \hat{\emf}^*(t)\hat{J}^*(t) + \hat{\emf}(t)\hat{J}^*(t) + \hat{\emf}^*(t)\hat{J}(t)\right] = \\
-		            & = \frac{1}{2}\operatorname{Re}\left[\hat{\emf}(t)\hat{J}(t) + \hat{\emf}(t)\hat{J}^*(t)\right].
+		\emf(t)I(t) & = \frac{1}{4}\left(\hat{\emf}(t) + \hat{\emf}^*(t)\right)\left(\hat{I}(t) + \hat{I}^*(t)\right) =                                         \\
+		            & = \frac{1}{4}\left[\hat{\emf}(t)\hat{I}(t) + \hat{\emf}^*(t)\hat{I}^*(t) + \hat{\emf}(t)\hat{I}^*(t) + \hat{\emf}^*(t)\hat{I}(t)\right] = \\
+		            & = \frac{1}{2}\operatorname{Re}\left[\hat{\emf}(t)\hat{I}(t) + \hat{\emf}(t)\hat{I}^*(t)\right].
 	\end{aligned}
 \end{equation}
 Для знаходження середнього врахуємо, що
 \begin{equation}\label{eq:complex_amplitudes_time}
 	\hat{\emf}(t) = \emf_0 e^{i\omega t}, \qquad
-	\hat{J}(t) = J_0 e^{i\omega t} e^{i\varphi_0}
+	\hat{I}(t) = I_0 e^{i\omega t} e^{i\varphi_0}
 \end{equation}
-(амплітуди $\emf_0$ і $J_0$ тут вважаються дійсними величинами). Це
-означає, що доданок $\hat{\emf}(t)\hat{J}(t)$ осцилює з частотою $2\omega$ і його середнє
+(амплітуди $\emf_0$ і $I_0$ тут вважаються дійсними величинами). Це
+означає, що доданок $\hat{\emf}(t)\hat{I}(t)$ осцилює з частотою $2\omega$ і його середнє
 значення за період $T = 2\pi/\omega$ рівне нулю:
 \begin{equation}\label{eq:fast_oscillating_term}
-	\overline{\hat{\emf}(t)\hat{J}(t)} = \emf_0 J_0 e^{i\varphi_0} \overline{\exp[2i\omega t]}
-	= \emf_0 J_0 e^{i\varphi_0} \frac{1}{T}\int\limits_{t}^{t+T} \exp[2i\omega t_1] \, dt_1 = 0.
+	\overline{\hat{\emf}(t)\hat{I}(t)} = \emf_0 I_0 e^{i\varphi_0} \overline{\exp[2i\omega t]}
+	= \emf_0 I_0 e^{i\varphi_0} \frac{1}{T}\int\limits_{t}^{t+T} \exp[2i\omega t_1] \, dt_1 = 0.
 \end{equation}
 Аналогічно встановлюється, що
 \begin{equation}\label{eq:conjugate_term}
-	\overline{\hat{\emf}^*(t)\hat{J}^*(t)} = 0.
+	\overline{\hat{\emf}^*(t)\hat{I}^*(t)} = 0.
 \end{equation}
 В результаті з \eqref{eq:average_power} отримуємо
 \begin{equation}\label{eq:average_power_complex}
 	\tcbhighmath{
-		\overline{Q} = \frac{1}{2}\operatorname{Re}\left[\hat{\emf}(t)\hat{J}^*(t)\right].
+		\overline{Q} = \frac{1}{2}\operatorname{Re}\left[\hat{\emf}(t)\hat{I}^*(t)\right].
 	}
 \end{equation}
 З урахуванням зсуву фаз між струмом і ЕРС звідси знаходимо
 \begin{equation}\label{eq:average_power_cos}
 	\tcbhighmath{
-		\overline{Q} = \frac{1}{2}\emf_0 J_0 \operatorname{Re}\left[e^{-i\varphi_0}\right]
-		= \frac{1}{2}\emf_0 J_0 \cos\varphi_0.
+		\overline{Q} = \frac{1}{2}\emf_0 I_0 \operatorname{Re}\left[e^{-i\varphi_0}\right]
+		= \frac{1}{2}\emf_0 I_0 \cos\varphi_0.
 	}
 \end{equation}
 Введемо ефективні значення амплітуд напруги і струму:
 \begin{equation}\label{eq:effective_values}
-	J_{\text{eff}} = \sqrt{\overline{J^2(t)}} = \frac{1}{\sqrt{2}}J_0, \qquad
+	I_{\text{eff}} = \sqrt{\overline{I^2(t)}} = \frac{1}{\sqrt{2}}I_0, \qquad
 	\emf_{\text{eff}} = \sqrt{\overline{\emf^2(t)}} = \frac{1}{\sqrt{2}}\emf_0.
 \end{equation}
 Тоді співвідношення \eqref{eq:average_power_cos} набирає вигляду
 \begin{equation}\label{eq:average_power_effective}
 	\tcbhighmath{
-		\overline{Q} = \emf_{\text{eff}} J_{\text{eff}} \cos\varphi_0.
+		\overline{Q} = \emf_{\text{eff}} I_{\text{eff}} \cos\varphi_0.
 	}
 \end{equation}
 Ця формула показує, що чим більше зсув фаз між струмом і напругою, тим менше розсіювана в опорі потужність. У
-випадку резонансу, коли $\tg\varphi_0 = 0$, споживана потужність максимальна: $\overline{Q} = \emf_{\text{eff}} J_{\text{eff}}$.
+випадку резонансу, коли $\tg\varphi_0 = 0$, споживана потужність максимальна: $\overline{Q} = \emf_{\text{eff}} I_{\text{eff}}$.
 
-Перепишемо співвідношення \eqref{eq:average_power_complex}, враховуючи закон Ома: $\emf = JZ$, а
-також рівності $\operatorname{Re} Z = R$, $|\hat{J}|^2 = J_0^2$:
+Перепишемо співвідношення \eqref{eq:average_power_complex}, враховуючи закон Ома: $\emf = IZ$, а
+також рівності $\operatorname{Re} Z = R$, $|\hat{I}|^2 = I_0^2$:
 \begin{equation}\label{eq:average_power_resistance}
 	\tcbhighmath{
-		\overline{Q} = \frac{1}{2}\operatorname{Re}\left(\hat{\emf}(t)\hat{J}^*(t)\right)
-		= \frac{1}{2}\operatorname{Re}\left(Z|\hat{J}|^2\right)
-		= \frac{1}{2}RJ_0^2 = RJ_{\text{eff}}^2.
+		\overline{Q} = \frac{1}{2}\operatorname{Re}\left(\hat{\emf}(t)\hat{I}^*(t)\right)
+		= \frac{1}{2}\operatorname{Re}\left(Z|\hat{I}|^2\right)
+		= \frac{1}{2}RI_0^2 = RI_{\text{eff}}^2.
 	}
 \end{equation}
 Остання формула показує, що за відсутності активного опору змінний струм роботи не виконує.
 
 \begin{Attention}
-	Формула $\overline{Q} = RJ_{\text{eff}}^2$ --- це, по суті, формула, яка розв'язала долю електричних мереж по всьому світу. Щоб доставити споживачеві задану потужність $P = U_{\text{eff}}J_{\text{eff}}\cos\varphi_0$, можна взяти малу напругу й великий струм, або велику напругу й малий струм --- добуток лишається тим самим. Але втрати в проводах самої лінії залежать не від потужності, а саме від струму: $\overline{Q}_{\text{втрат}} = RJ_{\text{eff}}^2$. Тому, підвищивши напругу вдесятеро при тій самій потужності, ми зменшуємо струм у стільки ж разів, а втрати --- вже в сто разів. Саме на цьому «спіткнулася» постійнострумова мережа Едісона в 1880-х: підняти напругу постійного струму на відстані було технічно нікчемно, тож електростанції доводилося ставити що майже кожні кілька кварталів. Джордж Вестінгауз і Нікола Тесла натомість запропонували систему змінного струму, в якій трансформатор дозволяє підняти напругу практично без втрат. У 1893 році міжнародна комісія, яку очолював лорд Кельвін, обрала саме цю систему для гідроелектростанції на Ніагарському водоспаді, а в 1895--1896 роках станція вже передавала струм на десятки кілометрів --- цю подію й вважають фактичним завершенням «війни струмів» на користь змінного струму. Відтоді магістральні лінії електропередачі (ЛЕП) тримають напругу в сотні кіловольт --- не з надмірності, а через оцю саму формулу $RJ_{\text{eff}}^2$.
+	Формула $\overline{Q} = RI_{\text{eff}}^2$ --- це, по суті, формула, яка розв'язала долю електричних мереж по всьому світу. Щоб доставити споживачеві задану потужність $P = U_{\text{eff}}I_{\text{eff}}\cos\varphi_0$, можна взяти малу напругу й великий струм, або велику напругу й малий струм --- добуток лишається тим самим. Але втрати в проводах самої лінії залежать не від потужності, а саме від струму: $\overline{Q}_{\text{втрат}} = RI_{\text{eff}}^2$. Тому, підвищивши напругу вдесятеро при тій самій потужності, ми зменшуємо струм у стільки ж разів, а втрати --- вже в сто разів. Саме на цьому «спіткнулася» постійнострумова мережа Едісона в 1880-х: підняти напругу постійного струму на відстані було технічно нікчемно, тож електростанції доводилося ставити що майже кожні кілька кварталів. Джордж Вестінгауз і Нікола Тесла натомість запропонували систему змінного струму, в якій трансформатор дозволяє підняти напругу практично без втрат. У 1893 році міжнародна комісія, яку очолював лорд Кельвін, обрала саме цю систему для гідроелектростанції на Ніагарському водоспаді, а в 1895--1896 роках станція вже передавала струм на десятки кілометрів --- цю подію й вважають фактичним завершенням «війни струмів» на користь змінного струму. Відтоді магістральні лінії електропередачі (ЛЕП) тримають напругу в сотні кіловольт --- не з надмірності, а через оцю саму формулу $RI_{\text{eff}}^2$.
 \end{Attention}
 
 %% --------------------------------------------------------
@@ -1139,7 +1139,7 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 
 
 \emphx{Резонансом напруг} називають резонанс у послідовному
-$LCR$-кон\-ту\-рі (рис.~\ref{tikz:LCR_circuit}) при зміні частоти коливань ЕРС. Згідно з \eqref{eq:Ohm_complex_derived} максимум амплітуди струму $J_0(\omega)$ досягається на частоті $\omega = \omega_0 = 1/\sqrt{LC}$ і становить $J_{0,\max} = \emf_0/R$ (рис.~\ref{tikz:current_resonance}). Це випливає з того, що на частоті $\omega_0$ індуктивний і ємнісний імпеданси точно компенсують один одного:
+$LCR$-кон\-ту\-рі (рис.~\ref{tikz:LCR_circuit}) при зміні частоти коливань ЕРС. Згідно з \eqref{eq:Ohm_complex_derived} максимум амплітуди струму $I_0(\omega)$ досягається на частоті $\omega = \omega_0 = 1/\sqrt{LC}$ і становить $I_{0,\max} = \emf_0/R$ (рис.~\ref{tikz:current_resonance}). Це випливає з того, що на частоті $\omega_0$ індуктивний і ємнісний імпеданси точно компенсують один одного:
 \begin{equation}\label{eq:impedance_compensation_2}
 	Z_L + Z_C = \left(i\omega L + \frac{1}{i\omega C}\right)_{\omega = 1/\sqrt{LC}} = 0.
 \end{equation}
@@ -1155,13 +1155,13 @@ $LCR$-кон\-ту\-рі (рис.~\ref{tikz:LCR_circuit}) при зміні ча
         R = 0.25;                                    % Опір
         E0 = 1.0;                                    % Амплітуда ЕРС
         w0 = 1.0 / sqrt(L*C);                        % Резонансна частота
-        Jmax = E0 / R;                               % Максимальний струм при резонансі
-        J0(\w) = E0 / sqrt(R^2 + (\w*L - 1/(\w*C))^2); % Амплітуда струму
+        Imax = E0 / R;                               % Максимальний струм при резонансі
+        I0(\w) = E0 / sqrt(R^2 + (\w*L - 1/(\w*C))^2); % Амплітуда струму
     },
     % --- 2. НАЛАШТУВАННЯ ОСЕЙ ---
     axis lines=center,
     xlabel={$\omega$},
-    ylabel={$J_0$},
+    ylabel={$I_0$},
     x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
     y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
     % Межі графіку
@@ -1180,10 +1180,10 @@ $LCR$-кон\-ту\-рі (рис.~\ref{tikz:LCR_circuit}) при зміні ча
 ]
 
     % --- 3. РЕЗОНАНСНА ЧАСТОТА (штрихова лінія) ---
-    \draw[dashed, thick] (axis cs:{w0}, 0) -- (axis cs:{w0}, {Jmax});
+    \draw[dashed, thick] (axis cs:{w0}, 0) -- (axis cs:{w0}, {Imax});
 
     % --- 4. КРИВА СТРУМУ ---
-    \addplot [red, thick, domain=0.05:2.4] {J0(x)};
+    \addplot [red, thick, domain=0.05:2.4] {I0(x)};
 
 \end{axis}
 \end{tikzpicture}
@@ -1191,9 +1191,9 @@ $LCR$-кон\-ту\-рі (рис.~\ref{tikz:LCR_circuit}) при зміні ча
 	\label{tikz:current_resonance}
 \end{SCfigure}
 
-В результаті імпеданс контуру зводиться до активного опору $R$, тож амплітуда струму досягає максимуму $J_{0,\max} = \emf_0/R$. Напруга на конденсаторі при цьому дорівнює:
+В результаті імпеданс контуру зводиться до активного опору $R$, тож амплітуда струму досягає максимуму $I_{0,\max} = \emf_0/R$. Напруга на конденсаторі при цьому дорівнює:
 \begin{equation*}
-	V_{C,\max} = \frac{J_{0,\max}}{\omega_0 C} = \frac{\emf_0}{\omega_0 C R}.
+	V_{C,\max} = \frac{I_{0,\max}}{\omega_0 C} = \frac{\emf_0}{\omega_0 C R}.
 \end{equation*}
 Враховуючи, що $\omega_0 = 1/\sqrt{LC}$, маємо $\omega_0 C = \sqrt{C/L}$, звідки
 \begin{equation*}
@@ -1227,26 +1227,26 @@ thick]
 
 		\draw (L3) to[L, l=$L$] (R3);
 		\draw[<-, >=latex, thick] ($(L3)!0.82!(R3) + (0, 0.35)$) -- ($(L3)!0.98!(R3) + (0, 0.35)$)
-		node[midway, above] {$J_L$};
+		node[midway, above] {$I_L$};
 
 		\draw (L2) to[C, l=$C$] (R2);
 		\draw[<-, >=latex, thick] ($(L2)!0.82!(R2) + (0, 0.35)$) -- ($(L2)!0.98!(R2) + (0, 0.35)$)
-		node[midway, above] {$J_C$};
+		node[midway, above] {$I_C$};
 
 		\draw (L1) to[R, l=$R$] (R1);
 		\draw[<-, >=latex, thick] ($(L1)!0.82!(R1) + (0, 0.35)$) -- ($(L1)!0.98!(R1) + (0, 0.35)$)
-		node[midway, above] {$J_R$};
+		node[midway, above] {$I_R$};
 
-		\draw (L0) to[isourcesin, sources/symbol/rotate=0, l_=$J(t)$] (R0);
+		\draw (L0) to[isourcesin, sources/symbol/rotate=0, l_=$I(t)$] (R0);
 
 		\draw (L0) -- (L3);
 		\draw (R0) -- (R3);
 
 		\draw[->, >=latex, thick] ($(R0)!0.2!(R1) + (0.35,0)$) -- ($(R0)!0.6!(R1) + (0.35,0)$)
-		node[midway, right] {$J$};
+		node[midway, right] {$I$};
 
 	\end{circuitikz}
-	\caption{Паралельний $LCR$-контур, що включає джерело заданого змінного струму $J(t) = J_0 \cos\omega t$.}
+	\caption{Паралельний $LCR$-контур, що включає джерело заданого змінного струму $I(t) = I_0 \cos\omega t$.}
 	\label{tikz:parallel_circuit}
 \end{SCfigure}
 
@@ -1257,35 +1257,35 @@ thick]
 \end{equation}
 Струм у зовнішній частині кола дорівнює сумі струмів через окремі елементи:
 \begin{equation}\label{eq:current_sum}
-	J = J_R + J_L + J_C.
+	I = I_R + I_L + I_C.
 \end{equation}
 Позначимо напругу, створювану джерелом струму, як $U$. Тоді
 \begin{equation}\label{eq:voltage_current}
-	U = JZ.
+	U = IZ.
 \end{equation}
 Оскільки напруга на всіх паралельно з'єднаних елементах однакова, то
 \begin{equation}\label{eq:branch_currents}
-	J_R = \frac{U}{Z_R} = \frac{U}{R}, \qquad
-	J_L = \frac{U}{Z_L} = \frac{U}{i\omega L}, \qquad
-	J_C = \frac{U}{Z_C} = i\omega C U.
+	I_R = \frac{U}{Z_R} = \frac{U}{R}, \qquad
+	I_L = \frac{U}{Z_L} = \frac{U}{i\omega L}, \qquad
+	I_C = \frac{U}{Z_C} = i\omega C U.
 \end{equation}
 З урахуванням \eqref{eq:voltage_current} перепишемо ці вирази у вигляді
 \begin{equation}\label{eq:branch_currents_Z}
-	J_R = J\frac{Z}{R}, \qquad
-	J_L = J\frac{Z}{Z_L}, \qquad
-	J_C = J\frac{Z}{Z_C}.
+	I_R = I\frac{Z}{R}, \qquad
+	I_L = I\frac{Z}{Z_L}, \qquad
+	I_C = I\frac{Z}{Z_C}.
 \end{equation}
 
 Амплітуда струму через активний опір дорівнює
-\begin{equation}\label{eq:JR_amplitude}
-	J_{R_0} = \frac{J_0}{\sqrt{1 + \left(\dfrac{R}{\omega L} - \omega C R\right)^2}}
-	= \frac{J_0}{\sqrt{1 + \dfrac{4\gamma^2}{\omega^2}\left(1 - \dfrac{\omega^2}{\omega_0^2}\right)^2}}.
+\begin{equation}\label{eq:IR_amplitude}
+	I_{R_0} = \frac{I_0}{\sqrt{1 + \left(\dfrac{R}{\omega L} - \omega C R\right)^2}}
+	= \frac{I_0}{\sqrt{1 + \dfrac{4\gamma^2}{\omega^2}\left(1 - \dfrac{\omega^2}{\omega_0^2}\right)^2}}.
 \end{equation}
-Звідси видно, що $J_{R_0}$ має максимум при $\omega = \omega_0$ і становить $(J_{R0})_{\max} = J_0$. Це означає, що на резонансній частоті весь струм від джерела тече тільки через активний опір. Справа в тому, що опір блока з паралельно з'єднаних конденсатора й котушки на цій частоті обертається в нескінченність, і струм через нього не тече.
+Звідси видно, що $I_{R_0}$ має максимум при $\omega = \omega_0$ і становить $(I_{R0})_{\max} = I_0$. Це означає, що на резонансній частоті весь струм від джерела тече тільки через активний опір. Справа в тому, що опір блока з паралельно з'єднаних конденсатора й котушки на цій частоті обертається в нескінченність, і струм через нього не тече.
 
 Амплітуди струмів через котушку й конденсатор на резонансній частоті дорівнюють
 \begin{equation}\label{eq:resonance_currents_Q}
-	J_{L0} = J_{C0} = \frac{J_0}{Q},
+	I_{L0} = I_{C0} = \frac{I_0}{Q},
 \end{equation}
 де
 \begin{equation}\label{eq:Q_parallel}
@@ -1298,7 +1298,7 @@ thick]
 Якщо замість джерела струму використовувати джерело ЕРС, то в зовнішньому колі на частоті $\omega_0$ спостерігався б \emphx{мінімум} струму, а не максимум, як у послідовному контурі. Таке явище називають \emphx{антирезонансом}.
 
 \begin{Attention}
-	Резонанс струмів --- це дзеркальне відображення резонансу напруг. Якщо там різко зростали напруги на реактивних елементах, то тут різко зростають \emphx{струми} в котушці й конденсаторі: на резонансі $J_{L0} = J_{C0} = J_0/Q$, тобто при високій добротності струм у $LC$-контурі в багато разів перевищує струм джерела. Це явище широко використовується в індукційних печах: паралельно котушці, що створює змінне магнітне поле, підключають ємність, і на резонансі струм у котушці зростає в багато разів, тоді як струм у підвідних проводах залишається відносно невеликим. Той самий принцип --- лише в мініатюрі --- лежить в основі побутових індукційних варильних поверхонь і безконтактної зарядки телефонів: замість тонни розплавленого металу тут вистачає котушки під склокерамічною плитою чи в зарядній панелі.
+	Резонанс струмів --- це дзеркальне відображення резонансу напруг. Якщо там різко зростали напруги на реактивних елементах, то тут різко зростають \emphx{струми} в котушці й конденсаторі: на резонансі $I_{L0} = I_{C0} = I_0/Q$, тобто при високій добротності струм у $LC$-контурі в багато разів перевищує струм джерела. Це явище широко використовується в індукційних печах: паралельно котушці, що створює змінне магнітне поле, підключають ємність, і на резонансі струм у котушці зростає в багато разів, тоді як струм у підвідних проводах залишається відносно невеликим. Той самий принцип --- лише в мініатюрі --- лежить в основі побутових індукційних варильних поверхонь і безконтактної зарядки телефонів: замість тонни розплавленого металу тут вистачає котушки під склокерамічною плитою чи в зарядній панелі.
 
 	У радіотехніці резонанс струмів використовують у приймальних пристроях для виділення слабкого сигналу у вузькому спектральному інтервалі поблизу резонансної частоти: паралельний $LC$-контур має на цій частоті великий опір, тому напруга на ньому максимальна, а сигнали інших частот пригнічуються.
 \end{Attention}
@@ -1320,16 +1320,16 @@ thick]
 	      (рис.~\ref{tikz:Kirchhoff}):
 	      \begin{equation}\label{eq:Kirchhoff_current}
 		      \tcbhighmath{
-			      \sum_k J_k = 0.
+			      \sum_k I_k = 0.
 		      }
 	      \end{equation}
 	      Дане правило є наслідком закону збереження заряду і стверджує, що у вузлі заряди не можуть накопичуватися.
 
 	\item Для будь-якого замкнутого контуру в квазістаціонарному електричному колі виконується рівність
 	      \begin{equation}\label{eq:Kirchhoff_voltage}
-		      \sum_k J_k Z_k = \sum_i \emf_i,
+		      \sum_k I_k Z_k = \sum_i \emf_i,
 	      \end{equation}
-	      де $\emf_i$ --- ЕРС, що входять у вибраний контур, $J_k$ --- струми через елементи контуру, що мають імпеданси $Z_k$.
+	      де $\emf_i$ --- ЕРС, що входять у вибраний контур, $I_k$ --- струми через елементи контуру, що мають імпеданси $Z_k$.
 
 	      \begin{SCfigure}[1.75][h!]
 		      \centering
@@ -1337,9 +1337,9 @@ thick]
 
 			      \coordinate (O) at (0,0);
 
-			      \draw[->, red] (-1.5, 1.3) -- (O) node[above left=1pt, pos=0] {$J_1$};
-			      \draw[->, blue] (1.5, 1.3) -- (O) node[above right=1pt, pos=0] {$J_2$};
-			      \draw[<-, green!50!black] (0, -2.0) -- (O) node[midway, right=3pt] {$J_3$};
+			      \draw[->, red] (-1.5, 1.3) -- (O) node[above left=1pt, pos=0] {$I_1$};
+			      \draw[->, blue] (1.5, 1.3) -- (O) node[above right=1pt, pos=0] {$I_2$};
+			      \draw[<-, green!50!black] (0, -2.0) -- (O) node[midway, right=3pt] {$I_3$};
 
 			      \fill (O) circle (2pt);
 
@@ -1350,7 +1350,7 @@ thick]
 
 	      Це правило безпосередньо випливає із закону індукції (теореми про циркуляцію для електричного поля в інтегральній формі):
 	      \begin{equation}\label{eq:circulation_EMF}
-		      \oint\limits_{\Gamma} E_l \, dl = -\frac{d\Phi}{dt}, \qquad \Phi = LJ.
+		      \oint\limits_{\Gamma} E_l \, dl = -\frac{d\Phi}{dt}, \qquad \Phi = LI.
 	      \end{equation}
 
 \end{enumerate}
@@ -1392,17 +1392,17 @@ thick]
 		\fill (E) circle (2.5pt);
 		\node[above, font=\scriptsize] at (E) {вузол $E$};
 
-		% Стрілка загального струму J (від джерела до вузла E)
+		% Стрілка загального струму I (від джерела до вузла E)
 		\draw[->, >=latex, thick] ($(D)!0.7!(E) + (0,0.45)$) -- ($(D)!0.95!(E) + (0,0.45)$)
-		node[midway, above] {$J$};
+		node[midway, above] {$I$};
 
-		% Стрілка струму J_R через резистор (від E до B)
+		% Стрілка струму I_R через резистор (від E до B)
 		\draw[->, >=latex, thick] ($(E)!0.3!(B) + (0.35,0)$) -- ($(E)!0.7!(B) + (0.35,0)$)
-		node[midway, right] {$J_R$};
+		node[midway, right] {$I_R$};
 
-		% Стрілка струму J_C через конденсатор (від E до F)
+		% Стрілка струму I_C через конденсатор (від E до F)
 		\draw[->, >=latex, thick] ($(E)!0.3!(F) + (0,0.45)$) -- ($(E)!0.7!(F) + (0,0.45)$)
-		node[midway, above] {$J_C$};
+		node[midway, above] {$I_C$};
 
 		% Позначення контурів I та II
 		\node at (1.2, 1.2) {I};
@@ -1413,34 +1413,34 @@ thick]
 	\label{tikz:example_branched}
 \end{center}
 
-Застосуємо \emphx{перше правило Кірхгофа} до вузла $E$: сума струмів, що виходять із вузла, дорівнює нулю. Струм $J$ приходить до вузла $E$, а струми $J_R$ і $J_C$ виходять із нього, тому
+Застосуємо \emphx{перше правило Кірхгофа} до вузла $E$: сума струмів, що виходять із вузла, дорівнює нулю. Струм $I$ приходить до вузла $E$, а струми $I_R$ і $I_C$ виходять із нього, тому
 \begin{equation}\label{eq:example_KCL}
-	J - J_R - J_C = 0
+	I - I_R - I_C = 0
 	\quad\Rightarrow\quad
-	J = J_R + J_C.
+	I = I_R + I_C.
 \end{equation}
 
 Застосуємо \emphx{друге правило Кірхгофа} до контуру I (джерело --- котушка --- резистор):
 \begin{equation}\label{eq:example_KVL_I}
-	Z_L J + R J_R = \emf.
+	Z_L I + R I_R = \emf.
 \end{equation}
 Для контуру II (джерело --- котушка --- конденсатор):
 \begin{equation}\label{eq:example_KVL_II}
-	Z_L J + Z_C J_C = \emf.
+	Z_L I + Z_C I_C = \emf.
 \end{equation}
 
-Маємо систему трьох рівнянь \eqref{eq:example_KCL}--\eqref{eq:example_KVL_II} із трьома невідомими $J$, $J_R$, $J_C$. Розв'яжемо її. З \eqref{eq:example_KVL_I} і \eqref{eq:example_KVL_II} виразимо $J_R$ і $J_C$ через $J$:
-\begin{equation}\label{eq:example_JR_JC}
-	J_R = \frac{\emf - Z_L J}{R}, \qquad
-	J_C = \frac{\emf - Z_L J}{Z_C}.
+Маємо систему трьох рівнянь \eqref{eq:example_KCL}--\eqref{eq:example_KVL_II} із трьома невідомими $I$, $I_R$, $I_C$. Розв'яжемо її. З \eqref{eq:example_KVL_I} і \eqref{eq:example_KVL_II} виразимо $I_R$ і $I_C$ через $I$:
+\begin{equation}\label{eq:example_IR_IC}
+	I_R = \frac{\emf - Z_L I}{R}, \qquad
+	I_C = \frac{\emf - Z_L I}{Z_C}.
 \end{equation}
 Підставимо ці вирази в \eqref{eq:example_KCL}:
-\begin{equation}\label{eq:example_J_equation}
-	J = \frac{\emf - Z_L J}{R} + \frac{\emf - Z_L J}{Z_C}.
+\begin{equation}\label{eq:example_I_equation}
+	I = \frac{\emf - Z_L I}{R} + \frac{\emf - Z_L I}{Z_C}.
 \end{equation}
-Розв'язуючи відносно $J$, отримуємо
+Розв'язуючи відносно $I$, отримуємо
 \begin{equation}\label{eq:example_current}
-	J = \frac{\emf}{Z_L + \dfrac{1}{\dfrac{1}{R} + \dfrac{1}{Z_C}}}.
+	I = \frac{\emf}{Z_L + \dfrac{1}{\dfrac{1}{R} + \dfrac{1}{Z_C}}}.
 \end{equation}
 Вираз у знаменнику --- це повний імпеданс кола $Z$. Дійсно, паралельна ділянка $R \parallel C$ має імпеданс
 \begin{equation}\label{eq:example_parallel}
@@ -1452,25 +1452,25 @@ thick]
 \end{equation}
 Підставляючи \eqref{eq:example_parallel} і \eqref{eq:example_total} у \eqref{eq:example_current}, отримуємо остаточно
 \begin{equation}\label{eq:example_current_explicit}
-	J = \frac{\emf_0 e^{i\omega t}}{i\omega L + \dfrac{R}{1 + i\omega RC}}
+	I = \frac{\emf_0 e^{i\omega t}}{i\omega L + \dfrac{R}{1 + i\omega RC}}
 	  = \emf_0 e^{i\omega t}\,\frac{1 + i\omega RC}{R(1 - \omega^2 LC) + i\omega L}.
 \end{equation}
 Напруга на паралельній ділянці:
 \begin{equation}\label{eq:example_voltage_RC}
-	U_{RC} = J\,Z_{RC}
+	U_{RC} = I\,Z_{RC}
 	       = \frac{\emf_0 e^{i\omega t}\,R}{R(1 - \omega^2 LC) + i\omega L}.
 \end{equation}
 Струми через резистор і конденсатор:
 \begin{equation}\label{eq:example_branch_currents}
-	J_R = \frac{U_{RC}}{R} = \frac{\emf_0 e^{i\omega t}}{R(1 - \omega^2 LC) + i\omega L},
+	I_R = \frac{U_{RC}}{R} = \frac{\emf_0 e^{i\omega t}}{R(1 - \omega^2 LC) + i\omega L},
 \end{equation}
 \begin{equation}\label{eq:example_branch_currents_C}
-	J_C = i\omega C\,U_{RC} = \frac{i\omega RC\,\emf_0 e^{i\omega t}}{R(1 - \omega^2 LC) + i\omega L}.
+	I_C = i\omega C\,U_{RC} = \frac{i\omega RC\,\emf_0 e^{i\omega t}}{R(1 - \omega^2 LC) + i\omega L}.
 \end{equation}
 
 Перевіримо виконання першого правила Кірхгофа \eqref{eq:example_KCL}:
 \begin{equation*}
-	J_R + J_C = \frac{\emf_0 e^{i\omega t}(1 + i\omega RC)}{R(1 - \omega^2 LC) + i\omega L} = J,
+	I_R + I_C = \frac{\emf_0 e^{i\omega t}(1 + i\omega RC)}{R(1 - \omega^2 LC) + i\omega L} = I,
 \end{equation*}
 що збігається з \eqref{eq:example_current_explicit}. Отже, розв'язок задовольняє обидва правила Кірхгофа.
 
@@ -1671,13 +1671,13 @@ thick]
 \begin{quizlist}
 	\item Що таке квазістаціонарний процес? Сформулюйте умову квазістаціонарності через довжину кола та довжину хвилі. Чому для будинкової проводки при 50~Гц вона виконується з великим запасом, а для довгої ЛЕП це може бути не так?
 	\item Чим система із зосередженими елементами відрізняється від системи з розподіленими параметрами (довгої лінії)? Для чого можна застосовувати закон Ома та правила Кірхгофа?
-	\item Виведіть рівняння $L\dot J + JR + q/C = \emf$ для послідовного $LCR$-контуру (рис.~\ref{tikz:LCR_circuit}). Яку роль відіграє теорема про циркуляцію електричного поля і як вона враховує ЕРС індукції в котушці?
+	\item Виведіть рівняння $L\dot I + IR + q/C = \emf$ для послідовного $LCR$-контуру (рис.~\ref{tikz:LCR_circuit}). Яку роль відіграє теорема про циркуляцію електричного поля і як вона враховує ЕРС індукції в котушці?
 	\item Запишіть рівняння вільних коливань $\ddot q + 2\gamma\dot q + \omega_0^2 q = 0$. Що означають $\gamma$ та $\omega_0$ і як вони виражаються через $R$, $L$, $C$?
 	\item Розв'яжіть рівняння вільних коливань при $R=0$. Запишіть формулу Томсона. Чим визначаються амплітуда та початкова фаза коливань?
 	\item Як знаходять розв'язок рівняння затухаючих коливань за допомогою комплексних чисел? Які три випадки виникають залежно від співвідношення $\omega_0$ та $\gamma$ і який вигляд має розв'язок у кожному з них?
 	\item Що таке коефіцієнт затухання та час затухання? Як виглядає графік згасаючих коливань (рис.~\ref{tikz:damped}) і який вигляд має закон зміни амплітуди?
-	\item Виведіть рівняння енергетичного балансу $\frac{d}{dt}\left(\frac{LJ^2}{2}+\frac{q^2}{2C}\right) = -RJ^2$. Що означають його доданки?
-	\item Як перетворюється енергія в контурі без втрат? Чому енергії $W_L$ та $W_C$ коливаються з однаковою амплітудою в протифазі, а їхня сума залишається сталою? Який зсув фаз між $q(t)$ і $J(t)$?
+	\item Виведіть рівняння енергетичного балансу $\frac{d}{dt}\left(\frac{LI^2}{2}+\frac{q^2}{2C}\right) = -RI^2$. Що означають його доданки?
+	\item Як перетворюється енергія в контурі без втрат? Чому енергії $W_L$ та $W_C$ коливаються з однаковою амплітудою в протифазі, а їхня сума залишається сталою? Який зсув фаз між $q(t)$ і $I(t)$?
 	\item Що таке логарифмічний декремент згасання? Виведіть його вираз через $\gamma$ та $T$ і поясніть зв'язок з числом коливань $n$, за які амплітуда спадає в $e$ разів.
 	\item Що таке добротність коливальної системи? Запишіть її через $\omega$ та $\gamma$, через логарифмічний декремент та через відношення енергії до втрат за період. Чому дорівнює добротність послідовного $LCR$-контуру?
 	\item Яких порядків величини досягає добротність у звичайному $LC$-контурі, кварцовому резонаторі та надпровідному резонаторі прискорювача? Що це означає для тривалості «дзвону» системи?
@@ -1692,7 +1692,7 @@ thick]
 	\item Що таке імпеданс? Запишіть імпеданси $R$, $L$, $C$ та послідовного $LCR$-кола. Чим активний опір відрізняється від реактивного?
 	\item Який зсув фаз між струмом і напругою на резисторі, конденсаторі та котушці? Чому множення на $i$ у комплексній площині означає поворот на $\pi/2$?
 	\item Як побудувати векторну діаграму послідовного $LCR$-контуру (рис.~\ref{tikz:vector_diagram_full})? Що можна визначити з неї, не виконуючи обчислень?
-	\item Виведіть формулу для середньої потужності змінного струму $\overline Q = \frac12\emf_0J_0\cos\varphi_0$. Що таке ефективні значення струму й напруги і чому потужність залежить від зсуву фаз?
+	\item Виведіть формулу для середньої потужності змінного струму $\overline Q = \frac12\emf_0I_0\cos\varphi_0$. Що таке ефективні значення струму й напруги і чому потужність залежить від зсуву фаз?
 	\item Чому змінний струм не виконує роботи за відсутності активного опору? Чому при тій самій потужності вигідно передавати електроенергію при високій напрузі?
 	\item Що таке резонанс напруг? Чому в резонансі імпеданс контуру дорівнює $R$, а напруга на конденсаторі та котушці в $Q$ разів перевищує напругу джерела? Чим небезпечний цей ефект?
 	\item Що таке резонанс струмів у паралельному контурі (рис.~\ref{tikz:parallel_circuit})? Як записується імпеданс паралельного кола і що відбувається з струмами в гілках на резонансній частоті?

@@ -1,4 +1,4 @@
-\begin{tikzpicture}[>=latex, scale=1.25, transform shape]
+\begin{tikzpicture}[>=latex, scale=1]
     \draw[fill=blue!20] (-2, 0)  arc(180:0:1) -- ++(0, -2) -- ++(0.5, 0) -- ++(0, 2) arc(0:180:1.5) -- ++(0, -2) -- ++(0.5, 0) -- cycle;
     \draw[fill=blue!20] (-2.5, -2.5) rectangle ++(3, -.5);
     \draw[green!60!black, dash pattern={on 2pt off 1pt}] (-2.25, 0) arc(180:0:1.25) -- ++(0, -2.75) -- ++(-2.5, 0) -- cycle;
