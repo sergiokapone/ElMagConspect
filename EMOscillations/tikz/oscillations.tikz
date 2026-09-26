@@ -7,7 +7,7 @@
 \colorlet{ColorVelocity}{red!80!black}
 
 % Створення команди \drawLCOscillator[масштаб]{фаза}
-\newcommand{\drawLCOscillator}[2][1.0]{%
+\NewDocumentCommand{\drawLCOscillator}{O{1.0} m O{2.2}}{%
 \begin{tikzpicture}[>=stealth, font=\large, scale=#1, transform shape, baseline={(base)}]
 
     % --- Головні параметри ---
@@ -15,6 +15,7 @@
     \def\MaxLines{5}     % Максимальна кількість ліній поля
     \def\Amp{1.2}        % Амплітуда (см)
     \def\PlateH{0.12}    % Товщина пластин
+    \def\SpringDef{#3}    % Товщина пластин
 
     % --- Обчислення ---
     \pgfmathsetmacro{\xnorm}{cos(\Phase)}
@@ -124,7 +125,19 @@
 
         \coordinate (MassCenter) at (\xPos, 0.5);
 
-        \draw[thick, decoration={coil, aspect=0.4, segment length=2.2mm, amplitude=2.8mm}, decorate]
+        % 1. Задаємо фіксовану кількість витків
+        \def\NumCoils{10}
+
+        % 2. Рахуємо крок: (загальна довжина L) / N
+        \pgfmathsetmacro{\SpringSeg}{(\xPos - 0.5) / \NumCoils}
+
+        % 3. Малюємо пружину
+        \draw[thick, decoration={
+                coil,
+                aspect=0.4,
+                segment length=\SpringSeg cm, % динамічний крок у см
+                amplitude=2.8mm               % товщина залишається сталою
+            }, decorate]
             (0, 0.5) -- (\xPos - 0.5, 0.5);
 
         \draw[thick, fill=ColorMass, rounded corners=1pt]
