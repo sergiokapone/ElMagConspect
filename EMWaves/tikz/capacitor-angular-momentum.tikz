@@ -1,34 +1,136 @@
-% Адаптовано з EMWaves.tex (слайд "Момент імпульсу поля")
-\begin{tikzpicture}[scale=2, >=latex]
-	\draw [fill=gray, fill opacity=.25]
-	(180:1mm) coordinate (a)
-	-- ++(0,-15mm) coordinate (b)
-	arc (180:360:1mm and 0.25mm) coordinate (d)
-	-- (a -| d) coordinate (c) arc (0:180:1mm and 0.25mm);
-	\draw [fill=gray, fill opacity=.25]
-	(0,0) coordinate (t) circle (1mm and 0.25mm);
-	\draw [densely dashed] (d) arc (0:180:1mm and 0.25mm);
+\begin{tikzpicture}[>=Stealth, scale=1]
+  % -------------------------------------------------------------
+  % Параметри геометрії
+  % -------------------------------------------------------------
+  \def\rIn{0.45}       % Радіус внутрішньої обкладки
+  \def\rOut{1.85}      % Радіус зовнішньої обкладки
+  \def\k{0.32}         % Коефіцієнт стиснення еліпса (перспектива)
+  \def\h{2.6}          % Висота циліндрів
+  \def\zTop{0.3}       % Верхній рівень
+  \def\zBot{-\h}       % Нижній рівень
 
-	\draw [thick]
-	(180:7.5mm) coordinate (A)
-	-- ++(0,-15mm) coordinate (B)
-	arc (180:360:7.5mm and 2.625mm) coordinate (D)
-	-- (A -| D) coordinate (C) arc (0:180:7.5mm and 2.625mm);
-	\draw [thick]
-	(0,0) coordinate (T) circle (7.5mm and 2.625mm);
-	\draw [densely dashed] (D) arc (0:180:7.5mm and 2.625mm);
+  % -------------------------------------------------------------
+  % Внутрішній циліндр (Внутрішня обкладка)
+  % -------------------------------------------------------------
+  % Задня пунктирна дуга основи
+  \draw[gray!60, dashed, line width=0.6pt]
+    (\rIn, \zBot) arc (0:180:{\rIn} and {\rIn*\k});
 
-	\foreach[count=\j] \i in {-0.5, 0, 0.5} {
-			\draw[blue, <-] (\i,5mm) \ifnum\j=2 node[above] {$\Bfield$} \fi -- ++(0,-25mm);
-		}
+  % Заповнення тіла внутрішнього циліндра
+  \fill[gray!25] (0, \zTop) circle ({\rIn} and {\rIn*\k});
+  \fill[gray!20] (-\rIn, \zTop) -- (-\rIn, \zBot) arc (180:360:{\rIn} and {\rIn*\k}) -- (\rIn, \zTop) arc (0:180:{\rIn} and {\rIn*\k});
 
-	\foreach[count=\j] \i in {0, -0.5, -1, -1.5} {
-			\draw[red, ->] (1mm,\i) -- ++(6.5mm,0) \ifnum\j=2 node[right] {$ \Efield $}\fi;
-			\draw[red, ->] (-1mm,\i) -- ++(-6.5mm,0);
-		}
+  % Контури внутрішнього циліндра
+  \draw[thick, gray!80!black] (-\rIn, \zTop) -- (-\rIn, \zBot);
+  \draw[thick, gray!80!black] (\rIn, \zTop) -- (\rIn, \zBot);
+  \draw[thick, gray!80!black] (0, \zTop) circle ({\rIn} and {\rIn*\k});
+  \draw[thick, gray!80!black] (\rIn, \zBot) arc (0:-180:{\rIn} and {\rIn*\k});
 
-	\draw (0,0) ellipse (1mm and 0.25mm);
+  % -------------------------------------------------------------
+  % Аксіальне магнітне поле B (Вертикальне)
+  % -------------------------------------------------------------
+  \foreach \x in {-1.3, -0.8, 0, 0.8, 1.3} {
+    \draw[blue!80!black, thick, ->] (\x, \zTop + 0.5) -- (\x, \zBot - 0.4);
+  }
+  \node[blue!80!black, font=\bfseries, right] at (1.3, \zTop + 0.4) {$\Bfield$};
 
-	\draw[green!50!black, <-] (0,-0.75) [partial ellipse=110:430:4mm and 1.3mm] node[above,
-	pos=0.2] {$ \vect{\Pi} $};
+  % -------------------------------------------------------------
+  % Радіальне електричне поле E (Задня півсфера)
+  % -------------------------------------------------------------
+  \foreach \z in {-0.7, -1.8} {
+    \foreach \ang in {30, 60, 120, 150} {
+      \pgfmathsetmacro{\xIn}{\rIn*cos(\ang)}
+      \pgfmathsetmacro{\yIn}{\z + \rIn*sin(\ang)*\k}
+      \pgfmathsetmacro{\xOut}{\rOut*cos(\ang)}
+      \pgfmathsetmacro{\yOut}{\z + \rOut*sin(\ang)*\k}
+      \draw[red!70!black, thick, ->, opacity=0.5] (\xIn, \yIn) -- (\xOut, \yOut);
+    }
+  }
+
+  % -------------------------------------------------------------
+  % Зовнішній циліндр (Зовнішня обкладка - напівпрозора)
+  % -------------------------------------------------------------
+  % Пунктирні задні дуги
+  \draw[gray!50, dashed, thick] (\rOut, \zBot) arc (0:180:{\rOut} and {\rOut*\k});
+  \draw[gray!50, dashed, thick] (\rOut, \zTop) arc (0:180:{\rOut} and {\rOut*\k});
+
+  % Напівпрозора поверхня
+  \fill[blue!10, opacity=0.35]
+    (-\rOut, \zTop) -- (-\rOut, \zBot) arc (180:360:{\rOut} and {\rOut*\k}) -- (\rOut, \zTop) arc (0:180:{\rOut} and {\rOut*\k});
+
+  % Суцільні видимі контури
+  \draw[thick, black!75] (-\rOut, \zTop) -- (-\rOut, \zBot);
+  \draw[thick, black!75] (\rOut, \zTop) -- (\rOut, \zBot);
+  \draw[thick, black!75] (\rOut, \zTop) arc (0:-180:{\rOut} and {\rOut*\k});
+  \draw[thick, black!75] (\rOut, \zBot) arc (0:-180:{\rOut} and {\rOut*\k});
+
+  % -------------------------------------------------------------
+  % Радіальне електричне поле E (Передня півсфера)
+  % -------------------------------------------------------------
+  \foreach \z in {-0.7, -1.8} {
+    \foreach \ang in {-30, -65, -115, -150} {
+      \pgfmathsetmacro{\xIn}{\rIn*cos(\ang)}
+      \pgfmathsetmacro{\yIn}{\z + \rIn*sin(\ang)*\k}
+      \pgfmathsetmacro{\xOut}{\rOut*cos(\ang)}
+      \pgfmathsetmacro{\yOut}{\z + \rOut*sin(\ang)*\k}
+      \draw[red!80!black, line width=1.1pt, ->] (\xIn, \yIn) -- (\xOut, \yOut);
+    }
+  }
+  \node[red!80!black, font=\bfseries, right] at ({\rOut*cos(-30)}, {-0.7 + \rOut*sin(-30)*\k + 0.1}) {$\Efield$};
+
+  % -------------------------------------------------------------
+  % Вектор Пойнтінга Pi = E x B (Азимутальна циркуляція)
+  % -------------------------------------------------------------
+  \def\rPoyn{1.15}
+  \def\zPoyn{-1.25}
+
+  % Задня частина циркуляції (пунктир)
+  \draw[green!50!black, thick, dashed]
+    ({\rPoyn*cos(20)}, {\zPoyn + \rPoyn*sin(20)*\k})
+    arc (20:160:{\rPoyn} and {\rPoyn*\k});
+
+  % Передня частина циркуляції зі стрілкою
+  \draw[green!60!black, line width=1.4pt, ->]
+    ({\rPoyn*cos(160)}, {\zPoyn + \rPoyn*sin(160)*\k})
+    arc (-200:20:{\rPoyn} and {\rPoyn*\k})
+    node[pos=0.45, below, font=\small] {$\vect{\Pi} \sim \Efield \times \Bfield$};
+
+  % Вісь симетрії
+  \draw[dashed, gray!70] (0, \zTop + 0.7) -- (0, \zBot - 0.6);
+
 \end{tikzpicture}
+
+%% Адаптовано з EMWaves.tex (слайд "Момент імпульсу поля")
+%\begin{tikzpicture}[scale=2, >=latex]
+%	\draw [fill=gray, fill opacity=.25]
+%	(180:1mm) coordinate (a)
+%	-- ++(0,-15mm) coordinate (b)
+%	arc (180:360:1mm and 0.25mm) coordinate (d)
+%	-- (a -| d) coordinate (c) arc (0:180:1mm and 0.25mm);
+%	\draw [fill=gray, fill opacity=.25]
+%	(0,0) coordinate (t) circle (1mm and 0.25mm);
+%	\draw [densely dashed] (d) arc (0:180:1mm and 0.25mm);
+%
+%	\draw [thick]
+%	(180:7.5mm) coordinate (A)
+%	-- ++(0,-15mm) coordinate (B)
+%	arc (180:360:7.5mm and 2.625mm) coordinate (D)
+%	-- (A -| D) coordinate (C) arc (0:180:7.5mm and 2.625mm);
+%	\draw [thick]
+%	(0,0) coordinate (T) circle (7.5mm and 2.625mm);
+%	\draw [densely dashed] (D) arc (0:180:7.5mm and 2.625mm);
+%
+%	\foreach[count=\j] \i in {-0.5, 0, 0.5} {
+%			\draw[blue, <-] (\i,5mm) \ifnum\j=2 node[above] {$\Bfield$} \fi -- ++(0,-25mm);
+%		}
+%
+%	\foreach[count=\j] \i in {0, -0.5, -1, -1.5} {
+%			\draw[red, ->] (1mm,\i) -- ++(6.5mm,0) \ifnum\j=2 node[right] {$ \Efield $}\fi;
+%			\draw[red, ->] (-1mm,\i) -- ++(-6.5mm,0);
+%		}
+%
+%	\draw (0,0) ellipse (1mm and 0.25mm);
+%
+%	\draw[green!50!black, <-] (0,-0.75) [partial ellipse=110:430:4mm and 1.3mm] node[above,
+%	pos=0.2] {$ \vect{\Pi} $};
+%\end{tikzpicture}
