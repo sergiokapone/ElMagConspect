@@ -686,7 +686,7 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 		\@restonecolfalse
 	\fi
 	\chapter*{Додатки}%
-	\addcontentsline{toc}{chapter}{Додатки}
+	\addcontentsline{toc}{part}{Додатки}
 	\if@restonecol\twocolumn\fi
 }
 % ---------------------------------------- Верстка ВІДПОВІДЕЙ -------------------------------------------
@@ -719,10 +719,13 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
   {\addvspace{1em}\Huge\centering\color{themecolordark} #1%
    \begingroup\def\\{ }\xdef\@currentlabelname{#1}\endgroup}
 
-% Як запис частини виглядає у змісті — з лінійкою над та потовщеним відступом
+% Як запис частини виглядає у змісті — з лінійкою над та потовщеним відступом.
+% Другий аргумент ({}) навмисно порожній: сюди потрапляють і "Додатки" та
+% "Література" (без номера частини), тому автоматичний префікс "Частина ~"
+% тут не потрібен.
 \titlecontents{part}%
 [0pt]{\sffamily\bfseries\large\protect\addvspace{25pt}\addvspace{1.5ex}}
-{}{\partname~}
+{}{}
 {\hfill\contentspage}%
 [\addvspace{0.7ex}\titlerule\addvspace{10pt}]%
 
@@ -829,6 +832,16 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 	}
 	\DeclareBibliographyCategory{Textbooks}   % категорія джерел: підручники
 	\DeclareBibliographyCategory{Problems}    % категорія джерел: задачники
+
+	% Перевизначає стандартний заголовок "bibintoc" (як його викликає
+	% \printbibliography[heading=bibintoc] у майстер-файлі): замість
+	% \chapter*{Література} --- \part*{Література}, з тих самих причин, що й
+	% "Додатки" вище, --- щоб бібліографія теж стояла в змісті й закладках PDF
+	% на рівні частин, а не як глава всередині останньої частини.
+	\defbibheading{bibintoc}{%
+		\chapter*{\bibname}%
+		\addcontentsline{toc}{part}{\bibname}%
+	}
 \else
 	\renewcommand{\@biblabel}[1]{#1.}   % "[1]" -> "1." у списку літератури
 	\addto\captionsukrainian{%
@@ -1191,6 +1204,7 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 	pdfencoding=auto
 ]%
 {hyperref}
+\RequirePackage{bookmark}
 \RequirePackage[all]{hypcap}   % посилання на рисунок/таблицю ведуть на верх об'єкта, а не на підпис
 
 % --------------- Патч для україомовної назви розділу для nameref ----------- %
