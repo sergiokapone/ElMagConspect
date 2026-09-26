@@ -1,5 +1,5 @@
 % Адаптовано з MaxwellEqns.tex (слайд "Радіальне стікання заряду з кулі")
-\begin{tikzpicture}[>=latex]
+\begin{tikzpicture}[>=latex, scale=1.5]
 	\draw[ball color=red!50] (0, 0) circle[radius=0.5cm];
 	\draw[dashed] (0, 0) circle[radius=0.75cm];
 	\foreach \a in {0,45,...,340}{
