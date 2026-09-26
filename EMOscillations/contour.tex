@@ -74,8 +74,8 @@
 
             \ifdim \xShift pt > 0pt
                 % Позитивний заряд зверху, поле вниз
-                \node[black, font=\small] at (\px, 1.35) {$+$};
-                \node[black, font=\small] at (\px, 0.25) {$-$};
+                \node[red, font=\small] at (\px, 1.35) {$+$};
+                \node[blue, font=\small] at (\px, 0.25) {$-$};
                 \draw[->, thick, ColorE] (\px, 1.15) -- (\px, 0.45);
             \else
                 % Негативний заряд зверху, поле вгору
@@ -84,7 +84,7 @@
                 \draw[->, thick, ColorE] (\px, 0.45) -- (\px, 1.);
             \fi
         }
-        \node[right, ColorE, font=\bfseries] at (2.4, 0.8) {$\mathbf{E}$};
+        \node[right, ColorE, font=\bfseries] at (2.4, 0.8) {$\Efield$};
     \fi
 
     % Провідники контуру
@@ -93,13 +93,13 @@
     \draw[thick] (2.8, -0.9) -- (4.2, -0.9);
 
     % Перемикач
-    \draw[thick, ColorSwitch] (2.0, -0.9) circle (2pt);
-    \draw[thick, ColorSwitch] (2.8, -0.9) circle (2pt);
-    \ifnum \numB = 0
-        \draw[thick, ColorSwitch] (2.0, -0.9) -- (2.7, -0.6);
-    \else
-        \draw[thick, ColorSwitch] (2.0, -0.9) -- (2.8, -0.9);
-    \fi
+%    \draw[thick, ColorSwitch] (2.0, -0.9) circle (2pt);
+%    \draw[thick, ColorSwitch] (2.8, -0.9) circle (2pt);
+%    \ifnum \numB = 0
+%        \draw[thick, ColorSwitch] (2.0, -0.9) -- (2.7, -0.6);
+%    \else
+%        \draw[thick, ColorSwitch] (2.0, -0.9) -- (2.8, -0.9);
+%    \fi
 
     % Котушка індуктивності L
     \draw[thick, ColorCoil, decoration={coil, aspect=0.55, segment length=3.2mm, amplitude=3.5mm}, decorate]
@@ -120,7 +120,7 @@
                 \draw[->, thick, ColorB] (4.2+\offset, 3.0) to[bend right=\bendAngle] (4.2+\offset, -1.5);
             \fi
         }
-        \node[left=4pt, ColorB, font=\bfseries] at (3.9, 0.7) {$\mathbf{B}$};
+        \node[left=4pt, ColorB, font=\bfseries] at (3.9, 0.7) {$\Bfield$};
     \fi
 
     % Динамічні підписи струму I та заряду q
