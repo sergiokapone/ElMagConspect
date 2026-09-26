@@ -1510,14 +1510,14 @@ thick]
 \end{equation}
 
 Маємо систему трьох рівнянь \eqref{eq:example_KCL}--\eqref{eq:example_KVL_II} із трьома невідомими $I$, $I_R$, $I_C$. Розв'яжемо її. З \eqref{eq:example_KVL_I} і \eqref{eq:example_KVL_II} виразимо $I_R$ і $I_C$ через $I$:
-\begin{equation}\label{eq:example_IR_IC}
+\begin{equation*}
 	I_R = \frac{\emf - Z_L I}{R}, \qquad
 	I_C = \frac{\emf - Z_L I}{Z_C}.
-\end{equation}
+\end{equation*}
 Підставимо ці вирази в \eqref{eq:example_KCL}:
-\begin{equation}\label{eq:example_I_equation}
+\begin{equation*}
 	I = \frac{\emf - Z_L I}{R} + \frac{\emf - Z_L I}{Z_C}.
-\end{equation}
+\end{equation*}
 Розв'язуючи відносно $I$, отримуємо
 \begin{equation}\label{eq:example_current}
 	I = \frac{\emf}{Z_L + \dfrac{1}{\dfrac{1}{R} + \dfrac{1}{Z_C}}}.
@@ -1536,17 +1536,17 @@ thick]
 	  = \emf_0 e^{i\omega t}\,\frac{1 + i\omega RC}{R(1 - \omega^2 LC) + i\omega L}.
 \end{equation}
 Напруга на паралельній ділянці:
-\begin{equation}\label{eq:example_voltage_RC}
+\begin{equation*}
 	U_{RC} = I\,Z_{RC}
 	       = \frac{\emf_0 e^{i\omega t}\,R}{R(1 - \omega^2 LC) + i\omega L}.
-\end{equation}
+\end{equation*}
 Струми через резистор і конденсатор:
-\begin{equation}\label{eq:example_branch_currents}
+\begin{equation*}
 	I_R = \frac{U_{RC}}{R} = \frac{\emf_0 e^{i\omega t}}{R(1 - \omega^2 LC) + i\omega L},
-\end{equation}
-\begin{equation}\label{eq:example_branch_currents_C}
+\end{equation*}
+\begin{equation*}
 	I_C = i\omega C\,U_{RC} = \frac{i\omega RC\,\emf_0 e^{i\omega t}}{R(1 - \omega^2 LC) + i\omega L}.
-\end{equation}
+\end{equation*}
 
 Перевіримо виконання першого правила Кірхгофа \eqref{eq:example_KCL}:
 \begin{equation*}
