@@ -715,7 +715,9 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 \setlength\chapnumb{4cm}   % ширина колонки під великий номер глави в заголовку
 
 % Заголовок частини (part) — великим шрифтом, з відступом і центруванням
-\titleformat{\part}[display]{\bfseries\sffamily\huge}{\partname\ \thepart }{0pt}{\addvspace{1em}\Huge\centering #1}
+\titleformat{\part}[display]{\bfseries\sffamily\huge}{\partname\ \thepart}{0pt}%
+  {\addvspace{1em}\Huge\centering\color{themecolordark} #1%
+   \begingroup\def\\{ }\xdef\@currentlabelname{#1}\endgroup}
 
 % Як запис частини виглядає у змісті — з лінійкою над та потовщеним відступом
 \titlecontents{part}%
