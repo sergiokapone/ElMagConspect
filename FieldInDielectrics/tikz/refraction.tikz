@@ -1,0 +1,50 @@
+% Адаптовано з FileldInDielectrics_slides.tex (слайд "Заломлення силових ліній на границі діелектрика")
+\begin{tikzpicture}[>=latex,
+		scale=1.25,
+%		transform shape,
+		pencildraw/.style={ %
+				decorate,
+				decoration={random steps,segment length=3pt,amplitude=2pt}
+			},
+	]
+
+	% Середовище 1
+	\fill[thick, red!10,  pencildraw, opacity=0.85] (-2, +0.05) rectangle (6, -2.1);
+	\node[circle, draw, inner sep =1pt, font=\scriptsize] at (-1.8, -0.5) {$1$};
+
+	% Середовище 2
+	\fill[thick, blue!10, pencildraw, opacity=0.85] (-2, -0.05) rectangle (6, +2.1);
+	\node[circle, draw, inner sep =1pt, font=\scriptsize] at (-1.8, +0.5) {$2$};
+
+	% Границя розділу
+	\draw[line width=2pt, gray!50] (-2, 0) -- (6, 0);
+
+	\draw[dashed] (-1, -2) -- ++(0, 4);
+
+	\draw[midarrow] (-1.5, -2) -- (-1,0);
+
+	\draw[midarrow] (-1,0) -- ++(1, 2);
+	\draw (-1,0) ++(90:0.8) arc[start angle=90, delta angle={-atan(1/2)}, radius =
+			0.8]  node[pos=0.5, anchor=south, inner sep=1, font=\scriptsize] {$\alpha_2$};
+	\draw (-1,0) ++(-90:0.8) arc[start angle=-90, delta angle={-atan(0.5/2)}, radius =
+			0.8] node[pos=0.5, anchor=north, inner sep=5pt, font=\scriptsize] {$\alpha_1$};
+
+	% Поле вектора E
+	\foreach[] \x in {0,1,...,6}{
+			\draw[midarrow, red] (0.25*\x, -2) -- ++(0.5, 2);
+			\ifnum\x<4
+				\draw[midarrow, red] ({0.5*(\x + 1)}, 0) -- ++(1, 2);
+			\fi
+		}
+	\node[font=\small] at (0.8, -2.5) {Поле вектора $\Efield$};
+
+	% Поле вектора D
+	\begin{scope}[xshift=3cm]
+		\foreach[] \x in {0,1,...,6}{
+				\draw[midarrow, blue ] (0.25*\x, -2) -- ++(0.5, 2);
+				\draw[midarrow, blue ] ({0.25*(\x+2)}, 0) -- ++(1, 2);
+			}
+	\end{scope}
+	\node[font=\small] at (3.8, -2.5) {Поле вектора $\Dfield$};
+
+\end{tikzpicture}
