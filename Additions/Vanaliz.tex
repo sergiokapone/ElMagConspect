@@ -307,7 +307,8 @@ B_k \varepsilon_{kij} \partial_i A_j - A_j \varepsilon_{ijk} \partial_i B_k = \\
 \end{equation}
 де $S$~--- поверхня, що спирається на контур $\partial S$.
 
-Теорема Гріна:
-\begin{equation}\label{Grin}
-	\int\limits_{\Omega}(\phi \nabla ^{2}\psi -\psi \nabla ^{2}\phi )\ dV=\int \limits_{\partial \Omega}(\phi \Grad \psi -\psi \Grad\phi )\cdot d\vect{S}.
-\end{equation}
+Перша та друга тотожності Гріна:
+\begin{align}
+    \int\limits_{\Omega} \left( \Grad\phi \cdot \Grad\psi + \phi \nabla^2\psi \right) dV &= \int\limits_{\partial \Omega} \phi \Grad\psi \cdot d\vect{S}, \label{Grin1} \\
+    \int\limits_{\Omega} (\phi \nabla^2\psi - \psi \nabla^2\phi)\, dV &= \int\limits_{\partial \Omega} (\phi \Grad\psi - \psi \Grad\phi) \cdot d\vect{S}. \label{Grin2}
+\end{align}
