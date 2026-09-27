@@ -176,6 +176,108 @@ body {
     font-weight: 600;
 }
 
+/* ── Розширена передмова (з тексту .txt) ── */
+.preface-extended p {
+    text-align: justify;
+    hyphens: auto;
+}
+
+.preface-extended em {
+    color: #3a3a3a;
+    font-style: italic;
+}
+
+.preface-extended strong {
+    color: var(--navy);
+}
+
+.preface-extended sub {
+    font-size: 0.7em;
+    vertical-align: sub;
+}
+
+/* ── Система позначок ── */
+.notation-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.4em 0 1.8em;
+    display: grid;
+    gap: 0.7em;
+}
+
+.notation-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85em;
+    padding: 0.7em 0.9em;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--rule);
+    border-radius: 2px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.notation-list li:hover {
+    background: var(--cream);
+    border-left-color: var(--crimson);
+}
+
+.notation-list li span:last-child {
+    font-size: 0.94rem;
+    line-height: 1.55;
+    color: var(--muted);
+}
+
+.notation-list li strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* ── Бейджі позначок ── */
+.notation-badge {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.55em;
+    height: 1.55em;
+    border-radius: 50%;
+    font-family: 'EB Garamond', serif;
+    font-weight: 700;
+    font-size: 1em;
+    line-height: 1;
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+    margin-top: 0.05em;
+}
+
+/* ! — принципові зауваження (жовта врізка як у PDF) */
+.notation-important {
+    background: linear-gradient(180deg, #e6c200, #c9a800);
+    color: #3a2a00;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.25);
+}
+
+/* ? — задачі для самостійного розв'язання */
+.notation-task {
+    background: linear-gradient(180deg, #9a2233, #7a1a1a);
+    color: #fff;
+}
+
+/* * — додатковий матеріал */
+.notation-star {
+    background: linear-gradient(180deg, #1a3060, #0c1a38);
+    color: #fff;
+    font-size: 1.15em;
+    padding-bottom: 0.15em;
+}
+
+/* ? — контрольні питання (той самий колір, що й задачі) */
+.notation-question {
+    background: linear-gradient(180deg, #9a2233, #7a1a1a);
+    color: #fff;
+}
+
 /* ── Автори ── */
 .authors {
     display: flex;
@@ -350,4 +452,6 @@ footer {
 @media (max-width: 480px) {
     .pdf-hero h1 { font-size: 1.5rem; }
     .author-card { padding: 1rem; }
+    .notation-list li { padding: 0.6em 0.7em; }
+    .notation-badge { width: 1.4em; height: 1.4em; font-size: 0.95em; }
 }
