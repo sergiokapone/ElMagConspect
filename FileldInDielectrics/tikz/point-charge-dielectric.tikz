@@ -1,8 +1,0 @@
-\begin{tikzpicture}[>=latex]
-	\fill[gray!12] (0,0) circle (1.6);
-	\node[circle, ball color=red!50, inner sep=1pt, text=white, font=\scriptsize] (Q) at (0,0) {$+Q$};
-	\foreach \a in {0,30,...,330} {
-			\draw[thick, ->, red] (Q) -- (\a:1.4);
-		}
-	\node[below right, font=\scriptsize] at (1.1,-1.1) {$\varepsilon$};
-\end{tikzpicture}
