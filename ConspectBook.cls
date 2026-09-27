@@ -1193,6 +1193,9 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 \RequirePackage[%
 	bookmarks = true,
 	bookmarksnumbered=true,
+	bookmarksopen=true,        % розгортати дерево закладок одразу
+	bookmarksopenlevel=0,      % на яку глибину розгортати (1 = розділи, без підпунктів)
+	pdfpagemode=UseOutlines,   % ← головне: відкривати панель закладок замість мініатюр
 	unicode,
 	linktocpage = true,
 	hypertexnames=false,
@@ -1200,7 +1203,10 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 	pdfpagelayout=TwoPageRight,
 	pdfauthor={Ponomarenko S.M.},
 	pdfdisplaydoctitle=true,
-	pdfkeywords={Electrostatics, Magnetostatics, Electrodynamics, Current, Field},
+    pdfkeywords={Electrostatics, Magnetostatics, Electrodynamics, Electromagnetism,
+	Electric Charge, Electric Field, Direct Current, Magnetic Field,
+	Electromagnetic Induction, Maxwell's Equations, Electromagnetic Waves,
+	Alternating Current, Waveguides, Gaussian Units},
 	pdfencoding=auto
 ]%
 {hyperref}
