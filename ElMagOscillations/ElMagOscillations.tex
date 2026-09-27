@@ -175,9 +175,9 @@ $\Phi = LI$:
 \end{equation}
 Розв'язок цього рівняння має вигляд
 \begin{equation}\label{eq:harmonic_solution}
-	q(t) = q_0 \cos(\omega_0 t + \varphi_0).
+	q(t) = q_m \cos(\omega_0 t + \varphi_0).
 \end{equation}
-Значення амплітуди $q_0$ і початкової фази $\varphi_0$ коливань визначаються
+Значення амплітуди $q_m$ і початкової фази $\varphi_0$ коливань визначаються
 з початкових умов. Частота коливань є
 \begin{equation}\label{eq:frequency}
 	\omega_0 = \frac{1}{\sqrt{LC}}.
@@ -193,9 +193,9 @@ $\Phi = LI$:
 Система, що здійснює коливання, називається \emphx{осцилятором}. Осцилятор називається \emphx{гармонічним}, якщо коливання, які він здійснює,
 є гармонічними, тобто описуються формулою
 \begin{equation}\label{eq:harmonic_general}
-	q(t) = q_0 \cos(\omega t + \varphi_0).
+	q(t) = q_m \cos(\omega t + \varphi_0).
 \end{equation}
-Величина $q_0$ в цьому співвідношенні називається \emphx{амплітудою}, а аргумент
+Величина $q_m$ в цьому співвідношенні називається \emphx{амплітудою}, а аргумент
 косинуса $\varphi = \omega t + \varphi_0$ --- \emphx{фазою коливань}.
 
 Рівняння \eqref{eq:harmonic_equation} тотожне за формою рівнянню руху
@@ -267,7 +267,7 @@ $1/C$ & Жорсткість $k$ & Повертальна дія \\
 \end{equation}
 Будемо шукати розв'язок у формі
 \begin{equation}\label{eq:complex_ansatz}
-	\hat{q}(t) = q_0 e^{i\Omega t}.
+	\hat{q}(t) = q_m e^{i\Omega t}.
 \end{equation}
 Підстановка цього виразу в \eqref{eq:complex_damped} дає
 \begin{equation}\label{eq:characteristic}
@@ -303,12 +303,12 @@ $1/C$ & Жорсткість $k$ & Повертальна дія \\
 \end{equation}
 і відділяючи дійсну частину $q(t) = \operatorname{Re}\hat{q}(t)$, отримаємо
 \begin{equation}\label{eq:weak_damping}
-	q(t) = e^{-\gamma t}\left(a\cos\omega t + b\sin\omega t\right) = q_0 e^{-\gamma t}\cos(\omega t + \varphi_0).
+	q(t) = e^{-\gamma t}\left(a\cos\omega t + b\sin\omega t\right) = q_m e^{-\gamma t}\cos(\omega t + \varphi_0).
 \end{equation}
-Розв'язок містить дві довільні сталі $(a, b)$ або $(q_0, \varphi_0)$.
+Розв'язок містить дві довільні сталі $(a, b)$ або $(q_m, \varphi_0)$.
 Ці пари констант пов'язані співвідношеннями
 \begin{equation}\label{eq:constants_relation}
-	q_0 = \sqrt{a^2 + b^2}, \qquad \tg\varphi_0 = -\frac{b}{a}.
+	q_m = \sqrt{a^2 + b^2}, \qquad \tg\varphi_0 = -\frac{b}{a}.
 \end{equation}
 
 2) Сильне затухання: $\omega_0 < \gamma$.
@@ -326,7 +326,7 @@ $1/C$ & Жорсткість $k$ & Повертальна дія \\
 
 На рис.~\ref{tikz:damped} показано графік затухаючих коливань. Такі коливання можна представляти як періодичні (гармонічні) коливання зі спадною амплітудою:
 \begin{equation}\label{eq:damped_general}
-	q(t) = A(t)\cos(\omega t + \varphi_0), \qquad A(t) = q_0 e^{-\gamma t}.
+	q(t) = A(t)\cos(\omega t + \varphi_0), \qquad A(t) = q_m e^{-\gamma t}.
 \end{equation}
 На цьому рисунку часова залежність амплітуди затухаючих коливань показана штриховою лінією.
 
@@ -351,19 +351,19 @@ $1/C$ & Жорсткість $k$ & Повертальна дія \\
 			\addplot [dashed, domain=0:9.5, thick] {-exp(-0.35*x)};
 			\addplot [red, thick, domain=0:9.5] {exp(-0.35*x) * cos(deg(2.5*pi*x))};
 
-			\node (top_label) at (axis cs:7.5, 0.75) {$q_0\exp(-\gamma t)$};
+			\node (top_label) at (axis cs:7.5, 0.75) {$q_m\exp(-\gamma t)$};
 			\draw[->, >=stealth, thick] (top_label.west) -- (axis cs:5.2, 0.22);
 
-			\node (bottom_label) at (axis cs:7.8, -0.6) {$-q_0\exp(-\gamma t)$};
+			\node (bottom_label) at (axis cs:7.8, -0.6) {$-q_m\exp(-\gamma t)$};
 			\draw[->, >=stealth, thick] (bottom_label.west) -- (axis cs:4.6, -0.25);
 
 		\end{axis}
 	\end{tikzpicture}
-	\caption{Графік затухаючих коливань. Штриховою лінією показано часову залежність амплітуди $A(t) = q_0 e^{-\gamma t}$.}
+	\caption{Графік затухаючих коливань. Штриховою лінією показано часову залежність амплітуди $A(t) = q_m e^{-\gamma t}$.}
 	\label{tikz:damped}
 \end{figure}
 
-Величина $\gamma$ показує, з якою швидкістю зменшується амплітуда коливань $A(t) = q_0 e^{-\gamma t}$, і називається \emphx{коефіцієнтом затухання}. Для $LCR$-контуру коефіцієнт затухання рівний $\gamma = R/2L$. Обернена величина $\tau = 1/\gamma$ називається \emphx{часом затухання}, і показує, за який
+Величина $\gamma$ показує, з якою швидкістю зменшується амплітуда коливань $A(t) = q_m e^{-\gamma t}$, і називається \emphx{коефіцієнтом затухання}. Для $LCR$-контуру коефіцієнт затухання рівний $\gamma = R/2L$. Обернена величина $\tau = 1/\gamma$ називається \emphx{часом затухання}, і показує, за який
 час амплітуда коливань зменшується в $e$ разів.
 
 %% --------------------------------------------------------
@@ -404,26 +404,26 @@ $1/C$ & Жорсткість $k$ & Повертальна дія \\
 $N = 0$, і енергія зберігається. При цьому заряд на конденсаторі і струм у
 колі змінюються за законом
 \begin{equation}\label{eq:lossless_oscillations}
-	q(t) = q_0 \cos(\omega_0 t), \qquad
-	I(t) = \dot{q}(t) = -I_0 \sin(\omega_0 t) = I_0 \cos\left(\omega_0 t + \frac{\pi}{2}\right),
+	q(t) = q_m \cos(\omega_0 t), \qquad
+	I(t) = \dot{q}(t) = -I_m \sin(\omega_0 t) = I_m \cos\left(\omega_0 t + \frac{\pi}{2}\right),
 \end{equation}
-де введена амплітуда струму $I_0 = \omega_0 q_0$. Звідси видно, що фази $q(t)$ і
+де введена амплітуда струму $I_m = \omega_0 q_m$. Звідси видно, що фази $q(t)$ і
 $I(t)$ зсунуті на $\pi/2$. Відповідно для доданків в енергії знаходимо:
 \begin{equation}\label{eq:WL_WC_oscillations}
-	W_L = \frac{LI^2}{2} = \frac{LI_0^2}{2} \cos^2\left(\omega_0 t + \frac{\pi}{2}\right) = \frac{LI_0^2}{2} \frac{1 - \cos(2\omega_0 t)}{2},
+	W_L = \frac{LI^2}{2} = \frac{LI_m^2}{2} \cos^2\left(\omega_0 t + \frac{\pi}{2}\right) = \frac{LI_m^2}{2} \frac{1 - \cos(2\omega_0 t)}{2},
 \end{equation}
 \begin{equation}\label{eq:WC_oscillations}
-	W_C = \frac{q^2}{2C} = \frac{q_0^2}{2C} \cos^2(\omega_0 t) = \frac{q_0^2}{2C} \frac{1 + \cos(2\omega_0 t)}{2}.
+	W_C = \frac{q^2}{2C} = \frac{q_m^2}{2C} \cos^2(\omega_0 t) = \frac{q_m^2}{2C} \frac{1 + \cos(2\omega_0 t)}{2}.
 \end{equation}
 Очевидно, що
 \begin{equation}\label{eq:energy_conservation}
 	\tcbhighmath{
-		W_L + W_C = \frac{LI^2}{2} + \frac{q^2}{2C} = \frac{LI_0^2}{2} + \frac{q_0^2}{2C} = \const.
+		W_L + W_C = \frac{LI^2}{2} + \frac{q^2}{2C} = \frac{LI_m^2}{2} + \frac{q_m^2}{2C} = \const.
 	}
 \end{equation}
-Крім того, в силу співвідношень $I_0 = \omega_0 q_0$, $\omega_0^2 = 1/LC$ отримуємо
+Крім того, в силу співвідношень $I_m = \omega_0 q_m$, $\omega_0^2 = 1/LC$ отримуємо
 \begin{equation}\label{eq:energy_amplitudes}
-	W_L^{(0)} = \frac{LI_0^2}{2} = \frac{L\omega_0^2}{2} q_0^2 = \frac{q_0^2}{2C} = W_C^{(0)}.
+	W_L^{(0)} = \frac{LI_m^2}{2} = \frac{L\omega_0^2}{2} q_m^2 = \frac{q_m^2}{2C} = W_C^{(0)}.
 \end{equation}
 Таким чином, запаси енергії в котушці індуктивності і в конденсаторі здійснюють коливання з однаковою амплітудою, але в протифазі,
 причому періодично відбувається повне перекачування енергії з індуктивності в ємність і назад.
@@ -441,7 +441,7 @@ $I(t)$ зсунуті на $\pi/2$. Відповідно для доданків
 \paragraph*{Логарифмічний декремент згасання.}
 Розглянемо затухаючі коливання (рис.~\ref{tikz:damped}):
 \begin{equation}\label{eq:damped_general_2}
-	q(t) = A(t)\cos(\omega t + \varphi_0), \qquad A(t) = q_0 e^{-\gamma t}.
+	q(t) = A(t)\cos(\omega t + \varphi_0), \qquad A(t) = q_m e^{-\gamma t}.
 \end{equation}
 Виберемо два послідовних максимуми: $q_n$, $q_{n+1}$. Величина
 \begin{equation}\label{eq:log_decrement}
@@ -491,8 +491,8 @@ $I(t)$ зсунуті на $\pi/2$. Відповідно для доданків
 Максимуми функції $q(t)$ визначаються з умови $\dot{q} = 0$. З виразу \eqref{eq:damped_general_2} знаходимо
 \begin{equation}\label{eq:derivative_maxima}
 	\begin{aligned}
-		\dot{q} & = q_0 e^{-\gamma t}\left[-\gamma \cos(\omega t + \varphi_0) - \omega \sin(\omega t + \varphi_0)\right] = \\
-		        & = -q_0 \omega_0 e^{-\gamma t} \cos(\omega t + \varphi_0 + \varphi_1).
+		\dot{q} & = q_m e^{-\gamma t}\left[-\gamma \cos(\omega t + \varphi_0) - \omega \sin(\omega t + \varphi_0)\right] = \\
+		        & = -q_m \omega_0 e^{-\gamma t} \cos(\omega t + \varphi_0 + \varphi_1).
 	\end{aligned}
 \end{equation}
 Додатковий доданок $\varphi_1$ у фазі такий, що
@@ -586,11 +586,11 @@ $e^{\gamma T}$ разів. При цьому згідно з \eqref{eq:total_ene
 що змінюється за гармонічним законом:
 \begin{equation}\label{eq:forced_equation}
 	L\ddot{q} + R\dot{q} + \frac{1}{C}q = \emf(t), \qquad
-	\emf(t) = \emf_0 \cos\omega t.
+	\emf(t) = \emf_m \cos\omega t.
 \end{equation}
 Переходячи від заряду на конденсаторі до напруги ($V = q/C$) і використовуючи введені раніше позначення \eqref{eq:definitions} ($2\gamma = R/L$, $\omega_0^2 = 1/LC$), перепишемо це рівняння у вигляді
 \begin{equation}\label{eq:forced_equation_V}
-	\ddot{V} + 2\gamma\dot{V} + \omega_0^2 V = \omega_0^2 \emf_0 \cos\omega t.
+	\ddot{V} + 2\gamma\dot{V} + \omega_0^2 V = \omega_0^2 \emf_m \cos\omega t.
 \end{equation}
 
 \begin{Attention}
@@ -623,12 +623,12 @@ $e^{\gamma T}$ разів. При цьому згідно з \eqref{eq:total_ene
 	V(t) = \operatorname{Re}\hat{V}(t);
 \end{equation}
 \begin{equation}\label{eq:complex_EMF}
-	\emf(t) \to \hat{\emf}(t) = \emf_0 e^{i\omega t}, \qquad
+	\emf(t) \to \hat{\emf}(t) = \emf_m e^{i\omega t}, \qquad
 	\emf(t) = \operatorname{Re}\hat{\emf}(t).
 \end{equation}
 Тоді замість \eqref{eq:forced_equation_V} будемо мати справу з рівнянням
 \begin{equation}\label{eq:complex_forced}
-	\ddot{\hat{V}} + 2\gamma\dot{\hat{V}} + \omega_0^2 \hat{V} = \emf_0 e^{i\omega t}.
+	\ddot{\hat{V}} + 2\gamma\dot{\hat{V}} + \omega_0^2 \hat{V} = \emf_m e^{i\omega t}.
 \end{equation}
 Розв'язок останнього рівняння будемо шукати у вигляді
 \begin{equation}\label{eq:solution_decomposition}
@@ -638,7 +638,7 @@ $e^{\gamma T}$ разів. При цьому згідно з \eqref{eq:total_ene
 \begin{equation}\label{eq:forced_system}
 	\begin{cases}
 		\ddot{\hat{V}}_s + 2\gamma\dot{\hat{V}}_s + \omega_0^2 \hat{V}_s = 0, \\[6pt]
-		\ddot{\hat{V}}_f + 2\gamma\dot{\hat{V}}_f + \omega_0^2 \hat{V}_f = \emf_0 e^{i\omega t}.
+		\ddot{\hat{V}}_f + 2\gamma\dot{\hat{V}}_f + \omega_0^2 \hat{V}_f = \emf_m e^{i\omega t}.
 	\end{cases}
 \end{equation}
 
@@ -647,16 +647,16 @@ $e^{\gamma T}$ разів. При цьому згідно з \eqref{eq:total_ene
 
 Будемо шукати розв'язок у вигляді
 \begin{equation}\label{eq:ansatz_forced}
-	\hat{V}_f(t) = \hat{V}_0 e^{i\Omega t}.
+	\hat{V}_f(t) = \hat{V}_m e^{i\Omega t}.
 \end{equation}
 Підстановка цього виразу в друге рівняння в \eqref{eq:forced_system} дає
 \begin{equation}\label{eq:substitution_forced}
-	\left(\omega_0^2 - \Omega^2 + 2i\gamma\Omega\right)\hat{V}_0 e^{i\Omega t} = \emf_0 e^{i\omega t}.
+	\left(\omega_0^2 - \Omega^2 + 2i\gamma\Omega\right)\hat{V}_m e^{i\Omega t} = \emf_m e^{i\omega t}.
 \end{equation}
 Оскільки така рівність повинна виконуватися в будь-який момент часу, то звідси випливає $\Omega = \omega$ і
 \begin{equation}\label{eq:V0_frequency_response}
 	\tcbhighmath{
-		\hat{V}_0 = \frac{\omega_0^2}{\omega_0^2 - \omega^2 + 2i\gamma\omega}\emf_0.
+		\hat{V}_m = \frac{\omega_0^2}{\omega_0^2 - \omega^2 + 2i\gamma\omega}\emf_m.
 	}
 \end{equation}
 Отримана залежність називається \emphx{частотною характеристикою} контуру.
@@ -675,8 +675,8 @@ $e^{\gamma T}$ разів. При цьому згідно з \eqref{eq:total_ene
 З урахуванням цього розв'язок, що описує вимушені коливання напруги, набирає вигляду
 \begin{equation}\label{eq:forced_voltage}
 	\tcbhighmath{
-		V_f = V_0 \cos(\omega t + \varphi_0), \qquad
-		V_0 = \frac{\omega_0^2}{\sqrt{\left(\omega_0^2 - \omega^2\right)^2 + 4\gamma^2\omega^2}}\emf_0.
+		V_f = V_m \cos(\omega t + \varphi_0), \qquad
+		V_m = \frac{\omega_0^2}{\sqrt{\left(\omega_0^2 - \omega^2\right)^2 + 4\gamma^2\omega^2}}\emf_m.
 	}
 \end{equation}
 
@@ -696,7 +696,7 @@ $e^{\gamma T}$ разів. При цьому згідно з \eqref{eq:total_ene
 		\begin{axis}[
 				axis lines=center,
 				xlabel={$\omega$},
-				ylabel={$V_0$},
+				ylabel={$V_m$},
 				x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
 				y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
 				xmin=0, xmax=2.5,
@@ -727,7 +727,7 @@ $e^{\gamma T}$ разів. При цьому згідно з \eqref{eq:total_ene
 
 		\end{axis}
 	\end{tikzpicture}
-	\caption{Амплітудно-частотна характеристика контуру. Залежність амплітуди вимушених коливань $V_0$ від частоти $\omega$ зовнішньої ЕРС.}
+	\caption{Амплітудно-частотна характеристика контуру. Залежність амплітуди вимушених коливань $V_m$ від частоти $\omega$ зовнішньої ЕРС.}
 	\label{tikz:amplitude_response}
 \end{figure}
 
@@ -738,10 +738,10 @@ $e^{\gamma T}$ разів. При цьому згідно з \eqref{eq:total_ene
 
 Якщо затухання відсутнє: $\gamma = 0$, то резонансна частота збігається з власною частотою осцилятора: $\omega_m = \omega_0$. При цьому
 \begin{equation}\label{eq:resonance_no_damping}
-	V_0 = \frac{\omega_0^2}{\left|\omega_0^2 - \omega^2\right|}\emf_0.
+	V_m = \frac{\omega_0^2}{\left|\omega_0^2 - \omega^2\right|}\emf_m.
 \end{equation}
 Якщо ж $\gamma \neq 0$, то резонансну частоту можна знайти з \eqref{eq:forced_voltage}, поклавши
-$dV_0/d\omega = 0$:
+$dV_m/d\omega = 0$:
 \begin{equation}\label{eq:resonance_frequency}
 	\tcbhighmath{
 		\omega_m = \sqrt{\omega_0^2 - 2\gamma^2}.
@@ -816,16 +816,16 @@ $dV_0/d\omega = 0$:
 Згідно з \eqref{eq:forced_voltage} резонансна частота $\omega_m \approx \omega_0$. Максимум амплітуди досягається при $\omega \approx \omega_0$ і становить
 \begin{equation}\label{eq:Vmax}
 	\tcbhighmath{
-		V_{\max} \approx \frac{\omega_0}{2\gamma}\emf_0.
+		V_{\max} \approx \frac{\omega_0}{2\gamma}\emf_m.
 	}
 \end{equation}
 
-При $\omega \to 0$ амплітуда $V_0$ прямує до границі
+При $\omega \to 0$ амплітуда $V_m$ прямує до границі
 \begin{equation}\label{eq:static_limit}
-	V_{\text{ст}} = \emf_0.
+	V_{\text{ст}} = \emf_m.
 \end{equation}
 Цей результат відображає відгук на статичну дію
-$\emf = \emf_0 = \const$ і при $\dot{V} = 0$, $\ddot{V} = 0$ прямо випливає з \eqref{eq:forced_equation_V}.
+$\emf = \emf_m = \const$ і при $\dot{V} = 0$, $\ddot{V} = 0$ прямо випливає з \eqref{eq:forced_equation_V}.
 
 \begin{figure}[h!]
 	\centering
@@ -844,7 +844,7 @@ $\emf = \emf_0 = \const$ і при $\dot{V} = 0$, $\ddot{V} = 0$ прямо ви
 					},
 				axis lines=center,
 				xlabel={$\omega$},
-				ylabel={$V_0$},
+				ylabel={$V_m$},
 				x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
 				y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
 				extra y ticks={Vst, Vlevel, Vmax},
@@ -905,14 +905,14 @@ $\emf = \emf_0 = \const$ і при $\dot{V} = 0$, $\ddot{V} = 0$ прямо ви
 $\omega_2$ --- частоти нижче і вище резонансної, при яких вона зменшується в
 $\sqrt{2}$ разів:
 \begin{equation}\label{eq:half_power}
-	V_0(\omega) = V_{\max}/\sqrt{2}.
+	V_m(\omega) = V_{\max}/\sqrt{2}.
 \end{equation}
 
 Будемо вважати затухання слабким. Оскільки при цьому $\omega_m \approx \omega_0$,
-$V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forced_voltage} для знаходження шуканих частот маємо рівняння
+$V_{\max} \approx (\omega_0/2\gamma)\emf_m$, то згідно з \eqref{eq:forced_voltage} для знаходження шуканих частот маємо рівняння
 \begin{equation}\label{eq:half_power_equation}
-	\frac{\emf_0}{\sqrt{\left(\omega_0^2 - \omega^2\right)^2 + 4\gamma^2\omega^2}}
-	= \frac{1}{\sqrt{2}}\frac{\emf_0}{2\gamma\omega_0},
+	\frac{\emf_m}{\sqrt{\left(\omega_0^2 - \omega^2\right)^2 + 4\gamma^2\omega^2}}
+	= \frac{1}{\sqrt{2}}\frac{\emf_m}{2\gamma\omega_0},
 \end{equation}
 або
 \begin{equation}\label{eq:half_power_squared}
@@ -963,11 +963,11 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 
 У попередньому розділі ми знайшли комплексну амплітуду напруги на конденсаторі~\eqref{eq:V0_frequency_response}. Тепер нас цікавить не напруга, а струм у колі. Оскільки $I = \dot{q}$ і $V = q/C$, комплексні амплітуди цих величин пов'язані співвідношенням
 \begin{equation}\label{eq:I_from_V}
-	\hat{I}_0 = i\omega C \hat{V}_0.
+	\hat{I}_m = i\omega C \hat{V}_m.
 \end{equation}
 Підставляючи сюди \eqref{eq:V0_frequency_response} і враховуючи, що $\omega_0^2 = 1/(LC)$, отримуємо
 \begin{equation}\label{eq:I0_explicit}
-	\hat{I}_0 = \frac{i\omega / L}{\omega_0^2 - \omega^2 + 2i\gamma\omega}\emf_0.
+	\hat{I}_m = \frac{i\omega / L}{\omega_0^2 - \omega^2 + 2i\gamma\omega}\emf_m.
 \end{equation}
 Перепишемо знаменник у вигляді
 \begin{equation}\label{eq:denominator_impedance}
@@ -976,7 +976,7 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 що легко перевірити розкриттям дужок. Тоді
 \begin{equation}\label{eq:Ohm_complex_derived}
 	\tcbhighmath{
-		\hat{I}_0 = \frac{\emf_0}{R + i\left(\omega L - \dfrac{1}{\omega C}\right)}.
+		\hat{I}_m = \frac{\emf_m}{R + i\left(\omega L - \dfrac{1}{\omega C}\right)}.
 	}
 \end{equation}
 Отже, комплексна амплітуда струму пов'язана з комплексною амплітудою ЕРС тим самим співвідношенням, що й у законі Ома для постійного струму, --- але замість активного опору $R$ тут стоїть величина
@@ -988,7 +988,7 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 яка називається \emphx{імпедансом}\footnote{Імпеданс --- від англ. \emph{impede} --- метати, перешкоджати.}, або \emphx{комплексним опором}, електричного кола. У компактному вигляді отримане співвідношення записують як
 \begin{equation}\label{eq:Ohm_complex}
 	\tcbhighmath{
-		\hat{I}_0 Z = \emf_0,
+		\hat{I}_m Z = \emf_m,
 	}
 \end{equation}
 і називають \emphx{законом Ома в комплексній формі}: комплексна амплітуда струму дорівнює комплексній амплітуді ЕРС, поділеній на імпеданс. Це той самий закон Ома, що й для постійного струму, лише записаний для комплексних амплітуд гармонічних величин.
@@ -1043,13 +1043,13 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 \end{equation}
 Це співвідношення за формою повністю збігається з правилом складання опорів для послідовного кола постійного струму: там теж $R = R_1 + R_2 + \dots$. Різниця лише в тому, що тепер опори --- комплексні величини, і замість простого додавання дійсних чисел доводиться додавати комплексні, враховуючи їхні фази. Саме в цьому й полягає основна зручність методу комплексних амплітуд: усі правила для кіл постійного струму зберігають свою форму, якщо замінити $R$ на $Z$.
 
-Запишемо струм у вигляді $I = I_0 e^{i\omega t}$ і помножимо його на імпеданс кожного елемента:
+Запишемо струм у вигляді $I = I_m e^{i\omega t}$ і помножимо його на імпеданс кожного елемента:
 \begin{align}
-	U_R &= R I_0 e^{i\omega t}, \label{eq:UR_phase} \\[4pt]
-	U_C &= -\frac{i}{\omega C} I_0 e^{i\omega t}
-	      = \frac{I_0}{\omega C} e^{i(\omega t - \pi/2)}, \label{eq:UC_phase} \\[4pt]
-	U_L &= i\omega L I_0 e^{i\omega t}
-	      = \omega L I_0 e^{i(\omega t + \pi/2)}. \label{eq:UL_phase}
+	U_R &= R I_m e^{i\omega t}, \label{eq:UR_phase} \\[4pt]
+	U_C &= -\frac{i}{\omega C} I_m e^{i\omega t}
+	      = \frac{I_m}{\omega C} e^{i(\omega t - \pi/2)}, \label{eq:UC_phase} \\[4pt]
+	U_L &= i\omega L I_m e^{i\omega t}
+	      = \omega L I_m e^{i(\omega t + \pi/2)}. \label{eq:UL_phase}
 \end{align}
 Звідси видно, що напруга на резисторі збігається за фазою зі струмом, на конденсаторі --- відстає на $\pi/2$, а на котушці --- випереджає на $\pi/2$. Множення на $i$ у комплексній площині означає поворот на $+\pi/2$, а на $-i$ --- на $-\pi/2$; саме тому реактивні елементи зсувають фазу, а активний --- ні.
 
@@ -1059,7 +1059,7 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 
 На рис.~\ref{tikz:vector_diagram_full} показано векторну діаграму для послідовного $LCR$-контуру. Вектор струму $I$ напрямлений уздовж дійсної осі; доданки $RI$, $i\omega L I$ і $-iI/(\omega C)$ утворюють прямокутний трикутник, гіпотенуза якого дорівнює вектору ЕРС $\emf$. З діаграми відразу видно, що
 \[
-	\emf_0^2 = R^2 I_0^2 + \left(\omega L - \frac{1}{\omega C}\right)^2 I_0^2,
+	\emf_m^2 = R^2 I_m^2 + \left(\omega L - \frac{1}{\omega C}\right)^2 I_m^2,
 \]
 --- тобто векторна діаграма дає той самий результат, що й алгебраїчний підхід, але без обчислень. Саме тому нею зручно користуватися для швидкої якісної оцінки: вона показує, як співвідносяться між собою напруги на елементах і як зсунуті їхні фази.
 
@@ -1129,15 +1129,15 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 \end{equation}
 Для знаходження середнього врахуємо, що
 \begin{equation}\label{eq:complex_amplitudes_time}
-	\hat{\emf}(t) = \emf_0 e^{i\omega t}, \qquad
-	\hat{I}(t) = I_0 e^{i\omega t} e^{i\varphi_0}
+	\hat{\emf}(t) = \emf_m e^{i\omega t}, \qquad
+	\hat{I}(t) = I_m e^{i\omega t} e^{i\varphi_0}
 \end{equation}
-(амплітуди $\emf_0$ і $I_0$ тут вважаються дійсними величинами). Це
+(амплітуди $\emf_m$ і $I_m$ тут вважаються дійсними величинами). Це
 означає, що доданок $\hat{\emf}(t)\hat{I}(t)$ осцилює з частотою $2\omega$ і його середнє
 значення за період $T = 2\pi/\omega$ рівне нулю:
 \begin{equation}\label{eq:fast_oscillating_term}
-	\overline{\hat{\emf}(t)\hat{I}(t)} = \emf_0 I_0 e^{i\varphi_0} \overline{\exp[2i\omega t]}
-	= \emf_0 I_0 e^{i\varphi_0} \frac{1}{T}\int\limits_{t}^{t+T} \exp[2i\omega t_1] \, dt_1 = 0.
+	\overline{\hat{\emf}(t)\hat{I}(t)} = \emf_m I_m e^{i\varphi_0} \overline{\exp[2i\omega t]}
+	= \emf_m I_m e^{i\varphi_0} \frac{1}{T}\int\limits_{t}^{t+T} \exp[2i\omega t_1] \, dt_1 = 0.
 \end{equation}
 Аналогічно встановлюється, що
 \begin{equation}\label{eq:conjugate_term}
@@ -1152,14 +1152,14 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 З урахуванням зсуву фаз між струмом і ЕРС звідси знаходимо
 \begin{equation}\label{eq:average_power_cos}
 	\tcbhighmath{
-		\overline{Q} = \frac{1}{2}\emf_0 I_0 \operatorname{Re}\left[e^{-i\varphi_0}\right]
-		= \frac{1}{2}\emf_0 I_0 \cos\varphi_0.
+		\overline{Q} = \frac{1}{2}\emf_m I_m \operatorname{Re}\left[e^{-i\varphi_0}\right]
+		= \frac{1}{2}\emf_m I_m \cos\varphi_0.
 	}
 \end{equation}
 Введемо ефективні значення амплітуд напруги і струму:
 \begin{equation}\label{eq:effective_values}
-	I_{\text{eff}} = \sqrt{\overline{I^2(t)}} = \frac{1}{\sqrt{2}}I_0, \qquad
-	\emf_{\text{eff}} = \sqrt{\overline{\emf^2(t)}} = \frac{1}{\sqrt{2}}\emf_0.
+	I_{\text{eff}} = \sqrt{\overline{I^2(t)}} = \frac{1}{\sqrt{2}}I_m, \qquad
+	\emf_{\text{eff}} = \sqrt{\overline{\emf^2(t)}} = \frac{1}{\sqrt{2}}\emf_m.
 \end{equation}
 Тоді співвідношення \eqref{eq:average_power_cos} набирає вигляду
 \begin{equation}\label{eq:average_power_effective}
@@ -1171,12 +1171,12 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 випадку резонансу, коли $\tg\varphi_0 = 0$, споживана потужність максимальна: $\overline{Q} = \emf_{\text{eff}} I_{\text{eff}}$.
 
 Перепишемо співвідношення \eqref{eq:average_power_complex}, враховуючи закон Ома: $\emf = IZ$, а
-також рівності $\operatorname{Re} Z = R$, $|\hat{I}|^2 = I_0^2$:
+також рівності $\operatorname{Re} Z = R$, $|\hat{I}|^2 = I_m^2$:
 \begin{equation}\label{eq:average_power_resistance}
 	\tcbhighmath{
 		\overline{Q} = \frac{1}{2}\operatorname{Re}\left(\hat{\emf}(t)\hat{I}^*(t)\right)
 		= \frac{1}{2}\operatorname{Re}\left(Z|\hat{I}|^2\right)
-		= \frac{1}{2}RI_0^2 = RI_{\text{eff}}^2.
+		= \frac{1}{2}RI_m^2 = RI_{\text{eff}}^2.
 	}
 \end{equation}
 Остання формула показує, що за відсутності активного опору змінний струм роботи не виконує.
@@ -1193,7 +1193,7 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_0$, то згідно з \eqref{eq:forc
 
 
 \emphx{Резонансом напруг} називають резонанс у послідовному
-$LCR$-кон\-ту\-рі (рис.~\ref{tikz:LCR_circuit}) при зміні частоти коливань ЕРС. Згідно з \eqref{eq:Ohm_complex_derived} максимум амплітуди струму $I_0(\omega)$ досягається на частоті $\omega = \omega_0 = 1/\sqrt{LC}$ і становить $I_{0,\max} = \emf_0/R$ (рис.~\ref{tikz:current_resonance}). Це випливає з того, що на частоті $\omega_0$ індуктивний і ємнісний імпеданси точно компенсують один одного:
+$LCR$-кон\-ту\-рі (рис.~\ref{tikz:LCR_circuit}) при зміні частоти коливань ЕРС. Згідно з \eqref{eq:Ohm_complex_derived} максимум амплітуди струму $I_m(\omega)$ досягається на частоті $\omega = \omega_0 = 1/\sqrt{LC}$ і становить $I_{m,\max} = \emf_m/R$ (рис.~\ref{tikz:current_resonance}). Це випливає з того, що на частоті $\omega_0$ індуктивний і ємнісний імпеданси точно компенсують один одного:
 \begin{equation}\label{eq:impedance_compensation_2}
 	Z_L + Z_C = \left(i\omega L + \frac{1}{i\omega C}\right)_{\omega = 1/\sqrt{LC}} = 0.
 \end{equation}
@@ -1215,7 +1215,7 @@ $LCR$-кон\-ту\-рі (рис.~\ref{tikz:LCR_circuit}) при зміні ча
     % --- 2. НАЛАШТУВАННЯ ОСЕЙ ---
     axis lines=center,
     xlabel={$\omega$},
-    ylabel={$I_0$},
+    ylabel={$I_m$},
     x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
     y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
     % Межі графіку
@@ -1245,13 +1245,13 @@ $LCR$-кон\-ту\-рі (рис.~\ref{tikz:LCR_circuit}) при зміні ча
 	\label{tikz:current_resonance}
 \end{SCfigure}
 
-В результаті імпеданс контуру зводиться до активного опору $R$, тож амплітуда струму досягає максимуму $I_{0,\max} = \emf_0/R$. Напруга на конденсаторі при цьому дорівнює:
+В результаті імпеданс контуру зводиться до активного опору $R$, тож амплітуда струму досягає максимуму $I_{m,\max} = \emf_m/R$. Напруга на конденсаторі при цьому дорівнює:
 \begin{equation*}
-	V_{C,\max} = \frac{I_{0,\max}}{\omega_0 C} = \frac{\emf_0}{\omega_0 C R}.
+	V_{C,\max} = \frac{I_{m,\max}}{\omega_0 C} = \frac{\emf_m}{\omega_0 C R}.
 \end{equation*}
 Враховуючи, що $\omega_0 = 1/\sqrt{LC}$, маємо $\omega_0 C = \sqrt{C/L}$, звідки
 \begin{equation*}
-	V_{C,\max} = \frac{\emf_0}{R}\sqrt{\frac{L}{C}} = Q\,\emf_0,
+	V_{C,\max} = \frac{\emf_m}{R}\sqrt{\frac{L}{C}} = Q\,\emf_m,
 \end{equation*}
 де $Q = \frac{1}{R}\sqrt{\frac{L}{C}}$ --- добротність контуру \eqref{eq:Q_LCR}. Отже, напруга на конденсаторі в $Q$ разів перевищує напругу джерела.
 тобто в $Q$ разів перевищує напругу джерела. Те саме стосується й напруги на котушці. Саме тому це явище називають \emphx{резонансом напруг}.
@@ -1300,7 +1300,7 @@ thick]
 		node[midway, right] {$I$};
 
 	\end{circuitikz}
-	\caption{Паралельний $LCR$-контур, що включає джерело заданого змінного струму $I(t) = I_0 \cos\omega t$.}
+	\caption{Паралельний $LCR$-контур, що включає джерело заданого змінного струму $I(t) = I_m \cos\omega t$.}
 	\label{tikz:parallel_circuit}
 \end{SCfigure}
 
@@ -1332,14 +1332,14 @@ thick]
 
 Амплітуда струму через активний опір дорівнює
 \begin{equation}\label{eq:IR_amplitude}
-	I_{R_0} = \frac{I_0}{\sqrt{1 + \left(\dfrac{R}{\omega L} - \omega C R\right)^2}}
-	= \frac{I_0}{\sqrt{1 + \dfrac{4\gamma^2}{\omega^2}\left(1 - \dfrac{\omega^2}{\omega_0^2}\right)^2}}.
+	I_{R_0} = \frac{I_m}{\sqrt{1 + \left(\dfrac{R}{\omega L} - \omega C R\right)^2}}
+	= \frac{I_m}{\sqrt{1 + \dfrac{4\gamma^2}{\omega^2}\left(1 - \dfrac{\omega^2}{\omega_0^2}\right)^2}}.
 \end{equation}
-Звідси видно, що $I_{R_0}$ має максимум при $\omega = \omega_0$ і становить $(I_{R0})_{\max} = I_0$. Це означає, що на резонансній частоті весь струм від джерела тече тільки через активний опір. Справа в тому, що опір блока з паралельно з'єднаних конденсатора й котушки на цій частоті обертається в нескінченність, і струм через нього не тече.
+Звідси видно, що $I_{R_0}$ має максимум при $\omega = \omega_0$ і становить $(I_{R0})_{\max} = I_m$. Це означає, що на резонансній частоті весь струм від джерела тече тільки через активний опір. Справа в тому, що опір блока з паралельно з'єднаних конденсатора й котушки на цій частоті обертається в нескінченність, і струм через нього не тече.
 
 Амплітуди струмів через котушку й конденсатор на резонансній частоті дорівнюють
 \begin{equation}\label{eq:resonance_currents_Q}
-	I_{L0} = I_{C0} = \frac{I_0}{Q},
+	I_{L0} = I_{C0} = \frac{I_m}{Q},
 \end{equation}
 де
 \begin{equation}\label{eq:Q_parallel}
@@ -1352,7 +1352,7 @@ thick]
 Якщо замість джерела струму використовувати джерело ЕРС, то в зовнішньому колі на частоті $\omega_0$ спостерігався б \emphx{мінімум} струму, а не максимум, як у послідовному контурі. Таке явище називають \emphx{антирезонансом}.
 
 \begin{Attention}
-	Резонанс струмів --- це дзеркальне відображення резонансу напруг. Якщо там різко зростали напруги на реактивних елементах, то тут різко зростають \emphx{струми} в котушці й конденсаторі: на резонансі $I_{L0} = I_{C0} = I_0/Q$, тобто при високій добротності струм у $LC$-контурі в багато разів перевищує струм джерела. Це явище широко використовується в індукційних печах: паралельно котушці, що створює змінне магнітне поле, підключають ємність, і на резонансі струм у котушці зростає в багато разів, тоді як струм у підвідних проводах залишається відносно невеликим. Той самий принцип --- лише в мініатюрі --- лежить в основі побутових індукційних варильних поверхонь і безконтактної зарядки телефонів: замість тонни розплавленого металу тут вистачає котушки під склокерамічною плитою чи в зарядній панелі.
+	Резонанс струмів --- це дзеркальне відображення резонансу напруг. Якщо там різко зростали напруги на реактивних елементах, то тут різко зростають \emphx{струми} в котушці й конденсаторі: на резонансі $I_{L0} = I_{C0} = I_m/Q$, тобто при високій добротності струм у $LC$-контурі в багато разів перевищує струм джерела. Це явище широко використовується в індукційних печах: паралельно котушці, що створює змінне магнітне поле, підключають ємність, і на резонансі струм у котушці зростає в багато разів, тоді як струм у підвідних проводах залишається відносно невеликим. Той самий принцип --- лише в мініатюрі --- лежить в основі побутових індукційних варильних поверхонь і безконтактної зарядки телефонів: замість тонни розплавленого металу тут вистачає котушки під склокерамічною плитою чи в зарядній панелі.
 
 	У радіотехніці резонанс струмів використовують у приймальних пристроях для виділення слабкого сигналу у вузькому спектральному інтервалі поблизу резонансної частоти: паралельний $LC$-контур має на цій частоті великий опір, тому напруга на ньому максимальна, а сигнали інших частот пригнічуються.
 \end{Attention}
@@ -1414,7 +1414,7 @@ thick]
 %%% --------------------------------------------------------
 
 \begin{Example}{Приклад розрахунку розгалуженого кола}
-Застосуємо правила Кірхгофа до конкретного розгалуженого кола (рис.~\ref{tikz:example_branched}): джерело ЕРС $\emf = \emf_0 e^{i\omega t}$ навантажене на паралельно з'єднані резистор $R$ і конденсатор $C$, послідовно з якими ввімкнено котушку $L$. Позначимо вузол, у якому сходяться три вітки, буквою $A$, а другий вузол --- буквою $B$. Контур I містить джерело, котушку й резистор; контур II --- джерело, котушку й конденсатор.
+Застосуємо правила Кірхгофа до конкретного розгалуженого кола (рис.~\ref{tikz:example_branched}): джерело ЕРС $\emf = \emf_m e^{i\omega t}$ навантажене на паралельно з'єднані резистор $R$ і конденсатор $C$, послідовно з якими ввімкнено котушку $L$. Позначимо вузол, у якому сходяться три вітки, буквою $A$, а другий вузол --- буквою $B$. Контур I містить джерело, котушку й резистор; контур II --- джерело, котушку й конденсатор.
 
 \begin{center}%[h!]
 	\centering
@@ -1506,25 +1506,25 @@ thick]
 \end{equation}
 Підставляючи \eqref{eq:example_parallel} і \eqref{eq:example_total} у \eqref{eq:example_current}, отримуємо остаточно
 \begin{equation}\label{eq:example_current_explicit}
-	I = \frac{\emf_0 e^{i\omega t}}{i\omega L + \dfrac{R}{1 + i\omega RC}}
-	  = \emf_0 e^{i\omega t}\,\frac{1 + i\omega RC}{R(1 - \omega^2 LC) + i\omega L}.
+	I = \frac{\emf_m e^{i\omega t}}{i\omega L + \dfrac{R}{1 + i\omega RC}}
+	  = \emf_m e^{i\omega t}\,\frac{1 + i\omega RC}{R(1 - \omega^2 LC) + i\omega L}.
 \end{equation}
 Напруга на паралельній ділянці:
 \begin{equation*}
 	U_{RC} = I\,Z_{RC}
-	       = \frac{\emf_0 e^{i\omega t}\,R}{R(1 - \omega^2 LC) + i\omega L}.
+	       = \frac{\emf_m e^{i\omega t}\,R}{R(1 - \omega^2 LC) + i\omega L}.
 \end{equation*}
 Струми через резистор і конденсатор:
 \begin{equation*}
-	I_R = \frac{U_{RC}}{R} = \frac{\emf_0 e^{i\omega t}}{R(1 - \omega^2 LC) + i\omega L},
+	I_R = \frac{U_{RC}}{R} = \frac{\emf_m e^{i\omega t}}{R(1 - \omega^2 LC) + i\omega L},
 \end{equation*}
 \begin{equation*}
-	I_C = i\omega C\,U_{RC} = \frac{i\omega RC\,\emf_0 e^{i\omega t}}{R(1 - \omega^2 LC) + i\omega L}.
+	I_C = i\omega C\,U_{RC} = \frac{i\omega RC\,\emf_m e^{i\omega t}}{R(1 - \omega^2 LC) + i\omega L}.
 \end{equation*}
 
 Перевіримо виконання першого правила Кірхгофа \eqref{eq:example_KCL}:
 \begin{equation*}
-	I_R + I_C = \frac{\emf_0 e^{i\omega t}(1 + i\omega RC)}{R(1 - \omega^2 LC) + i\omega L} = I,
+	I_R + I_C = \frac{\emf_m e^{i\omega t}(1 + i\omega RC)}{R(1 - \omega^2 LC) + i\omega L} = I,
 \end{equation*}
 що збігається з \eqref{eq:example_current_explicit}. Отже, розв'язок задовольняє обидва правила Кірхгофа.
 
@@ -2405,11 +2405,11 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 	\label{pic:ThreePhaseGenerator}
 \end{figure}
 
-Під час обертання ротора магнітний потік, що перетинає витки обмоток статора, змінюється за гармонічним законом. Згідно із законом електромагнітної індукції Фарадея, в обмотках індукуються електрорушійні сили (ЕРС) однаковості амплітуди $E_m$ та частоти $\omega$, але із часовим зсувом у $120^\circ$ ($2\pi/3$):
+Під час обертання ротора магнітний потік, що перетинає витки обмоток статора, змінюється за гармонічним законом. Згідно із законом електромагнітної індукції Фарадея, в обмотках індукуються електрорушійні сили (ЕРС) однаковості амплітуди $\emf_m$ та частоти $\omega$, але із часовим зсувом у $120^\circ$ ($2\pi/3$):
 \begin{align}
-	e_1(t) &= E_m \sin(\omega t), \notag \\
-	e_2(t) &= E_m \sin\left(\omega t - \frac{2\pi}{3}\right), \label{eq:emf_system} \\
-	e_3(t) &= E_m \sin\left(\omega t - \frac{4\pi}{3}\right) = E_m \sin\left(\omega t + \frac{2\pi}{3}\right). \notag
+	\emf_1(t) &= \emf_m \sin(\omega t), \notag \\
+	\emf_2(t) &= \emf_m \sin\left(\omega t - \frac{2\pi}{3}\right), \label{eq:emf_system} \\
+	\emf_3(t) &= \emf_m \sin\left(\omega t - \frac{4\pi}{3}\right) = \emf_m \sin\left(\omega t + \frac{2\pi}{3}\right). \notag
 \end{align}
 
 Графічне зображення симетричної трифазної системи ЕРС у часовій області наведено на рис.~\ref{pic:ThreePhaseWaveforms}.
@@ -2422,26 +2422,26 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 			height=6.5cm,
 			axis lines=middle,
 			xlabel={$\omega t$},
-			ylabel={$e(t)$},
+			ylabel={$\emf(t)$},
 			xmin=0, xmax=6.283,
 			ymin=-1.3, ymax=1.4,
 			xtick={0, 1.5708, 3.1415, 4.7123, 6.283},
 			xticklabels={$0$, $\frac{\pi}{2}$, $\pi$, $\frac{3\pi}{2}$, $2\pi$},
 			ytick={-1, 0, 1},
-			yticklabels={$-E_m$, $0$, $E_m$},
+			yticklabels={$-\emf_m$, $0$, $\emf_m$},
 			grid=both,
 			grid style={dashed, gray!30},
 			legend pos=outer north east,
 			trig format plots=rad
 		]
 			\addplot[ultra thick, red, domain=0:2*pi, samples=120] {sin(x)};
-			\addlegendentry{$e_1(t)$}
+			\addlegendentry{$\emf_1(t)$}
 
 			\addplot[ultra thick, green!60!black, domain=0:2*pi, samples=120] {sin(x - 2*pi/3)};
-			\addlegendentry{$e_2(t)$}
+			\addlegendentry{$\emf_2(t)$}
 
 			\addplot[ultra thick, blue, domain=0:2*pi, samples=120] {sin(x - 4*pi/3)};
-			\addlegendentry{$e_3(t)$}
+			\addlegendentry{$\emf_3(t)$}
 		\end{axis}
 	\end{tikzpicture}
 	\caption{Часові діаграми симетричної трифазної системи ЕРС}
@@ -2456,7 +2456,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 
 Важливою властивістю симетричної системи ЕРС є те, що сума її миттєвих значень у будь-який момент часу дорівнює нулю:
 \begin{equation}
-	e_1(t) + e_2(t) + e_3(t) = 0.
+	\emf_1(t) + \emf_2(t) + \emf_3(t) = 0.
 \end{equation}
 
 %% --------------------------------------------------------
@@ -2648,9 +2648,9 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 
 Розглянемо три однакові котушки, осі яких розташовані під кутом $120^\circ$ одна до одної. Якщо пропустити крізь них симетричні трифазні струми:
 \begin{align}
-	i_1(t) &= I_m \sin(\omega t), \notag \\
-	i_2(t) &= I_m \sin\left(\omega t - 120^\circ\right), \\
-	i_3(t) &= I_m \sin\left(\omega t + 120^\circ\right), \notag
+	I_1(t) &= I_m \sin(\omega t), \notag \\
+	I_2(t) &= I_m \sin\left(\omega t - 120^\circ\right), \\
+	I_3(t) &= I_m \sin\left(\omega t + 120^\circ\right), \notag
 \end{align}
 кожна котушка створить пульсуюче магнітне поле, вектор індукції якого направлений уздовж осі котушки:
 \begin{multline}
@@ -2674,12 +2674,18 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 \subsection*{Потужність трифазної системи}
 %% --------------------------------------------------------
 
+Миттєва напруга на кожній фазі змінюється за тим самим гармонічним законом, з тим самим набором фазових зсувів $0$, $2\pi/3$, $4\pi/3$, що й струми та ЕРС вище, і спільною амплітудою $U_m$:
+\begin{equation*}
+	U_1(t) = U_m \sin(\omega t), \qquad
+	U_2(t) = U_m \sin\left(\omega t - \frac{2\pi}{3}\right), \qquad
+	U_3(t) = U_m \sin\left(\omega t + \frac{2\pi}{3}\right).
+\end{equation*}
 Миттєва потужність трифазної системи дорівнює сумі миттєвих потужностей окремих фаз:
 \begin{equation}
-	p(t) = p_1(t) + p_2(t) + p_3(t) = u_1(t)i_1(t) + u_2(t)i_2(t) + u_3(t)i_3(t).
+	p(t) = p_1(t) + p_2(t) + p_3(t) = U_1(t)I_1(t) + U_2(t)I_2(t) + U_3(t)I_3(t).
 \end{equation}
 
-При суто активному симетричному навантаженні миттєва потужність кожної з фаз є пульсуючою величиною $p_k(t) = U_m I_m \sin^2(\omega t - \phi_k)$, проте їхня сума $p_{\text{сум}}(t)$ залишається суворо постійною в часі (рис.~\ref{pic:ThreePhasePower}):
+При суто активному симетричному навантаженні миттєва потужність кожної з фаз є пульсуючою величиною $p_k(t) = U_m I_m \sin^2(\omega t - \varphi_k)$, проте їхня сума $p_{\text{сум}}(t)$ залишається суворо постійною в часі (рис.~\ref{pic:ThreePhasePower}):
 \begin{equation}
 	p(t) = 3 U_\text{ф} I_\text{ф} \cos\varphi = \text{const}.
 \end{equation}
@@ -2764,7 +2770,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 	\item Яких порядків величини досягає добротність у звичайному $LC$-контурі, кварцовому резонаторі та надпровідному резонаторі прискорювача? Що це означає для тривалості «дзвону» системи?
 	\item Запишіть рівняння вимушених коливань під дією гармонічної ЕРС. Чому вільні коливання з часом зникають, а вимушені --- ні?
 	\item У чому полягає метод комплексних амплітуд? Що таке комплексна амплітуда і як з її модуля та аргумента отримати амплітуду та початкову фазу коливання?
-	\item Що таке частотна характеристика контуру? Виведіть вираз для амплітуди $V_0$ та фазового зсуву вимушених коливань напруги на конденсаторі.
+	\item Що таке частотна характеристика контуру? Виведіть вираз для амплітуди $V_m$ та фазового зсуву вимушених коливань напруги на конденсаторі.
 	\item Опишіть амплітудно-частотну (рис.~\ref{tikz:amplitude_response}) та фазово-частотну (рис.~\ref{tikz:phase_response}) характеристики контуру. Як змінюється їхній вигляд зі збільшенням затухання?
 	\item Що таке резонанс? Чому дорівнює резонансна частота $\omega_m$ при $\gamma\ne0$ і за якої умови резонанс відсутній?
 	\item Виведіть значення $V_{\max}$ при слабкому затуханні та поясніть, чому відношення $V_{\max}/V_{\text{ст}}$ дорівнює добротності. Що таке статична амплітуда $V_{\text{ст}}$?
@@ -2773,7 +2779,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 	\item Що таке імпеданс? Запишіть імпеданси $R$, $L$, $C$ та послідовного $LCR$-кола. Чим активний опір відрізняється від реактивного?
 	\item Який зсув фаз між струмом і напругою на резисторі, конденсаторі та котушці? Чому множення на $i$ у комплексній площині означає поворот на $\pi/2$?
 	\item Як побудувати векторну діаграму послідовного $LCR$-контуру (рис.~\ref{tikz:vector_diagram_full})? Що можна визначити з неї, не виконуючи обчислень?
-	\item Виведіть формулу для середньої потужності змінного струму $\overline Q = \frac12\emf_0I_0\cos\varphi_0$. Що таке ефективні значення струму й напруги і чому потужність залежить від зсуву фаз?
+	\item Виведіть формулу для середньої потужності змінного струму $\overline Q = \frac12\emf_mI_m\cos\varphi_0$. Що таке ефективні значення струму й напруги і чому потужність залежить від зсуву фаз?
 	\item Чому змінний струм не виконує роботи за відсутності активного опору? Чому при тій самій потужності вигідно передавати електроенергію при високій напрузі?
 	\item Що таке резонанс напруг? Чому в резонансі імпеданс контуру дорівнює $R$, а напруга на конденсаторі та котушці в $Q$ разів перевищує напругу джерела? Чим небезпечний цей ефект?
 	\item Що таке резонанс струмів у паралельному контурі (рис.~\ref{tikz:parallel_circuit})? Як записується імпеданс паралельного кола і що відбувається з струмами в гілках на резонансній частоті?
