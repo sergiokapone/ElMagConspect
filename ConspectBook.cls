@@ -130,6 +130,7 @@
 %
 %===============================================================================
 
+\RequirePackage{fontawesome5} % Для іконки \faHistory / \faScroll
 \RequirePackage[]{pageslts}
 \pagenumbering{arabic}
 \RequirePackage{microtype}   % мікротипографія (protrusion, expansion) — акуратніші рядки
@@ -972,6 +973,36 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
     },
     drop fuzzy shadow,
     #1
+}
+
+% Historical — пергаментна врізка для історичних довідок з іконкою та загнутим кутом
+\newtcolorbox{Historical}[1][]{
+	enhanced,
+	breakable,
+	title={Історична довідка},
+	attach title to upper={.\ },
+	fonttitle=\bfseries,
+	coltitle=brown!50!black,
+	before skip=2mm, after skip=3mm,
+	before upper={\parindent15pt},
+	boxrule=0.4pt,
+	left=8mm, right=2mm, top=2mm, bottom=2mm,
+	colback=brown!10!yellow!10, % Тло "пергамент / старий папір"
+	colframe=brown!60!black,    % Темно-коричнева рамка
+	fontupper=\small,           % Дрібніший шрифт
+	parbox=false,
+	sharp corners, rounded corners=southeast, arc is angular, arc=3mm,
+	underlay={%
+		% 1. Загнутий куток знизу праворуч
+		\path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+		\path[draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+
+		% 2. Коричнева смуга з іконкою історії ліворуч
+		\path[fill=tcbcolframe,draw=none] (interior.south west) rectangle ([xshift=6mm]interior.north west);
+		\node[text=white] at ([xshift=3mm]interior.west) {\large\faHistory}; % Потребує \usepackage{fontawesome5}
+	},
+	drop fuzzy shadow,
+	#1
 }
 
 % Questions — блок «Контрольні питання» для самоперевірки в кінці глави/параграфа.
