@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Електрика та магнетизм | Підручник</title>
-    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
 <div class="container">
 
     <div class="pdf-hero">
+        <button class="theme-toggle" id="theme-toggle" type="button" title="Перемкнути тему" aria-label="Перемкнути тему">🌙</button>
         <h1>Електрика та магнетизм</h1>
         <div class="subtitle">Підручник</div>
         <div class="hero-rule"></div>
@@ -124,9 +125,16 @@
         </div>
 
         <!-- ── Зміст ─────────────────────────────────────────────────── -->
-        <ul class="toc-list toc-preamble">
-            <li><a href="ElMagConspect.pdf#Preface"><span class="toc-title">Передмова</span></a></li>
-        </ul>
+        <div class="section" id="toc-section">
+            <h2 class="section-heading">Зміст</h2>
+            <div class="toc-controls">
+                <button type="button" id="toc-expand-all" class="toc-ctrl-btn">Розгорнути все</button>
+                <button type="button" id="toc-collapse-all" class="toc-ctrl-btn">Згорнути все</button>
+            </div>
+            <ul class="toc-list toc-preamble">
+                <li><a href="ElMagConspect.pdf#Preface" class="toc-title">Передмова</a></li>
+            </ul>
+        </div>
 
         <div class="section">
             <h2 class="section-heading"><span class="part-num">Частина I:</span> Постійне електричне поле</h2>
@@ -392,9 +400,13 @@
         <div class="section section-appendix">
             <h2 class="section-heading">Додатки</h2>
             <ul class="toc-list">
-                <li><a href="ElMagConspect.pdf#SGStoSI"><strong>А</strong> Таблиця переходу між гаусовою системою одиниць та SI</a></li>
                 <li>
-                    <a href="ElMagConspect.pdf#Vanaliz"><strong>Б</strong> Основні формули векторного аналізу</a>
+                    <span class="toc-num">А</span>
+                    <a href="ElMagConspect.pdf#SGStoSI" class="toc-title">Таблиця переходу між гаусовою системою одиниць та SI</a>
+                </li>
+                <li>
+                    <span class="toc-num">Б</span>
+                    <a href="ElMagConspect.pdf#Vanaliz" class="toc-title">Основні формули векторного аналізу</a>
                     <ul class="sub-list">
                         <li><a href="ElMagConspect.pdf#vector-diff-operations-coordinates">Б.1 Диференціальні операції в різних системах координат</a></li>
                         <li><a href="ElMagConspect.pdf#vector-second-derivatives">Б.2 Другі похідні</a></li>
@@ -420,5 +432,9 @@
     </footer>
 
 </div><!-- /container -->
+
+<button class="back-to-top" id="back-to-top" type="button" title="Нагору" aria-label="Прогорнути нагору">↑</button>
+
+<script src="assets/script.js"></script>
 </body>
 </html>
