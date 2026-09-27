@@ -1,0 +1,133 @@
+% ==============================================================================
+% 1. НАЛАШТУВАННЯ ПАРАМЕТРІВ
+% ==============================================================================
+
+% --- ГЕОМЕТРІЯ КОНДЕНСАТОРА ТА ДІЕЛЕКТРИКА ---
+\pgfmathsetmacro{\PlateDist}{2.5}        % Відстань між пластинами (d)
+\pgfmathsetmacro{\PlateLength}{6.0}      % Довжина пластин
+\pgfmathsetmacro{\PlateThick}{0.15}      % Товщина пластин
+
+\pgfmathsetmacro{\SlabThick}{1.75}        % Товщина діелектрика (a)
+\pgfmathsetmacro{\SlabLen}{6.75}          % Повна довжина плити діелектрика
+\pgfmathsetmacro{\SlabInserted}{2.2}     % Глибина занурення діелектрика в конденсатор
+
+% --- ПОЛОЖЕННЯ ТОЧКИ ВЕКТОРІВ E ---
+\pgfmathsetmacro{\ExPoint}{-1.99}         % X-координата точки на поверхні діелектрика
+
+% --- НАЛАШТУВАННЯ КОЛЬОРІВ ---
+\colorlet{colorPlates}{gray!40}          % Колір пластин
+\colorlet{colorSlab}{gray!20}            % Колір діелектрика
+\colorlet{colorField}{red}          % Колір силових ліній поля
+\colorlet{colorVectorE}{red!85!black}    % Колір вектора E
+\colorlet{colorVectorEt}{blue!80!black}  % Колір тангенціальної складової Et
+\colorlet{colorForce}{black}             % Колір вектора сили F
+
+% ==============================================================================
+% 2. ПОБУДОВА ГРАФІКИ
+% ==============================================================================
+\begin{tikzpicture}[>=Stealth, scale=0.85]
+
+  % Автоматичні розрахунки геометрії
+  \pgfmathsetmacro{\YPlateTop}{\PlateDist/2.0}
+  \pgfmathsetmacro{\YPlateBot}{-\PlateDist/2.0}
+  \pgfmathsetmacro{\YSlabTop}{\SlabThick/2.0}
+  \pgfmathsetmacro{\YSlabBot}{-\SlabThick/2.0}
+
+  \pgfmathsetmacro{\SlabXMax}{\SlabInserted}
+  \pgfmathsetmacro{\SlabXMin}{\SlabInserted - \SlabLen}
+
+  % --- 1. ПЛАСТИНИ КОНДЕНСАТОРА ---
+  \filldraw[fill=colorPlates, draw=black, thick]
+    (0, \YPlateTop) rectangle (\PlateLength, \YPlateTop + \PlateThick);
+  \filldraw[fill=colorPlates, draw=black, thick]
+    (0, \YPlateBot - \PlateThick) rectangle (\PlateLength, \YPlateBot);
+
+  % Дроти живлення та знаки заряду
+  \draw[thick] (\PlateLength/2, \YPlateTop + \PlateThick) -- (\PlateLength/2, \YPlateTop + 1.1)
+    node[above, font=\LARGE] {$+$};
+  \draw[thick] (\PlateLength/2, \YPlateBot - \PlateThick) -- (\PlateLength/2, \YPlateBot - 1.1)
+    node[below, font=\LARGE] {$-$};
+
+  % --- 2. ДІЕЛЕКТРИК ---
+  \filldraw[fill=colorSlab, draw=black, thick]
+    (\SlabXMin, \YSlabBot) rectangle (\SlabXMax, \YSlabTop);
+
+  % Зв'язані заряди на поверхні діелектрика
+  \pgfmathsetmacro{\ChargeStep}{(\SlabLen - 0.6)/5}
+  \foreach \i in {0,1,2, 2.5, 3, 3.4, 3.8, 4, ..., 5} {
+    \pgfmathsetmacro{\cx}{\SlabXMin + 0.3 + \i*\ChargeStep}
+    \node[font=\small] at (\cx, \YSlabTop - 0.22) {$-$};
+    \node[font=\small] at (\cx, \YSlabBot + 0.22) {$+$};
+  }
+
+  % --- 3. ОДНОРІДНЕ ПОЛЕ ВСЕРЕДИНІ КОНДЕНСАТОРА ---
+  \foreach \x in {2.8, 3.4, 4.0, 4.6} {
+    \draw[->, semithick, color=colorField] (\x, \YPlateTop) -- (\x, \YPlateBot);
+  }
+
+  % Вертикальні лінії в зазорах над/під діелектриком
+  \draw[->, semithick, color=colorField] (1.0, \YPlateTop) -- (1.0, \YSlabTop);
+  \draw[->, semithick, color=colorField] (1.0, \YSlabBot) -- (1.0, \YPlateBot);
+  \draw[->, semithick, color=colorField] (1.6, \YPlateTop) -- (1.6, \YSlabTop);
+  \draw[->, semithick, color=colorField] (1.6, \YSlabBot) -- (1.6, \YPlateBot);
+
+    % --- 4. КРАЙОВЕ ПОЛЕ ПРАВОРУЧ ---
+    \draw[->, semithick, color=colorField, midarrow]
+      (5.2, \YPlateTop) to[out=-90, in=90] (5.5, 0) to[out=-90, in=90] (5.2, \YPlateBot);
+
+    \draw[->, semithick, color=colorField, midarrow]
+      (5.7, \YPlateTop) to[out=-90, in=90] (6.2, 0) to[out=-90, in=90] (5.7, \YPlateBot);
+
+    \draw[->, semithick, color=colorField, midarrow]
+      (5.7, {\YPlateTop + \PlateThick})
+        to[out=90,  in=180] ++(0.9,  0.3*\PlateDist)
+        to[out=0,   in=90]  ++(1.5, -0.8*\PlateDist - \PlateThick)
+        to[out=-90, in=0]   ++(-1.5,-0.8*\PlateDist - \PlateThick)
+        to[out=180, in=-90] ++(-0.9, 0.3*\PlateDist);
+
+    \draw[->, semithick, color=colorField, midarrow]
+      (5.2, {\YPlateTop + \PlateThick})
+        to[out=90,  in=180] ++(2,  0.8*\PlateDist)
+        to[out=0,   in=90]  ++(3.0, -1.3*\PlateDist - \PlateThick)
+        to[out=-90, in=0]   ++(-3.0,-1.3*\PlateDist - \PlateThick)
+        to[out=180, in=-90] ++(-2, 0.8*\PlateDist);
+
+    % --- КРАЙОВЕ ПОЛЕ ЛІВОРУЧ ---
+    \draw[->, semithick, color=colorField, midarrow]
+      (0.8, \YPlateTop) to[out=-90, in=90] (0.5, 0) to[out=-90, in=90] (0.8, \YPlateBot);
+
+    \draw[->, semithick, color=colorField, midarrow]
+      (0.3, \YPlateTop) to[out=-90, in=90] (-0.2, 0) to[out=-90, in=90] (0.3, \YPlateBot);
+
+    \draw[->, semithick, color=colorField, midarrow]
+      (0.3, {\YPlateTop + \PlateThick})
+        to[out=90,   in=0]   ++(-0.9,  0.3*\PlateDist)
+        to[out=180,  in=90]  ++(-1.5, -0.8*\PlateDist - \PlateThick)
+        to[out=-90,  in=180] ++(1.5,  -0.8*\PlateDist - \PlateThick)
+        to[out=0,    in=-90] ++(0.9,   0.3*\PlateDist);
+
+    \draw[->, semithick, color=colorField, midarrow]
+      (0.8, {\YPlateTop + \PlateThick})
+        to[out=90,   in=0]   ++(-2,   0.8*\PlateDist)
+        to[out=180,  in=90]  ++(-3.0, -1.3*\PlateDist - \PlateThick)
+        to[out=-90,  in=180] ++(3.0,  -1.3*\PlateDist - \PlateThick)
+        to[out=0,    in=-90] ++(2,    0.8*\PlateDist);
+
+
+  % --- 6. ВЕКТОР СИЛИ F ---
+  \draw[->, >=Latex, ultra thick, color=colorForce]
+    (\SlabXMax, 0) -- (\SlabXMax + 1.4, 0) node[above, midway, font=\large] {$\vect{F}$};
+
+  % --- 7. ВЕКТОРИ E ТА Et У ТОЧЦІ \ExPoint ---
+%  \fill (\ExPoint, \YSlabTop) circle (2.2pt);
+
+    \def\a{72}
+  % Вектор E (строго ДОТИЧНИЙ до силової лінії в точці входу під кутом -35°)
+  \draw[->, >=Latex, ultra thick, color=colorVectorE]
+    (\ExPoint, \YSlabBot) -- ++(-\a:{0.8/cos(\a)}) node[below right, font=\large] {$\Efield$};
+
+  % Тангенціальна складова Et (вздовж поверхні діелектрика)
+  \draw[->, >=Latex, ultra thick, color=colorVectorEt]
+    (\ExPoint, \YSlabBot) -- ++(0.8, 0) node[below, font=\large] {$E_{\tau}$};
+
+\end{tikzpicture}
