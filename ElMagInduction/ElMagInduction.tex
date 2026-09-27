@@ -521,28 +521,26 @@ d\vect S$, а ЕРС, за означенням~\eqref{eq:EMFDef} (гл.~\ref{St
 \end{Attention}
 
 %% --------------------------------------------------------
-\subsection*{Приклади обчислення індуктивності}
-%% --------------------------------------------------------
+\begin{Example}{Приклади обчислення індуктивності}
 
 \emphx{Соленоїд.} Магнітне поле всередині нескінченного соленоїда з магнетиком проникності $\mu$, густиною намотки $n=N/l$ витків на одиницю
 довжини (гл.~\ref{MagFieldMedia}), дорівнює $B = 4\pi\mu NI/(cl)$. Повний магнітний потік крізь усі $N$ витків соленоїда $\Phi = NBS =
 \dfrac{4\pi\mu N^2}{cl}IS$; порівнюючи з означенням~\eqref{eq:SelfInductionFlux}, отримуємо індуктивність соленоїда:
 \begin{equation}\label{eq:SolenoidInductance}
-	\tcbhighmath{
 		L = \frac{4\pi\mu N^2 S}{l}.
-	}
 \end{equation}
 
 \emphx{Тороїд.} Для тороїдальної котушки з $N$ витками, прямокутним перерізом ширини $b-a$ (де $a$ і $b$ --- внутрішній і зовнішній радіуси) і
-висотою $d$ (рис.~\ref{pic:Toroid}), аналогічний (дещо громіздкіший) розрахунок дає:
+висотою $d$ (див. рис.), аналогічний (дещо громіздкіший) розрахунок дає:
 
-\begin{figure}[h!]\centering
+\begin{center}%[h!]\centering
 	\includegraphics[width=0.3\linewidth]{toroid}
-	\caption{Тороїдальна котушка\label{pic:Toroid}}
-\end{figure}
+%	\caption{Тороїдальна котушка\label{pic:Toroid}}
+\end{center}
 \begin{equation}\label{eq:ToroidInductance}
 	L = 2\mu N^2 d\ln\left(\frac{b}{a}\right).
 \end{equation}
+\end{Example}
 
 \begin{Attention}
 	В гауссовій системі одиниць індуктивність, як неважко переконатись з формул~\eqref{eq:SolenoidInductance}--\eqref{eq:ToroidInductance},
