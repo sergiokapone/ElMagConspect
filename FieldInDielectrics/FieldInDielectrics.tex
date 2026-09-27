@@ -396,11 +396,11 @@ $\vect P$ змінюється від точки до точки.
 бічне ребро паралельне вектору поляризації $\vect P$ (рис.~\ref{pic:PolarizedParallelepiped}). Якщо $S$ --- площа бічної грані, а $\ell$ --- довжина
 ребра паралелепіпеда, то його об'єм дорівнює $V = S\ell\cos\theta$, де $\theta$ --- кут між ребром $\vect \ell$ і нормаллю до бічної грані.
 
-\begin{figure}[h!]\centering
+\begin{SCfigure}[1][h!]\centering
 	\localinput{parallelepiped.tikz}
 	\caption{Косокутний паралелепіпед, вирізаний з однорідно поляризованого діелектрика уздовж
 		вектора поляризації $\vect P$\label{pic:PolarizedParallelepiped}}
-\end{figure}
+\end{SCfigure}
 
 Диполі всередині такого паралелепіпеда шикуються \enquote{голова до хвоста}: позитивний заряд одного диполя сусідить з негативним зарядом наступного, і в
 об'ємі речовини ці заряди взаємно компенсуються. Некомпенсованими лишаються тільки заряди на двох торцевих гранях: на одній виступає надлишковий
@@ -583,11 +583,11 @@ $\Efield$ (яка, нагадаємо, є універсальним закон�
 поверхнева густина \emphx{вільного} заряду на межі розділу (якщо він там є). Враховуючи, що $d\vect S_1 = -d\vect S_2 = \vect n\, dS$, де $\vect n$
 --- нормаль, спрямована з середовища 1 у середовище 2, маємо
 
-\begin{figure}[h!]\centering
+\begin{SCfigure}[1][h!]\centering
 	\localinput{bc1.tikz}
 	\caption{Циліндр Гаусса на межі розділу двох середовищ для виведення граничної умови на
 		нормальну складову $\Dfield$\label{pic:BC1}}
-\end{figure}
+\end{SCfigure}
 \begin{equation*}
 	\oiint\limits_S \Dfield\cdot d\vect S = 4\pi\sigma \, dS
 	\quad\Longrightarrow\quad
@@ -615,11 +615,11 @@ $\Efield$ (яка, нагадаємо, є універсальним закон�
 межі розділу (рис.~\ref{pic:BC2}); ця теорема залишається справедливою в будь-якому середовищі --- адже електростатичне
 поле завжди потенціальне, незалежно від того, вакуум це чи діелектрик:
 
-\begin{figure}[h!]\centering
+\begin{SCfigure}[1][h!]\centering
 	\localinput{bc2.tikz}
 	\caption{Контур циркуляції на межі розділу двох середовищ для виведення граничної умови на
 		тангенціальну складову $\Efield$\label{pic:BC2}}
-\end{figure}
+\end{SCfigure}
 \begin{equation}\label{eq:BC2-E}
 	\tcbhighmath{
 		E_{1\tau} = E_{2\tau}.
