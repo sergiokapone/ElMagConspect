@@ -1,0 +1,34 @@
+\documentclass[]{ConspectBook}
+\let\enquote\emph
+
+%  1) Charges
+% 17) SteadyEfield
+%  2) ChargeSystem
+%  4) ElEnergy
+%  3) EBMotion
+%  5) ElMagInduction
+%  6) EMOscillations
+%  7) EMWaves
+%  8) FieldInDielectrics
+%  9) FieldInMetall
+% 10) MagEnergy
+% 11) MagFieldMedia
+% 12) MagFieldVacuum
+% 13) MaxwellEqns
+% 14) Radiation
+% 15) Relativity
+% 16) SteadyCurrent
+% 18) Telegraph
+% 19) Waveguides
+
+\newcommand{\includechapter}[1]{\input{#1/#1}}
+\newcommand{\includetikz}[2]{\input{#1/tikz/#2.tikz}}
+
+
+\begin{document}
+
+\includechapter{\TargetChapter}
+%\includetikz{EMWaves}{capacitor-angular-momentum}
+
+\end{document}
+

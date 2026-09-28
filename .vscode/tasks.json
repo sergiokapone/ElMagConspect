@@ -1,0 +1,44 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compile chapter standalone",
+      "type": "process",
+      "command": "latexmk",
+      "args": [
+        "-lualatex",
+        "-silent",
+        "-synctex=1",
+        "-file-line-error",
+        "-shell-escape",
+        "-jobname=${fileBasenameNoExtension}",
+        "-outdir=build",
+        "-usepretex",
+        "-pretex=\\def\\TargetChapter{${fileBasenameNoExtension}}",
+        "alone.tex"
+      ],
+      "presentation": {
+        "reveal": "silent",
+        "clear": true,
+        "showReuseMessage": false
+      },
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Open chapter PDF",
+      "type": "shell",
+      "command": "code",
+      "args": ["-r", "${workspaceFolder}/build/${fileBasenameNoExtension}.pdf"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Compile chapter + open PDF",
+      "dependsOn": ["Compile chapter standalone", "Open chapter PDF"],
+      "dependsOrder": "sequence",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    }
+  ]
+}
