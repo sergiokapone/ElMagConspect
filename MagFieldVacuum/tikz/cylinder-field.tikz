@@ -1,7 +1,7 @@
 % ---------------- Підрисунок (а): всередині ----------------
 \begin{subfigure}[t]{0.48\linewidth}
     \centering
-    \begin{tikzpicture}[>=latex, baseline={(0,0)}, scale=1.5]
+    \begin{tikzpicture}[>=latex, baseline={(0,0)}, scale=2]
         % Основні параметри
         \pgfmathsetmacro\h{2}         % повна висота циліндра
         \pgfmathsetmacro\R{0.5}       % радіус циліндра
@@ -42,7 +42,7 @@
 % ---------------- Підрисунок (б): зовні ----------------
 \begin{subfigure}[t]{0.48\linewidth}
     \centering
-    \begin{tikzpicture}[>=latex, baseline={(0,0)}, scale=1.5]
+    \begin{tikzpicture}[>=latex, baseline={(0,0)}, scale=2]
         % Основні параметри
         \pgfmathsetmacro\h{2}
         \pgfmathsetmacro\R{0.5}
