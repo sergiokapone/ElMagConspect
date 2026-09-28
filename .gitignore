@@ -17,12 +17,12 @@ tmp/
 *.fls
 *.tmp
 *.fdb_latexmk
-test.pdf
 *.avi
 *.mkv
 *.vrb
 books.session
 *.bcf-SAVE-ERROR
+test.pdf
 main.pdf
 *.curve.gnuplot
 *.curve.table

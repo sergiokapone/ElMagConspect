@@ -1,52 +1,63 @@
 \begin{tikzpicture}[>=latex, scale=1.5]
-    % Основные параметры
-    \pgfmathsetmacro\h{3}          % Высота
-    \pgfmathsetmacro\R{1}          % Радиус
+    % Основні параметри
+    \pgfmathsetmacro\h{3}          % Висота
+    \pgfmathsetmacro\R{1}          % Радіус
+    \pgfmathsetmacro\Ry{0.2*\R}   % Стиснення еліпса основи
+    \pgfmathsetmacro\HL{-0.1*\R}  % Межа відблиску
+
     \coordinate (A) at (0, {-\h/2});
     \coordinate (B) at (0, {+\h/2});
 
-    % Вертикальные линии
-    \draw[gray] ([xshift=\R cm]A) -- ([xshift=\R cm]B)
-    ([xshift=-\R cm]A) -- ([xshift=-\R cm]B);
-    % Тіло циліндра (сіра середина) — тепер масштабується
-     \fill[gray!50] (-\R, -\h/2) rectangle (\R, \h/2);
+    % Бічна поверхня циліндра (тінь -- відблиск -- тінь)
+    \begin{scope}
+        \clip (-\R, -\h/2) -- (-\R, \h/2) arc (180:360:{\R} and {\Ry}) -- (\R, -\h/2) arc (0:-180:{\R} and {\Ry});
+        \shade[left color=gray!55, right color=gray!12]
+            (-\R-0.1, -\h/2-\Ry-0.1) rectangle (\HL, \h/2+0.1);
+        \shade[left color=gray!12, right color=gray!78]
+            (\HL, -\h/2-\Ry-0.1) rectangle (\R+0.1, \h/2+0.1);
+    \end{scope}
 
-    % Верхняя и нижняя части
-    \draw[gray, fill=gray!50] (B) circle ({\R} and {0.2*\R});
-    \draw[gray] ([xshift=\R cm]A) arc(0:-180:{\R} and {0.2*\R});
-    \draw[gray, densely dashed] ([xshift=-\R cm]A) arc(180:0:{\R} and {0.2*\R});
-    \fill[gray!50] (A) circle ({\R} and {0.2*\R});
+    % Вертикальні твірні
+    \draw (-\R, -\h/2) -- (-\R, \h/2)
+          ( \R, -\h/2) -- ( \R, \h/2);
 
-    % Стрелка для тока
+    % Видима (передня) частина нижньої основи
+    \draw (-\R, -\h/2) arc (180:360:{\R} and {\Ry});
+
+    % Верхня основа
+    \shade[ball color=gray!20] (0, \h/2) circle ({\R} and {\Ry});
+    \draw (0, \h/2) circle ({\R} and {\Ry});
+
+    % Стрілка для струму
     \draw[->] ([yshift={\h*0.3cm}]A) -- ([yshift={-\h*0.3cm}]B) node[above] {$I$};
 
-    % Параметры для витков
-    \def\fLarge{0.8}  % Масштаб большого витка
+    % Параметри для витків
+    \def\fLarge{0.8}  % Масштаб великого витка
     \def\fSmall{0.4}  % Масштаб маленького витка
 
-    % Витки на разных уровнях
+    % Витки на різних рівнях
     \foreach \y in {-1.5, -1, ..., +1.5} {
-            \pgfmathtruncatemacro{\c}{round(\y)}
-            \ifnum\c=0 \edef\t{1} \else \edef\t{0.1} \fi % Прозрачность
-            \begin{scope}[opacity=\t]
+        \pgfmathtruncatemacro{\c}{round(\y)}
+        \ifnum\c=0 \edef\t{1} \else \edef\t{0.1} \fi % Прозорість
+        \begin{scope}[opacity=\t]
 
-                % Большой виток
-                \draw[arrowpos={0.4}{0}{3pt}, blue] (0,{0.8*\y})
-                [partial ellipse=91:{360+89}:{\fLarge*\R} and {\fLarge*0.2*\R}];
+            % Великий виток
+            \draw[arrowpos={0.4}{0}{3pt}, blue] (0,{0.8*\y})
+            [partial ellipse=91:{360+89}:{\fLarge*\R} and {\fLarge*0.2*\R}];
 
-                \draw[arrowpos={0.5}{2pt}{3pt}, arrowpos={1}{2pt}{3pt}, red, yscale=-1] (0,{0.8*\y})
-                ++(180:{\fLarge*\R}) circle(0.2);
-                \draw[arrowpos={0}{2pt}{3pt}, arrowpos={0.5}{2pt}{3pt}, red] (0,{0.8*\y})
-                ++(0:{\fLarge*\R}) circle(0.2);
+            \draw[arrowpos={0.5}{2pt}{3pt}, arrowpos={1}{2pt}{3pt}, red, yscale=-1] (0,{0.8*\y})
+            ++(180:{\fLarge*\R}) circle(0.2);
+            \draw[arrowpos={0}{2pt}{3pt}, arrowpos={0.5}{2pt}{3pt}, red] (0,{0.8*\y})
+            ++(0:{\fLarge*\R}) circle(0.2);
 
-                % Маленький виток
-%                \draw[arrowpos={0.4}{0}{2pt}, blue] (0,{0.8*\y})
-%                [partial ellipse=91:{360+89}:{\fSmall*\R} and {\fSmall*0.2*\R}];
+            % Маленький виток
+%           \draw[arrowpos={0.4}{0}{2pt}, blue] (0,{0.8*\y})
+%           [partial ellipse=91:{360+89}:{\fSmall*\R} and {\fSmall*0.2*\R}];
 %
-%                \draw[arrowpos={0.5}{1.2pt}{2pt}, red, yscale=-1] (0,{0.8*\y})
-%                ++(180:{\fSmall*\R}) circle(0.1);
-%                \draw[arrowpos={0.5}{1.2pt}{2pt}, red, rotate=180] (0,{0.8*\y})
-%                ++(180:{\fSmall*\R}) circle(0.1);
-            \end{scope}
-        }
+%           \draw[arrowpos={0.5}{1.2pt}{2pt}, red, yscale=-1] (0,{0.8*\y})
+%           ++(180:{\fSmall*\R}) circle(0.1);
+%           \draw[arrowpos={0.5}{1.2pt}{2pt}, red, rotate=180] (0,{0.8*\y})
+%           ++(180:{\fSmall*\R}) circle(0.1);
+        \end{scope}
+    }
 \end{tikzpicture}
