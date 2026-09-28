@@ -1,5 +1,5 @@
 % Адаптовано з MagFieldVacuum_slides.tex (слайд "Магнітний момент колового витка")
-\begin{tikzpicture}[>=latex, baseline]
+\begin{tikzpicture}[>=latex, baseline, scale=1.5]
 	\def\R{1.5}
 	\draw[thick, red, arrowpos={0.7}{4pt}{5pt}] (0,0) [partial ellipse =0:360:\R]
 	node[pos=0.7, above] {$I$};
