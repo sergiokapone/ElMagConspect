@@ -26,13 +26,29 @@
     <meta property="og:url" content="https://sergiokapone.github.io/ElMagConspect/">
 
     <!-- Ваші стилі -->
+    <!-- Застосовуємо дизайн і тему до першого малювання, щоб не мигало -->
+    <script>(function(){var r=document.documentElement;try{var d=localStorage.getItem('elmag-design');r.setAttribute('data-design',['field','blueprint','book'].indexOf(d)>-1?d:'field');var t=localStorage.getItem('elmag-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){r.classList.add('dark');}}catch(e){r.setAttribute('data-design','field');}})();</script>
+
+    <!-- Шрифти нових дизайнів -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+
     <link rel="stylesheet" href="assets/styles.css">
+    <link rel="stylesheet" href="assets/designs.css">
 </head>
 <body>
 <div class="container">
 
     <div class="pdf-hero">
-        <button class="theme-toggle" id="theme-toggle" type="button" title="Перемкнути тему" aria-label="Перемкнути тему">🌙</button>
+        <div class="hero-tools">
+            <div class="design-switch" role="group" aria-label="Дизайн сторінки">
+                <button type="button" data-design="field" aria-pressed="true">Поле</button>
+                <button type="button" data-design="blueprint" aria-pressed="false">Креслення</button>
+                <button type="button" data-design="book" aria-pressed="false">Книга</button>
+            </div>
+            <button class="theme-toggle" id="theme-toggle" type="button" title="Перемкнути тему" aria-label="Перемкнути тему">🌙</button>
+        </div>
         <h1>Електрика та магнетизм</h1>
         <div class="subtitle">Підручник</div>
         <div class="hero-rule"></div>

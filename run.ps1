@@ -29,9 +29,20 @@
 chcp 65001 | Out-Null
 
 # --- Config ---
-$FOLDER        = Split-Path -Leaf $PSScriptRoot
-$TEXFILE       = "$FOLDER.tex"
-$LOGFILE       = "$FOLDER.log"
+$FOLDER  = Split-Path -Leaf $PSScriptRoot
+
+# --- Вибір цільового файлу: "folder" або "main" ---
+$MODE = "main"          # ← змінюйте ТУТ: "folder" або "main"
+
+if ($MODE -eq "main") {
+    $BASE = "main"
+} else {
+    $BASE = $FOLDER
+}
+
+$TEXFILE = "$BASE.tex"
+$LOGFILE = "$BASE.log"
+
 $PPLATEX       = "ppluatex.exe"
 
 $OVF_THRESHOLD = 5
@@ -62,7 +73,7 @@ $now = Get-Date
 Write-Host "  ${GRAY}Started : ${WHITE}$($now.ToString('yyyy-MM-dd  HH:mm'))${R}"
 Write-Host "  ${GRAY}Target  : ${WHITE}${TEXFILE}${R}"
 Write-Host "  ${GRAY}Engine  : ${WHITE}LuaLaTeX  (latexmk -f -g)${R}"
-Write-Host "  ${GRAY}Output  : ${WHITE}$FOLDER.pdf${R}"
+Write-Host "  ${GRAY}Output  : ${WHITE}$BASE.pdf${R}"
 Write-Host
 Write-Host $SEP
 Write-Host "  ${BOLD}${YELLOW}Compiling ...${R}"

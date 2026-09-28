@@ -150,4 +150,132 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
+
+    /* ═══════════════════════════════════════════════════════════
+       Перемикач дизайнів: Поле / Креслення / Книга.
+       Вибір зберігається в localStorage (ключ elmag-design).
+       ═══════════════════════════════════════════════════════════ */
+    var DESIGN_KEY = 'elmag-design';
+    var DESIGNS = ['field', 'blueprint', 'book'];
+    var root = document.documentElement;
+    var designBtns = document.querySelectorAll('.design-switch button');
+
+    function applyDesign(d) {
+        if (DESIGNS.indexOf(d) < 0) { d = 'field'; }
+        root.setAttribute('data-design', d);
+        designBtns.forEach(function (b) {
+            b.setAttribute('aria-pressed', b.getAttribute('data-design') === d ? 'true' : 'false');
+        });
+        // Змінилась геометрія — змісту й полотну треба перерахуватися
+        window.dispatchEvent(new Event('resize'));
+    }
+
+    var savedDesign = null;
+    try { savedDesign = localStorage.getItem(DESIGN_KEY); } catch (e) { /* ignore */ }
+    applyDesign(savedDesign);
+
+    designBtns.forEach(function (b) {
+        b.addEventListener('click', function () {
+            var d = b.getAttribute('data-design');
+            applyDesign(d);
+            try { localStorage.setItem(DESIGN_KEY, d); } catch (e) { /* ignore */ }
+        });
+    });
+
+    /* ═══════════════════════════════════════════════════════════
+       Силові лінії диполя в шапці. Додатний заряд нерухомий,
+       від'ємний іде за курсором (або пальцем).
+       ═══════════════════════════════════════════════════════════ */
+    (function initField() {
+        var hero = document.querySelector('.pdf-hero');
+        if (!hero) { return; }
+
+        var cv = document.createElement('canvas');
+        cv.className = 'field-canvas';
+        cv.setAttribute('aria-hidden', 'true');
+        hero.insertBefore(cv, hero.firstChild);
+
+        var ctx = cv.getContext('2d');
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var w = 0, h = 0, dpr = 1, raf = 0;
+        var P = { x: 0.72, y: 0.34 };            // + (частки розміру шапки)
+        var N = { x: 0.9, y: 0.62 };             // − (поточне положення)
+        var T = { x: 0.9, y: 0.62 };             // − (ціль руху)
+
+        function field(x, y, p, n) {
+            var ax = x - p.x, ay = y - p.y, bx = x - n.x, by = y - n.y;
+            var ra = Math.pow(ax * ax + ay * ay, 1.5) || 1;
+            var rb = Math.pow(bx * bx + by * by, 1.5) || 1;
+            return [ax / ra - bx / rb, ay / ra - by / rb];
+        }
+
+        function draw() {
+            if (!w || !cv.offsetParent) { return; }
+            var cs = getComputedStyle(root);
+            var line = cs.getPropertyValue('--fl-line');
+            var cPos = cs.getPropertyValue('--fl-pos');
+            var cNeg = cs.getPropertyValue('--fl-neg');
+            var p = { x: P.x * w, y: P.y * h }, n = { x: N.x * w, y: N.y * h };
+
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.clearRect(0, 0, w, h);
+            ctx.lineWidth = 1.1;
+            ctx.strokeStyle = line;
+            ctx.beginPath();
+            var lines = 28;
+            for (var i = 0; i < lines; i++) {
+                var a = i / lines * 2 * Math.PI;
+                var x = p.x + Math.cos(a) * 10, y = p.y + Math.sin(a) * 10;
+                ctx.moveTo(x, y);
+                for (var s = 0; s < 700; s++) {
+                    var f = field(x, y, p, n), m = Math.hypot(f[0], f[1]);
+                    if (!m) { break; }
+                    x += f[0] / m * 5; y += f[1] / m * 5;
+                    ctx.lineTo(x, y);
+                    if (Math.hypot(x - n.x, y - n.y) < 10 || x < -20 || x > w + 20 || y < -20 || y > h + 20) { break; }
+                }
+            }
+            ctx.stroke();
+
+            [[p, cPos, true], [n, cNeg, false]].forEach(function (c) {
+                ctx.fillStyle = c[1];
+                ctx.beginPath(); ctx.arc(c[0].x, c[0].y, 9, 0, 2 * Math.PI); ctx.fill();
+                ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath();
+                ctx.moveTo(c[0].x - 4, c[0].y); ctx.lineTo(c[0].x + 4, c[0].y);
+                if (c[2]) { ctx.moveTo(c[0].x, c[0].y - 4); ctx.lineTo(c[0].x, c[0].y + 4); }
+                ctx.stroke();
+            });
+        }
+
+        function frame() {
+            var k = reduce ? 1 : 0.12;
+            var dx = T.x - N.x, dy = T.y - N.y;
+            N.x += dx * k; N.y += dy * k;
+            draw();
+            raf = (Math.abs(dx) + Math.abs(dy) > 0.0004) ? requestAnimationFrame(frame) : 0;
+        }
+
+        function resize() {
+            var r = hero.getBoundingClientRect();
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            w = r.width; h = r.height;
+            cv.width = Math.round(w * dpr);
+            cv.height = Math.round(h * dpr);
+            draw();
+        }
+
+        hero.addEventListener('pointermove', function (e) {
+            var r = hero.getBoundingClientRect();
+            T.x = Math.min(0.98, Math.max(0.02, (e.clientX - r.left) / r.width));
+            T.y = Math.min(0.98, Math.max(0.02, (e.clientY - r.top) / r.height));
+            if (!raf) { raf = requestAnimationFrame(frame); }
+        });
+
+        window.addEventListener('resize', resize);
+        if (themeToggle) { themeToggle.addEventListener('click', draw); }
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(function () { window.dispatchEvent(new Event('resize')); });
+        }
+        resize();
+    })();
 })();
