@@ -3,22 +3,30 @@
     \centering
     \begin{tikzpicture}[>=latex, baseline={(0,0)}, scale=1.5]
         % Основні параметри
-        \pgfmathsetmacro\h{2}      % повна висота циліндра
-        \pgfmathsetmacro\R{0.5}    % радіус циліндра
+        \pgfmathsetmacro\h{2}         % повна висота циліндра
+        \pgfmathsetmacro\R{0.5}       % радіус циліндра
+        \pgfmathsetmacro\Ry{0.2*\R}   % стиснення еліпса основи
+        \pgfmathsetmacro\HL{-0.1*\R}  % межа відблиску
 
-        % Тіло циліндра (сіра середина) — тепер масштабується
-        \fill[gray!50] (-\R, -\h/2) rectangle (\R, \h/2);
+        % Бічна поверхня циліндра (тінь -- відблиск -- тінь)
+        \begin{scope}
+            \clip (-\R, -\h/2) -- (-\R, \h/2) arc (180:360:{\R} and {\Ry}) -- (\R, -\h/2) arc (0:-180:{\R} and {\Ry});
+            \shade[left color=gray!55, right color=gray!12]
+                (-\R-0.1, -\h/2-\Ry-0.1) rectangle (\HL, \h/2+0.1);
+            \shade[left color=gray!12, right color=gray!78]
+                (\HL, -\h/2-\Ry-0.1) rectangle (\R+0.1, \h/2+0.1);
+        \end{scope}
 
         % Вертикальні твірні
-        \draw[] (-\R, -\h/2) -- (-\R, \h/2)
-                ( \R, -\h/2) -- ( \R, \h/2);
+        \draw (-\R, -\h/2) -- (-\R, \h/2)
+              ( \R, -\h/2) -- ( \R, \h/2);
 
-        % Верхній торець
-        \draw[fill=gray!50] (0, \h/2) circle ({\R} and {0.2*\R});
+        % Видима (передня) частина нижньої основи
+        \draw (-\R, -\h/2) arc (180:360:{\R} and {\Ry});
 
-        % Нижній торець: видима частина + пунктир
-        \draw[fill=gray!50] (-\R, -\h/2) arc (180:360:{\R} and {0.2*\R});
-        \draw[dotted]       ( \R, -\h/2) arc (0:180:{\R} and {0.2*\R});
+        % Верхня основа
+        \shade[ball color=gray!20] (0, \h/2) circle ({\R} and {\Ry});
+        \draw (0, \h/2) circle ({\R} and {\Ry});
 
         % Контур всередині
         \draw[thin, green!50!black, arrowpos={0.1}{0pt}{2pt}, fill=green]
@@ -38,20 +46,28 @@
         % Основні параметри
         \pgfmathsetmacro\h{2}
         \pgfmathsetmacro\R{0.5}
+        \pgfmathsetmacro\Ry{0.2*\R}
+        \pgfmathsetmacro\HL{-0.1*\R}
 
-        % Тіло циліндра
-        \fill[gray!50] (-\R, -\h/2) rectangle (\R, \h/2);
+        % Бічна поверхня циліндра (тінь -- відблиск -- тінь)
+        \begin{scope}
+            \clip (-\R, -\h/2) -- (-\R, \h/2) arc (180:360:{\R} and {\Ry}) -- (\R, -\h/2) arc (0:-180:{\R} and {\Ry});
+            \shade[left color=gray!55, right color=gray!12]
+                (-\R-0.1, -\h/2-\Ry-0.1) rectangle (\HL, \h/2+0.1);
+            \shade[left color=gray!12, right color=gray!78]
+                (\HL, -\h/2-\Ry-0.1) rectangle (\R+0.1, \h/2+0.1);
+        \end{scope}
 
         % Вертикальні твірні
-        \draw[] (-\R, -\h/2) -- (-\R, \h/2)
-                ( \R, -\h/2) -- ( \R, \h/2);
+        \draw (-\R, -\h/2) -- (-\R, \h/2)
+              ( \R, -\h/2) -- ( \R, \h/2);
 
-        % Верхній торець
-        \draw[fill=gray!50] (0, \h/2) circle ({\R} and {0.2*\R});
+        % Видима (передня) частина нижньої основи
+        \draw (-\R, -\h/2) arc (180:360:{\R} and {\Ry});
 
-        % Нижній торець
-        \draw[fill=gray!50] (-\R, -\h/2) arc (180:360:{\R} and {0.2*\R});
-        \draw[dotted]       ( \R, -\h/2) arc (0:180:{\R} and {0.2*\R});
+        % Верхня основа
+        \shade[ball color=gray!20] (0, \h/2) circle ({\R} and {\Ry});
+        \draw (0, \h/2) circle ({\R} and {\Ry});
 
         % Зовнішній контур
         \draw[thin, green!50!black, arrowpos={0.1}{0pt}{2pt}]
@@ -59,7 +75,7 @@
             node[pos=0.1, above] {$L$};
 
         % Переріз
-        \fill[green] (0, 0) circle ({\R} and {0.2*\R});;
+        \fill[green] (0, 0) circle ({\R} and {\Ry});
 
         % Струм
         \draw[->] (0,-0.1) -- ++(0, 0.5) node[above] {$\vect{j}$};

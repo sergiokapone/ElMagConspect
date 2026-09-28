@@ -1,6 +1,10 @@
 % Адаптовано з MaxwellEqns.tex (слайд "Оцінка глибини проникнення поля...", контур 2)
 \begin{tikzpicture}[>=latex, scale=1.5]
-	\draw[gray, fill=gray!50] (0,0) circle(1.5);
+	% Верхній торець циліндра (об'ємне затінення)
+	\shade[ball color=gray!20] (0,0) circle(1.5);
+	\draw (0,0) circle(1.5);
+
+	% Зелений контур
 	\draw[green!60!black, thick,
 		arrowpos={0.15}{2pt}{4pt},
 		arrowpos={0.4}{2pt}{4pt},
@@ -10,10 +14,14 @@
 	node[left, font=\scriptsize, text=black] {$\ell$}
 	++(0, -0.5) --  node[below, font=\scriptsize, text=black] {$\delta$}
 	++(0.5, 0) -- ++(0, 0.5) -- cycle;
+
+	% Вектори поля H
 	\foreach[count=\c] \x in {0,0.1,...,0.5}{
 			\draw[->, blue, ultra thin] ({\x-1.5},0.25) -- ++(0, {-(1-2*\x)})
 			\ifnum\c=1 node[pos=1, left] {$\Hfield$}\fi;
 		}
+
+	% Точки струму j
 	\foreach \a in {0,30,...,330} {
 			\draw[] (\a:1.25) circle(0.05);
 			\fill[] (\a:1.25) circle(0.025);

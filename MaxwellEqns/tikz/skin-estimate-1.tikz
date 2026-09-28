@@ -1,31 +1,55 @@
 % Адаптовано з MaxwellEqns.tex (слайд "Оцінка глибини проникнення поля...", контур 1)
 \begin{tikzpicture}[>=latex, scale=1.5]
-	\pgfmathsetmacro\h{3}
-	\pgfmathsetmacro\R{1}
+	% Основні параметри
+	\pgfmathsetmacro\h{3}          % Висота
+	\pgfmathsetmacro\R{1}          % Радіус
+	\pgfmathsetmacro\Ry{0.2*\R}   % Стиснення еліпса основи
+	\pgfmathsetmacro\HL{-0.1*\R}  % Межа відблиску
+
 	\coordinate (A) at (0, {-\h/2});
 	\coordinate (B) at (0, {+\h/2});
-	\draw[gray] ([xshift=\R cm]A) -- ([xshift=\R cm]B)
-	([xshift=-\R cm]A) -- ([xshift=-\R cm]B);
-	% Тіло циліндра (сіра середина) — тепер масштабується
-     \fill[gray!50] (-\R, -\h/2) rectangle (\R, \h/2);
-	\draw[gray, fill=gray!50] (B) circle ({\R} and {0.2*\R});
-	\draw[gray] ([xshift=\R cm]A) arc(0:-180:{\R} and {0.2*\R});
-	\draw[gray, densely dashed] ([xshift=-\R cm]A) arc(180:0:{\R} and {0.2*\R});
-	\fill[gray!50] (A) circle ({\R} and {0.2*\R});
+
+	% Бічна поверхня циліндра (тінь -- відблиск -- тінь)
+	\begin{scope}
+		\clip (-\R, -\h/2) -- (-\R, \h/2) arc (180:360:{\R} and {\Ry}) -- (\R, -\h/2) arc (0:-180:{\R} and {\Ry});
+		\shade[left color=gray!55, right color=gray!12]
+			(-\R-0.1, -\h/2-\Ry-0.1) rectangle (\HL, \h/2+0.1);
+		\shade[left color=gray!12, right color=gray!78]
+			(\HL, -\h/2-\Ry-0.1) rectangle (\R+0.1, \h/2+0.1);
+	\end{scope}
+
+	% Вертикальні твірні
+	\draw (-\R, -\h/2) -- (-\R, \h/2)
+	      ( \R, -\h/2) -- ( \R, \h/2);
+
+	% Видима (передня) частина нижньої основи
+	\draw (-\R, -\h/2) arc (180:360:{\R} and {\Ry});
+
+	% Верхня основа
+	\shade[ball color=gray!20] (0, \h/2) circle ({\R} and {\Ry});
+	\draw (0, \h/2) circle ({\R} and {\Ry});
+
+	% Зелений контур
 	\draw[green!70!black, thick,
 		arrowpos={0.15}{2pt}{3pt},
 		arrowpos={0.40}{2pt}{3pt},
 		arrowpos={0.70}{2pt}{3pt},
 		arrowpos={0.90}{2pt}{3pt}
 	] (-1,-0.5) -- ++(0,1) -- ++(0.5, 0) -- ++(0, -1) -- cycle;
+
+	% Вектори поля Е
 	\def\fLarge{0.95}
 	\foreach \x in {0,0.1,...,0.5}{
-			\draw[->, red, ultra thin] ({\x-1},-0.5) -- ++(0, {1-2*\x});
-		}
+		\draw[->, red, ultra thin] ({\x-1},-0.5) -- ++(0, {1-2*\x});
+	}
+
+	% Сині витки
 	\foreach \y in {-0.4,0,0.4} {
-			\draw[arrowpos={0.5}{0}{2pt}, blue, ultra thin] (0,{\fLarge*\y})
-			[partial ellipse=91:{360+89}:{\fLarge*\R} and {\fLarge*0.1*\R}];
-		}
+		\draw[arrowpos={0.5}{0}{2pt}, blue, ultra thin] (0,{\fLarge*\y})
+		[partial ellipse=91:{360+89}:{\fLarge*\R} and {\fLarge*0.1*\R}];
+	}
+
+	% Підписи
 	\node[left, font=\scriptsize, text=red] at (-1, 0.5) {$\Efield$};
 	\node[below, font=\scriptsize] at (-0.75, -0.5) {$\delta$};
 	\node[left, font=\scriptsize] at (-1, 0) {$h$};
