@@ -24,7 +24,9 @@ books.session
 *.bcf-SAVE-ERROR
 test.pdf
 main.pdf
+test.tex
 *.curve.gnuplot
 *.curve.table
-test.tex
+*.gnuplot
+*.table
 
