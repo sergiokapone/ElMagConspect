@@ -27,8 +27,12 @@
 
 \begin{document}
 
-\includechapter{\TargetChapter}
-%\includetikz{EMWaves}{capacitor-angular-momentum}
+
+\ifdefined\TargetTikz
+  \includetikz{\TargetChapter}{\TargetTikz}
+\else
+  \includechapter{\TargetChapter}
+\fi
 
 \end{document}
 
