@@ -13,6 +13,16 @@
         ],
         "description": "TeX magic comments"
     },
+    "TeX root = this file": {
+        "prefix": "rt",
+        "body": "% !TeX root = ${TM_FILENAME}",
+        "description": "TeX root = current file name"
+    },
+    "TeX root = main file": {
+        "prefix": "rm",
+        "body": "% !TeX root = ../main.tex",
+        "description": "TeX root = main file"
+    },
     "LaTeX Packages": {
         "prefix": [
             "lng",
