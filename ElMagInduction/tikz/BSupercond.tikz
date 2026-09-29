@@ -1,0 +1,22 @@
+\begin{tikzpicture}[scale=1.5]
+\clip (-4,-2) rectangle (4,2);
+% ======================= стрілки на лініях ==================================
+\foreach \i [evaluate=\i as \x using \i*0.1]in {-12,-10,...,12} {
+\ifnum\i=0\relax\else%
+\draw[red, -latex', rotate around = {{-asin(\x/(3 -1/3))}:({asin(\x/(3 -1/3))}:3)}] ({asin(\x/(3 -1/3))}:3) -- ({asin(\x/(3 -1/3))}:3.1);
+
+\draw[red, -latex',rotate around = {{180-asin(\x/(3 -1/3))}:({180+asin(\x/(3 -1/3))}:3)} ] ({180+asin(\x/(3 -1/3))}:3) -- ({180+asin(\x/(3 -1/3))}:3.1);
+\fi
+}
+% ================================ куля ======================================
+\fill[gray!20, draw=blue, thick] (0,0) circle (1.01);
+\foreach \i  in {0.1,0.2,...,0.6} {
+\foreach \j in {-1,1} {
+\draw [color=red,
+		domain=179:1,
+		samples=200,
+		smooth,
+		] plot (xy polar cs:angle=\x,radius= {\j*\i/sin(\x) +\j * sqrt( (\i)^2/(sin(\x)^2) + 1) });
+		}
+		}
+\end{tikzpicture}

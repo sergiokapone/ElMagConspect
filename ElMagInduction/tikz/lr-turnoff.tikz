@@ -7,7 +7,7 @@
 	\draw (3, 0) to[battery2, l=$\emf$] (1.5, 0) to[opening switch, l=$S$, mirror]  (0, 0);
 	\draw (A) to[L, l={$L$, $r$}] (A');
 \end{circuitikz}
-\begin{tikzpicture}[scale=1.25, >=latex]
+\begin{tikzpicture}[scale=1.75, >=latex]
 	\draw[->] (0,0) -- ++(2,0) node[below] {$t$};
 	\draw[->] (0,0) -- ++(0,2) node[left] {$I$};
 	\node[left] at (0, 1.6) {$I_0$};
