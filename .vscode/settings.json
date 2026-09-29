@@ -105,7 +105,8 @@
   "latex-workshop.view.pdf.zoom": "page-width",
   "latex-workshop.view.pdf.viewer": "tab",
   "workbench.editorAssociations": {
-    "*.pdf": "latex-workshop-pdf-hook"
+    "*.pdf": "latex-workshop-pdf-hook",
+    "*.copilotmd": "vscode.markdown.preview.editor"
   },
   "latex-workshop.latex.recipes": [
     {
@@ -132,5 +133,9 @@
   "latex-workshop.hover.preview.enabled": true,
   "latex-workshop.hover.citation.enabled": true,
   "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
-  "latex-workshop.linting.chktex.exec.args": ["-wall", "-n19", "-n22", "-n30", "-q"]
+  "latex-workshop.linting.chktex.exec.args": ["-wall", "-n19", "-n22", "-n30", "-q"],
+  "localinput.jobname": "main",
+  "localinput.driver": "alone.tex",
+  "localinput.pdfBeside": true,
+  "localinput.forceRebuild": true
 }
