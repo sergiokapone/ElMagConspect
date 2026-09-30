@@ -1,5 +1,8 @@
-\documentclass[]{ConspectBook}
-\let\enquote\emph
+\documentclass[biblatex]{ConspectBook}
+% \let\enquote\emph
+
+\addbibresource{d:/Projects/LaTeX/MyPackages/bib/MyBase.bib}
+\addbibresource{./bibliography/Articles.bib}
 
 %  1) Charges
 % 17) SteadyEfield
@@ -24,9 +27,8 @@
 \newcommand{\includechapter}[1]{\input{#1/#1}}
 \newcommand{\includetikz}[2]{\input{#1/tikz/#2.tikz}}
 
-
 \begin{document}
-
+\pagestyle{main}
 
 \ifdefined\TargetTikz
   \includetikz{\TargetChapter}{\TargetTikz}
