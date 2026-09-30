@@ -137,5 +137,40 @@
   "localinput.jobname": "main",
   "localinput.driver": "alone.tex",
   "localinput.pdfBeside": true,
-  "localinput.forceRebuild": true
+  "localinput.forceRebuild": true,
+  "files.exclude": {
+    // --- Файлы ---
+    "**/desktop.ini": true,
+    "**/google*.html": true,
+    "**/descript.ion": true,
+    "**/*.bak*": true,
+    "**/*.out": true,
+    "**/*.aux": true,
+    "**/*.log": true,
+    "**/*.gz": true,
+    "**/*.bbl": true,
+    "**/*.blg": true,
+    "**/*.bcf": true,
+    "**/*.toc": true,
+    "**/*.idx": true,
+    "**/*.ind": true,
+    "**/*.ilg": true,
+    "**/*.nlg": true,
+    "**/*.nlo": true,
+    "**/*.nls": true,
+    "**/*.snm": true,
+    "**/*.nav": true,
+    "**/*.fdb_latexmk": true,
+    "**/*.fls": true,
+    "**/*.run.xml": true,
+    "**/*.table": true,
+    "**/*.gnuplot": true,
+    "**/*.thm": true,
+    // --- Папки ---
+    "**/.archive": true,
+    "**/build": true,
+    "**/out": true,
+    "**/.vscode": false,   // оставляем видимой (можно убрать строку)
+    "**/__pycache__": true
+  }
 }
