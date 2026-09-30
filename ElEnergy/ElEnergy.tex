@@ -713,14 +713,14 @@ $q_1q_2/r_{12}$ з попереднього пункту.
 	F_x\, dx = \Delta\phi^2\,\delta C - \frac12\Delta\phi^2\,\delta C = \frac12\Delta\phi^2\,\delta C = dW,
 \end{equation*}
 звідки
-\begin{equation}\label{eq:ForceConstPhi}
+\begin{equation}\label{eq:ForceConstPhiE}
 	\tcbhighmath{
 		F_x = +\left.\frac{dW}{dx}\right|_{\Delta\phi=\const}.
 	}
 \end{equation}
 
 \begin{Attention}
-	Формули~\eqref{eq:ForceConstQ} і~\eqref{eq:ForceConstPhi} відрізняються \emphx{знаком}, проте описують \emphx{одну й ту саму} фізичну силу: сама
+	Формули~\eqref{eq:ForceConstQ} і~\eqref{eq:ForceConstPhiE} відрізняються \emphx{знаком}, проте описують \emphx{одну й ту саму} фізичну силу: сама
 	сила, що діє на нерухоме (у момент обчислення) тіло, не може залежати від того, який уявний спосіб зміни системи ми обираємо для її обчислення
 	--- метод сталого заряду чи метод сталого потенціалу. Різниця знаків пояснюється тим, що при сталому $\Delta\phi$ енергію в систему додатково
 	вкладає джерело, і саме цей додатковий внесок \enquote{перевертає} знак похідної.
@@ -756,7 +756,7 @@ $q_1q_2/r_{12}$ з попереднього пункту.
 
 \emphx{Спосіб 2: $\Delta\phi = \const$.} Аналогічно, $dW = d\left(\dfrac{C\Delta\phi^2}{2}\right) = \dfrac{\Delta\phi^2}{2}\, dC =
 -\dfrac{\Delta\phi^2 C}{2x}\, dx$, що після підстановки $\Delta\phi = Ex$ дає $dW = -\dfrac{\epsilon E^2 S}{8\pi}\, dx$, і за
-формулою~\eqref{eq:ForceConstPhi} знову отримуємо той самий результат~\eqref{eq:ForceCapacitorPlates}.
+формулою~\eqref{eq:ForceConstPhiE} знову отримуємо той самий результат~\eqref{eq:ForceCapacitorPlates}.
 
 
 Знак \enquote{мінус} у формулі~\eqref{eq:ForceCapacitorPlates} свідчить про те, що сила спрямована на \emphx{зменшення} відстані між обкладками, тобто
@@ -862,7 +862,7 @@ $S_1 = \left(1 - \dfrac{x}{L}\right) S$, $S_2 = \dfrac{x}{L}S$ (тут $x$ --- �
 
 
 \begin{problem}\label{prob:ForceConstPhi}
-	\emphx{Сила при сталій напрузі.} Плоский конденсатор із площею обкладок $S=20\ \text{см}^2$ приєднано до батареї, що підтримує напругу $U=300$~В; відстань між обкладками $d=0{,}5$~мм. Обчисліть силу притягання обкладок безпосередньо за формулою~\eqref{eq:ForceConstPhi} (через залежність $C(x)$), не користуючись готовим результатом~\eqref{eq:ForceCapacitorPlates}, і переконайтесь, що відповідь збігається. \emphx{Вказівка:} у СІ
+	\emphx{Сила при сталій напрузі.} Плоский конденсатор із площею обкладок $S=20\ \text{см}^2$ приєднано до батареї, що підтримує напругу $U=300$~В; відстань між обкладками $d=0{,}5$~мм. Обчисліть силу притягання обкладок безпосередньо за формулою~\eqref{eq:ForceConstPhiE} (через залежність $C(x)$), не користуючись готовим результатом~\eqref{eq:ForceCapacitorPlates}, і переконайтесь, що відповідь збігається. \emphx{Вказівка:} у СІ
 	$C=\epsilon_0S/x$. \emphx{Відповідь:} $F=\epsilon_0SU^2/2d^2\approx 3{,}2\times10^{-3}\ \text{Н}$.
 \end{problem}
 
