@@ -11,7 +11,7 @@
     xmin=0, xmax=2.3,
     ymin=0, ymax=2.3,
     ytick={0.25, 0.70},
-    yticklabels={$\rho_{0,1}$, $\rho_{0,2}$},
+    yticklabels={$\rho_{\text{зал},1}$, $\rho_{\text{зал},2}$},
     xtick=\empty,
     % Налаштування легенди
     legend pos=north west,
@@ -30,25 +30,26 @@
 
     % 1. Верхня крива: Метал з домішками
     \addplot [
-        domain=0:2.1, 
-        samples=100, 
-        blue!80!black, 
+        domain=0:2.1,
+        samples=100,
+        blue!80!black,
         very thick
     ] {0.70 + 0.65*x*(1 - exp(-pow(x/0.8, 4)))};
-    \addlegendentry{З домішками ($\rho_2 = \rho_{0,2} + \rho_T$)};
 
-    % 2. Нижня крива: Чистий метал
+    \addlegendentry{З домішками ($\rho_2 = \rho_{\text{зал},2} + \rho_T$)};
+
+%    % 2. Нижня крива: Чистий метал
     \addplot [
-        domain=0:2.1, 
-        samples=100, 
-        red!85!black, 
+        domain=0:2.1,
+        samples=100,
+        red!85!black,
         very thick
     ] {0.25 + 0.65*x*(1 - exp(-pow(x/0.8, 4)))};
-    \addlegendentry{Чистий метал ($\rho_1 = \rho_{0,1} + \rho_T$)};
+    \addlegendentry{Чистий метал ($\rho_1 = \rho_{\text{зал},1} + \rho_T$)};
 
     % Інформаційні елементи в легенду
     % \addlegendimage{only marks, mark=none}
-    \addlegendentry{$\Delta\rho_0 = \text{const}$ (температурний зсув)};
+    \addlegendentry{$\Delta\rho_0 = \const$ (температурний зсув)};
 
     % \addlegendimage{only marks, mark=none}
     % \addlegendentry{\small $T \to 0$: $\rho - \rho_0 \propto T^5$ (плато + фонони)};
@@ -61,7 +62,7 @@
     \draw[dotted, gray!80, thick] (axis cs:0, 0.70) -- (axis cs:0.4, 0.70);
 
     % Двостороння стрілка різниці залишкового опору \Delta\rho_0
-    \draw[<->, >=stealth, thick, red!80!black] (axis cs:0.35, 0.25) -- (axis cs:0.35, 0.70) 
+    \draw[<->, >=stealth, thick, red!80!black] (axis cs:0.35, 0.25) -- (axis cs:0.35, 0.70)
         node[midway, right=1pt, font=\small\bfseries] {$\Delta\rho_0$};
 
 \end{axis}
