@@ -1,0 +1,145 @@
+\begin{tikzpicture}[
+    scale=1.1,
+    >=Stealth,
+    % --- Стилі елементів ---
+    anode/.style={fill=gray!35, draw=black, thick},
+    cathode/.style={fill=gray!35, draw=black, thick},
+    metal/.style={fill=orange!75!black, draw=orange!90!black, thick},
+    container/.style={draw=black!80, ultra thick, line cap=round},
+    ion+/.style={circle, fill=red!25, draw=red!80!black, thick, inner sep=0pt, font=\small\color{red!80!black}},
+    ion-/.style={circle, fill=blue!25, draw=blue!80!black, thick, inner sep=0pt, font=\small\color{blue!80!black}}
+]
+
+  % ==========================================
+  % 1. ОСНОВНІ ПАРАМЕТРИ ТА ЗМІННІ
+  % ==========================================
+  \pgfmathsetmacro{\bathHalfW}{3.6}    % Півширина ванни
+  \pgfmathsetmacro{\bathH}{4.0}        % Висота стінок ванни
+  \pgfmathsetmacro{\liquidH}{3.2}      % Рівень електроліту
+
+  \pgfmathsetmacro{\elW}{0.5}          % Ширина електродів
+  \pgfmathsetmacro{\elH}{3.2}          % Висота електродів
+  \pgfmathsetmacro{\elYmin}{0.8}       % Нижній край електродів
+  \pgfmathsetmacro{\anodeX}{-2.35}     % X-координата центру анода
+  \pgfmathsetmacro{\cathodeX}{2.35}    % X-координата центру катода
+
+  \pgfmathsetmacro{\metalThick}{0.18}  % Товщина шару металу
+  \pgfmathsetmacro{\metalH}{2.5}       % Висота шару металу
+  
+  \pgfmathsetmacro{\wireY}{5.5}        % Висота дротів кола
+  \def\vLen{0.7}                       % Довжина векторів швидкості іонів
+
+  % ==========================================
+  % 2. ОПОРНІ КООРДИНАТИ (REFERENCE POINTS)
+  % ==========================================
+  % Ванна та рідина
+  \coordinate (BathBL) at (-\bathHalfW, 0);
+  \coordinate (BathBR) at (\bathHalfW, 0);
+  \coordinate (BathTL) at (-\bathHalfW, \bathH);
+  \coordinate (BathTR) at (\bathHalfW, \bathH);
+  \coordinate (LiqL)   at (-\bathHalfW, \liquidH);
+  \coordinate (LiqR)   at (\bathHalfW, \liquidH);
+
+  % Електроди (вершини та основи)
+  \coordinate (AnodeTop)    at (\anodeX, \elYmin + \elH);
+  \coordinate (CathodeTop)  at (\cathodeX, \elYmin + \elH);
+
+  % Джерела живлення
+  \coordinate (WireL) at (\anodeX, \wireY);
+  \coordinate (WireR) at (\cathodeX, \wireY);
+
+  % ==========================================
+  % 3. ВАННА ТА ЕЛЕКТРОЛІТ
+  % ==========================================
+  \fill[cyan!12] (BathBL) rectangle (LiqR);
+  \draw[cyan!60!black, thick] (LiqL) -- (LiqR);
+  \draw[container] (BathTL) -- (BathBL) -- (BathBR) -- (BathTR);
+
+  % Підпис розчину (прив'язаний до нижнього лівого кута)
+  \node[cyan!40!black, font=\small\sffamily\bfseries, anchor=south west] 
+    at ($(BathBL)+(0.3, 0.2)$) {Електроліт};
+
+  % ==========================================
+  % 4. ЕЛЕКТРОДИ ТА ОСОДЖЕНИЙ МЕТАЛ
+  % ==========================================
+  % Анод
+  \filldraw[anode] 
+    (\anodeX - \elW/2, \elYmin) rectangle (\anodeX + \elW/2, \elYmin + \elH);
+
+  % Катод
+  \filldraw[cathode] 
+    (\cathodeX - \elW/2, \elYmin) rectangle (\cathodeX + \elW/2, \elYmin + \elH);
+
+  % Шар металу на катоді (прив'язаний до лівої грані катода)
+  \filldraw[metal, opacity=0.5] 
+    (\cathodeX - 1.5*\elW/2, \elYmin-0.5*\elW/2) rectangle (\cathodeX + 1.5*\elW/2, \elYmin + 0.75*\elH);
+  % \coordinate (CathodeLeftBottom) at (\cathodeX - \elW/2, \elYmin);
+  % \filldraw[metal] 
+  %   ($(CathodeLeftBottom) - (\metalThick, 0)$) rectangle ++(\metalThick, \metalH);
+
+  % ==========================================
+  % 5. ЕЛЕКТРИЧНЕ КОЛО ТА ДЖЕРЕЛО СТРУМУ
+  % ==========================================
+  \def\sourceW{0.6} % Зсув підключення джерела
+
+  \draw[thick] (AnodeTop) -- (WireL) -- (-\sourceW, \wireY);
+  \draw[thick] (CathodeTop) -- (WireR) -- (\sourceW, \wireY);
+
+  % Підписи анода та катода (прив'язані до вертикальних дротів)
+  \node[left=3pt, font=\small\bfseries] at ($(AnodeTop)!0.3!(WireL)$) {Анод ($+$)};
+  \node[right=3pt, font=\small\bfseries] at ($(CathodeTop)!0.3!(WireR)$) {Катод ($-$)};
+
+  % Символи батареї
+  \draw[thick] (-0.6, \wireY-0.5) -- (-0.6, \wireY+0.5);       % + (довга)
+  \draw[ultra thick] (-0.2, \wireY-0.3) -- (-0.2, \wireY+0.3); % - (коротка)
+  \draw[thick] (-0.2, \wireY) -- (0.2, \wireY);                 % з'єднання
+  \draw[thick] (0.2, \wireY-0.5) -- (0.2, \wireY+0.5);        % + (довга)
+  \draw[ultra thick] (0.6, \wireY-0.3) -- (0.6, \wireY+0.3);  % - (коротка)
+
+  % Полярність та назва джерела
+  % \node[left=3pt, font=\small\bfseries\color{red!80!black}] at (-0.6, \wireY) {$+$};
+  % \node[right=3pt, font=\small\bfseries\color{blue!80!black}] at (0.6, \wireY) {$-$};
+  \node[above=8pt, font=\small\sffamily\bfseries] at (0, \wireY+0.5) {Джерело струму};
+
+  % ==========================================
+  % 6. ВЕКТОР ГУСТИНИ СТРУМУ (j)
+  % ==========================================
+  \coordinate (Jstart) at (\anodeX + \elW/2 + 0.3, \liquidH + 0.4);
+  \coordinate (Jend)   at (\cathodeX - \elW/2 - 0.3, \liquidH + 0.4);
+
+  \draw[->, line width=1.3pt, purple!80!black] (Jstart) -- (Jend)
+    node[midway, above=2pt, font=\small\bfseries] {Густина струму $\vect{j}$};
+
+  % ==========================================
+  % 7. ІОНИ ТА ВЕКТОРЫ ШВИДКОСТЕЙ
+  % ==========================================
+  % Заголовок катіонів
+  \node[red!80!black, font=\small\sffamily, anchor=south] at (-0.7, 2.7) {Катіони};
+
+  % Катіони (+)
+  \node[ion+] (c1) at (-1.7, 2.5) {$+$};
+  \draw[->, very thick, red!80!black] (c1) -- ++(\vLen, 0) node[right, font=\small] {$\vec{v}_+$};
+
+  \node[ion+] (c2) at (-1.2, 1.6) {$+$};
+  \draw[->, very thick, red!80!black] (c2) -- ++(\vLen, 0) node[right, font=\small] {$\vec{v}_+$};
+
+  % Аніони (-)
+  \node[ion-] (a1) at (1.5, 2.3) {$-$};
+  \draw[->, very thick, blue!80!black] (a1) -- ++(-\vLen, 0) node[left=1pt, font=\small] {$\vec{v}_-$};
+
+  \node[ion-] (a2) at (1.2, 1.0) {$-$};
+  \draw[->, very thick, blue!80!black] (a2) -- ++(-\vLen, 0) node[left=1pt, font=\small] {$\vec{v}_-$};
+
+  % Заголовок аніонів (відносно нижнього аніона)
+  \node[blue!80!black, font=\small\sffamily, anchor=north] at (0, 0.8) {Аніони};
+
+  % ==========================================
+  % 8. ВКАЗІВНИК НА ШАР МЕТАЛУ
+  % ==========================================
+  \coordinate (MetalTarget) at (\cathodeX - \elW/2 - \metalThick, \elYmin + 0.2);
+  \node[font=\small\sffamily, text=orange!90!black, anchor=east] 
+    (MetalLabel) at (3.5, 0.4) {Шар металу};
+
+  % \draw[<-, thick, orange!90!black] (MetalTarget) -- (MetalLabel.east);
+
+\end{tikzpicture}

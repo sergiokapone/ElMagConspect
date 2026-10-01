@@ -1,0 +1,89 @@
+\begin{tikzpicture}[
+    >=Stealth,
+    si node/.style={circle, draw=black, fill=white, thick, inner sep=2.5pt, font=\sffamily\bfseries},
+    electron/.style={circle, fill=black, inner sep=2.2pt},
+    hole/.style={circle, draw=black, fill=white, thick, inner sep=2.2pt},
+    hole dashed/.style={circle, draw=black, densely dashed, fill=white, thick, inner sep=2.2pt},
+    drift arrow/.style={-{Stealth[length=6pt]}, thick, dashed},
+    jump arrow/.style={-{Stealth[length=5pt]}, thick}
+]
+
+    % 1. Основна заливка блоку напівпровідника
+    \fill[black!15] (-1.3, -0.9) rectangle (9.3, 4.5);
+
+    % 2. Кристалічна решітка (орбіталі), акуратно зрізана по контуру за допомогою \clip
+    \begin{scope}
+        \clip (-1.3, -0.9) rectangle (9.3, 4.5);
+        \foreach \x in {-2, 0, 2, 4, 6, 8, 10} {
+            \foreach \y in {-1.8, 0, 1.8, 3.6, 5.4} {
+                % Горизонтальні дуги зв'язків
+                \draw[black!40, thin] (\x, \y) to[out=45, in=135] (\x+2, \y);
+                \draw[black!40, thin] (\x, \y) to[out=-45, in=-135] (\x+2, \y);
+                % Вертикальні дуги зв'язків
+                \draw[black!40, thin] (\x, \y) to[out=135, in=-135] (\x, \y+1.8);
+                \draw[black!40, thin] (\x, \y) to[out=45, in=-45] (\x, \y+1.8);
+            }
+        }
+    \end{scope}
+
+    % Контур блоку напівпровідника поверх решітки
+    \draw[black, thick] (-1.3, -0.9) rectangle (9.3, 4.5);
+
+    % 3. Електроди по боках
+    \filldraw[fill=gray!70, draw=black] (-1.6, -0.5) rectangle (-1.3, 4.1);
+    \filldraw[fill=gray!70, draw=black] (9.3, -0.5) rectangle (9.6, 4.1);
+
+    % 4. Атоми кремнію (Si)
+    \foreach \x in {0, 2, 4, 6, 8} {
+        \foreach \y in {0, 1.8, 3.6} {
+            \node[si node] at (\x, \y) {Si};
+        }
+    }
+
+    % 5. Зовнішнє електричне коло
+    \draw[thick] (-1.6, 0.0) -- (-3.2, 0.0) -- (-3.2, -2.6) -- (3.0, -2.6);
+    \draw[thick] (9.6, 0.0) -- (11.2, 0.0) -- (11.2, -2.6) -- (5.0, -2.6);
+
+    % Джерело живлення (батарея)
+    \draw[thick] (3.0, -3.1) -- (3.0, -2.1);
+    \draw[ultra thick] (3.3, -2.9) -- (3.3, -2.3);
+    \draw[thick] (3.6, -3.1) -- (3.6, -2.1);
+    \draw[ultra thick] (3.9, -2.9) -- (3.9, -2.3);
+    \draw[thick] (4.2, -3.1) -- (4.2, -2.1);
+    \draw[ultra thick] (4.5, -2.9) -- (4.5, -2.3);
+    \draw[thick] (4.7, -3.1) -- (4.7, -2.1);
+    \draw[ultra thick] (5.0, -2.9) -- (5.0, -2.3);
+
+    % Полюси джерела
+    \node[font=\Huge\bfseries\sffamily] at (-2.4, 2.2) {+};
+    \draw[line width=5pt] (10.3, 2.2) -- (10.9, 2.2); % Мінус
+
+    % Підпис умовного струму
+    \node[align=center, font=\sffamily] at (-1.5, -1.8) {умовний\\струм};
+    \draw[->, ultra thick, red] (-1.0, -2.6) -- (-2.2, -2.6);
+
+    \foreach[count=\i] \x in {-1,1,3,5,7,9} {
+        \foreach[count=\j] \y in {0.4, 2.2, 4} {
+            \ifodd\i
+                \node[hole dashed] (h\i_\j) at (\x, \y) {};
+            \else
+                \node[electron]    (h\i_\j) at (\x, \y) {};
+            \fi
+        }
+    }
+
+    \foreach \i in {1,...,5} {
+        \pgfmathtruncatemacro{\next}{\i+1}
+        \foreach \j in {1,2,3} {
+            % jump: справа наліво, дуга зверху
+            \draw[jump arrow]  (h\next_\j.west) to[out=150, in=30]  (h\i_\j.east);
+            % drift: зліва направо, дуга знизу
+            \draw[drift arrow] (h\i_\j.east)    to[out=-30, in=-150] (h\next_\j.west);
+        }
+    }
+        
+
+
+
+    
+\end{tikzpicture}

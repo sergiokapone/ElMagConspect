@@ -1,0 +1,85 @@
+\begin{tikzpicture}[>=Stealth, font=\small\sffamily]
+
+    % ==========================================
+    % --- ОСНОВНІ ПАРАМЕТРИ ТА ЗМІННІ ---
+    % ==========================================
+    \pgfmathsetmacro{\Ebot}{0}          % Дно зони провідності
+    \pgfmathsetmacro{\EF}{2.6}          % Енергія Фермі
+    \pgfmathsetmacro{\Evac}{5.0}        % Рівень вакууму
+
+    \pgfmathsetmacro{\xWellLeft}{2.5}   % Початок ями по X
+    \pgfmathsetmacro{\WellWidth}{4.5}   % <--- ЗМІНЮЙТЕ ЦЕ ЗНАЧЕННЯ ДЛЯ РОЗШИРЕННЯ/ЗВУЖЕННЯ ЯМИ
+    
+    \pgfmathsetmacro{\VacWidth}{2.2}    % Ширина ділянки вакууму праворуч
+    
+    % --- АВТОМАТИЧНИЙ РОЗРАХУНОК КООРДИНАТ ---
+    \pgfmathsetmacro{\xWellRight}{\xWellLeft + \WellWidth}
+    \pgfmathsetmacro{\xWellCenter}{\xWellLeft + \WellWidth/2}
+    
+    \pgfmathsetmacro{\xVacRight}{\xWellRight + \VacWidth}
+    \pgfmathsetmacro{\xVacCenter}{\xWellRight + \VacWidth/2}
+    
+    \pgfmathsetmacro{\xArrow}{\xWellRight + 0.4} % Позиція стрілок праворуч від ями
+
+    % ==========================================
+    % --- МАЛЮВАННЯ ГРАФІКА ---
+    % ==========================================
+
+    % 1. Заповнення заповнених станів
+    \fill[blue!15] (\xWellLeft, \Ebot) rectangle (\xWellRight, \EF);
+
+    % 2. Контур потенціальної ями
+    \draw[thick] (\xWellLeft - 0.4, \Evac + 0.3) -- (\xWellLeft, \Evac + 0.3)
+                 -- (\xWellLeft, \Ebot)
+                 -- (\xWellRight, \Ebot)
+                 -- (\xWellRight, \Evac)
+                 -- (\xVacRight, \Evac);
+
+    \draw[dashed, gray] (\xWellLeft, \Evac) -- (\xWellRight, \Evac);
+
+    % 3. Рівень Фермі (пунктирна лінія)
+    \draw[dashed, red!70!black] (0.8, \EF) -- (\xArrow + 0.2, \EF);
+    \node[anchor=west, font=\bfseries] at (\xArrow + 0.2, \EF) {РІВЕНЬ ФЕРМІ ($E_F$)};
+
+    % 4. Рівень вакууму
+    \node[anchor=south, font=\bfseries] at (\xVacCenter, \Evac) {РІВЕНЬ ВАКУУМУ ($E_0 = 0$)};
+
+    % 5. Написи всередині ями (автоматично центруються)
+    \node[align=center, font=\bfseries] at (\xWellCenter, 3.8) {ВІЛЬНІ\\СТАНИ};
+    \node[align=center, font=\bfseries] at (\xWellCenter, 1.3) {ЗАПОВНЕНІ\\СТАНИ};
+
+    % Спіни електронів (автоматично по центру)
+    \node at (\xWellCenter, 0.4) {$\uparrow\downarrow \quad \uparrow\downarrow \quad \uparrow\downarrow \quad \uparrow\downarrow$};
+
+    % 6. Стрілки та підписи праворуч
+    % Робота виходу
+    \draw[<->, thick, red!80!black] (\xArrow, \EF) -- (\xArrow, \Evac);
+    \node[anchor=west, red!80!black, font=\bfseries, align=left] at (\xArrow + 0.2, {(\EF + \Evac)/2}) {РОБОТА ВИХОДУ\\ ($A_{\text{вих}} = E_0 - E_F$)};
+
+    % Енергія Фермі
+    % \draw[<->, thick, red!80!black] (\xArrow, \Ebot) -- (\xArrow, \EF);
+    % \node[anchor=west, red!80!black, font=\bfseries, align=left] at (\xArrow + 0.2, {(\Ebot + \EF)/2}) {ЕНЕРГІЯ ФЕРМІ ($E_F$)};
+
+    % Дно зони провідності
+    % \draw[<-, thick] (\xWellRight, \Ebot) -- (\xWellRight + 0.8, \Ebot);
+    % \node[anchor=west, font=\bfseries] at (\xWellRight + 0.8, \Ebot) {ДНО ЗОНИ ПРОВІДНОСТІ};
+
+    % Підписи областей знизу
+    \node[font=\bfseries] at (\xWellCenter, -0.6) {МЕТАЛ};
+    \node[font=\bfseries] at (\xVacCenter + 1.5, -0.6) {ВАКУУМ};
+
+    % 7. Графік розподілу Фермі–Дірака (зліва)
+    \begin{scope}[shift={(0,0)}]
+        \draw[->, thick] (0, -0.3) -- (0, \Evac + 0.8) node[above, font=\itshape] {$E$};
+        \draw[->, thick] (0, \Ebot) -- (1.2, \Ebot) node[right, font=\itshape] {$f(E)$};
+        
+        \node[below left] at (0, \Ebot) {0};
+        \node[below] at (0.8, \Ebot) {1};
+
+        % Сходинка при T = 0 K
+        \draw[thick, blue!80!black] (0, \EF) -- (0.8, \EF) -- (0.8, \Ebot);
+
+        \node[align=center, font=\small, anchor=north] at (0.4, -0.4) {Розподіл\\Фермі–Дірака\\($T = 0\text{ K}$)};
+    \end{scope}
+
+\end{tikzpicture}

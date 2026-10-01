@@ -1,0 +1,57 @@
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.95\linewidth, height=0.75\linewidth,
+    xmin=0, xmax=10,
+    ymin=0, ymax=10,
+    xlabel={Обернена температура, $1/T$ $\rightarrow$ (зменшення $T$)},
+    ylabel={Логарифм концентрації носіїв, $\ln n$},
+    % title={\textbf{Залежність $\ln n(1/T)$ для $n$-напівпровідника}},
+    axis lines=left,
+    xtick={0.5, 2.8, 6.5, 9.5},
+    xticklabels={Висока $T$, $T_2$, $T_1$, Низька $T$},
+    ytick=\empty,
+    enlargelimits=false,
+    clip=false,
+    font=\small,
+]
+
+% 1. Кольорові фонові області
+\fill[red!12] (axis cs:0,0) rectangle (axis cs:2.8,10);
+\fill[green!12] (axis cs:2.8,0) rectangle (axis cs:6.5,10);
+\fill[blue!12] (axis cs:6.5,0) rectangle (axis cs:9.5,10);
+
+% 2. Пунктирні межі областей
+\draw[dashed, gray!80, thick] (axis cs:2.8,0) -- (axis cs:2.8,10);
+\draw[dashed, gray!80, thick] (axis cs:6.5,0) -- (axis cs:6.5,10);
+
+% 3. Текстові підписи областей
+\node[align=center, font=\small\bfseries, color=red!50!black] at (axis cs:1.4, 8.8) {I. Власна\\провідність};
+\node[align=center, font=\small\bfseries, color=green!45!black] at (axis cs:4.65, 8.8) {II. Насичення\\(виснаження домішок)};
+\node[align=center, font=\small\bfseries, color=blue!50!black] at (axis cs:8.0, 8.8) {III. Виморожування\\домішок};
+
+% 4. Стрілка напрямку зростання температури
+% \draw[->, >=stealth, thick] (axis cs:9.5, 9.5) -- (axis cs:0.5, 9.5);
+% \node[above, font=\small\bfseries] at (axis cs:5.0, 9.5) {Зростання температури $T$};
+
+% 5. Побудова гладкої кривої ln n(1/T)
+\addplot[
+    domain=0.5:9.5,
+    samples=200,
+    ultra thick,
+    blue!70!black
+] {
+    ln( exp(-2.8*(x - 2.8)) + 30 / (1 + 0.1*exp(0.5*(x - 6.5))) )
+};
+
+% 6. Анотації та вказівники нахилів
+% \draw[<-, >=stealth, thick, red!60!black] (axis cs:1.6, 3.1) -- (axis cs:0.5, 4.0);
+\node[anchor=north, font=\small\bfseries, color=red!50!black] (I) at (axis cs:1.6, 3.1) {Схил $\approx -\frac{E_g}{2k_B}$};
+
+% \draw[->, >=stealth, thick, green!50!black] (axis cs:4.65, 4.8) -- (axis cs:4.65, 3.6);
+\node[above, font=\small\bfseries, color=green!45!black] at (axis cs:4.65, 4.8) {Плато: $n \approx N_d = \mathrm{const}$};
+
+% \draw[<-, >=stealth, thick, blue!60!black] (axis cs:8.0, 2.7) -- (axis cs:6.8, 1.5);
+\node[anchor=north east, font=\small\bfseries, color=blue!50!black] at (axis cs:9, 1.5) {Схил $\approx -\frac{\Delta E_d}{2k_B}$};
+
+\end{axis}
+\end{tikzpicture}

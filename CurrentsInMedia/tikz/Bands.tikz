@@ -1,0 +1,116 @@
+\begin{tikzpicture}[
+    >=Stealth,
+    font=\sffamily\small,
+    filled/.style={fill=blue!25},
+    empty/.style={fill=blue!5},
+    fermi/.style={dashed, red!80!black, thick},
+    axis/.style={->, thick}
+]
+
+    % =========================================================================
+    % ГЛОБАЛЬНІ ФІКСОВАНІ МЕЖІ (Верх і низ системи зафіксовано для всіх)
+    % =========================================================================
+    \pgfmathsetmacro{\Ebot}{0.5}                  % Фіксований низ усіх схем
+    \pgfmathsetmacro{\Etop}{5}                  % Фіксований верх усіх схем
+    \pgfmathsetmacro{\yAxisMax}{5.1}              % Висота осі E
+    \pgfmathsetmacro{\Ecenter}{(\Ebot + \Etop)/2} % Точний геометричний центр (2.5)
+
+    % =========================================================================
+    % 1. МЕТАЛ
+    % =========================================================================
+    \begin{scope}[xshift=0cm]
+        % ПАРАМЕТРИ
+        \pgfmathsetmacro{\boxWidth}{2.8}           % Ширина зони
+        \pgfmathsetmacro{\boxLeft}{0.3}
+        \pgfmathsetmacro{\boxRight}{\boxLeft + \boxWidth}
+        \pgfmathsetmacro{\EF}{\Ecenter}           % Рівень Фермі рівно посередині
+
+        \node[font=\sffamily\bfseries, align=center] at ({(\boxLeft+\boxRight)/2}, 6.25) {Метал\\[-2pt]\footnotesize(Частково заповнена зона)};
+        \draw[axis] (0,0) -- (0,\yAxisMax) node[above] {$E$};
+
+        % Заповнена та вільна частини (симетричні)
+        \fill[filled] (\boxLeft, \Ebot) rectangle (\boxRight, \EF);
+        \fill[empty]  (\boxLeft, \EF)   rectangle (\boxRight, \Etop);
+        \draw[thick]  (\boxLeft, \Ebot) rectangle (\boxRight, \Etop);
+
+        % Рівень Фермі
+        \draw[fermi] (-0.2, \EF) -- (\boxRight+0.3, \EF) node[right, font=\footnotesize\bfseries, red!80!black] {$E_F$};
+
+        % Підписи точно по центрах заповненої та вільної частин
+        \node[align=center] at ({(\boxLeft+\boxRight)/2}, {(\Ebot+\EF)/2}) {\footnotesize Заповнені\\ стани};
+        \node[align=center] at ({(\boxLeft+\boxRight)/2}, {(\EF+\Etop)/2}) {\footnotesize Вільні стани};
+    \end{scope}
+
+    % =========================================================================
+    % 2. НАПІВПРОВІДНИК
+    % =========================================================================
+    \begin{scope}[xshift=5.2cm]
+        % ПАРАМЕТРИ (Змінюйте лише Eg та за потреби boxWidth)
+        \pgfmathsetmacro{\Eg}{1.0}                 % ЗМІНА: ширина забороненої зони Eg
+        \pgfmathsetmacro{\boxWidth}{2.8}           % Ширина зони
+        \pgfmathsetmacro{\boxLeft}{0.3}
+        \pgfmathsetmacro{\boxRight}{\boxLeft + \boxWidth}
+
+        % АВТОМАТИЧНИЙ СИМЕТРИЧНИЙ РОЗРАХУНОК
+        \pgfmathsetmacro{\EvTop}{\Ecenter - \Eg/2} % Верх ВЗ
+        \pgfmathsetmacro{\EcBot}{\Ecenter + \Eg/2} % Низ ЗП
+        \pgfmathsetmacro{\EF}{\Ecenter}           % Рівень Фермі строго в центрі Eg
+
+        \node[font=\sffamily\bfseries, align=center] at ({(\boxLeft+\boxRight)/2}, 6.25) {Напівпровідник\\[-2pt]\footnotesize(Мала $E_g \approx 1\,\text{еВ}$)};
+        \draw[axis] (0,0) -- (0,\yAxisMax) node[above] {$E$};
+
+        % Валентна зона
+        \fill[filled] (\boxLeft, \Ebot) rectangle (\boxRight, \EvTop);
+        \draw[thick]  (\boxLeft, \Ebot) rectangle (\boxRight, \EvTop);
+        \node[align=center] at ({(\boxLeft+\boxRight)/2}, {(\Ebot+\EvTop)/2}) {\footnotesize Валентна\\ зона};
+
+        % Зона провідності
+        \fill[empty] (\boxLeft, \EcBot) rectangle (\boxRight, \Etop);
+        \draw[thick] (\boxLeft, \EcBot) rectangle (\boxRight, \Etop);
+        \node[align=center] at ({(\boxLeft+\boxRight)/2}, {(\EcBot+\Etop)/2}) {\footnotesize Зона\\ провідності};
+
+        % Рівень Фермі
+        \draw[fermi] (-0.2, \EF) -- (\boxRight+0.3, \EF) node[right, font=\footnotesize\bfseries, red!80!black] {$E_F$};
+
+        % Заборонена зона Eg
+        \draw[<->, thick] (\boxRight-0.3, \EvTop) -- (\boxRight-0.3, \EcBot);
+        \node[left, font=\footnotesize] at (\boxRight-0.3, \EF) {$E_g$};
+    \end{scope}
+
+    % =========================================================================
+    % 3. ДІЕЛЕКТРИК
+    % =========================================================================
+    \begin{scope}[xshift=10.4cm]
+        % ПАРАМЕТРИ (Змінюйте лише Eg та за потреби boxWidth)
+        \pgfmathsetmacro{\Eg}{2.2}                 % ЗМІНА: ширина забороненої зони Eg
+        \pgfmathsetmacro{\boxWidth}{2.8}           % Ширина зони
+        \pgfmathsetmacro{\boxLeft}{0.3}
+        \pgfmathsetmacro{\boxRight}{\boxLeft + \boxWidth}
+
+        % АВТОМАТИЧНИЙ СИМЕТРИЧНИЙ РОЗРАХУНОК
+        \pgfmathsetmacro{\EvTop}{\Ecenter - \Eg/2} % Верх ВЗ
+        \pgfmathsetmacro{\EcBot}{\Ecenter + \Eg/2} % Низ ЗП
+        \pgfmathsetmacro{\EF}{\Ecenter}           % Рівень Фермі строго в центрі Eg
+
+        \node[font=\sffamily\bfseries, align=center] at ({(\boxLeft+\boxRight)/2}, 6.25) {Діелектрик\\[-2pt]\footnotesize(Велика $E_g > 3\text{--}4\,\text{еВ}$)};
+        \draw[axis] (0,0) -- (0,\yAxisMax) node[above] {$E$};
+
+        % Валентна зона
+        \fill[filled] (\boxLeft, \Ebot) rectangle (\boxRight, \EvTop);
+        \draw[thick]  (\boxLeft, \Ebot) rectangle (\boxRight, \EvTop);
+        \node[align=center] at ({(\boxLeft+\boxRight)/2}, {(\Ebot+\EvTop)/2}) {\footnotesize Валентна\\ зона};
+
+        % Зона провідності
+        \fill[empty] (\boxLeft, \EcBot) rectangle (\boxRight, \Etop);
+        \draw[thick] (\boxLeft, \EcBot) rectangle (\boxRight, \Etop);
+        \node[align=center] at ({(\boxLeft+\boxRight)/2}, {(\EcBot+\Etop)/2}) {\footnotesize Зона\\ провідності};
+
+        % Рівень Фермі
+        \draw[fermi] (-0.2, \EF) -- (\boxRight+0.3, \EF) node[right, font=\footnotesize\bfseries, red!80!black] {$E_F$};
+
+        % Заборонена зона Eg
+        \draw[<->, thick] (\boxRight-0.3, \EvTop) -- (\boxRight-0.3, \EcBot);
+        \node[left, font=\footnotesize] at (\boxRight-0.3, \EF) {$E_g$};
+    \end{scope}
+
+\end{tikzpicture}

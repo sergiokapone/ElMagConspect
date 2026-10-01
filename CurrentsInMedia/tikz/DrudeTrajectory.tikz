@@ -1,0 +1,208 @@
+\documentclass[tikz, border=1cm]{standalone}
+\usepackage{fontsetup}
+\usepackage[english, russian, ukrainian]{babel}
+
+\usepackage{ pgfplots, tikz-3dplot}
+\usetikzlibrary{decorations.text, decorations.markings}
+\usetikzlibrary{intersections}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{shapes, shadows}
+\usetikzlibrary{quotes,angles}
+\pgfdeclarelayer{bg}    % declare background layer
+\pgfsetlayers{bg,main}  % set the order of the layers (main is the standard layer)
+\usetikzlibrary{shapes.geometric,calc}
+\usepgfplotslibrary{fillbetween}
+\pgfplotsset{
+	%every tick label/.append style={scale=0.5},
+	every axis label/.append style={font=\small},
+	compat=newest,
+}
+\tikzset{every picture/.style={font=\small}}
+% -------------------------------------- Електричні кола ------------------------------------------------
+\usetikzlibrary{circuits.ee.IEC}
+\tikzset{circuit ee IEC,
+every info/.style=red,
+semithick,
+every info/.style={font=\footnotesize},
+small circuit symbols,
+circuit declare symbol = ampermeter,
+circuit declare symbol = voltmeter,
+circuit declare symbol = galvanometer,
+set ampermeter graphic = {draw,generic circle IEC, minimum size=5mm,info=center:A},%
+set voltmeter graphic = {draw,generic circle IEC, minimum size=5mm,info=center:V},
+set galvanometer graphic = {draw,generic circle IEC, minimum size=5mm,info=center:G},
+}
+
+% -------------------------------------- Grid -------------------------------------------------------
+\makeatletter
+\def\grd@save@target#1{%
+  \def\grd@target{#1}}
+\def\grd@save@start#1{%
+  \def\grd@start{#1}}
+\tikzset{
+  grid with coordinates/.style={
+    to path={%
+      \pgfextra{%
+        \edef\grd@@target{(\tikztotarget)}%
+        \tikz@scan@one@point\grd@save@target\grd@@target\relax
+        \edef\grd@@start{(\tikztostart)}%
+        \tikz@scan@one@point\grd@save@start\grd@@start\relax
+        \draw[minor help lines] (\tikztostart) grid (\tikztotarget);
+        \draw[major help lines] (\tikztostart) grid (\tikztotarget);
+        \grd@start
+        \pgfmathsetmacro{\grd@xa}{\the\pgf@x/1cm}
+        \pgfmathsetmacro{\grd@ya}{\the\pgf@y/1cm}
+        \grd@target
+        \pgfmathsetmacro{\grd@xb}{\the\pgf@x/1cm}
+        \pgfmathsetmacro{\grd@yb}{\the\pgf@y/1cm}
+        \pgfmathsetmacro{\grd@xc}{\grd@xa + \pgfkeysvalueof{/tikz/grid with coordinates/major step}}
+        \pgfmathsetmacro{\grd@yc}{\grd@ya + \pgfkeysvalueof{/tikz/grid with coordinates/major step}}
+        \foreach \x in {\grd@xa,\grd@xc,...,\grd@xb}
+        \node[anchor=north] at (\x,\grd@ya) {\pgfmathprintnumber{\x}};
+        \foreach \y in {\grd@ya,\grd@yc,...,\grd@yb}
+        \node[anchor=east] at (\grd@xa,\y) {\pgfmathprintnumber{\y}};
+      }
+    }
+  },
+  minor help lines/.style={
+    help lines,
+    step=\pgfkeysvalueof{/tikz/grid with coordinates/minor step}
+  },
+  major help lines/.style={
+    help lines,
+    line width= 0.5pt,
+    step=\pgfkeysvalueof{/tikz/grid with coordinates/major step}
+  },
+  grid with coordinates/.cd,
+  minor step/.initial=.2,
+  major step/.initial=1,
+  major line width/.initial=2pt,
+}
+\makeatother
+% ------------------------------------ Паттерни -----------------------------------------------------
+\usetikzlibrary{patterns}
+\tikzstyle{ground}=[fill,pattern=north east lines,draw=none,minimum width=0.3,minimum height=0.6]
+
+\begin{document}
+% Необхідні пакети у преамбулі документа:
+% \usepackage{tikz}
+% \usetikzlibrary{arrows.meta, calc, shapes.misc}
+
+\begin{tikzpicture}[
+    scale=1.0,
+    font=\small,
+    ion/.style={circle, draw=blue!80!black, fill=blue!15, inner sep=0pt, minimum size=3.6mm, font=\tiny\bfseries, text=blue!80!black},
+    startnode/.style={circle, draw=red!80!black, fill=red!20, inner sep=0pt, minimum size=3mm},
+    cross/.style={shape=cross out, draw=red!80!black, thick, inner sep=0pt, minimum size=3.5pt},
+    crossgray/.style={shape=cross out, draw=gray!60, thick, inner sep=0pt, minimum size=3.5pt},
+    vecarr/.style={-{Stealth[length=2mm, width=1.5mm]}, thick}
+]
+
+  % ==========================================
+  % ЛІВА ЧАСТИНА: а) Без електричного поля
+  % ==========================================
+  \begin{scope}[xshift=0cm]
+    % Заголовок підкартинки
+    \node[anchor=center] at (2.8, 4.8) {\textbf{а) Без електричного поля} ($\vec{E} = 0$)};
+
+    % Кристалічна ґратка (іони +)
+    \foreach \x in {0,...,7} {
+      \foreach \y in {0,...,5} {
+        \node[ion] at (\x*0.8, \y*0.7) {$+$};
+      }
+    }
+
+    % Координати вершин траєкторії (без поля)
+    \coordinate (P0) at (0.6, 2.1);
+    \coordinate (P1) at (1.5, 3.1);
+    \coordinate (P2) at (2.2, 1.6);
+    \coordinate (P3) at (1.3, 0.7);
+    \coordinate (P4) at (2.6, 0.4);
+    \coordinate (P5) at (3.1, 1.9);
+    \coordinate (P6) at (2.2, 3.3);
+    \coordinate (P7) at (3.7, 3.7);
+    \coordinate (P8) at (4.5, 2.3);
+    \coordinate (P9) at (3.6, 1.0);
+    \coordinate (P10) at (4.9, 0.3);
+
+    % Траєкторія без поля (червона ламана)
+    \draw[red!80!black, thick] (P0) -- (P1) -- (P2) -- (P3) -- (P4) -- (P5) -- (P6) -- (P7) -- (P8) -- (P9) -- (P10);
+
+    % Хрестики зіткнень
+    \foreach \p in {P1, P2, P3, P4, P5, P6, P7, P8, P9, P10} {
+      \node[cross] at (\p) {};
+    }
+
+    % Початкова точка
+    \node[startnode] at (P0) {};
+    \node[align=center, font=\footnotesize, anchor=north] at (P0) {Початкова\\точка};
+  \end{scope}
+
+  % ==========================================
+  % ПРАВА ЧАСТИНА: б) У електричному полі
+  % ==========================================
+  \begin{scope}[xshift=8.5cm]
+    % Заголовок підкартинки
+    \node[anchor=center] at (2.8, 4.8) {\textbf{б) У електричному полі} ($\vec{E} \neq 0$)};
+
+    % Вектор електричного поля E
+    \draw[vecarr] (4.2, 4.2) -- (5.2, 4.2) node[midway, above] {$\vec{E}$};
+
+    % Вектор дрейфової швидкості vd
+    \draw[vecarr] (2.2, 4.2) -- (1.2, 4.2) node[midway, above] {$\vec{v}_d$};
+
+    % Кристалічна ґратка (іони +)
+    \foreach \x in {0,...,7} {
+      \foreach \y in {0,...,5} {
+        \node[ion] at (\x*0.8, \y*0.7) {$+$};
+      }
+    }
+
+    % Незміщені координати (для пунктиру)
+    \coordinate (U0) at (0.6, 2.1);
+    \coordinate (U1) at (1.5, 3.1);
+    \coordinate (U2) at (2.2, 1.6);
+    \coordinate (U3) at (1.3, 0.7);
+    \coordinate (U4) at (2.6, 0.4);
+    \coordinate (U5) at (3.1, 1.9);
+    \coordinate (U6) at (2.2, 3.3);
+    \coordinate (U7) at (3.7, 3.7);
+    \coordinate (U8) at (4.5, 2.3);
+    \coordinate (U9) at (3.6, 1.0);
+    \coordinate (U10) at (4.9, 0.3);
+
+    % Зміщені координати у полі E (напрямок проти поля E)
+    \coordinate (S0) at (0.6, 2.1);
+    \coordinate (S1) at (1.42, 3.08);
+    \coordinate (S2) at (2.04, 1.56);
+    \coordinate (S3) at (1.06, 0.64);
+    \coordinate (S4) at (2.28, 0.32);
+    \coordinate (S5) at (2.70, 1.80);
+    \coordinate (S6) at (1.72, 3.18);
+    \coordinate (S7) at (3.14, 3.56);
+    \coordinate (S8) at (3.86, 2.14);
+    \coordinate (S9) at (2.88, 0.82);
+    \coordinate (S10) at (4.10, 0.10);
+
+    % Незміщена траєкторія (сірий пунктир)
+    \draw[gray!60, dashed, thick] (U0) -- (U1) -- (U2) -- (U3) -- (U4) -- (U5) -- (U6) -- (U7) -- (U8) -- (U9) -- (U10);
+    \foreach \u in {U1, U2, U3, U4, U5, U6, U7, U8, U9, U10} {
+      \node[crossgray] at (\u) {};
+    }
+
+    % Реальна траєкторія з дрейфом (червона суцільна)
+    \draw[red!80!black, thick] (S0) -- (S1) -- (S2) -- (S3) -- (S4) -- (S5) -- (S6) -- (S7) -- (S8) -- (S9) -- (S10);
+    \foreach \s in {S1, S2, S3, S4, S5, S6, S7, S8, S9, S10} {
+      \node[cross] at (\s) {};
+    }
+
+    % Початкова точка
+    \node[startnode] at (S0) {};
+    \node[align=center, font=\footnotesize, anchor=north] at (S0) {Початкова\\точка};
+
+    % Вектор дрейфового зміщення
+    \draw[vecarr, black] (U10) -- (S10) node[midway, below=2pt, font=\footnotesize] {Дрейфове зміщення $\Delta\vec{r}_d$};
+  \end{scope}
+
+\end{tikzpicture}
+\end{document}
