@@ -45,7 +45,7 @@
 % \defcolor визначається тут же і застосовується нижче (\defcolor{}), бо колір "malina"
 % з пакета xcolor (usenames,dvipsnames,svgnames,table) має бути підвантажений вже
 % після того, як \ProcessOptions обере потрібну гілку.
-\DeclareOption{electronic}{\def\defcolor{\RequirePackage[usenames,dvipsnames,svgnames,table]{xcolor}\definecolor{malina}{rgb}{0.6,0.0,0.0}}
+\DeclareOption{electronic}{\def\defcolor{\RequirePackage[dvipsnames,svgnames,table]{xcolor}\definecolor{malina}{rgb}{0.6,0.0,0.0}}
 	\PassOptionsToPackage{linkcolor=malina}{hyperref}
 	\PassOptionsToPackage{colorlinks=true}{hyperref}
 	\PassOptionsToPackage{urlcolor=blue}{hyperref}
@@ -273,7 +273,8 @@
 %===============================================================================
 % Використовується епізодично (напр. для формул речовин у прикладах) — не є
 % профільним предметом книги, тому підключено одним рядком без додаткових налаштувань.
-\RequirePackage{mhchem, chemfig}
+\RequirePackage[version=4]{mhchem}
+\RequirePackage{chemfig}
 
 %===============================================================================
 %
