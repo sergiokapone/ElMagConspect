@@ -39,8 +39,8 @@ if (Test-Path $dst) {
 }
 
 # --- 4. Лінеаризація напряму в цільовий файл ---
-# qpdf --linearize src dst: читає main.pdf, пише вже лінеаризований ElMagConspect.pdf
-& qpdf --linearize --newline-before-endstream $src $dst
+# Прапорець --warning-exit-0 змушує qpdf повертати код 0, якщо були лише попередження (warnings)
+& qpdf --warning-exit-0 --linearize --newline-before-endstream $src $dst
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "qpdf завершився з помилкою (код $LASTEXITCODE)." -ForegroundColor Red
