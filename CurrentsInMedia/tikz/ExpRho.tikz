@@ -1,8 +1,20 @@
 \begin{tikzpicture}[>=latex, scale=1.5]
-	\draw[->] (0,0) -- ++(2, 0) node[below] {$T$};
-	\draw[->] (0,0) -- ++(0, 2) node[left] {$\rho$};
-	\draw[domain=0:0.5, red, thick] plot (\x, {0*\x});
-	\draw[domain=0.5:2, red, thick] plot (\x, {\x});
-	\draw[red, thick] (0.5, 0) node[below, text=black] {$T_c$} --++ (0,0.5);
-	\draw[red, thick, dotted] (0, 0)  --++ (0.5,0.5);
+    % Осі координат
+    \draw[->] (0,0) -- (2.3, 0) node[below] {$T$};
+    \draw[->] (0,0) -- (0, 2.0) node[left] {$\rho$};
+
+    % Надпровідний стан (rho = 0 при T < T_c)
+    \draw[domain=0:0.5, red, thick] plot (\x, {0});
+
+    % Стрибок опору при критичній температурі T_c
+    \draw[red, thick] (0.5, 0) node[below, text=black] {$T_c$} -- (0.5, 0.28);
+
+    % Пунктирна лінійна екстраполяція
+    % \draw[domain=0.2:2.0, red, thick, dashed] plot (\x, {0.28 + 0.975*(\x - 0.5)});
+
+    % Реальна експериментальна залежність rho(T) вище T_c (відхилення від лінійності)
+    \draw[domain=0.5:2.0, red, thick, samples=50] plot (\x, {0.28 + 0.6*(\x - 0.5) + 0.25*(\x - 0.5)*(\x - 0.5)});
+
+    % Допоміжна пунктирна позначка рівня опору rho_0
+    \draw[dotted, gray] (0, 0.28) node[left, font=\small, text=black] {$\rho_0$} -- (0.5, 0.28);
 \end{tikzpicture}

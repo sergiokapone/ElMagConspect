@@ -1,0 +1,37 @@
+\begin{tikzpicture}
+\begin{axis}[
+    axis lines = left,
+    xlabel = {$U$, В},
+    ylabel = {$I$, мА},
+    xmin = 0, xmax = 8,
+    ymin = 0, ymax = 5.5,
+    xtick = \empty,
+    ytick = \empty,
+    axis line style = {-Stealth, thick},
+    xlabel style = {at={(ticklabel* cs:1)}, anchor=north},
+    ylabel style = {at={(ticklabel* cs:1)}, rotate=-90, anchor=south east},
+    clip = false,
+    % Гладка функція ВАХ з параметрами: Is = 4.5, C = 0.5, p = 4
+    declare function={
+        Iva(\x) = (\x <= 0.01) ? 0 : 4.5 / ((1 + (4.5 / (0.5 * \x * sqrt(\x)))^4)^(0.25));
+    }
+]
+
+% Пунктирна лінія рівню струму насичення I_S
+\draw[dashed, thick, gray!70] (axis cs:0, 4.5) -- (axis cs:7.5, 4.5);
+\node[left] at (axis cs:0, 4.5) {$I_S$};
+
+% Початок координат
+\node[below left] at (axis cs:0, 0) {$0$};
+
+% Побудова кривої ВАХ
+\addplot [domain=0:7.5, samples=200, line width=1.5pt, blue!80!black] {Iva(x)};
+
+% Підписи областей ВАХ
+\node[anchor=west, align=center, font=\scriptsize] (law) at (axis cs: 2.8, 1.1) {$I \propto U^{3/2}$\\ (просторовий заряд)};
+\draw[->, >=stealth, semithick] (axis cs: 2.1, 1.25) -- (law.west);
+
+\node[anchor=south, font=\scriptsize] at (axis cs: 5.5, 4.55) {$I = I_S$ (струм насичення)};
+
+\end{axis}
+\end{tikzpicture}

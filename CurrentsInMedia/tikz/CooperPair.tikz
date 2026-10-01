@@ -1,0 +1,83 @@
+\begin{tikzpicture}[
+    scale=1.2,
+    >=Stealth,
+    % Стилі для позитивних іонів (сині сфери)
+    ion/.style={
+        circle,
+        % draw=blue!80!black,
+        ball color=blue!15,
+        thick,
+        inner sep=0pt,
+        minimum size=4.5mm,
+        font=\large\bfseries\color{blue!80!black}
+    },
+    % Стилі для електронів (червоні сфери)
+    electron/.style={
+        circle,
+        ball color=red,
+        % fill=red!15,`'
+        thick,
+        inner sep=0pt,
+        minimum size=2.5mm,
+        font=\color{white}
+    },
+    % Стилі для ліній сітки
+    gridline/.style={
+        draw=gray!80,
+        thick
+    },
+    % Стилі для сліду руху
+    trail/.style={
+        draw=white!40,
+        line width=1.5mm,
+        line cap=round
+    },
+    % Стиль для фононної хвилі
+    phonon/.style={
+        decorate,
+        decoration={snake, amplitude=1.2pt, segment length=2.5mm},
+        thick,
+        orange!90!black
+    }
+]
+
+  % 1. Визначення вузлів сітки та їх деформація
+  
+  % Стандартні вузли по краях (y=0, y=3) та (x=0, x=3)
+  \foreach \x in {0,...,3} \node[ion] (I\x0) at (\x,0) {$+$};
+  \foreach \x in {0,...,3} \node[ion] (I\x3) at (\x,3) {$+$};
+  \node[ion] (I01) at (0,1) {$+$}; \node[ion] (I31) at (3,1) {$+$};
+  \node[ion] (I02) at (0,2) {$+$}; \node[ion] (I32) at (3,2) {$+$};
+  
+  % Зміщені вузли (y=1, y=2) для x=1, x=2
+  \node[ion] (I11) at (1.2, 1.1) {$+$}; \node[ion] (I21) at (1.8, 1.1) {$+$};
+  \node[ion] (I12) at (1.2, 1.9) {$+$}; \node[ion] (I22) at (1.8, 1.9) {$+$};
+  
+  
+  % 2. Проведення ліній сітки (з деформацією)
+  
+  \draw[gridline] (I00) -- (I01) -- (I02) -- (I03);
+  \draw[gridline] (I10) -- (I11) -- (I12) -- (I13);
+  \draw[gridline] (I20) -- (I21) -- (I22) -- (I23);
+  \draw[gridline] (I30) -- (I31) -- (I32) -- (I33);
+  
+  \draw[gridline] (I00) -- (I10) -- (I20) -- (I30);
+  \draw[gridline] (I01) -- (I11) -- (I21) -- (I31);
+  \draw[gridline] (I02) -- (I12) -- (I22) -- (I32);
+  \draw[gridline] (I03) -- (I13) -- (I23) -- (I33);
+  
+  
+  % 3. Додавання електронів та їх слідів
+  
+  % Електрон 1 (у центрі)
+%  \draw[trail] ($(1.5, 1.5)+(-3.2,0)$) -- (1.5, 1.5);
+  \node[electron] (e1) at (0.5, 1.5) {$-$};
+  
+  % Електрон 2 (праворуч)
+%  \draw[trail] ($(3.6, 1.5)+(-1.2,0)$) -- (3.6, 1.5);
+  \node[electron] (e2) at (2.6, 1.5) {$-$};
+
+  % 4. Фононна хвиля між електронами
+  \draw[phonon] (e1) -- (e2);
+
+\end{tikzpicture}

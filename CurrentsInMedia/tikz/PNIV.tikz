@@ -1,0 +1,61 @@
+\begin{tikzpicture}
+\begin{axis}[
+    width=16cm,
+    height=9.5cm,
+    axis lines=center,
+    xlabel={$U$},
+    ylabel={$I$},
+    xlabel style={at={(axis cs:5.2,0)}, anchor=north west, font=\large},
+    ylabel style={at={(axis cs:0,6.2)}, anchor=south east, font=\large},
+    xmin=-5.5, xmax=5.2,
+    ymin=-3.2, ymax=6.2,
+    ticks=none,
+    clip=false
+]
+
+    % Єдина гладка функція ВАХ, яка включає формулу Шоклі та різкий пробій (прямує до -infinity при V -> -4.5)
+    \addplot[
+        domain=-4.42:2,
+        samples=400,
+        ultra thick,
+        color=blue!70!black,
+        -{Stealth[length=2.5mm]}
+    ] { (exp(x) - 1) - 0.05 / ((x + 4.5)^2 + 0.02) };
+
+    % Легенда / Формула Шоклі у верхньому правому куті
+    % \node[anchor=north west, align=left, fill=white, inner sep=4pt] at (axis cs:1.8, 6.0) {
+    %     {\Large $I = I_s \left( e^{\frac{V}{n V_T}} - 1 \right)$}\\[3mm]
+    %     \small $I_s$ --- Зворотний струм насичення\\
+    %     \small $V$ --- Прикладена напруга\\
+    %     \small $V_T$ --- Термічний потенціал\\
+    %     \small $n$ --- Коефіціент ідеальності
+    % };
+
+    % Написи "Зворотне зміщення" та "Пряме зміщення"
+    \node[anchor=north, font=\bfseries] at (axis cs:-2.5, -2.8) {Зворотне зміщення};
+    \node[anchor=north, font=\bfseries] at (axis cs:2.5, -2.8) {Пряме зміщення};
+
+    % Рівень -Is
+    \draw[dotted, thick] (axis cs:-4.2, -1.0) -- (axis cs:0, -1.0);
+    \node[anchor=west, font=\large] at (axis cs:0, -1.0) {$-I_s$};
+    \node[anchor=north, font=\small] at (axis cs:-2.5, -1.05) {(струм насичення)};
+
+    % Пояснення режимів
+    % \node[font=\small, align=center, anchor=east] at (axis cs:1.0, 3.8) {різке зростання\\струму при\\прямому зміщенні};
+    % \draw[->, >=stealth, thick] (axis cs:0.8, 3.2) -- (axis cs:1.25, 2.8);
+
+    % Поріг відмикання (knee voltage)
+%    \draw[dotted, thick] (axis cs:1.0, 0) -- (axis cs:1.0, 1.72) -- (axis cs:0, 1.72);
+%    \node[circle, fill=gray!25, draw=gray!80, inner sep=2.5pt, font=\tiny\bfseries] (knee) at (axis cs:1.5, 0.7) {knee};
+%    \draw[->, >=stealth, thick] (knee) -- (axis cs:1.05, 0.7);
+%    \node[align=left, anchor=west, font=\small] at (axis cs:1.9, 0.7) {Поріг відмикання\\($\sim 0.7\text{ В}$ для Si)};
+
+    % Пробій
+    \draw[<-, >=stealth, dotted, thick] (axis cs:-4.4, -2.0) -- (axis cs:-4.4, -0.4);
+    \node[align=center, anchor=south, font=\small, fill=white, inner sep=2pt] at (axis cs:-4.4, -0.3) {Пробій};
+
+    % Точка нуль
+    \node[anchor=north east, font=\small] at (axis cs:-0.08, -0.08) {$0$};
+
+\end{axis}
+\end{tikzpicture}

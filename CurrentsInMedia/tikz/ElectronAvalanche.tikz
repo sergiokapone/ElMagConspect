@@ -1,0 +1,165 @@
+\begin{tikzpicture}[
+    scale=0.7,
+    transform shape,
+    >=Stealth,
+    % --- Стили элементов ---
+    plate/.style={fill=gray!30, draw=black, thick},
+    atom/.style={circle, shading=ball, ball color=gray!30, draw=gray!60, minimum size=7.2mm},
+    ion/.style={circle, shading=ball, ball color=red!60!orange!90, draw=red!80!black, minimum size=4.6mm, font=\tiny\bfseries\color{white}, inner sep=0pt},
+    electron/.style={circle, shading=ball, ball color=cyan!60!blue!80, draw=cyan!90!black, minimum size=3.5mm, font=\tiny\bfseries\color{white}, inner sep=0pt},
+    arr/.style={->, >=stealth, thick, gray!75!black}
+]
+
+  % ==========================================
+  % 1. ЭЛЕКТРОДЫ (КАТОД И АНОД)
+  % ==========================================
+  \pgfmathsetmacro{\cathX}{0}
+  \pgfmathsetmacro{\anodX}{11.0}
+  \pgfmathsetmacro{\plateH}{6.8}
+  \pgfmathsetmacro{\plateW}{0.35}
+
+  \filldraw[plate] (\cathX - \plateW, 0) rectangle (\cathX, \plateH);
+  \filldraw[plate] (\anodX, 0) rectangle (\anodX + \plateW, \plateH);
+
+  \node[cyan!90!black, font=\Large\bfseries, above=4pt] (K) at (\cathX - \plateW/2, \plateH) {Kатoд ($-$)};
+  \node[magenta!85!black, font=\Large\bfseries, above=4pt] (A) at (\anodX + \plateW/2, \plateH) {Aнoд ($+$)};
+
+  % Вектор электрического поля E
+  \draw[->, line width=1.1pt, purple!80!black] (A) -- (K)
+    node[midway, above=2pt, font=\small\bfseries] {Електричне поле $\Efield$};
+
+  % ==========================================
+  % 2. ВТОРИЧНЫЕ ПРОЦЕССЫ У КАТОДА
+  % ==========================================
+  \node[ion] (i_left) at (1.2, 4.8) {$+$};
+  \draw[arr] (i_left) -- (0, 4.8);
+
+  \node[electron] (e_top) at (1.0, 5.5) {$-$};
+  \draw[arr] (0, 4.8) -- (e_top);
+
+  \node[electron] (e_bot) at (0.8, 0.8) {$-$};
+  \draw[arr] (0, 1.0) -- (e_bot);
+
+  % ==========================================
+  % 3. ОСНОВНОЙ КАСКАД ЛАВИНЫ
+  % ==========================================
+  
+  % --- 0-е поколение (Начальный электрон) ---
+  \node[electron] (e0) at (0.8, 3.2) {$-$};
+  \node[atom] (A1) at (2.0, 3.2) {};
+  \draw[arr] (e0) -- (A1);
+
+  % --- 1-е поколение ---
+  \node[ion] (I1) at (3.0, 3.2) {$+$};
+  \node[electron] (e11) at (3.0, 4.2) {$-$};
+  \node[electron] (e12) at (3.0, 2.2) {$-$};
+
+  \draw[arr] (A1) -- (I1);
+  \draw[arr] (A1) -- (e11);
+  \draw[arr] (A1) -- (e12);
+
+  % --- 2-е поколение ---
+  \node[atom] (A21) at (4.2, 4.5) {};
+  \node[atom] (A22) at (4.2, 1.9) {};
+  \draw[arr] (e11) -- (A21);
+  \draw[arr] (e12) -- (A22);
+
+  % Продукты A21
+  \node[ion] (I21) at (5.2, 4.5) {$+$};
+  \node[electron] (e211) at (5.2, 5.2) {$-$};
+  \node[electron] (e212) at (5.2, 3.8) {$-$};
+  \draw[arr] (A21) -- (I21); \draw[arr] (A21) -- (e211); \draw[arr] (A21) -- (e212);
+
+  % Продукты A22
+  \node[ion] (I22) at (5.2, 1.9) {$+$};
+  \node[electron] (e221) at (5.2, 2.6) {$-$};
+  \node[electron] (e222) at (5.2, 1.2) {$-$};
+  \draw[arr] (A22) -- (I22); \draw[arr] (A22) -- (e221); \draw[arr] (A22) -- (e222);
+
+  % --- 3-е поколение ---
+  \node[atom] (A31) at (6.4, 5.6) {};
+  \node[atom] (A32) at (6.4, 3.9) {};
+  \node[atom] (A33) at (6.4, 2.5) {};
+  \node[atom] (A34) at (6.4, 0.9) {};
+
+  \draw[arr] (e211) -- (A31);
+  \draw[arr] (e212) -- (A32);
+  \draw[arr] (e221) -- (A33);
+  \draw[arr] (e222) -- (A34);
+
+  % Продукты A31
+  \node[ion] (I31) at (7.4, 5.6) {$+$};
+  \node[electron] (e311) at (7.4, 6.2) {$-$};
+  \node[electron] (e312) at (7.4, 5.0) {$-$};
+  \draw[arr] (A31) -- (I31); \draw[arr] (A31) -- (e311); \draw[arr] (A31) -- (e312);
+
+  % Продукты A32
+  \node[ion] (I32) at (7.4, 3.9) {$+$};
+  \node[electron] (e321) at (7.4, 4.4) {$-$};
+  \node[electron] (e322) at (7.4, 3.4) {$-$};
+  \draw[arr] (A32) -- (I32); \draw[arr] (A32) -- (e321); \draw[arr] (A32) -- (e322);
+
+  % Продукты A33
+  \node[ion] (I33) at (7.4, 2.5) {$+$};
+  \node[electron] (e331) at (7.4, 2.9) {$-$};
+  \node[electron] (e332) at (7.4, 2.0) {$-$};
+  \draw[arr] (A33) -- (I33); \draw[arr] (A33) -- (e331); \draw[arr] (A33) -- (e332);
+
+  % Продукты A34
+  \node[ion] (I34) at (7.4, 0.9) {$+$};
+  \node[electron] (e341) at (7.4, 1.4) {$-$};
+  \node[electron] (e342) at (7.4, 0.4) {$-$};
+  \draw[arr] (A34) -- (I34); \draw[arr] (A34) -- (e341); \draw[arr] (A34) -- (e342);
+
+  % --- 4-е и 5-е поколения (у Анода) ---
+  % Верхняя ветвь
+  \node[atom] (A41) at (8.4, 6.1) {};
+  \draw[arr] (e311) -- (A41);
+  \node[atom] (A51) at (9.4, 6.1) {};
+  \draw[arr] (A41) -- (A51);
+  
+  \node[ion] (I51) at (10.3, 6.4) {$+$};
+  \node[ion] (I52) at (10.3, 5.8) {$+$};
+  \node[electron] (e51) at (10.3, 5.3) {$-$};
+  \node[electron] (e52) at (10.3, 4.8) {$-$};
+  \draw[arr] (A51) -- (I51); \draw[arr] (A51) -- (I52); \draw[arr] (A51) -- (e51); \draw[arr] (A51) -- (e52);
+
+  % Средне-верхняя ветвь
+  \node[atom] (A42) at (8.4, 4.4) {};
+  \draw[arr] (e321) -- (A42);
+  \node[ion] (I42) at (9.3, 4.4) {$+$};
+  \node[electron] (e421) at (9.3, 4.8) {$-$};
+  \draw[arr] (A42) -- (I42); \draw[arr] (A42) -- (e421);
+
+  % Средне-нижняя ветвь
+  \node[atom] (A43) at (8.4, 2.9) {};
+  \draw[arr] (e322) -- (A43);
+  \node[atom] (A53) at (9.4, 2.9) {};
+  \draw[arr] (A43) -- (A53);
+  \node[ion] (I53) at (10.3, 3.3) {$+$};
+  \node[ion] (I54) at (10.3, 2.8) {$+$};
+  \node[electron] (e53) at (10.3, 2.3) {$-$};
+  \node[electron] (e54) at (10.3, 1.8) {$-$};
+  \draw[arr] (A53) -- (I53); \draw[arr] (A53) -- (I54); \draw[arr] (A53) -- (e53); \draw[arr] (A53) -- (e54);
+
+  % Нижня ветвь
+  \node[atom] (A44) at (8.4, 1.2) {};
+  \draw[arr] (e332) -- (A44);
+  \node[atom] (A54) at (9.4, 1.2) {};
+  \draw[arr] (A44) -- (A54);
+  \node[ion] (I55) at (10.3, 1.3) {$+$};
+  \node[electron] (e55) at (10.3, 0.9) {$-$};
+  \node[electron] (e56) at (10.3, 0.5) {$-$};
+  \draw[arr] (A54) -- (I55); \draw[arr] (A54) -- (e55); \draw[arr] (A54) -- (e56);
+
+  \node[electron] (e_bot_end) at (8.4, 0.4) {$-$};
+  \draw[arr] (e342) -- (e_bot_end);
+
+  % ==========================================
+  % 4. ОСЬ КООРДИНАТ X
+  % ==========================================
+%   \draw[->, thick, gray!70] (\cathX, -0.4) -- (\anodX + 0.8, -0.4) node[right, font=\small] {$x$};
+%   \draw[gray!70, thick] (\cathX, -0.3) -- (\cathX, -0.5) node[below, font=\small] {$0$};
+%   \draw[gray!70, thick] (\anodX, -0.3) -- (\anodX, -0.5) node[below, font=\small] {$d$};
+
+\end{tikzpicture}

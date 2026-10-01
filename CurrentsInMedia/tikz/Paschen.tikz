@@ -1,0 +1,163 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        xmode=log,
+        ymode=log,
+        xlabel={$pd$ (Torr$\cdot$cm)},
+        ylabel={$U_\text{з}$, В},
+        xmin=0.1, xmax=35,
+        ymin=90, ymax=3500,
+        grid=both,
+        grid style={line width=.1pt, draw=gray!20},
+        major grid style={line width=.2pt, draw=gray!50},
+        legend pos=north west,
+        width=0.8\linewidth,
+        height=0.5\linewidth,
+    ]
+
+    % Argon (Ar) - синій, перевернутий трикутник
+    \addplot[
+        only marks,
+        color=blue!80!black,
+        mark=triangle*,
+        mark options={rotate=180, scale=1.0}
+    ] table {
+        x y
+        0.28 800
+        0.31 230
+        0.36 150
+        0.42 120
+        0.50 105
+        0.60 100
+        0.70 100
+        0.85 105
+        1.00 110
+        1.20 120
+        1.50 130
+        2.00 150
+        2.80 170
+        3.80 210
+        5.00 260
+        6.50 320
+        8.50 410
+        11.0 520
+        14.0 650
+        18.0 800
+        23.0 1000
+        28.0 1180
+    };
+    \addlegendentry{Ar}
+
+    % Neon (Ne) - зелений, трикутник
+    \addplot[
+        only marks,
+        color=green!50!black,
+        mark=triangle*,
+        mark options={scale=1.0}
+    ] table {
+        x y
+        0.50 1500
+        0.55 380
+        0.65 230
+        0.80 170
+        1.00 140
+        1.30 130
+        1.80 130
+        2.50 140
+        3.50 170
+        4.50 210
+        6.00 260
+        8.00 320
+        10.0 400
+        13.0 500
+        17.0 630
+        22.0 780
+        28.0 960
+    };
+    \addlegendentry{Ne}
+
+    % Helium (He) - червоний, круг
+    \addplot[
+        only marks,
+        color=red!90!black,
+        mark=*,
+        mark options={scale=1.0}
+    ] table {
+        x y
+        0.70 700
+        0.80 300
+        0.90 210
+        1.10 160
+        1.40 135
+        1.80 130
+        2.50 135
+        3.50 150
+        4.50 170
+        6.00 200
+        8.00 240
+        10.0 290
+        13.0 350
+        17.0 430
+        22.0 530
+        28.0 650
+    };
+    \addlegendentry{He}
+
+    % Hydrogen (H2) - помаранчевий, квадрат
+    \addplot[
+        only marks,
+        color=orange!90!black,
+        mark=square*,
+        mark options={scale=1.0}
+    ] table {
+        x y
+        0.90 2100
+        1.05 900
+        1.20 580
+        1.40 380
+        1.80 320
+        2.20 280
+        2.80 270
+        3.50 280
+        4.50 310
+        6.00 360
+        8.00 430
+        10.0 500
+        13.0 600
+        17.0 720
+        22.0 880
+        28.0 1100
+    };
+    \addlegendentry{H$_2$}
+
+    % Nitrogen (N2) - фіолетовий, порожнє коло
+    \addplot[
+        only marks,
+        color=violet,
+        mark=o,
+        mark options={scale=1.0, thick}
+    ] table {
+        x y
+        0.70 1800
+        0.75 1000
+        0.85 750
+        1.00 600
+        1.20 500
+        1.50 460
+        2.00 460
+        2.50 480
+        3.20 520
+        4.00 580
+        5.00 660
+        6.50 770
+        8.00 900
+        10.0 1100
+        13.0 1350
+        16.0 1650
+        20.0 2000
+        25.0 2500
+        30.0 3000
+    };
+    \addlegendentry{N$_2$}
+
+    \end{axis}
+  \end{tikzpicture}

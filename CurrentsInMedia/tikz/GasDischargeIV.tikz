@@ -1,0 +1,74 @@
+\begin{tikzpicture}[scale=1.25]
+    \begin{axis}[
+        axis lines=center,
+        xlabel={$U$},
+        ylabel={$I$},
+        xmin=-0.2, xmax=5.2,
+        ymin=-0.2, ymax=5.5,
+        ticks=none,
+        xlabel style={anchor=north west, at={(ticklabel* cs:1)}},
+        ylabel style={anchor=south east, at={(ticklabel* cs:1)}},
+        clip=false,
+        declare function={
+          % 1. Омічна ділянка (пряма)
+          f1(\x) = 1.5 * \x;
+          % 2. Плавна зшивка до насичення (кубічна функція Ерміта)
+          f2(\x) = 0.05 * (((\x - 1.6)/0.7)^3) - 0.60 * (((\x - 1.6)/0.7)^2) + 1.05 * ((\x - 1.6)/0.7) + 2.4;
+          % 3. Струм насичення (горизонталь)
+          f3(\x) = 2.9;
+          % 4. Лавинне зростання Таунсенда та пробій (гладка експонента)
+          f4(\x) = 2.9 + 0.42 * (exp(2.2 * (\x - 3.7)) - 1 - 2.2 * (\x - 3.7));
+        }
+    ]
+
+      % Побудова суцільної кривої за допомогою \addplot і математичних функцій
+      \addplot[blue, domain=0:1.6, samples=50, line width=1.3pt] {f1(x)};
+      \addplot[blue, domain=1.6:2.3, samples=50, line width=1.3pt] {f2(x)};
+      \addplot[blue, domain=2.3:3.7, samples=50, line width=1.3pt] {f3(x)};
+      \addplot[blue, domain=3.7:4.65, samples=100, line width=1.3pt] {f4(x)};
+
+      % Точні координати точок, обчислені за функціями
+      \coordinate (O) at (0, 0);
+      \coordinate (A) at (1.6, {f1(1.6)});
+      \coordinate (B) at (2.3, {f3(2.3)});
+      \coordinate (C) at (3.7, {f3(3.7)});
+      \coordinate (D) at (4.3, {f4(4.3)});
+      \coordinate (E) at (4.65, {f4(4.65)});
+
+      % Пунктирні лінії проекцій на вісь U
+      \draw[dashed, semithick, gray] (A) -- (1.6, 0);
+      \draw[dashed, semithick, gray] (B) -- (2.3, 0);
+      \draw[dashed, semithick, gray] (C) -- (3.7, 0);
+      \draw[dashed, semithick, gray] (D) -- (4.3, 0);
+
+      % Пунктирна лінія струму насичення на вісь I
+      \draw[dashed, semithick, gray] (0, 2.9) -- (C);
+
+      % Позначення точок на кривій
+      \fill (A) circle (2pt) node[above left=1pt] {$a$};
+      \fill (B) circle (2pt) node[above=1pt] {$b$};
+      \fill (C) circle (2pt) node[above=1pt] {$c$};
+      \fill (D) circle (2pt) node[above left=1pt] {$d$};
+      \fill (E) circle (2pt) node[left=1pt] {$e$};
+
+      % Початок координат
+      \node[below left] at (O) {$0$};
+
+      % Позначення струму насичення
+      \node[left] at (0, 2.9) {$I_{\text{нас}}$};
+
+      % Фігурні дужки та номери ділянок під віссю U
+      \draw[decorate, decoration={brace, mirror, raise=2pt}] (0,0) -- (1.6,0) 
+        node[pos=0.5, below=4pt] {$1$};
+      \draw[decorate, decoration={brace, mirror, raise=2pt}] (1.6,0) -- (2.3,0) 
+        node[pos=0.5, below=4pt] {$2$};
+      \draw[decorate, decoration={brace, mirror, raise=2pt}] (2.3,0) -- (3.7,0) 
+        node[pos=0.5, below=4pt] {$3$};
+      \draw[decorate, decoration={brace, mirror, raise=2pt}] (3.7,0) -- (4.3,0) 
+        node[pos=0.5, below=4pt] {$4$};
+
+      % Позначення напруги насичення
+      \node[above=2pt] at (2.5, 0) {$U_{\text{н}}$};
+
+    \end{axis}
+  \end{tikzpicture}
