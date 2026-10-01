@@ -1,0 +1,81 @@
+\definecolor{platecolor}{HTML}{5A6B7C}
+\definecolor{electroncolor}{HTML}{3182CE}
+\definecolor{linecolor}{HTML}{718096}
+
+\begin{tikzpicture}[scale=0.8, >=Stealth]
+
+    % --- Coordinates ---
+    \coordinate (Anode) at (0,0);
+    \coordinate (Cathode) at (8,0);
+    \pgfmathsetmacro{\plateH}{4.0}
+    \pgfmathsetmacro{\plateW}{0.3}
+
+    % --- Anode Plate ---
+    \draw[fill=platecolor!80, stroke=black, thick]
+        (-0.3, -\plateH/2) rectangle (0, \plateH/2);
+    \node[above, font=\bfseries\large] at (-0.15, \plateH/2 + 0.1) {Анод};
+
+    % --- Cathode Plate ---
+    \draw[fill=platecolor!80, stroke=black, thick]
+        (8.0, -\plateH/2) rectangle (8.3, \plateH/2);
+    \node[above, font=\bfseries\large] at (8.15, \plateH/2 + 0.1) {Катод};
+
+    % --- Current Density Arrow j ---
+    \draw[<-, ultra thick] (3.8, \plateH/2 + 0.5) -- (2.0, \plateH/2 + 0.5)
+        node[midway, above, font=\Large\itshape] {$j$};
+
+    % --- Electron Flow Lines (From Cathode to Anode) ---
+    % \foreach \y in {-1.6, -1.2, -0.8, -0.4, 0.0, 0.4, 0.8, 1.2, 1.6} {
+    %     \draw[linecolor, thick, ->] (8.0, \y) .. controls (5.5, \y*0.7) and (2.5, \y*0.9) .. (0.0, \y);
+    % }
+
+    % --- Space Charge Cloud (High Density near Cathode, Sparse near Anode) ---
+    % High density near Cathode (x in [5.5, 7.8])
+    \foreach \i in {1,...,90} {
+        \pgfmathsetmacro{\rx}{rnd*2.3 + 5.5}
+        \pgfmathsetmacro{\ry}{(rnd - 0.5)*3.6}
+        \draw[fill=electroncolor!80, draw=black!70, thin] (\rx, \ry) circle (2.2pt);
+        \node[font=\tiny\bfseries, color=white] at (\rx, \ry) {--};
+    }
+    % Medium density middle region (x in [3.0, 5.5])
+    \foreach \i in {1,...,35} {
+        \pgfmathsetmacro{\rx}{rnd*2.5 + 3.0}
+        \pgfmathsetmacro{\ry}{(rnd - 0.5)*3.4}
+        \draw[fill=electroncolor!80, draw=black!70, thin] (\rx, \ry) circle (2.2pt);
+        \node[font=\tiny\bfseries, color=white] at (\rx, \ry) {--};
+    }
+
+    % --- Single Highlighted Electron at Position x ---
+    \coordinate (SingleE) at (2.5, 0.4);
+    \node[circle, fill=electroncolor, draw=black, inner sep=0, text=white, font=\tiny] at (SingleE) {$-$};
+    \node[font=\small\bfseries, color=white] at (SingleE) {--};
+    \draw[dashed, thick] (SingleE) -- (2.5, -\plateH/2 - 0.3);
+
+    % --- Dimension: x ---
+    \draw[<->, thick] ($(SingleE)+(0, -\plateH/2 - 0.6)$) -- ++(5.5, 0)
+        node[pos=0.4, above, font=\large\itshape] {$x$};
+
+    \draw[->, thick] (SingleE) -- ++(-1, 0) node[left] {$\vect{v}$};
+
+    % --- Dimension: d ---
+    \draw[<->, thick] (0.0, -\plateH/2 - 0.8) -- (8.0, -\plateH/2 - 0.8)
+        node[pos=.25, above, font=\large\itshape] {$d$};
+
+    % Limit lines for dimensions
+    \draw[thin] (0.0, -\plateH/2) -- (0.0, -\plateH/2 - 1.0);
+    \draw[thin] (8.0, -\plateH/2) -- (8.0, -\plateH/2 - 1.0);
+
+    % --- Circuit Connection and Battery ---
+    \draw[thick] (-0.15, -\plateH/2) -- (-0.15, -\plateH/2 - 1.6) -- (3.5, -\plateH/2 - 1.6);
+    \draw[thick] (8.15, -\plateH/2) -- (8.15, -\plateH/2 - 1.6) -- (4.5, -\plateH/2 - 1.6);
+
+    % Battery Symbol
+    \draw[thick] (3.5, -\plateH/2 - 1.3) -- (3.5, -\plateH/2 - 1.9); % Positive long plate
+    \draw[ultra thick] (3.8, -\plateH/2 - 1.45) -- (3.8, -\plateH/2 - 1.75); % Negative short plate
+    \draw[thick] (3.8, -\plateH/2 - 1.6) -- (4.5, -\plateH/2 - 1.6);
+
+    \node[above, font=\boldmath] at (3.3, -\plateH/2 - 1.6) {$+$};
+    \node[above, font=\boldmath] at (4.0, -\plateH/2 - 1.6) {$-$};
+    \node[below, font=\large\itshape] at (4.0, -\plateH/2 - 1.8) {$U$};
+
+\end{tikzpicture}

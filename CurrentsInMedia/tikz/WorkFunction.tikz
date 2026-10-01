@@ -1,4 +1,4 @@
-\begin{tikzpicture}[>=Stealth, font=\small\sffamily]
+\begin{tikzpicture}[>=Stealth, font=\small\sffamily, scale=0.9, transform shape]
 
     % ==========================================
     % --- ОСНОВНІ ПАРАМЕТРИ ТА ЗМІННІ ---

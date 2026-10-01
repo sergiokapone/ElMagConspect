@@ -22,6 +22,7 @@ tmp/
 *.vrb
 books.session
 *.bcf-SAVE-ERROR
+*.bbl-SAVE-ERROR
 test.pdf
 main.pdf
 test.tex
