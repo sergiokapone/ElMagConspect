@@ -1,0 +1,42 @@
+\begin{tikzpicture}
+    \begin{axis}[
+            declare function={
+                    RC = 1.0;
+                    wc = 1.0 / RC;
+                    KLP(\w) = 1 / sqrt(1 + (\w*RC)^2);
+                    KHP(\w) = (\w*RC) / sqrt(1 + (\w*RC)^2);
+                    Q = 5.0;
+                    w0 = 1.0;
+                    KBP(\w) = 1 / sqrt(1 + Q^2*(\w/w0 - w0/\w)^2);
+                },
+            axis lines=center,
+            xlabel={$\omega$},
+            ylabel={$|K|$},
+            x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
+            y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
+            xmin=0, xmax=3,
+            ymin=0, ymax=1.1,
+            xtick={1},
+            xticklabels={$\omega_c$},
+            ytick={1},
+            yticklabels={$1$},
+            ytick style={anchor=east},
+            width=10cm,
+            height=6cm,
+            samples=400,
+            clip=false,
+        ]
+
+        \draw[dashed, thick] (axis cs:0, 1) -- (axis cs:3, 1);
+
+        \addplot [blue, thick, domain=0:3] {KLP(x)};
+        \node[blue] at (axis cs:0.35, 0.55) {ФНЧ};
+
+        \addplot [red, thick, domain=0:3] {KHP(x)};
+        \node[red] at (axis cs:2.2, 0.55) {ФВЧ};
+
+        \addplot [green!60!black, thick, domain=0.05:3] {KBP(x)};
+        \node[green!60!black] at (axis cs:1.5, 0.85) {смуговий};
+
+    \end{axis}
+\end{tikzpicture}

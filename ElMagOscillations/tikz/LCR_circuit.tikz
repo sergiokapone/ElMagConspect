@@ -1,0 +1,26 @@
+\begin{circuitikz}[european resistors, scale=1.5, thick]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (4,0);
+    \coordinate (C) at (4,3);
+    \coordinate (D) at (0,3);
+
+    \coordinate (T1) at ($(A)!0.4!(B)$);
+    \coordinate (T2) at ($(A)!0.6!(B)$);
+
+    \draw (A) to[short, -o] (T1) node[above] {1};
+    \draw (B) to[short, -o] (T2) node[above] {2};
+    \path (T1) -- (T2) node[midway, below=2pt] {$\emf$};
+
+    \draw (B) to[L, mirror,  l_=$L$] (C);
+    \draw[] (C) to[R, l_=$R$] (D);
+
+    \draw[->, >=latex] ($(C)!0.325!(D) + (0,-0.5)$) -- ($(C)!0.675!(D) + (0,-0.5)$)
+    node[midway, below] {$I$};
+
+    \draw (D) to[C, l_=$C$] (A);
+
+    \node at ($(D)!0.4!(A) + (0.3,0)$) {3};
+    \node at ($(D)!0.6!(A) + (0.3,0)$) {4};
+    \node at ($(D)!0.3!(A) + (-0.4,0)$) {$+q$};
+    \node at ($(D)!0.7!(A) + (-0.4,0)$) {$-q$};
+\end{circuitikz}

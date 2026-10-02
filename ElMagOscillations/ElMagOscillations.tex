@@ -61,32 +61,7 @@
 
 \begin{figure}[h!]
 	\centering
-	\begin{circuitikz}[european resistors, scale=1.5, thick]
-		\coordinate (A) at (0,0);
-		\coordinate (B) at (4,0);
-		\coordinate (C) at (4,3);
-		\coordinate (D) at (0,3);
-
-		\coordinate (T1) at ($(A)!0.4!(B)$);
-		\coordinate (T2) at ($(A)!0.6!(B)$);
-
-		\draw (A) to[short, -o] (T1) node[above] {1};
-		\draw (B) to[short, -o] (T2) node[above] {2};
-		\path (T1) -- (T2) node[midway, below=2pt] {$\emf$};
-
-		\draw (B) to[L, mirror,  l_=$L$] (C);
-		\draw[] (C) to[R, l_=$R$] (D);
-
-		\draw[->, >=latex] ($(C)!0.325!(D) + (0,-0.5)$) -- ($(C)!0.675!(D) + (0,-0.5)$)
-		node[midway, below] {$I$};
-
-		\draw (D) to[C, l_=$C$] (A);
-
-		\node at ($(D)!0.4!(A) + (0.3,0)$) {3};
-		\node at ($(D)!0.6!(A) + (0.3,0)$) {4};
-		\node at ($(D)!0.3!(A) + (-0.4,0)$) {$+q$};
-		\node at ($(D)!0.7!(A) + (-0.4,0)$) {$-q$};
-	\end{circuitikz}
+	\localinput{LCR_circuit.tikz}
 	\caption{Контур, що включає конденсатор, індуктивність, опір $R$ і стороннє джерело ЕРС $\emf$.}
 	\label{tikz:LCR_circuit}
 \end{figure}
@@ -334,33 +309,7 @@ $1/C$ & Жорсткість $k$ & Повертальна дія \\
 
 \begin{figure}[h!]
 	\centering
-	\begin{tikzpicture}
-		\begin{axis}[
-				axis lines=center,
-				xlabel={$t$},
-				ylabel={$q$},
-				x label style={anchor=north west, at={(axis description cs:0.98,0.5)}},
-				y label style={anchor=south east, at={(axis description cs:0,0.98)}},
-				xmin=0, xmax=10,
-				ymin=-1.25, ymax=1.25,
-				ticks=none,
-				width=10cm,
-				height=6cm,
-				samples=500
-			]
-
-			\addplot [dashed, domain=0:9.5, thick] {exp(-0.35*x)};
-			\addplot [dashed, domain=0:9.5, thick] {-exp(-0.35*x)};
-			\addplot [red, thick, domain=0:9.5] {exp(-0.35*x) * cos(deg(2.5*pi*x))};
-
-			\node (top_label) at (axis cs:7.5, 0.75) {$q_m\exp(-\gamma t)$};
-			\draw[->, >=stealth, thick] (top_label.west) -- (axis cs:5.2, 0.22);
-
-			\node (bottom_label) at (axis cs:7.8, -0.6) {$-q_m\exp(-\gamma t)$};
-			\draw[->, >=stealth, thick] (bottom_label.west) -- (axis cs:4.6, -0.25);
-
-		\end{axis}
-	\end{tikzpicture}
+	\localinput{damped_oscillations.tikz}
 	\caption{Графік затухаючих коливань. Штриховою лінією показано часову залежність амплітуди $A(t) = q_m e^{-\gamma t}$.}
 	\label{tikz:damped}
 \end{figure}
@@ -456,36 +405,7 @@ $I(t)$ зсунуті на $\pi/2$. Відповідно для доданків
 
 \begin{figure}[h!]
 	\centering
-	\begin{tikzpicture}
-		\begin{axis}[
-				axis lines=center,
-				xlabel={$t$},
-				ylabel={$q$},
-				x label style={anchor=north west, at={(axis description cs:0.98,0.5)}},
-				y label style={anchor=south east, at={(axis description cs:0,0.98)}},
-				xmin=0, xmax=8.5,
-				ymin=-1.25, ymax=1.25,
-				ticks=none,
-				width=10cm,
-				height=6cm,
-				samples=500
-			]
-
-			\addplot [dashed, domain=0:8, thick] {exp(-0.25*x)};
-			\addplot [dashed, domain=0:8, thick] {-exp(-0.25*x)};
-			\addplot [thick, domain=0:8, red] {exp(-0.25*x) * cos(deg(pi*x))};
-
-			\draw[dashed, thick] (axis cs:2.0, 0.6065) -- (axis cs:2.0, -0.75);
-			\draw[dashed, thick] (axis cs:4.0, 0.3679) -- (axis cs:4.0, -0.75);
-
-			\node[above=2pt] at (axis cs:2.0, 0.6065) {$q_n$};
-			\node[above=2pt] at (axis cs:4.0, 0.3679) {$q_{n+1}$};
-
-			\draw[<->, >=stealth, thick] (axis cs:2.0, -0.55) -- (axis cs:4.0, -0.55)
-			node[midway, below=3pt] {$T$};
-
-		\end{axis}
-	\end{tikzpicture}
+\localinput{log_decrement.tikz}
 	\caption{Затухаючі коливання. До означення логарифмічного декремента.}
 	\label{tikz:log_decrement}
 \end{figure}
@@ -694,41 +614,7 @@ $e^{\gamma T}$ разів. При цьому згідно з \eqref{eq:total_ene
 
 \begin{figure}[h!]
 	\centering
-	\begin{tikzpicture}
-		\begin{axis}[
-				axis lines=center,
-				xlabel={$\omega$},
-				ylabel={$V_m$},
-				x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
-				y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
-				xmin=0, xmax=2.5,
-				ymin=0, ymax=2.5,
-				ticks=none,
-				width=10cm,
-				height=7cm,
-				samples=400
-			]
-
-			\node[left] at (axis cs:0, 0.6) {$V_{\text{ст}}$};
-
-			\draw[dashed, thick] (axis cs:1.0, 0) -- (axis cs:1.0, 2.3);
-			\node[below=2pt] at (axis cs:1.0, 0) {$\omega_0$};
-
-			\addplot [red, thick, domain=0:0.92, restrict y to domain=0:2.5] {0.6 / sqrt((1 - x^2)^2)};
-			\addplot [red, thick, domain=1.08:2.3, restrict y to domain=0:2.5] {0.6 / sqrt((1 - x^2)^2)};
-			\node at (axis cs:0.75, 2.1) {$\gamma_1$};
-
-			\addplot [red, thick, domain=0:2.3] {0.6 / sqrt((1 - x^2)^2 + 4*(0.18^2)*x^2)};
-			\node at (axis cs:0.88, 1.35) {$\gamma_2$};
-
-			\addplot [red, thick, domain=0:2.3] {0.6 / sqrt((1 - x^2)^2 + 4*(0.45^2)*x^2)};
-			\node at (axis cs:0.78, 0.5) {$\gamma_3$};
-
-			\addplot [red, thick, domain=0:2.3] {0.6 / sqrt((1 - x^2)^2 + 4*(0.85^2)*x^2)};
-			\node at (axis cs:0.55, 0.28) {$\gamma_4$};
-
-		\end{axis}
-	\end{tikzpicture}
+	\localinput{amplitude_response.tikz}
 	\caption{Амплітудно-частотна характеристика контуру. Залежність амплітуди вимушених коливань $V_m$ від частоти $\omega$ зовнішньої ЕРС.}
 	\label{tikz:amplitude_response}
 \end{figure}
@@ -759,51 +645,7 @@ $dV_m/d\omega = 0$:
 
 \begin{figure}[h!]
 	\centering
-	\begin{tikzpicture}
-		\begin{axis}[
-				axis lines=center,
-				xlabel={$\omega$},
-				ylabel={$\varphi_0$},
-				x label style={anchor=south west, at={(axis description cs:0.95,0.88)}},
-				y label style={anchor=south east, at={(axis description cs:0.25,0.98)}},
-				xmin=0, xmax=2.5,
-				ymin=-3.5, ymax=0.5,
-				ticks=none,
-				width=10cm,
-				height=7cm,
-				samples=400
-			]
-
-			\draw[dashed, thick] (axis cs:0, -1.5708) -- (axis cs:2.3, -1.5708);
-			\draw[dashed, thick] (axis cs:0, -3.1416) -- (axis cs:2.3, -3.1416);
-
-			\draw[dashed, thick] (axis cs:1.0, 0) -- (axis cs:1.0, -3.2);
-
-			\node[left=2pt] at (axis cs:0, 0) {$0$};
-			\node[left=2pt] at (axis cs:0, -1.5708) {$-\pi/2$};
-			\node[left=2pt] at (axis cs:0, -3.1416) {$-\pi$};
-
-			\node[above=2pt] at (axis cs:1.0, 0) {$\omega_0$};
-
-			\addplot [red, thick, domain=0.01:2.3] {-atan2(2*0.02*x, 1 - x^2) * pi / 180};
-			\addplot [red, thick, domain=0.01:2.3] {-atan2(2*0.15*x, 1 - x^2) * pi / 180};
-			\addplot [red, thick, domain=0.01:2.3] {-atan2(2*0.4*x, 1 - x^2) * pi / 180};
-			\addplot [red, thick, domain=0.01:2.3] {-atan2(2*0.8*x, 1 - x^2) * pi / 180};
-
-			\node[inner sep=0] (g1) at (axis cs:1.55, -2.8) {$\gamma_1$};
-			\draw (g1.west) -- (axis cs:1.15, -3.0);
-
-			\node[inner sep=0]  (g2) at (axis cs:1.75, -2.3) {$\gamma_2$};
-			\draw (g2.west) -- (axis cs:1.35, -2.6);
-
-			\node[inner sep=0]  (g3) at (axis cs:1.95, -1.8) {$\gamma_3$};
-			\draw (g3.west) -- (axis cs:1.55, -2.2);
-
-			\node[inner sep=0]  (g4) at (axis cs:2.15, -1.3) {$\gamma_4$};
-			\draw (g4.west) -- (axis cs:1.75, -1.8);
-
-		\end{axis}
-	\end{tikzpicture}
+	\localinput{phase_response.tikz}
 	\caption{Фазово-частотна характеристика контуру. Залежність фазового зсуву $\varphi_0$ від частоти $\omega$ зовнішньої ЕРС.}
 	\label{tikz:phase_response}
 \end{figure}
@@ -831,63 +673,7 @@ $\emf = \emf_m = \const$ і при $\dot{V} = 0$, $\ddot{V} = 0$ прямо ви
 
 \begin{figure}[h!]
 	\centering
-	\begin{tikzpicture}
-		\begin{axis}[
-				declare function={
-						w0 = 1.0;
-						gamma = 0.15;
-						Vst = 0.6;
-						V0(\w) = Vst / sqrt((w0^2 - \w^2)^2 + 4*(gamma^2)*(\w^2));
-						w_res = sqrt(w0^2 - 2*gamma^2);
-						Vmax = V0(w_res);
-						Vlevel = Vmax / sqrt(2);
-						w1 = sqrt(w0^2 - 2*gamma^2 + 2*gamma*w_res);
-						w2 = sqrt(w0^2 - 2*gamma^2 - 2*gamma*w_res);
-					},
-				axis lines=center,
-				xlabel={$\omega$},
-				ylabel={$V_m$},
-				x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
-				y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
-				extra y ticks={Vst, Vlevel, Vmax},
-				extra y tick labels={$V_{\text{ст}}$, $V_{\max}/\sqrt{2}$, $V_{\max}$},
-				extra x ticks={w0},
-				extra x tick labels={$\omega_0$},
-				xmin=0, xmax=2.5,
-				ymin=0, ymax=2.4,
-				ticks=none,
-				width=10cm,
-				height=6.5cm,
-				samples=500,
-				clip=false,
-			]
-
-			\pgfmathsetmacro{\wres}{sqrt(w0^2 - 2*gamma^2)}
-			\pgfmathsetmacro{\Vmax}{Vst / sqrt((w0^2 - \wres^2)^2 + 4*(gamma^2)*(\wres^2))}
-			\pgfmathsetmacro{\Vlevel}{\Vmax / sqrt(2)}
-
-			\pgfmathsetmacro{\wone}{sqrt(w0^2 - 2*gamma^2 - 2*gamma*sqrt(w0^2 - gamma^2))}
-			\pgfmathsetmacro{\wtwo}{sqrt(w0^2 - 2*gamma^2 + 2*gamma*sqrt(w0^2 - gamma^2))}
-
-			\draw[dashed, thick] (axis cs:0, \Vmax) -- (axis cs:\wres, \Vmax);
-			\draw[dashed, thick] (axis cs:0, \Vlevel) -- (axis cs:\wtwo, \Vlevel);
-			\draw[dashed, thick] (axis cs:{w0}, 0) -- (axis cs:{w0}, {V0(w0)});
-
-			\draw[thick] (axis cs:-0.03, \Vmax) -- (axis cs:0.03, \Vmax) node[left=3pt] {$V_{\max}$};
-			\draw[thick] (axis cs:-0.03, \Vlevel) -- (axis cs:0.03, \Vlevel) node[left=3pt] {$V_{\max}/\sqrt{2}$};
-			\draw[thick] (axis cs:-0.03, {Vst}) -- (axis cs:0.03, {Vst}) node[left=3pt] {$V_{\text{ст}}$};
-
-			\draw[thick] (axis cs:{w0}, -0.04) -- (axis cs:{w0}, 0.04) node[below=3pt] {$\omega_0$};
-
-			\addplot [red, thick, domain=0:2.3] {V0(x)};
-
-			\draw[->, >=stealth, thick] (axis cs:{\wone - 0.25}, \Vlevel) -- (axis cs:\wone, \Vlevel);
-			\draw[->, >=stealth, thick] (axis cs:{\wtwo + 0.25}, \Vlevel) -- (axis cs:\wtwo, \Vlevel);
-
-			\node[above=1pt] at (axis cs:{(\wtwo)/2}, \Vlevel) {$\Delta\omega$};
-
-		\end{axis}
-	\end{tikzpicture}
+	\localinput{resonance_curve.tikz}
 	\caption{Характеристики резонансної кривої: $V_{\max}$ --- максимум амплітуди, $V_{\text{ст}}$ --- статична амплітуда, $\Delta\omega$ --- ширина резонансу.}
 	\label{tikz:resonance_curve}
 \end{figure}
@@ -1067,39 +853,7 @@ $V_{\max} \approx (\omega_0/2\gamma)\emf_m$, то згідно з \eqref{eq:forc
 
 \begin{figure}[h!]
 	\centering
-    \begin{tikzpicture}[>=Stealth, line width=0.8pt]
-            \pgfmathsetmacro{\uR}{4.0}
-            \pgfmathsetmacro{\uL}{3.2}
-            \pgfmathsetmacro{\uC}{1.1}
-            \pgfmathsetmacro{\uReac}{\uL - \uC}
-            \pgfmathsetmacro{\phiDeg}{atan2(\uReac, \uR)}
-
-            \coordinate (O2)     at (0, 0);
-            \coordinate (A)      at (\uR, 0);
-            \coordinate (UL_OY)  at (0, \uL);
-            \coordinate (UC_OY)  at (0, -\uC);
-            \coordinate (C)      at (\uR, \uReac);
-            \coordinate (U_reac) at (0, \uReac);
-
-            \draw[->] (-0.5,0) -- (\uR + 1.2, 0);
-            \draw[->] (0, -\uC - 0.5) -- (0, \uL + 0.6);
-
-            \draw[red, ->, thick] (O2) -- (UL_OY) node[left=2pt] {$i\omega L I$};
-
-            \draw[blue, ->, thick] (O2) -- (UC_OY) node[left=2pt] {$-i \frac{I}{\omega C}$};
-
-            \draw[red, ->, thick] (O2) -- (A) node[midway, below=2pt] {$RI$};
-
-            \draw[green!50!black, ->, thick] (A) -- (C) node[right=2pt] {$i\left(\omega L - \frac{1}{\omega C}\right)I$};
-
-            \draw[purple, ->, ultra thick] (O2) -- (C) node[midway, above left] {$\mathcal{E}$};
-
-            \draw[dashed] (U_reac) -- (C);
-
-            \draw (1.2, 0) arc (0:\phiDeg:1.2);
-            \node at ({\phiDeg/2}:1.6) {$\varphi_0$};
-
-\end{tikzpicture}
+	\localinput{vector_diagram_full.tikz}
 	\caption{Векторна діаграма для $LCR$-контуру, показаного на рис.~\ref{tikz:LCR_circuit}, для випадку $\omega L > 1/\omega C$.}
 	\label{tikz:vector_diagram_full}
 \end{figure}
@@ -1202,47 +956,7 @@ $LCR$-кон\-ту\-рі (рис.~\ref{tikz:LCR_circuit}) при зміні ча
 
 \begin{SCfigure}[1][h!]
 	\centering
-\begin{tikzpicture}
-\begin{axis}[
-    % --- 1. ВСІ ПАРАМЕТРИ ТА ФУНКЦІЇ У DECLARE FUNCTION ---
-    declare function={
-        L = 1.0;                                     % Індуктивність
-        C = 1.0;                                     % Ємність
-        R = 0.25;                                    % Опір
-        E0 = 1.0;                                    % Амплітуда ЕРС
-        w0 = 1.0 / sqrt(L*C);                        % Резонансна частота
-        Imax = E0 / R;                               % Максимальний струм при резонансі
-        I0(\w) = E0 / sqrt(R^2 + (\w*L - 1/(\w*C))^2); % Амплітуда струму
-    },
-    % --- 2. НАЛАШТУВАННЯ ОСЕЙ ---
-    axis lines=center,
-    xlabel={$\omega$},
-    ylabel={$I_m$},
-    x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
-    y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
-    % Межі графіку
-    xmin=0, xmax=2.5,
-    ymin=0, ymax=4.5,
-    % Вимикаємо стандартні числа, залишаємо лише extra ticks
-    xtick=\empty,
-    ytick=\empty,
-    extra x ticks={1.0},                             % Дорівнює розрахованому w0
-    extra x tick labels={$\omega_0$},
-    extra x tick style={tick label style={below=2pt}},
-    width=9cm,
-    height=6.5cm,
-    samples=600,
-    clip=false
-]
-
-    % --- 3. РЕЗОНАНСНА ЧАСТОТА (штрихова лінія) ---
-    \draw[dashed, thick] (axis cs:{w0}, 0) -- (axis cs:{w0}, {Imax});
-
-    % --- 4. КРИВА СТРУМУ ---
-    \addplot [red, thick, domain=0.05:2.4] {I0(x)};
-
-\end{axis}
-\end{tikzpicture}
+	\localinput{current_resonance.tikz}
 	\caption{Залежність амплітуди коливань струму від частоти коливань ЕРС --- резонанс напруги на конденсаторі і ЕРС в послідовному $LCR$-контурі (рис.~\ref{tikz:LCR_circuit}).}
 	\label{tikz:current_resonance}
 \end{SCfigure}
@@ -1267,41 +981,7 @@ $LCR$-кон\-ту\-рі (рис.~\ref{tikz:LCR_circuit}) при зміні ча
 
 \begin{SCfigure}[1.5][h!]
 	\centering
-	\begin{circuitikz}[european resistors, scale=1.4,
-circuitikz/bipoles/length=1.8cm,
-thick]
-
-		\coordinate (L0) at (0, 0);
-		\coordinate (L1) at (0, 1.2);
-		\coordinate (L2) at (0, 2.4);
-		\coordinate (L3) at (0, 3.6);
-
-		\coordinate (R0) at (3.5, 0);
-		\coordinate (R1) at (3.5, 1.2);
-		\coordinate (R2) at (3.5, 2.4);
-		\coordinate (R3) at (3.5, 3.6);
-
-		\draw (L3) to[L, l=$L$] (R3);
-		\draw[<-, >=latex, thick] ($(L3)!0.82!(R3) + (0, 0.35)$) -- ($(L3)!0.98!(R3) + (0, 0.35)$)
-		node[midway, above] {$I_L$};
-
-		\draw (L2) to[C, l=$C$] (R2);
-		\draw[<-, >=latex, thick] ($(L2)!0.82!(R2) + (0, 0.35)$) -- ($(L2)!0.98!(R2) + (0, 0.35)$)
-		node[midway, above] {$I_C$};
-
-		\draw (L1) to[R, l=$R$] (R1);
-		\draw[<-, >=latex, thick] ($(L1)!0.82!(R1) + (0, 0.35)$) -- ($(L1)!0.98!(R1) + (0, 0.35)$)
-		node[midway, above] {$I_R$};
-
-		\draw (L0) to[isourcesin, sources/symbol/rotate=0, l_=$I(t)$] (R0);
-
-		\draw (L0) -- (L3);
-		\draw (R0) -- (R3);
-
-		\draw[->, >=latex, thick] ($(R0)!0.2!(R1) + (0.35,0)$) -- ($(R0)!0.6!(R1) + (0.35,0)$)
-		node[midway, right] {$I$};
-
-	\end{circuitikz}
+	\localinput{parallel_circuit.tikz}
 	\caption{Паралельний $LCR$-контур, що включає джерело заданого змінного струму $I(t) = I_m \cos\omega t$.}
 	\label{tikz:parallel_circuit}
 \end{SCfigure}
@@ -1389,17 +1069,7 @@ thick]
 
 	      \begin{SCfigure}[1.75][h!]
 		      \centering
-		      \begin{tikzpicture}[>=Stealth, line width=1.2pt]
-
-			      \coordinate (O) at (0,0);
-
-			      \draw[->, red] (-1.5, 1.3) -- (O) node[above left=1pt, pos=0] {$I_1$};
-			      \draw[->, blue] (1.5, 1.3) -- (O) node[above right=1pt, pos=0] {$I_2$};
-			      \draw[<-, green!50!black] (0, -2.0) -- (O) node[midway, right=3pt] {$I_3$};
-
-			      \fill (O) circle (2pt);
-
-		      \end{tikzpicture}
+\		      \localinput{Kirchhoff.tikz}
 		      \caption{Перше правило Кірхгофа: сума струмів, що входять у вузол, рівна нулю.}
 		      \label{tikz:Kirchhoff}
 	      \end{SCfigure}
@@ -1420,51 +1090,7 @@ thick]
 
 \begin{center}%[h!]
 	\centering
-	\begin{circuitikz}[european resistors, scale=1.4, circuitikz/bipoles/length=1.8cm, thick]
-		\coordinate (A) at (0,0);
-		\coordinate (B) at (2.5,0);
-		\coordinate (C) at (5,0);
-		\coordinate (D) at (0,2.5);
-		\coordinate (E) at (2.5,2.5);
-		\coordinate (F) at (5,2.5);
-
-		% Джерело ЕРС
-		\draw (D) to[isourcesin, l=$\emf$] (A);
-
-		% Котушка L у верхній лівій гілці
-		\draw (D) to[L, l_=$L$] (E);
-
-		% Паралельна ділянка: R і C
-		\draw (E) to[R, l_=$R$] (B);
-		\draw (E) to[C, l_=$C$] (F);
-
-		% З'єднувальні провідники
-		\draw (B) -- (A);
-		\draw (F) -- (C);
-		\draw (B) -- (C);
-		\draw (A) -- (B);
-
-		% Вузли A і B
-		\fill (E) circle (2.5pt);
-		\node[above, font=\scriptsize] at (E) {вузол $E$};
-
-		% Стрілка загального струму I (від джерела до вузла E)
-		\draw[->, >=latex, thick] ($(D)!0.7!(E) + (0,0.45)$) -- ($(D)!0.95!(E) + (0,0.45)$)
-		node[midway, above] {$I$};
-
-		% Стрілка струму I_R через резистор (від E до B)
-		\draw[->, >=latex, thick] ($(E)!0.3!(B) + (0.35,0)$) -- ($(E)!0.7!(B) + (0.35,0)$)
-		node[midway, right] {$I_R$};
-
-		% Стрілка струму I_C через конденсатор (від E до F)
-		\draw[->, >=latex, thick] ($(E)!0.3!(F) + (0,0.45)$) -- ($(E)!0.7!(F) + (0,0.45)$)
-		node[midway, above] {$I_C$};
-
-		% Позначення контурів I та II
-		\node at (1.2, 1.2) {I};
-		\node at (3.7, 1.2) {II};
-
-	\end{circuitikz}
+	\localinput{example_branched.tikz}
 	\captionof{figure}{Розгалужене коло: котушка $L$ послідовно з паралельно з'єднаними $R$ і $C$. Вузли позначено $A$ і $B$; контури I та II показано умовно.}
 	\label{tikz:example_branched}
 \end{center}
@@ -1601,57 +1227,7 @@ $\overline{Q}=RI_{\text{eff}}^2$ з розділу~\ref{sec:ac} робила
 
 \begin{figure}[h!]
 	\centering
-	\begin{circuitikz}[american inductors, european resistors,  scale=1.0, transform shape]
-		% ----------------------------------------------------
-		% Coordinates for clean layout and spacing
-		% ----------------------------------------------------
-		\coordinate (P0) at (0,0);
-		\coordinate (P1) at (0,3);
-		\coordinate (P2) at (3.6,3);
-		\coordinate (P3) at (3.6,0);
-
-		\coordinate (S0) at (5.2,0);
-		\coordinate (S1) at (5.2,3);
-		\coordinate (S2) at (8.8,3);
-		\coordinate (S3) at (8.8,0);
-
-		% ----------------------------------------------------
-		% ПЕРВИННЕ КОЛО (Primary Circuit)
-		% ----------------------------------------------------
-		\draw (P0) to[sV, l=$\emf_1(t)$] (P1)
-		           to[R, l=$R_1$] (2.2,3)
-		           to[short, i=$I_1$] (P2)
-		           to[L, l_=$L_1$, name=L1] (P3) -- (P0);
-
-		% ----------------------------------------------------
-		% ФЕРОМАГНІТНЕ ОСЕРДЯ ТА ФАЗУВАННЯ
-		% ----------------------------------------------------
-		\draw[thick] (4.25, 0.4) -- (4.25, 2.6);
-		\draw[thick] (4.55, 0.4) -- (4.55, 2.6);
-
-		% Dot notation (Крапки фазування)
-		\node[circle, fill, inner sep=1.3pt] at (3.35, 2.5) {};
-		\node[circle, fill, inner sep=1.3pt] at (5.45, 2.5) {};
-
-		% ----------------------------------------------------
-		% ВТОРИННЕ КОЛО (Secondary Circuit)
-		% ----------------------------------------------------
-		\draw (S0) to[L, l_=$L_2$, name=L2] (S1)
-		           to[short, i_=$I_2$] (6.6,3)
-		           to[R, l_=$R_2$] (S2)
-		           to[generic, l_=$Z_{\text{н}}$, v^=$U_2$] (S3) -- (S0);
-
-		% ----------------------------------------------------
-		% ВЗАЄМНА ІНДУКТИВНІСТЬ L12
-		% ----------------------------------------------------
-		\draw[<->, >=Stealth, thick, dashed] (L1.north) to[out=55, in=125] node[above=1cm] {$L_{12}$} (L2.north);
-
-		% ----------------------------------------------------
-		% ТЕКСТОВІ ПІДПИСИ (Relative Centering)
-		% ----------------------------------------------------
-		\node[anchor=south, font=\small\bfseries, color=red!70!black, yshift=18pt, align=center] at (1.8, 3) {Первинна\\ обмотка ($N_1$)};
-		\node[anchor=south, font=\small\bfseries, color=blue!70!black, yshift=18pt, align=center] at (7.0, 3) {Вторинна\\ обмотка ($N_2$)};
-	\end{circuitikz}
+	\localinput{transformer_circuit.tikz}
 	\caption{Еквівалентна схема реального трансформатора з котушками $L_1, L_2$, крапками фазування (вказують на однакову полярність виводів), активними опорами $R_1, R_2$, взаємною індуктивністю $L_{12}$ та навантаженням~$Z_{\text{н}}$.}
 	\label{pic:transformer_circuit}
 \end{figure}
@@ -1895,8 +1471,8 @@ $Z_{\text{вх}}\approx R_1 + R_2'$, де $R_2'$ --- опір вторинної
 	Режим короткого замикання --- не просто теоретична
 	абстракція. У побутовій мережі коротке замикання виникає,
 	коли фаза й нуль з'єднуються напряму, наприклад через
-	пошкоджену ізоляцію. Струм при цьому може сягати кількох
-	кілоампер, і єдине, що рятує проводку, --- це автоматичний
+	пошкоджену ізоляцію. Струм при цьому може сягати кількох кілоамперів, 
+	і єдине, що рятує проводку, --- це автоматичний
 	вимикач, який розмикає коло за частки секунди. У
 	потужних трансформаторів на підстанціях струм короткого
 	замикання сягає десятків кілоампер, тому їхній захист
@@ -1977,32 +1553,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 
 \begin{figure}[h!]
 	\centering
-	\begin{tikzpicture}[>=Stealth, scale=1.2]
-		\draw[->] (-1.5,0) -- (5,0) node[right] {$\operatorname{Re}$};
-		\draw[->] (0,-2.5) -- (0,2.5) node[above] {$\operatorname{Im}$};
-
-		% потік
-		\draw[->, ultra thick, purple] (0,0) -- (3.2,0)
-			node[midway, above] {$\hat{\Phi}$};
-
-		% ЕРС
-		\draw[->, thick, red] (0,0) -- (0,-2.0)
-			node[right] {$\hat{\emf}_1$};
-		\draw[->, thick, blue] (0,0) -- (0,-1.2)
-			node[right] {$\hat{\emf}_2$};
-
-		% струм холостого ходу
-		\draw[->, thick, green!60!black] (0,0) -- (0.5,1.5)
-			node[above right] {$\hat{I}_{10}$};
-
-		% струм I2
-		\draw[->, thick, blue] (0,0) -- (1.5,-1.8)
-			node[below right] {$\hat{I}_2$};
-
-		% струм I1
-		\draw[->, ultra thick, red] (0,0) -- (2.2,0.8)
-			node[above right] {$\hat{I}_1$};
-	\end{tikzpicture}
+	\localinput{transformer_phasor.tikz}
 	\caption{Векторна діаграма трансформатора в режимі
 	навантаження. Потік $\hat{\Phi}$ напрямлений уздовж
 	дійсної осі; ЕРС відстають від нього на $\pi/2$; струм
@@ -2111,30 +1662,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 
 \begin{SCfigure}[1][h!]
 	\centering
-	\begin{circuitikz}[european resistors, scale=1.4, circuitikz/bipoles/length=1.8cm, thick]
-		\coordinate (A) at (0,0);
-		\coordinate (B) at (3,0);
-		\coordinate (C) at (3,2);
-		\coordinate (D) at (0,2);
-
-		\coordinate (T1) at ($(D)!0.3!(A)$);
-		\coordinate (T2) at ($(D)!0.7!(A)$);
-
-		\coordinate (T3) at ($(C)!0.3!(B)$);
-		\coordinate (T4) at ($(C)!0.7!(B)$);
-
-		\draw (D) to[R, l=$R$] (C);
-		\draw (C) to[C, l_=$C$] (B);
-		\draw (A) -- (B);
-
-		\draw (D) to[short, -o] (T1);
-		\draw (A) to[short, -o] (T2);
-		\node[left=2pt] at ($(T1)!0.5!(T2)$) {$U_{\text{вх}}$};
-
-		\draw (C) to[short, -o] (T3);
-		\draw (B) to[short, -o] (T4);
-		\node[right=15pt] at ($(T3)!0.5!(T4)$) {$U_{\text{вих}}$};
-	\end{circuitikz}
+	\localinput{lowpass.tikz}
 	\caption{Фільтр низьких частот: вихідна напруга знімається з конденсатора $C$.}
 	\label{tikz:lowpass}
 \end{SCfigure}
@@ -2163,30 +1691,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 
 \begin{SCfigure}[1][h!]
 	\centering
-	\begin{circuitikz}[european resistors, scale=1.4, circuitikz/bipoles/length=1.8cm, thick]
-		\coordinate (A) at (0,0);
-		\coordinate (B) at (3,0);
-		\coordinate (C) at (3,2);
-		\coordinate (D) at (0,2);
-
-		\coordinate (T1) at ($(D)!0.3!(A)$);
-		\coordinate (T2) at ($(D)!0.7!(A)$);
-
-		\coordinate (T3) at ($(C)!0.1!(B)$);
-		\coordinate (T4) at ($(C)!0.9!(B)$);
-
-		\draw (D) to[C, l=$C$] (C);
-		\draw (C) to[R, l_=$R$] (B);
-		\draw (A) -- (B);
-
-		\draw (D) to[short, -o] (T1);
-		\draw (A) to[short, -o] (T2);
-		\node[left=2pt] at ($(T1)!0.5!(T2)$) {$U_{\text{вх}}$};
-
-		\draw (C) to[short, -o] (T3);
-		\draw (B) to[short, -o] (T4);
-		\node[right=15pt] at ($(T3)!0.5!(T4)$) {$U_{\text{вих}}$};
-	\end{circuitikz}
+	\localinput{highpass.tikz}
 	\caption{Фільтр високих частот: вихідна напруга знімається з резистора $R$.}
 	\label{tikz:highpass}
 \end{SCfigure}
@@ -2203,35 +1708,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 
 \begin{figure}[h!]
 	\centering
-	\begin{circuitikz}[european resistors, scale=1.4, circuitikz/bipoles/length=1.8cm, thick]
-		\coordinate (A) at (0,0);
-		\coordinate (B) at (4.5,0);
-		\coordinate (C) at (4.5,2);
-		\coordinate (D) at (0,2);
-
-		\coordinate (M1) at (1.5,2);
-		\coordinate (M2) at (3.0,2);
-
-		\coordinate (T1) at ($(D)!0.3!(A)$);
-		\coordinate (T2) at ($(D)!0.7!(A)$);
-
-		\coordinate (T3) at ($(C)!0.3!(B)$);
-		\coordinate (T4) at ($(C)!0.7!(B)$);
-
-		\draw (D) to[L, l=$L$] (M1);
-		\draw (M1) to[C, l=$C$] (M2);
-		\draw (M2) to[R, l=$R$] (C);
-
-		\draw (A) -- (B);
-
-		\draw (D) to[short, -o] (T1);
-		\draw (A) to[short, -o] (T2);
-		\node[left=2pt] at ($(T1)!0.5!(T2)$) {$U_{\text{вх}}$};
-
-		\draw (C) to[short, -o] (T3);
-		\draw (B) to[short, -o] (T4);
-		\node[right=2pt] at ($(T3)!0.5!(T4)$) {$U_{\text{вих}}$};
-	\end{circuitikz}
+	\localinput{bandpass.tikz}
 	\caption{Смуговий фільтр на основі послідовного $LCR$-контуру: вихідна напруга знімається з резистора $R$.}
 	\label{tikz:bandpass}
 \end{figure}
@@ -2240,48 +1717,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 
 \begin{figure}[h!]
 	\centering
-	\begin{tikzpicture}
-		\begin{axis}[
-				declare function={
-						RC = 1.0;
-						wc = 1.0 / RC;
-						KLP(\w) = 1 / sqrt(1 + (\w*RC)^2);
-						KHP(\w) = (\w*RC) / sqrt(1 + (\w*RC)^2);
-						Q = 5.0;
-						w0 = 1.0;
-						KBP(\w) = 1 / sqrt(1 + Q^2*(\w/w0 - w0/\w)^2);
-					},
-				axis lines=center,
-				xlabel={$\omega$},
-				ylabel={$|K|$},
-				x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
-				y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
-				xmin=0, xmax=3,
-				ymin=0, ymax=1.1,
-				xtick={1},
-				xticklabels={$\omega_c$},
-				ytick={1},
-				yticklabels={$1$},
-				ytick style={anchor=east},
-				width=10cm,
-				height=6cm,
-				samples=400,
-				clip=false,
-			]
-
-			\draw[dashed, thick] (axis cs:0, 1) -- (axis cs:3, 1);
-
-			\addplot [blue, thick, domain=0:3] {KLP(x)};
-			\node[blue] at (axis cs:0.35, 0.55) {ФНЧ};
-
-			\addplot [red, thick, domain=0:3] {KHP(x)};
-			\node[red] at (axis cs:2.2, 0.55) {ФВЧ};
-
-			\addplot [green!60!black, thick, domain=0.05:3] {KBP(x)};
-			\node[green!60!black] at (axis cs:1.5, 0.85) {смуговий};
-
-		\end{axis}
-	\end{tikzpicture}
+	\localinput{filter_responses.tikz}
 	\caption{Амплітудно-частотні характеристики трьох фільтрів: ФНЧ (синій), ФВЧ (червоний) і смугового (зелений). Для смугового прийнято $Q = 5$.}
 	\label{tikz:filter_responses}
 \end{figure}
@@ -2325,84 +1761,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 
 \begin{figure}[h!]
 	\centering
-	\begin{circuitikz}[>=latex, scale=1.0, thick, european]
-
-		\def\Rin{2.0}
-		\def\Rout{2.7}
-
-		% ================= 1. ЗАДНІ ЧАСТИНИ ВИТКІВ =================
-		\foreach \a in {60, 70, 80, 90, 100, 110} {
-			\draw[thick] (\a+4:\Rout) -- (\a+10-4:\Rin);
-		}
-		\foreach \a in {-60, -50, -40, -30, -20, -10} {
-			\draw[thick] (\a+4:\Rout) -- (\a+10-4:\Rin);
-		}
-		\foreach \a in {180, 190, 200, 210, 220, 230} {
-			\draw[thick] (\a+4:\Rout) -- (\a+10-4:\Rin);
-		}
-
-		% ================= 2. ОСЕРДЯ СТАТОРA =================
-		\draw[fill=cyan!80!blue, even odd rule, thick] (0,0) circle (\Rout) (0,0) circle (\Rin);
-
-		% ================= 3. ПЕРЕДНІ ЧАСТИНИ ВИТКІВ =================
-		\foreach \a in {60, 70, 80, 90, 100, 110, 120} {
-			\draw[thick] (\a-4:\Rin) to[out=\a+40, in=\a-140] (\a+4:\Rout);
-		}
-		\foreach \a in {-60, -50, -40, -30, -20, -10, 0} {
-			\draw[thick] (\a-4:\Rin) to[out=\a+40, in=\a-140] (\a+4:\Rout);
-		}
-		\foreach \a in {180, 190, 200, 210, 220, 230, 240} {
-			\draw[thick] (\a-4:\Rin) to[out=\a+40, in=\a-140] (\a+4:\Rout);
-		}
-
-        % ================= 4. РОТОР =================
-		\draw[fill=red!75!white, thick]
-			(0:0.65) to[out=90, in=-70] (45:1.4)
-			arc (45:135:1.4)
-			to[out=-110, in=90] (180:0.65) -- cycle;
-
-		\draw[fill=blue!70!white, thick]
-			(180:0.65) to[out=-90, in=110] (225:1.4)
-			arc (225:315:1.4)
-			to[out=70, in=-90] (0:0.65) -- cycle;
-
-		\draw[fill=white, thick] (0,0) circle (0.35);
-
-		\node[white] at (0, 0.85) {\Large\bfseries N};
-		\node[white] at (0, -0.85) {\Large\bfseries S};
-
-		% ================= 5. ОСІ ТА УГЛИ =================
-		\draw[dash dot] (0, 0.35) -- (90:3.3);
-		\draw[dash dot] (210:0.35) -- (210:3.3);
-		\draw[dash dot] (330:0.35) -- (330:3.3);
-
-		\node[above] at (90:3.3) {\Large I};
-		\node[below left] at (210:3.3) {\Large III};
-		\node[below right] at (330:3.3) {\Large II};
-
-		\draw[<->] (90:3.0) arc (90:-30:3.0);
-		\node at (30:3.4) {$120^\circ$};
-
-		\draw[<->] (90:3.0) arc (90:210:3.0);
-		\node at (150:3.4) {$120^\circ$};
-
-		\draw[<->] (210:3.0) arc (210:330:3.0);
-		\node at (270:3.4) {$120^\circ$};
-
-		% ================= 6. ПРОВOДИ ТА РЕЗИСТОРИ =================
-		\draw (56:\Rout) -- ++(0, 0.95) |- (8.0, 3.2) node[pos=0.7, above] {$I_1$};
-		\draw (124:\Rin) -- (-1.1, 1.2) -- (8.0, 1.2) ;
-		\draw (8.0, 3.2) to[R=$Z_1$] (8.0, 1.2);
-
-		\draw (4:\Rout) -| (5, 0.15) node[pos=0.3, above] {$I_2$};
-		\draw (-64:\Rin) |- (1.0, -1.2) -- (5, -1.2);
-		\draw (5, 0.15) to[R=$Z_2$] (5, -1.2);
-
-		\draw (176:\Rout) -| (-3.6, 0.15) -- (-3.6, -2.5) -- (8.0, -2.5) node[midway, below] {$I_3$};
-		\draw (236:\Rin) -- (1.0, -0.15) -- (8.0, -0.15) ;
-		\draw (8.0, -0.15) to[R=$Z_3$] (8.0, -2.5);
-
-	\end{circuitikz}
+	\localinput{ThreePhaseGenerator.tikz}
 	\caption{Схематичне зображення трифазного синхронного генератора}
 	\label{pic:ThreePhaseGenerator}
 \end{figure}
@@ -2418,34 +1777,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 
 \begin{figure}[h!]
 	\centering
-	\begin{tikzpicture}
-		\begin{axis}[
-			width=0.85\textwidth,
-			height=6.5cm,
-			axis lines=middle,
-			xlabel={$\omega t$},
-			ylabel={$\emf(t)$},
-			xmin=0, xmax=6.283,
-			ymin=-1.3, ymax=1.4,
-			xtick={0, 1.5708, 3.1415, 4.7123, 6.283},
-			xticklabels={$0$, $\frac{\pi}{2}$, $\pi$, $\frac{3\pi}{2}$, $2\pi$},
-			ytick={-1, 0, 1},
-			yticklabels={$-\emf_m$, $0$, $\emf_m$},
-			grid=both,
-			grid style={dashed, gray!30},
-			legend pos=outer north east,
-			trig format plots=rad
-		]
-			\addplot[ultra thick, red, domain=0:2*pi, samples=120] {sin(x)};
-			\addlegendentry{$\emf_1(t)$}
-
-			\addplot[ultra thick, green!60!black, domain=0:2*pi, samples=120] {sin(x - 2*pi/3)};
-			\addlegendentry{$\emf_2(t)$}
-
-			\addplot[ultra thick, blue, domain=0:2*pi, samples=120] {sin(x - 4*pi/3)};
-			\addlegendentry{$\emf_3(t)$}
-		\end{axis}
-	\end{tikzpicture}
+ 	\localinput{ThreePhaseWaveforms.tikz}
 	\caption{Часові діаграми симетричної трифазної системи ЕРС}
 	\label{pic:ThreePhaseWaveforms}
 \end{figure}
@@ -2475,50 +1807,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 
 \begin{figure}[h!]
 	\centering
-	\begin{circuitikz}[>=latex, scale=1.2, european, american inductors]
-		\coordinate (O1) at (0,0);
-		\fill (O1) circle (2.5pt) node[above left] {$0$};
-
-		\coordinate (G1) at (0, 2);
-		\draw (O1) to[L, l_=$I$] (G1);
-		\fill (G1) circle (2.5pt);
-
-		\coordinate (G2) at (1.5, -1.0);
-		\draw (O1) to[L, l_=$II$] (G2);
-		\fill (G2) circle (2.5pt);
-
-		\coordinate (G3) at (-1.5, -1.0);
-		\draw (O1) to[L, l_=$III$] (G3);
-		\fill (G3) circle (2.5pt);
-
-		\coordinate (O2) at (6, 0);
-		\fill (O2) circle (2.5pt) node[above right] {$0'$};
-
-		\coordinate (L1) at (6, 2);
-		\draw (O2) to[R=$Z_1$] (L1);
-		\fill (L1) circle (2.5pt);
-
-		\coordinate (L3) at (4.7, -1.0);
-		\draw (O2) to[R=$Z_3$] (L3);
-		\fill (L3) circle (2.5pt);
-
-		\coordinate (L2) at (7.3, -1.0);
-		\draw (O2) to[R=$Z_2$] (L2);
-		\fill (L2) circle (2.5pt);
-
-		\draw[] (G1) -- (L1) node[midway, below=2pt] {$I_{\text{Л}1}$};
-		\draw[] (G2) -- (L3) node[midway, above=2pt] {$I_{\text{Л}2}$};
-		\draw[] (O1) -- (0.5, 0) -- (1.0, 0.4) -- (5.0, 0.4) -- (5.5, 0) -- (O2) node[midway, above] {$I_{\text{N}}$};
-		\draw[] (G3) -- (-1.5, -2.1) -- (7.3, -2.1) node[midway, above=2pt] {$I_{\text{Л}3}$} -- (L2);
-
-		\draw[red] (L1) -- (8.8, 2);
-		\draw[red] (O2) -- (8.2, 0);
-		\draw[red] (L2) -- (8.8, -1.0);
-
-		\draw[<->] (8.0, 2) -- (8.0, 0) node[midway, right] {$U_\text{ф}$};
-		\draw[<->] (8.6, 2) -- (8.6, -1.0) node[midway, right] {$U_\text{л}$};
-
-	\end{circuitikz}
+	\localinput{ThreePhaseStar.tikz}
 	\caption{З'єднання трифазної системи зіркою з нейтральним проводом}
 	\label{pic:ThreePhaseStar}
 \end{figure}
@@ -2548,24 +1837,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 
 \begin{figure}[h!]
 	\centering
-	\begin{tikzpicture}[>=latex, scale=1.4]
-		\coordinate (O) at (0,0);
-		\def\R{2.0}
-
-		\draw[dashed, color=gray] (O) circle (\R);
-
-		\draw[->, double, thick] (O) -- (90:\R) node[above] {$\mathbf{U}_\text{ф 1}$};
-		\draw[->, double, thick] (O) -- (330:\R) node[below right] {$\mathbf{U}_\text{ф 2}$};
-		\draw[->, double, thick] (O) -- (210:\R) node[below left] {$\mathbf{U}_\text{ф 3}$};
-
-		\draw[->, ultra thick, red] (210:\R) -- (90:\R) node[midway, left=4pt] {$\mathbf{U}_{\text{л}31}$};
-
-		\draw (90:0.5) arc (90:210:0.5);
-		\node at (150:0.8) {$120^\circ$};
-
-		\draw (90:0.5) arc (90:-30:0.5);
-		\node at (30:0.8) {$120^\circ$};
-	\end{tikzpicture}
+	\localinput{ThreePhaseVectorDiagram.tikz}
 	\caption{Векторна діаграма співвідношення фазних та лінійних напруг}
 	\label{pic:ThreePhaseVectorDiagram}
 \end{figure}
@@ -2590,38 +1862,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 При з'єднанні \emph{«трикутником»} кінець першої обмотки генератора (або приймача) з'єднують із початком другої, кінець другої --- з початком третьої, а кінець третьої --- з початком першої (рис.~\ref{pic:ThreePhaseDelta}).
 
 \begin{figure}[h!]\centering
-	\begin{circuitikz}[>=latex, scale=1.2, european, american inductors]
-		\coordinate (GT) at (0, 2.5);
-		\coordinate (GBL) at (-1.5, 0);
-		\coordinate (GBR) at (1.5, 0);
-
-		\draw (GBL) to[L, l=$III$] (GT);
-		\draw (GT) to[L, l=$I$] (GBR);
-        \draw (GBR) to[L, l=$II$] (GBL);
-
-		\fill (GT) circle (2.5pt);
-		\fill (GBL) circle (2.5pt);
-		\fill (GBR) circle (2.5pt);
-
-		\coordinate (LT) at (6.5, 2.5);
-		\coordinate (LBL) at (5.3, 0);
-		\coordinate (LBR) at (7.7, 0);
-
-		\draw (LT) to[R, l_=$Z_3$] (LBL);
-		\draw (LT) to[R, l=$Z_1$] (LBR);
-		\draw (LBL) to[R, l_=$Z_2$] (LBR);
-
-		\fill (LT) circle (2.5pt);
-		\fill (LBL) circle (2.5pt);
-		\fill (LBR) circle (2.5pt);
-
-		\draw (GT) -- (LT) node[midway, above=2pt] {$I_{\text{Л}1}$};
-		\draw (GBR) -- (1.5, -0.6) -- (5.3, -0.6) node[midway, above=2pt] {$I_{\text{Л}2}$} -- (LBL);
-		\draw (GBL) -- (-1.5, -1.3) -- (7.7, -1.3) node[midway, above=2pt] {$I_{\text{Л}3}$} -- (LBR);
-
-		\draw[<->] (3.0, 2.5) -- (3.0, -0.6) node[midway, fill=white, inner sep=2pt, rotate=90] {$U_{\text{Л}} = U_{\text{Ф}}$};
-
-	\end{circuitikz}
+	\localinput{ThreePhaseDelta.tikz}
 	\caption{Схема з'єднання генератора та приймача трикутником}
 	\label{pic:ThreePhaseDelta}
 \end{figure}
@@ -2694,42 +1935,7 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 
 \begin{figure}[h!]
 	\centering
-	\begin{tikzpicture}
-		\begin{axis}[
-			width=0.85\textwidth,
-			height=6.5cm,
-			axis lines=middle,
-			xlabel={$\omega t$},
-			ylabel={$p(t)$},
-			xmin=0, xmax=6.283,
-			ymin=0, ymax=1.8,
-			xtick={0, 1.5708, 3.1415, 4.7123, 6.283},
-			xticklabels={$0$, $\frac{\pi}{2}$, $\pi$, $\frac{3\pi}{2}$, $2\pi$},
-			ytick={0, 0.5, 1, 1.5},
-			yticklabels={$0$, , $P_m$, $P_{\text{сум}}$},
-			grid=both,
-			grid style={dashed, gray!30},
-			legend columns=-1,
-			legend style={
-				at={(0.5,-0.2)},
-				anchor=north,
-				/tikz/every even column/.append style={column sep=0.3cm}
-			},
-			trig format plots=rad
-		]
-			\addplot[thick, red, dashed, domain=0:2*pi, samples=120] {sin(x)^2};
-			\addlegendentry{$p_1(t)$}
-
-			\addplot[thick, green!60!black, dashed, domain=0:2*pi, samples=120] {sin(x - 2*pi/3)^2};
-			\addlegendentry{$p_2(t)$}
-
-			\addplot[thick, blue, dashed, domain=0:2*pi, samples=120] {sin(x - 4*pi/3)^2};
-			\addlegendentry{$p_3(t)$}
-
-			\addplot[ultra thick, purple, domain=0:2*pi, samples=120] {1.5};
-			\addlegendentry{$p_{\text{сум}}(t) = 1.5 P_m$}
-		\end{axis}
-	\end{tikzpicture}
+	\localinput{ThreePhasePower.tikz}
 	\caption{Миттєва потужність окремих фаз та сумарна потужність трифазної системи}
 	\label{pic:ThreePhasePower}
 \end{figure}

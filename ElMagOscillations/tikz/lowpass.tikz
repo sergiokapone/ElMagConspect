@@ -1,0 +1,24 @@
+\begin{circuitikz}[european resistors, scale=1.4, circuitikz/bipoles/length=1.8cm, thick]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (3,0);
+    \coordinate (C) at (3,2);
+    \coordinate (D) at (0,2);
+
+    \coordinate (T1) at ($(D)!0.3!(A)$);
+    \coordinate (T2) at ($(D)!0.7!(A)$);
+
+    \coordinate (T3) at ($(C)!0.3!(B)$);
+    \coordinate (T4) at ($(C)!0.7!(B)$);
+
+    \draw (D) to[R, l=$R$] (C);
+    \draw (C) to[C, l_=$C$] (B);
+    \draw (A) -- (B);
+
+    \draw (D) to[short, -o] (T1);
+    \draw (A) to[short, -o] (T2);
+    \node[left=2pt] at ($(T1)!0.5!(T2)$) {$U_{\text{вх}}$};
+
+    \draw (C) to[short, -o] (T3);
+    \draw (B) to[short, -o] (T4);
+    \node[right=15pt] at ($(T3)!0.5!(T4)$) {$U_{\text{вих}}$};
+\end{circuitikz}

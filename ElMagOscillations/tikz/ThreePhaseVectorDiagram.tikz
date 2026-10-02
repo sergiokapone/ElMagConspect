@@ -1,0 +1,18 @@
+\begin{tikzpicture}[>=latex, scale=1.4]
+    \coordinate (O) at (0,0);
+    \def\R{2.0}
+
+    \draw[dashed, color=gray] (O) circle (\R);
+
+    \draw[->, double, thick] (O) -- (90:\R) node[above] {$\mathbf{U}_\text{ф 1}$};
+    \draw[->, double, thick] (O) -- (330:\R) node[below right] {$\mathbf{U}_\text{ф 2}$};
+    \draw[->, double, thick] (O) -- (210:\R) node[below left] {$\mathbf{U}_\text{ф 3}$};
+
+    \draw[->, ultra thick, red] (210:\R) -- (90:\R) node[midway, left=4pt] {$\mathbf{U}_{\text{л}31}$};
+
+    \draw (90:0.5) arc (90:210:0.5);
+    \node at (150:0.8) {$120^\circ$};
+
+    \draw (90:0.5) arc (90:-30:0.5);
+    \node at (30:0.8) {$120^\circ$};
+\end{tikzpicture}

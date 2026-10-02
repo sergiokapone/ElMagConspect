@@ -1,0 +1,45 @@
+\begin{circuitikz}[european resistors, scale=1.4, circuitikz/bipoles/length=1.8cm, thick]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (2.5,0);
+    \coordinate (C) at (5,0);
+    \coordinate (D) at (0,2.5);
+    \coordinate (E) at (2.5,2.5);
+    \coordinate (F) at (5,2.5);
+
+    % Джерело ЕРС
+    \draw (D) to[isourcesin, l=$\emf$] (A);
+
+    % Котушка L у верхній лівій гілці
+    \draw (D) to[L, l_=$L$] (E);
+
+    % Паралельна ділянка: R і C
+    \draw (E) to[R, l_=$R$] (B);
+    \draw (E) to[C, l_=$C$] (F);
+
+    % З'єднувальні провідники
+    \draw (B) -- (A);
+    \draw (F) -- (C);
+    \draw (B) -- (C);
+    \draw (A) -- (B);
+
+    % Вузли A і B
+    \fill (E) circle (2.5pt);
+    \node[above, font=\scriptsize] at (E) {вузол $E$};
+
+    % Стрілка загального струму I (від джерела до вузла E)
+    \draw[->, >=latex, thick] ($(D)!0.7!(E) + (0,0.45)$) -- ($(D)!0.95!(E) + (0,0.45)$)
+    node[midway, above] {$I$};
+
+    % Стрілка струму I_R через резистор (від E до B)
+    \draw[->, >=latex, thick] ($(E)!0.3!(B) + (0.35,0)$) -- ($(E)!0.7!(B) + (0.35,0)$)
+    node[midway, right] {$I_R$};
+
+    % Стрілка струму I_C через конденсатор (від E до F)
+    \draw[->, >=latex, thick] ($(E)!0.3!(F) + (0,0.45)$) -- ($(E)!0.7!(F) + (0,0.45)$)
+    node[midway, above] {$I_C$};
+
+    % Позначення контурів I та II
+    \node at (1.2, 1.2) {I};
+    \node at (3.7, 1.2) {II};
+
+\end{circuitikz}

@@ -1,0 +1,44 @@
+\begin{circuitikz}[>=latex, scale=1.2, european, american inductors]
+    \coordinate (O1) at (0,0);
+    \fill (O1) circle (2.5pt) node[above left] {$0$};
+
+    \coordinate (G1) at (0, 2);
+    \draw (O1) to[L, l_=$I$] (G1);
+    \fill (G1) circle (2.5pt);
+
+    \coordinate (G2) at (1.5, -1.0);
+    \draw (O1) to[L, l_=$II$] (G2);
+    \fill (G2) circle (2.5pt);
+
+    \coordinate (G3) at (-1.5, -1.0);
+    \draw (O1) to[L, l_=$III$] (G3);
+    \fill (G3) circle (2.5pt);
+
+    \coordinate (O2) at (6, 0);
+    \fill (O2) circle (2.5pt) node[above right] {$0'$};
+
+    \coordinate (L1) at (6, 2);
+    \draw (O2) to[R=$Z_1$] (L1);
+    \fill (L1) circle (2.5pt);
+
+    \coordinate (L3) at (4.7, -1.0);
+    \draw (O2) to[R=$Z_3$] (L3);
+    \fill (L3) circle (2.5pt);
+
+    \coordinate (L2) at (7.3, -1.0);
+    \draw (O2) to[R=$Z_2$] (L2);
+    \fill (L2) circle (2.5pt);
+
+    \draw[] (G1) -- (L1) node[midway, below=2pt] {$I_{\text{Л}1}$};
+    \draw[] (G2) -- (L3) node[midway, above=2pt] {$I_{\text{Л}2}$};
+    \draw[] (O1) -- (0.5, 0) -- (1.0, 0.4) -- (5.0, 0.4) -- (5.5, 0) -- (O2) node[midway, above] {$I_{\text{N}}$};
+    \draw[] (G3) -- (-1.5, -2.1) -- (7.3, -2.1) node[midway, above=2pt] {$I_{\text{Л}3}$} -- (L2);
+
+    \draw[red] (L1) -- (8.8, 2);
+    \draw[red] (O2) -- (8.2, 0);
+    \draw[red] (L2) -- (8.8, -1.0);
+
+    \draw[<->] (8.0, 2) -- (8.0, 0) node[midway, right] {$U_\text{ф}$};
+    \draw[<->] (8.6, 2) -- (8.6, -1.0) node[midway, right] {$U_\text{л}$};
+
+\end{circuitikz}
