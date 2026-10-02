@@ -1,6 +1,6 @@
 # LaTeX у VS Code: довідник по налаштуванню (ElMagConspect)
 
-Перенесені макроси з TeXstudio, власне розширення **LocalInput Links** (версія 0.0.24), сніпети та потрібні налаштування.
+Перенесені макроси з TeXstudio, власне розширення **LocalInput Links** (версія 0.0.25), сніпети та потрібні налаштування.
 
 Позначки у таблицях: ✅ перевірено в роботі, 🧪 написано, але в живому VS Code ще не підтверджено.
 
@@ -27,7 +27,7 @@
 
 1. `Ctrl+Shift+P` → `Extensions: Install from VSIX...` → вибрати `localinput-links.vsix`.
 2. `Ctrl+Shift+P` → `Developer: Reload Window`.
-3. Перевірка: у вкладці Extensions має бути `LocalInput Links` версії 0.0.24.
+3. Перевірка: у вкладці Extensions має бути `LocalInput Links` версії 0.0.25.
 
 Оновлення виконується тією самою командою (новіша версія замінює старішу).
 
@@ -49,7 +49,7 @@
 | **Вирівнювання таблиці по `&`** | Курсор усередині `tblr`, `tabular`, `tabularx`, `longtable`, `array`, `align`, `matrix` тощо (або виділені рядки), потім `Ctrl+Alt+A` чи правий клік → `LocalInput: Align table columns (&)`. Комірки вирівнюються так, що всі `&` та `\\` стоять у стовпчик. Не чіпаються: опції в `\begin{tblr}{...}`, рядки без `&`, коментарі, багаторядкові рядки таблиці, `\&`. Рядок без `\\` вирівнюється лише як останній перед `\end{...}`. Повторний запуск нічого не змінює. | 🧪 |
 | **Перехід від `\ref` до `\label`** | `Ctrl+клік` або `F12` на мітці в `\ref`, `\eqref`, `\autoref`, `\cref`, `\Cref`, `\crefrange`, `\labelcref`, `\cpageref`, `\pageref`, `\nameref`, `\vref`, `\Vref` та ін. (у `\crefrange{a}{b}` працює на першій мітці). Спершу шукає в поточному файлі, потім в інших `.tex`/`.tikz` проєкту (папки `build`, `.archive`, `node_modules` пропускає). Якщо LaTeX Workshop теж знайде ціль, може з'явитись вікно «2 definitions». | 🧪 |
 
-### 2.3. Нові можливості (0.0.14 – 0.0.24)
+### 2.3. Нові можливості (0.0.14 – 0.0.25)
 
 Усе, що тут описано, 🧪: написано й перевірено на тестових прикладах поза VS Code, у живій роботі ще не підтверджено.
 
@@ -87,11 +87,12 @@
 
 #### Параметри нормалізації (0.0.21)
 
-Змінити, що робить `Normalize file`: команда `LocalInput: Normalize options (steps, line breaks)` (Command Palette, правий клік). Спершу відмічаєш кроки (прапорці), потім обираєш режим переносів рядків (і ширину, якщо «за шириною»). Значення записуються в налаштування там, де вони вже задані (папка, робочий простір, інакше користувацькі). Ті самі ключі можна змінити вручну в `Ctrl+,` → `localinput`.
+Змінити, що робить `Normalize file`: команда `LocalInput: Normalize options (steps, line breaks)` (Command Palette, правий клік). Спершу відмічаєш кроки (прапорці), потім обираєш режим переносів рядків (і ширину, якщо «за шириною»), потім стиль лапок (`quoteStyle`). Значення записуються в налаштування там, де вони вже задані (папка, робочий простір, інакше користувацькі). Ті самі ключі можна змінити вручну в `Ctrl+,` → `localinput`.
 
 | Ключ | За замовчуванням | Значення |
 |---|---|---|
 | `localinput.normalizeTypography` | `true` | Крок «типографіка». |
+| `localinput.quoteStyle` | `guillemets` | Лапки: `guillemets` («...»), `enquote` (`\enquote{...}`), `keep`. У режимі `enquote` перетворюються `"..."`, `` ``...'' ``, `<<...>>` і «...»; вкладені пари обробляються від внутрішньої, `<<` без пари не чіпається, пара не з'єднується через порожній рядок, формули й коментарі не змінюються. |
 | `localinput.displayMathToEquation` | `true` | Крок `\[ ... \]` → `equation*` (ключ той самий, що й раніше). |
 | `localinput.normalizeTables` | `true` | Крок «вирівняти таблиці». |
 | `localinput.normalizeLineBreaks` | `keep` | `keep`: переноси не чіпати. `join`: усі рядки абзацу склеюються в один. `wrap`: склеюються, потім розбиваються за `localinput.wrapWidth`. |
@@ -165,18 +166,15 @@
 
 | Де | Що | Дія |
 |---|---|---|
-| Рядок вкладки редактора (праворуч), зліва направо | ▷ (`play`) | Компіляція + відкрити PDF |
+| Рядок вкладки редактора (праворуч), зліва направо. Зелений ▶ на початку належить LaTeX Workshop, не цьому розширенню | | |
+| Збірка й перегляд | ▷ (`play`) | Компіляція + відкрити PDF |
 | | ⊙▷ (`play-circle`) | Компіляція без PDF |
 | | ⏵⏵ (`run-all`) | Збірка всього документа (`main.tex`) + PDF (`Shift+F5`); лише для `.tex` |
-| | `link-external` | Відкрити PDF у зовнішній програмі (SumatraPDF); лише `.tex`/`.tikz` |
-| | 🛠 (`tools`) | `Normalize file` з переглядом змін; лише для `.tex` |
-| | `symbol-text` | Типографіка абзацу чи виділення; лише для `.tex` |
-| | ≡ (`list-flat`) | Склеїти рядки абзацу |
-| | `list-tree` | Перейти до заголовка по всьому проєкту (`Ctrl+Alt+G`) |
-| | `file-media` | Панель рисунків (`Ctrl+Alt+P`) |
-| | `checklist` | Звіт про дубльовані й невизначені мітки |
-| | 🗑 | Видалити aux + PDF |
-| Рядок вкладки редактора, меню `...` (More Actions), розділ `LocalInput` | текстові пункти | Решта команд: `Normalize options`, `Table operations`, `Align table columns`, `Convert formula environment`, `One sentence per line`, `Wrap paragraph`, `Frame headings...`, `Compile whole document, no PDF`, `Toggle compile on save`, `Delete aux files (keep PDF)`, `Files with no references`, `Pick file name` |
+| | `link-external` | Відкрити PDF у зовнішній програмі (SumatraPDF) |
+| Текст | 🛠 (`tools`) | `Normalize file` з переглядом змін; лише для `.tex` |
+| Меню `edit` («Текст і структура»), лише `.tex` | випадає список | Normalize file, Normalize options; Typography, Join lines, Wrap paragraph, One sentence per line; Frame headings, Convert formula environment; Align table columns, Table operations |
+| Меню `list-tree` («Навігація й перевірка») | випадає список | Go to heading (`Ctrl+Alt+G`), Pick file name, Pictures (`Ctrl+Alt+P`); Check labels, Files with no references |
+| Меню `gear` («Збірка й прибирання») | випадає список | Compile whole document, no PDF; Toggle compile on save; Delete aux + PDF, Delete aux files (keep PDF) |
 | Рядок стану (зліва) | `▷ Chapter` (у `.tikz`-файлі `▷ Figure`) | Компіляція + відкрити PDF |
 | Палітра команд (`Ctrl+Shift+P`) | `LocalInput: ...` | Усі команди, включно з «keep PDF», «Pictures browser», «Files ... with no references», «Check duplicate / undefined labels», «Go to heading» |
 | Правий клік у редакторі | `LocalInput: Align table columns (&)` | Вирівняти таблицю |
@@ -194,7 +192,7 @@
 | Лампочка або `Ctrl+.` на підкресленому місці | Quick Fix | Виправлення помилок швидких перевірок і міток |
 | Панель Outline, `Ctrl+Shift+O` | Заголовки файла | Навігація по главах і розділах |
 
-Зелений заповнений ▶ у тому ж рядку належить не цьому розширенню. Порядок і склад кнопок (зараз 11) задає секція `menus → editor/title` у `package.json` розширення (група `navigation@N` дає кнопку, група `1_localinput@N` дає пункт у меню `...`). Якщо якась кнопка зайва, її можна перенести в `1_localinput`; для цього треба перезібрати `.vsix`, у налаштуваннях VS Code кнопки вкладки не вимикаються.
+Зелений заповнений ▶ у тому ж рядку належить не цьому розширенню. Порядок і склад кнопок задає секція `menus → editor/title` у `package.json` розширення (група `navigation@N` дає кнопку; меню `edit`, `list-tree`, `gear` є підменю `contributes.submenus`, їхній вміст описано у `menus` під ключами `localinput.submenu.*`). Значки підменю відкривають випадаючий список; вони новіші за решту кнопок, тож статус 🧪. Якщо якась кнопка зайва, її можна перенести в підменю; для цього треба перезібрати `.vsix`, у налаштуваннях VS Code кнопки вкладки не вимикаються.
 
 #### pplatex у вікні Problems (0.0.24)
 
@@ -237,6 +235,7 @@
 | `localinput.frameBlankLines` | `true` | Порожній рядок над обрамленим заголовком і під ним. |
 | `localinput.mainFile` | `main.tex` | Кореневий файл усього документа (у корені проєкту): його збирає `Shift+F5` і `F5` на кореневому файлі. Ім'я PDF береться з імені цього файла. |
 | `localinput.displayMathToEquation` | `true` | `Normalize file` перетворює `\[ ... \]` на `equation*`. |
+| `localinput.quoteStyle` | `guillemets` | Лапки в типографіці, `typographyOnSave` і `Normalize file`: `guillemets` (`"..."` і `` ``...'' `` стають «...»), `enquote` (`"..."`, `` ``...'' ``, `<<...>>` і «...» стають `\enquote{...}`, потрібен пакет `csquotes`), `keep` (не чіпати). |
 | `localinput.normalizeTypography`, `normalizeTables`, `normalizeFrames`, `normalizeBlankLines` | `true` | Кроки `Normalize file` (докладніше в «Параметри нормалізації»). |
 | `localinput.normalizeLineBreaks` | `keep` | `keep`, `join` або `wrap`: що робити з переносами рядків усередині абзаців. |
 | `localinput.blankLinesParagraph`, `blankLinesHeading` | `1`, `2` | Порожні рядки між абзацами та навколо команд секціонування. |
@@ -322,6 +321,11 @@
 ### 2.12. Що змінилося у 0.0.24
 
 - Режим `localinput.logParser = pplatex`: вивід `pplatex -i <job>.log` потрапляє у Problems. Нові налаштування `pplatexCommand`, `pplatexBadBoxes`.
+
+### 2.13. Що змінилося у 0.0.25
+
+- Кнопки в рядку вкладки згруповано за призначенням: збірка й перегляд (4 кнопки), `Normalize file` і три випадні меню (текст і структура, навігація й перевірка, збірка й прибирання).
+- Налаштування `localinput.quoteStyle`: у `Normalize file` і типографіці лапки можуть ставитись як «...» (за замовчуванням) або `\enquote{...}`; пункт додано в `Normalize options`.
 
 ---
 
