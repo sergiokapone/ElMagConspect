@@ -1,0 +1,36 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        width=0.85\textwidth,
+        height=6.5cm,
+        axis lines=middle,
+        xlabel={$\omega t$},
+        ylabel={$p(t)$},
+        xmin=0, xmax=6.283,
+        ymin=0, ymax=1.8,
+        xtick={0, 1.5708, 3.1415, 4.7123, 6.283},
+        xticklabels={$0$, $\frac{\pi}{2}$, $\pi$, $\frac{3\pi}{2}$, $2\pi$},
+        ytick={0, 0.5, 1, 1.5},
+        yticklabels={$0$, , $P_m$, $P_{\text{сум}}$},
+        grid=both,
+        grid style={dashed, gray!30},
+        legend columns=-1,
+        legend style={
+            at={(0.5,-0.2)},
+            anchor=north,
+            /tikz/every even column/.append style={column sep=0.3cm}
+        },
+        trig format plots=rad
+    ]
+        \addplot[thick, red, dashed, domain=0:2*pi, samples=120] {sin(x)^2};
+        \addlegendentry{$p_1(t)$}
+
+        \addplot[thick, green!60!black, dashed, domain=0:2*pi, samples=120] {sin(x - 2*pi/3)^2};
+        \addlegendentry{$p_2(t)$}
+
+        \addplot[thick, blue, dashed, domain=0:2*pi, samples=120] {sin(x - 4*pi/3)^2};
+        \addlegendentry{$p_3(t)$}
+
+        \addplot[ultra thick, purple, domain=0:2*pi, samples=120] {1.5};
+        \addlegendentry{$p_{\text{сум}}(t) = 1.5 P_m$}
+    \end{axis}
+\end{tikzpicture}

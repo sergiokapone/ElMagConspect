@@ -1,0 +1,30 @@
+\begin{tikzpicture}
+    \begin{axis}[
+            axis lines=center,
+            xlabel={$t$},
+            ylabel={$q$},
+            x label style={anchor=north west, at={(axis description cs:0.98,0.5)}},
+            y label style={anchor=south east, at={(axis description cs:0,0.98)}},
+            xmin=0, xmax=8.5,
+            ymin=-1.25, ymax=1.25,
+            ticks=none,
+            width=10cm,
+            height=6cm,
+            samples=500
+        ]
+
+        \addplot [dashed, domain=0:8, thick] {exp(-0.25*x)};
+        \addplot [dashed, domain=0:8, thick] {-exp(-0.25*x)};
+        \addplot [thick, domain=0:8, red] {exp(-0.25*x) * cos(deg(pi*x))};
+
+        \draw[dashed, thick] (axis cs:2.0, 0.6065) -- (axis cs:2.0, -0.75);
+        \draw[dashed, thick] (axis cs:4.0, 0.3679) -- (axis cs:4.0, -0.75);
+
+        \node[above=2pt] at (axis cs:2.0, 0.6065) {$q_n$};
+        \node[above=2pt] at (axis cs:4.0, 0.3679) {$q_{n+1}$};
+
+        \draw[<->, >=stealth, thick] (axis cs:2.0, -0.55) -- (axis cs:4.0, -0.55)
+        node[midway, below=3pt] {$T$};
+
+    \end{axis}
+\end{tikzpicture}

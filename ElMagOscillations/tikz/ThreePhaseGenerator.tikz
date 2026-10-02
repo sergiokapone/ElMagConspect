@@ -1,0 +1,78 @@
+\begin{circuitikz}[>=latex, scale=1.0, thick, european]
+
+    \def\Rin{2.0}
+    \def\Rout{2.7}
+
+    % ================= 1. ЗАДНІ ЧАСТИНИ ВИТКІВ =================
+    \foreach \a in {60, 70, 80, 90, 100, 110} {
+        \draw[thick] (\a+4:\Rout) -- (\a+10-4:\Rin);
+    }
+    \foreach \a in {-60, -50, -40, -30, -20, -10} {
+        \draw[thick] (\a+4:\Rout) -- (\a+10-4:\Rin);
+    }
+    \foreach \a in {180, 190, 200, 210, 220, 230} {
+        \draw[thick] (\a+4:\Rout) -- (\a+10-4:\Rin);
+    }
+
+    % ================= 2. ОСЕРДЯ СТАТОРA =================
+    \draw[fill=cyan!80!blue, even odd rule, thick] (0,0) circle (\Rout) (0,0) circle (\Rin);
+
+    % ================= 3. ПЕРЕДНІ ЧАСТИНИ ВИТКІВ =================
+    \foreach \a in {60, 70, 80, 90, 100, 110, 120} {
+        \draw[thick] (\a-4:\Rin) to[out=\a+40, in=\a-140] (\a+4:\Rout);
+    }
+    \foreach \a in {-60, -50, -40, -30, -20, -10, 0} {
+        \draw[thick] (\a-4:\Rin) to[out=\a+40, in=\a-140] (\a+4:\Rout);
+    }
+    \foreach \a in {180, 190, 200, 210, 220, 230, 240} {
+        \draw[thick] (\a-4:\Rin) to[out=\a+40, in=\a-140] (\a+4:\Rout);
+    }
+
+    % ================= 4. РОТОР =================
+    \draw[fill=red!75!white, thick]
+        (0:0.65) to[out=90, in=-70] (45:1.4)
+        arc (45:135:1.4)
+        to[out=-110, in=90] (180:0.65) -- cycle;
+
+    \draw[fill=blue!70!white, thick]
+        (180:0.65) to[out=-90, in=110] (225:1.4)
+        arc (225:315:1.4)
+        to[out=70, in=-90] (0:0.65) -- cycle;
+
+    \draw[fill=white, thick] (0,0) circle (0.35);
+
+    \node[white] at (0, 0.85) {\Large\bfseries N};
+    \node[white] at (0, -0.85) {\Large\bfseries S};
+
+    % ================= 5. ОСІ ТА УГЛИ =================
+    \draw[dash dot] (0, 0.35) -- (90:3.3);
+    \draw[dash dot] (210:0.35) -- (210:3.3);
+    \draw[dash dot] (330:0.35) -- (330:3.3);
+
+    \node[above] at (90:3.3) {\Large I};
+    \node[below left] at (210:3.3) {\Large III};
+    \node[below right] at (330:3.3) {\Large II};
+
+    \draw[<->] (90:3.0) arc (90:-30:3.0);
+    \node at (30:3.4) {$120^\circ$};
+
+    \draw[<->] (90:3.0) arc (90:210:3.0);
+    \node at (150:3.4) {$120^\circ$};
+
+    \draw[<->] (210:3.0) arc (210:330:3.0);
+    \node at (270:3.4) {$120^\circ$};
+
+    % ================= 6. ПРОВOДИ ТА РЕЗИСТОРИ =================
+    \draw (56:\Rout) -- ++(0, 0.95) |- (8.0, 3.2) node[pos=0.7, above] {$I_1$};
+    \draw (124:\Rin) -- (-1.1, 1.2) -- (8.0, 1.2) ;
+    \draw (8.0, 3.2) to[R=$Z_1$] (8.0, 1.2);
+
+    \draw (4:\Rout) -| (5, 0.15) node[pos=0.3, above] {$I_2$};
+    \draw (-64:\Rin) |- (1.0, -1.2) -- (5, -1.2);
+    \draw (5, 0.15) to[R=$Z_2$] (5, -1.2);
+
+    \draw (176:\Rout) -| (-3.6, 0.15) -- (-3.6, -2.5) -- (8.0, -2.5) node[midway, below] {$I_3$};
+    \draw (236:\Rin) -- (1.0, -0.15) -- (8.0, -0.15) ;
+    \draw (8.0, -0.15) to[R=$Z_3$] (8.0, -2.5);
+
+\end{circuitikz}

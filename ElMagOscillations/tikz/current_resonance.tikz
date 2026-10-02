@@ -1,0 +1,41 @@
+\begin{tikzpicture}
+\begin{axis}[
+    % --- 1. ВСІ ПАРАМЕТРИ ТА ФУНКЦІЇ У DECLARE FUNCTION ---
+    declare function={
+        L = 1.0;                                     % Індуктивність
+        C = 1.0;                                     % Ємність
+        R = 0.25;                                    % Опір
+        E0 = 1.0;                                    % Амплітуда ЕРС
+        w0 = 1.0 / sqrt(L*C);                        % Резонансна частота
+        Imax = E0 / R;                               % Максимальний струм при резонансі
+        I0(\w) = E0 / sqrt(R^2 + (\w*L - 1/(\w*C))^2); % Амплітуда струму
+    },
+    % --- 2. НАЛАШТУВАННЯ ОСЕЙ ---
+    axis lines=center,
+    xlabel={$\omega$},
+    ylabel={$I_m$},
+    x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
+    y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
+    % Межі графіку
+    xmin=0, xmax=2.5,
+    ymin=0, ymax=4.5,
+    % Вимикаємо стандартні числа, залишаємо лише extra ticks
+    xtick=\empty,
+    ytick=\empty,
+    extra x ticks={1.0},                             % Дорівнює розрахованому w0
+    extra x tick labels={$\omega_0$},
+    extra x tick style={tick label style={below=2pt}},
+    width=9cm,
+    height=6.5cm,
+    samples=600,
+    clip=false
+]
+
+    % --- 3. РЕЗОНАНСНА ЧАСТОТА (штрихова лінія) ---
+    \draw[dashed, thick] (axis cs:{w0}, 0) -- (axis cs:{w0}, {Imax});
+
+    % --- 4. КРИВА СТРУМУ ---
+    \addplot [red, thick, domain=0.05:2.4] {I0(x)};
+
+\end{axis}
+\end{tikzpicture}

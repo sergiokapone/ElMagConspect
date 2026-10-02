@@ -1,0 +1,32 @@
+\begin{tikzpicture}[>=Stealth, line width=0.8pt]
+        \pgfmathsetmacro{\uR}{4.0}
+        \pgfmathsetmacro{\uL}{3.2}
+        \pgfmathsetmacro{\uC}{1.1}
+        \pgfmathsetmacro{\uReac}{\uL - \uC}
+        \pgfmathsetmacro{\phiDeg}{atan2(\uReac, \uR)}
+
+        \coordinate (O2)     at (0, 0);
+        \coordinate (A)      at (\uR, 0);
+        \coordinate (UL_OY)  at (0, \uL);
+        \coordinate (UC_OY)  at (0, -\uC);
+        \coordinate (C)      at (\uR, \uReac);
+        \coordinate (U_reac) at (0, \uReac);
+
+        \draw[->] (-0.5,0) -- (\uR + 1.2, 0);
+        \draw[->] (0, -\uC - 0.5) -- (0, \uL + 0.6);
+
+        \draw[red, ->, thick] (O2) -- (UL_OY) node[left=2pt] {$i\omega L I$};
+
+        \draw[blue, ->, thick] (O2) -- (UC_OY) node[left=2pt] {$-i \frac{I}{\omega C}$};
+
+        \draw[red, ->, thick] (O2) -- (A) node[midway, below=2pt] {$RI$};
+
+        \draw[green!50!black, ->, thick] (A) -- (C) node[right=2pt] {$i\left(\omega L - \frac{1}{\omega C}\right)I$};
+
+        \draw[purple, ->, ultra thick] (O2) -- (C) node[midway, above left] {$\mathcal{E}$};
+
+        \draw[dashed] (U_reac) -- (C);
+
+        \draw (1.2, 0) arc (0:\phiDeg:1.2);
+        \node at ({\phiDeg/2}:1.6) {$\varphi_0$};
+\end{tikzpicture}

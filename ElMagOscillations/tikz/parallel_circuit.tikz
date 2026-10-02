@@ -1,0 +1,35 @@
+\begin{circuitikz}[european resistors, scale=1.4,
+circuitikz/bipoles/length=1.8cm,
+thick]
+
+		\coordinate (L0) at (0, 0);
+		\coordinate (L1) at (0, 1.2);
+		\coordinate (L2) at (0, 2.4);
+		\coordinate (L3) at (0, 3.6);
+
+		\coordinate (R0) at (3.5, 0);
+		\coordinate (R1) at (3.5, 1.2);
+		\coordinate (R2) at (3.5, 2.4);
+		\coordinate (R3) at (3.5, 3.6);
+
+		\draw (L3) to[L, l=$L$] (R3);
+		\draw[<-, >=latex, thick] ($(L3)!0.82!(R3) + (0, 0.35)$) -- ($(L3)!0.98!(R3) + (0, 0.35)$)
+		node[midway, above] {$I_L$};
+
+		\draw (L2) to[C, l=$C$] (R2);
+		\draw[<-, >=latex, thick] ($(L2)!0.82!(R2) + (0, 0.35)$) -- ($(L2)!0.98!(R2) + (0, 0.35)$)
+		node[midway, above] {$I_C$};
+
+		\draw (L1) to[R, l=$R$] (R1);
+		\draw[<-, >=latex, thick] ($(L1)!0.82!(R1) + (0, 0.35)$) -- ($(L1)!0.98!(R1) + (0, 0.35)$)
+		node[midway, above] {$I_R$};
+
+		\draw (L0) to[isourcesin, sources/symbol/rotate=0, l_=$I(t)$] (R0);
+
+		\draw (L0) -- (L3);
+		\draw (R0) -- (R3);
+
+		\draw[->, >=latex, thick] ($(R0)!0.2!(R1) + (0.35,0)$) -- ($(R0)!0.6!(R1) + (0.35,0)$)
+		node[midway, right] {$I$};
+
+\end{circuitikz}

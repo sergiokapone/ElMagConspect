@@ -1,0 +1,11 @@
+\begin{tikzpicture}[>=Stealth, line width=1.2pt]
+
+    \coordinate (O) at (0,0);
+
+    \draw[->, red] (-1.5, 1.3) -- (O) node[above left=1pt, pos=0] {$I_1$};
+    \draw[->, blue] (1.5, 1.3) -- (O) node[above right=1pt, pos=0] {$I_2$};
+    \draw[<-, green!50!black] (0, -2.0) -- (O) node[midway, right=3pt] {$I_3$};
+
+    \fill (O) circle (2pt);
+
+\end{tikzpicture}

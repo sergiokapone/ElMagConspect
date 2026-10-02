@@ -1,0 +1,57 @@
+\begin{tikzpicture}
+    \begin{axis}[
+            declare function={
+                    w0 = 1.0;
+                    gamma = 0.15;
+                    Vst = 0.6;
+                    V0(\w) = Vst / sqrt((w0^2 - \w^2)^2 + 4*(gamma^2)*(\w^2));
+                    w_res = sqrt(w0^2 - 2*gamma^2);
+                    Vmax = V0(w_res);
+                    Vlevel = Vmax / sqrt(2);
+                    w1 = sqrt(w0^2 - 2*gamma^2 + 2*gamma*w_res);
+                    w2 = sqrt(w0^2 - 2*gamma^2 - 2*gamma*w_res);
+                },
+            axis lines=center,
+            xlabel={$\omega$},
+            ylabel={$V_m$},
+            x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
+            y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
+            extra y ticks={Vst, Vlevel, Vmax},
+            extra y tick labels={$V_{\text{ст}}$, $V_{\max}/\sqrt{2}$, $V_{\max}$},
+            extra x ticks={w0},
+            extra x tick labels={$\omega_0$},
+            xmin=0, xmax=2.5,
+            ymin=0, ymax=2.4,
+            ticks=none,
+            width=10cm,
+            height=6.5cm,
+            samples=500,
+            clip=false,
+        ]
+
+        \pgfmathsetmacro{\wres}{sqrt(w0^2 - 2*gamma^2)}
+        \pgfmathsetmacro{\Vmax}{Vst / sqrt((w0^2 - \wres^2)^2 + 4*(gamma^2)*(\wres^2))}
+        \pgfmathsetmacro{\Vlevel}{\Vmax / sqrt(2)}
+
+        \pgfmathsetmacro{\wone}{sqrt(w0^2 - 2*gamma^2 - 2*gamma*sqrt(w0^2 - gamma^2))}
+        \pgfmathsetmacro{\wtwo}{sqrt(w0^2 - 2*gamma^2 + 2*gamma*sqrt(w0^2 - gamma^2))}
+
+        \draw[dashed, thick] (axis cs:0, \Vmax) -- (axis cs:\wres, \Vmax);
+        \draw[dashed, thick] (axis cs:0, \Vlevel) -- (axis cs:\wtwo, \Vlevel);
+        \draw[dashed, thick] (axis cs:{w0}, 0) -- (axis cs:{w0}, {V0(w0)});
+
+        \draw[thick] (axis cs:-0.03, \Vmax) -- (axis cs:0.03, \Vmax) node[left=3pt] {$V_{\max}$};
+        \draw[thick] (axis cs:-0.03, \Vlevel) -- (axis cs:0.03, \Vlevel) node[left=3pt] {$V_{\max}/\sqrt{2}$};
+        \draw[thick] (axis cs:-0.03, {Vst}) -- (axis cs:0.03, {Vst}) node[left=3pt] {$V_{\text{ст}}$};
+
+        \draw[thick] (axis cs:{w0}, -0.04) -- (axis cs:{w0}, 0.04) node[below=3pt] {$\omega_0$};
+
+        \addplot [red, thick, domain=0:2.3] {V0(x)};
+
+        \draw[->, >=stealth, thick] (axis cs:{\wone - 0.25}, \Vlevel) -- (axis cs:\wone, \Vlevel);
+        \draw[->, >=stealth, thick] (axis cs:{\wtwo + 0.25}, \Vlevel) -- (axis cs:\wtwo, \Vlevel);
+
+        \node[above=1pt] at (axis cs:{(\wtwo)/2}, \Vlevel) {$\Delta\omega$};
+
+    \end{axis}
+\end{tikzpicture}

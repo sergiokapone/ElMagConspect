@@ -1,0 +1,32 @@
+\begin{circuitikz}[>=latex, scale=1.2, european, american inductors]
+    \coordinate (GT) at (0, 2.5);
+    \coordinate (GBL) at (-1.5, 0);
+    \coordinate (GBR) at (1.5, 0);
+
+    \draw (GBL) to[L, l=$III$] (GT);
+    \draw (GT) to[L, l=$I$] (GBR);
+    \draw (GBR) to[L, l=$II$] (GBL);
+
+    \fill (GT) circle (2.5pt);
+    \fill (GBL) circle (2.5pt);
+    \fill (GBR) circle (2.5pt);
+
+    \coordinate (LT) at (6.5, 2.5);
+    \coordinate (LBL) at (5.3, 0);
+    \coordinate (LBR) at (7.7, 0);
+
+    \draw (LT) to[R, l_=$Z_3$] (LBL);
+    \draw (LT) to[R, l=$Z_1$] (LBR);
+    \draw (LBL) to[R, l_=$Z_2$] (LBR);
+
+    \fill (LT) circle (2.5pt);
+    \fill (LBL) circle (2.5pt);
+    \fill (LBR) circle (2.5pt);
+
+    \draw (GT) -- (LT) node[midway, above=2pt] {$I_{\text{Л}1}$};
+    \draw (GBR) -- (1.5, -0.6) -- (5.3, -0.6) node[midway, above=2pt] {$I_{\text{Л}2}$} -- (LBL);
+    \draw (GBL) -- (-1.5, -1.3) -- (7.7, -1.3) node[midway, above=2pt] {$I_{\text{Л}3}$} -- (LBR);
+
+    \draw[<->] (3.0, 2.5) -- (3.0, -0.6) node[midway, fill=white, inner sep=2pt, rotate=90] {$U_{\text{Л}} = U_{\text{Ф}}$};
+
+\end{circuitikz}

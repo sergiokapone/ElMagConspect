@@ -1,0 +1,35 @@
+\begin{tikzpicture}
+    \begin{axis}[
+            axis lines=center,
+            xlabel={$\omega$},
+            ylabel={$V_m$},
+            x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
+            y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
+            xmin=0, xmax=2.5,
+            ymin=0, ymax=2.5,
+            ticks=none,
+            width=10cm,
+            height=7cm,
+            samples=400
+        ]
+
+        \node[left] at (axis cs:0, 0.6) {$V_{\text{ст}}$};
+
+        \draw[dashed, thick] (axis cs:1.0, 0) -- (axis cs:1.0, 2.3);
+        \node[below=2pt] at (axis cs:1.0, 0) {$\omega_0$};
+
+        \addplot [red, thick, domain=0:0.92, restrict y to domain=0:2.5] {0.6 / sqrt((1 - x^2)^2)};
+        \addplot [red, thick, domain=1.08:2.3, restrict y to domain=0:2.5] {0.6 / sqrt((1 - x^2)^2)};
+        \node at (axis cs:0.75, 2.1) {$\gamma_1$};
+
+        \addplot [red, thick, domain=0:2.3] {0.6 / sqrt((1 - x^2)^2 + 4*(0.18^2)*x^2)};
+        \node at (axis cs:0.88, 1.35) {$\gamma_2$};
+
+        \addplot [red, thick, domain=0:2.3] {0.6 / sqrt((1 - x^2)^2 + 4*(0.45^2)*x^2)};
+        \node at (axis cs:0.78, 0.5) {$\gamma_3$};
+
+        \addplot [red, thick, domain=0:2.3] {0.6 / sqrt((1 - x^2)^2 + 4*(0.85^2)*x^2)};
+        \node at (axis cs:0.55, 0.28) {$\gamma_4$};
+
+    \end{axis}
+\end{tikzpicture}
