@@ -1,0 +1,23 @@
+\begin{tikzpicture}[>=latex]
+	\tikzset{
+		perturbed/.pic={
+				\begin{scope}[opacity=0.4]
+					\node[ellipse, ball color=blue, inner sep=0, minimum width=0.6cm,
+						minimum height=0.4cm] (O) at
+					(-0.1,0) {};
+					\node[circle, ball color=red, inner sep=0, minimum size=0.2cm] (H1) at
+					(+0.02,0) {};
+				\end{scope}
+				\draw[-latex, brown, line width=1pt] (-0.2,0) -- ++(0.5, 0);
+			},
+	}
+	\foreach \y in {0,...,4} {
+			\draw[->, red, thick] (-0.5,{0.75*\y-0.325}) -- ++(7,0);
+		}
+	\foreach \x in {0,...,8}
+		{
+			\foreach \y in {0,...,3}{
+					\pic[] at ({0.75*\x}, {0.75*\y}) {perturbed};
+				}
+		}
+\end{tikzpicture}

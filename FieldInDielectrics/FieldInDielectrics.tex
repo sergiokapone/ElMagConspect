@@ -2,8 +2,7 @@
 % !TeX encoding = utf8
 % !TeX spellcheck = uk_UA
 % !TeX root = ../main.tex
-% УВАГА: для \enquote{...} потрібен пакет csquotes (\usepackage[ukrainian=quotes]{csquotes}
-% в преамбулі ElMagConspect.tex) --- переконайтесь, що він підключений.
+
 
 %=========================================================
 \chapter{Основи електростатики діелектриків}\label{\currfilebase}\hypertarget{FieldInDielectrics}{}
@@ -174,59 +173,14 @@ $\ce{N2}$, метан $\ce{CH4}$, а також окремі атоми інер
 	% --- (а) кадр 1: полярні молекули без поля ---
 	\begin{subfigure}[t]{0.48\linewidth}
 		\centering
-		\begin{tikzpicture}[>=latex]
-			\pgfmathsetseed{1}
-			\tikzset{
-				water/.pic={
-						\begin{scope}[opacity=0.4]
-							\node[circle, ball color=blue, inner sep=0, minimum size=0.3cm] (O) at
-							(0,0) {};
-							\node[circle, ball color=red, inner sep=0, minimum size=0.2cm] (H1) at
-							(-50:0.2) {};
-							\node[circle, ball color=red, inner sep=0, minimum size=0.2cm] (H2) at
-							(50:0.2) {};
-						\end{scope}
-						\draw[-latex, brown, line width=1pt] (O) -- ++(0.5, 0);
-					},
-			}
-			\foreach \x in {0,...,8}
-				{
-					\foreach \y in {0,...,3}{
-							\pic[rotate={random(0,360)}] at ({0.75*\x}, {0.75*\y}) {water};
-						}
-				}
-		\end{tikzpicture}
+		\localinput{PolarNoField.tikz}
 		\caption{Без поля}
 		\label{pic:PolarNoField}
 	\end{subfigure}\hfill
 	% --- (б) кадр 2: полярні молекули в полі ---
 	\begin{subfigure}[t]{0.48\linewidth}
 		\centering
-		\begin{tikzpicture}[>=latex]
-			\pgfmathsetseed{1}
-			\tikzset{
-				water/.pic={
-						\begin{scope}[opacity=0.4]
-							\node[circle, ball color=blue, inner sep=0, minimum size=0.3cm] (O) at
-							(0,0) {};
-							\node[circle, ball color=red, inner sep=0, minimum size=0.2cm] (H1) at
-							(-50:0.2) {};
-							\node[circle, ball color=red, inner sep=0, minimum size=0.2cm] (H2) at
-							(50:0.2) {};
-						\end{scope}
-						\draw[-latex, brown, line width=1pt] (O) -- ++(0.5, 0);
-					},
-			}
-			\foreach \y in {0,...,4} {
-					\draw[->, red, thick] (-0.5,{0.75*\y-0.325}) -- ++(7,0);
-				}
-			\foreach \x in {0,...,8}
-				{
-					\foreach \y in {0,...,3}{
-							\pic[rotate={random(-60,60)}] at ({0.75*\x}, {0.75*\y}) {water};
-						}
-				}
-		\end{tikzpicture}
+		\localinput{PolarField.tikz}
 		\caption{У полі}
 		\label{pic:PolarField}
 	\end{subfigure}
@@ -241,53 +195,14 @@ $\ce{N2}$, метан $\ce{CH4}$, а також окремі атоми інер
 	% --- (а) кадр 3: неполярні молекули без поля ---
 	\begin{subfigure}[t]{0.48\linewidth}
 		\centering
-		\begin{tikzpicture}[>=latex]
-			\tikzset{
-				unperturbed/.pic={
-						\begin{scope}[opacity=0.4]
-							\node[circle, ball color=blue, inner sep=0, minimum size=0.5cm] (O) at
-							(0,0) {};
-							\node[circle, ball color=red, inner sep=0, minimum size=0.2cm] (H1) at
-							(0,0) {};
-						\end{scope}
-					},
-			}
-			\foreach \x in {0,...,8}
-				{
-					\foreach \y in {0,...,3}{
-							\pic[] at ({0.75*\x}, {0.75*\y}) {unperturbed};
-						}
-				}
-		\end{tikzpicture}
+		\localinput{NonPolarNoField.tikz}
 		\caption{Без поля}
 		\label{pic:NonPolarNoField}
 	\end{subfigure}\hfill
 	% --- (б) кадр 4: неполярні молекули в полі ---
 	\begin{subfigure}[t]{0.48\linewidth}
 		\centering
-		\begin{tikzpicture}[>=latex]
-			\tikzset{
-				perturbed/.pic={
-						\begin{scope}[opacity=0.4]
-							\node[ellipse, ball color=blue, inner sep=0, minimum width=0.6cm,
-								minimum height=0.4cm] (O) at
-							(-0.1,0) {};
-							\node[circle, ball color=red, inner sep=0, minimum size=0.2cm] (H1) at
-							(+0.02,0) {};
-						\end{scope}
-						\draw[-latex, brown, line width=1pt] (-0.2,0) -- ++(0.5, 0);
-					},
-			}
-			\foreach \y in {0,...,4} {
-					\draw[->, red, thick] (-0.5,{0.75*\y-0.325}) -- ++(7,0);
-				}
-			\foreach \x in {0,...,8}
-				{
-					\foreach \y in {0,...,3}{
-							\pic[] at ({0.75*\x}, {0.75*\y}) {perturbed};
-						}
-				}
-		\end{tikzpicture}
+		\localinput{NonPolarField.tikz}
 		\caption{У полі}
 		\label{pic:NonPolarField}
 	\end{subfigure}
@@ -318,25 +233,7 @@ $\Efield_\text{ex}$:
 
 \begin{figure}[h!]
 	\centering
-	\begin{tikzpicture}[>=latex]
-		\begin{scope}
-			\fill[ball color=cyan!10, opacity=0.1] (-0.5,{0.75*0-0.325}) rectangle
-			++(8.75,{0.75*4});
-			\fill[blue, opacity=0.3] (-0.5,{0.75*0-0.325}) rectangle ++(0.5, {0.75*4});
-			\fill[red, opacity=0.3] (7.75,{0.75*0-0.325}) rectangle ++(0.5, {0.75*4});
-		\end{scope}
-		\foreach \y in {0,...,3} {
-				\path[] (-0.5,{0.75*\y}) node[right, text=blue] (-Q) {$-$} ++(8.75,0)
-				node[left, text=red] (+Q) {$+$};
-				\draw[->, brown, thick] (-Q) -- (+Q);
-
-				\ifnum\y<3
-					\draw[<-, red, thick, dashed] (0,{0.75*\y+0.325}) -- ++(7.75,0);
-				\fi
-
-				\draw[->, red, thick, opacity=0.5] (-1,{0.75*\y-0.2}) -- ++(9.75,0);
-			}
-	\end{tikzpicture}
+	\localinput{PolarizedDielectric.tikz}
     \caption{Поляризований діелектрик у зовнішньому електричному полі:
     	на поверхнях виникають зв'язані заряди $-Q$ та $+Q$. Стрілки означають:
     	\protect\tikz[baseline=-0.6ex]{\protect\draw[->, red, thick, opacity=0.5] (0,0) -- (0.6,0);}
@@ -456,7 +353,7 @@ $\vect P$ змінюється від точки до точки.
 Це співвідношення називають \emphx{теоремою Гаусса для вектора поляризації}: воно за формою повністю аналогічне теоремі Гаусса для поля $\Efield$
 (п.~\ref{sec:Gauss}), проте зв'язує потік вектора $\vect P$ не з повним, а лише зі \emphx{зв'язаним} зарядом, узятим із протилежним знаком.
 
-Так само, як ми переходили від інтегральної форми теореми Гаусса для $\Efield$ до диференціальної, стягуючи об'єм $V$ у точку, з
+Так само як ми переходили від інтегральної форми теореми Гаусса для $\Efield$ до диференціальної, стягуючи об'єм $V$ у точку, з
 формули~\eqref{eq:GaussForP-int} отримуємо \emphx{диференціальну форму теореми Гаусса для вектора поляризації}:
 \begin{equation}\label{eq:GaussForP-diff}
 	\tcbhighmath{
@@ -794,31 +691,7 @@ $\Efield_\text{лок}\approx\Efield$. Тому поляризація речо�
 
 
 \begin{SCfigure}[2][h!]\centering
-    \begin{tikzpicture}[>=latex, scale=0.8]
-    	\draw[fill=gray!50, thick, name path=blob]
-    		plot [smooth cycle] coordinates {
-    			(-2.2,-1.8) (-1.0,-2.3) (0.4,-2.1) (1.6,-2.4)
-    			(2.4,-1.4) (2.6,-0.1) (2.0,1.1) (2.5,2.0)
-    			(1.2,2.5) (0.0,2.0) (-1.3,2.4) (-2.4,1.2)
-    			(-2.7,0.0) (-2.3,-1.0)
-    		};
-    		\fill[white] (0,0) circle (1.0);
-    	\draw[thick, dashed] (0,0) circle (1.0);
-    	\foreach \a in {55,70,90,110,125} {
-    		\node[font=\scriptsize, text=blue] at ({1.15*cos(\a)},{1.15*sin(\a)}) {$-$};
-    	}
-    	\foreach \a in {235,250,270,290,305} {
-    		\node[font=\scriptsize, text=red] at ({1.15*cos(\a)},{1.15*sin(\a)}) {$+$};
-    	}
-    	\draw[->, thick, brown] (-2,0) -- ++(0,0.7) node[right] {$\vect P$};
-
-            \foreach \x in {-0.9, -0.7, ..., 0.9}{
-                \pgfmathsetmacro{\y}{sqrt(1-\x*\x)}
-                \draw[->, red!40] (\x, -\y) -- (\x, \y);
-            }
-    	\fill[ball color=blue!50] (0,0) circle[x radius=6pt, y radius = 8pt];
-        \fill[ball color=red!50] (0,2pt) circle[x radius=2pt, y radius = 2pt];
-    \end{tikzpicture}
+    \localinput{CavityField.tikz}
 	\caption{Сферична порожнина Лоренца в поляризованому діелектрику\label{pic:CavityField}}
 \end{SCfigure}
 

@@ -1,0 +1,21 @@
+\begin{tikzpicture}
+	% Градієнт фону
+	\shade[left color=blue!30, right color=red!30] (-5.5, -.5) rectangle (5.5, -3.5);
+
+	\node[single  arrow, single  arrow head extend=.5cm, left color=blue!50, right color=red!50, text=white, font={\bf \large}, inner sep=0.3cm]
+	(doublearrow)
+	{--\hspace*{10.5cm}+};
+
+	% Трибоелектричний ряд
+	\node[align=center, rotate=90] at (5,  -2) {Хутро};
+	\node[align=center, rotate=90] at (4,  -2) {Фланель};
+	\node[align=center, rotate=90, align=center, text width=2.5cm] at (3,  -2) {Слонова\\ кістка};
+	\node[align=center, rotate=90] at (2,  -2) {Пір'я};
+	\node[align=center, rotate=90] at (1,  -2) {Флінтглас};
+	\node[align=center, rotate=90] at (0,  -2) {Папір};
+	\node[align=center, rotate=90] at (-1, -2) {Шовк};
+	\node[align=center, rotate=90] at (-2, -2) {Алюміній};
+	\node[align=center, rotate=90] at (-3, -2) {Бурштин};
+	\node[align=center, rotate=90] at (-4, -2) {Ебоніт};
+	\node[align=center, rotate=90] at (-5, -2) {Поліестер};
+\end{tikzpicture}

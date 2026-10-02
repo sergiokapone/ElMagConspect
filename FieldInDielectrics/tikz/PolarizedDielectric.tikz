@@ -1,0 +1,19 @@
+\begin{tikzpicture}[>=latex]
+	\begin{scope}
+		\fill[ball color=cyan!10, opacity=0.1] (-0.5,{0.75*0-0.325}) rectangle
+		++(8.75,{0.75*4});
+		\fill[blue, opacity=0.3] (-0.5,{0.75*0-0.325}) rectangle ++(0.5, {0.75*4});
+		\fill[red, opacity=0.3] (7.75,{0.75*0-0.325}) rectangle ++(0.5, {0.75*4});
+	\end{scope}
+	\foreach \y in {0,...,3} {
+			\path[] (-0.5,{0.75*\y}) node[right, text=blue] (-Q) {$-$} ++(8.75,0)
+			node[left, text=red] (+Q) {$+$};
+			\draw[->, brown, thick] (-Q) -- (+Q);
+
+			\ifnum\y<3
+				\draw[<-, red, thick, dashed] (0,{0.75*\y+0.325}) -- ++(7.75,0);
+			\fi
+
+			\draw[->, red, thick, opacity=0.5] (-1,{0.75*\y-0.2}) -- ++(9.75,0);
+		}
+\end{tikzpicture}

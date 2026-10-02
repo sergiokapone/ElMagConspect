@@ -1,0 +1,25 @@
+\begin{tikzpicture}[>=latex]
+	\pgfmathsetseed{1}
+	\tikzset{
+		water/.pic={
+				\begin{scope}[opacity=0.4]
+					\node[circle, ball color=blue, inner sep=0, minimum size=0.3cm] (O) at
+					(0,0) {};
+					\node[circle, ball color=red, inner sep=0, minimum size=0.2cm] (H1) at
+					(-50:0.2) {};
+					\node[circle, ball color=red, inner sep=0, minimum size=0.2cm] (H2) at
+					(50:0.2) {};
+				\end{scope}
+				\draw[-latex, brown, line width=1pt] (O) -- ++(0.5, 0);
+			},
+	}
+	\foreach \y in {0,...,4} {
+			\draw[->, red, thick] (-0.5,{0.75*\y-0.325}) -- ++(7,0);
+		}
+	\foreach \x in {0,...,8}
+		{
+			\foreach \y in {0,...,3}{
+					\pic[rotate={random(-60,60)}] at ({0.75*\x}, {0.75*\y}) {water};
+				}
+		}
+\end{tikzpicture}
