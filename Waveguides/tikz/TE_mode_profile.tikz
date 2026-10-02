@@ -1,0 +1,22 @@
+\begin{tikzpicture}[>=latex, scale=1.2]
+
+	% ---- параметри ----
+	\def\kz{1.5}   % хвильове число по z
+	\def\kx{1.0}   % хвильове число по x
+	\def\A{2.0}    % амплітуда
+	\def\wt{1.5}   % фіксована фаза wt
+
+	% ---- координатна система ----
+	\draw[->, thick] (-0.3,0) -- (6.5,0) node[right] {$z$};
+	\draw[->, thick] (0,-1.8) -- (0,2.5) node[above] {$E_y$};
+	\node[below left] at (0,0) {$0$};
+%    \draw (0, -2.5) rectangle (5, 2.5);
+    \draw (5, -0.1) node[below] {$a$} -- ++(0, 0.2);
+
+
+
+	% ---- Re(E) ----
+	\draw[red!70!black, thick, samples=400, domain=0:5]
+		plot (\x, {\A*sin(deg(pi*\x/5))});
+
+\end{tikzpicture}

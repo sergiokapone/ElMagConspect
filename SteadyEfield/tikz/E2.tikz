@@ -1,0 +1,22 @@
+\begin{tikzpicture}[>=latex,
+        chp/.style = {circle, inner sep=1pt, ball color=red,  font=\tiny\mathstrut, text=white, inner sep=0pt},
+        chn/.style = {circle, inner sep=1pt, ball color=blue, font=\tiny\mathstrut, text=white, inner sep=0pt},
+    ]
+    \coordinate (O) at (-1, -0.5, 0);
+    \draw[->] (O) -- ++(0, 2, 0) node[above] {$z$};
+    \draw[->] (O) -- ++(0, 0, 4) node[left]  {$x$};
+    \draw[->] (O) -- ++(2, 0, 0) node[below] {$y$};
+
+    \pgfmathsetseed{42}
+
+    \node[chp] (q) at (0.5,1.8,1)  {$+$};
+    \node[above=6pt] at (q) {$Q$};
+
+    \node[circle, inner sep=0.5, fill] (P) at (xyz polar cs:angle=45, x radius=7, y radius=3) {};
+
+    \draw[->, red] (O) --  (q) node[anchor=east, text=black, pos=0.6, inner sep=1pt] {$\vect{r}'$};
+    \draw[->, blue] (q) -- node[above, sloped] {$\vect{r} - \vect{r}'$} (P);
+    \draw[->] (O) -- (P) node[below, sloped, pos=0.8] {$\vect{r}$} ;
+    \node[below] at (P) {$P$};
+    \draw[->, red, thick] (P) -- ($(q)!1.2!(P)$) node[above] {$\Efield(\vect{r})$};
+\end{tikzpicture}
