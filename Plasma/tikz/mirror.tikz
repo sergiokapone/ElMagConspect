@@ -1,4 +1,5 @@
 \begin{tikzpicture}[>=latex',
+	scale=1.25,
     declare function={
     w=3;
     v=0.5;

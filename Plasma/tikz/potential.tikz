@@ -1,5 +1,6 @@
 \begin{tikzpicture}
 	\begin{axis}[%
+            scale=0.5,
             clip=false,
             axis equal,
             xmin=0,
@@ -17,9 +18,9 @@
                     $r_D$
                 \fi
             },
-            xticklabel style={font=\scriptsize},
+            % xticklabel style={font=\scriptsize},
 			ytick=\empty,
-			width=\linewidth,
+			width=0.95\linewidth,
 			height=0.75\linewidth%
 		]
 

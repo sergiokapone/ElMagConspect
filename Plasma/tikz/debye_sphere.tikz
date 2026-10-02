@@ -1,4 +1,4 @@
-\begin{tikzpicture}[scale=0.75,
+\begin{tikzpicture}[scale=01,
 		ions/.style={
 				circle, ball color=blue!50, font=\tiny, inner sep=0, blue, text=white,
 			},

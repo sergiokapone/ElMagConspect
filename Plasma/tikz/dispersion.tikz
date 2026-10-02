@@ -1,0 +1,46 @@
+\begin{tikzpicture}%[scale=0.75, every nodes/.style={transform shape}]
+    \begin{axis}[%
+%                axis equal,
+                scale=.5,
+                transform shape,
+                every nodes/.style={transform shape},
+                xmin=0,
+                ymin=0,
+    			xlabel=$k$,
+    			ylabel=$\omega$,
+    			axis lines=middle,
+    			every axis x label/.style={at={(current axis.south east)},anchor=north},
+    			every axis y label/.style={at={(current axis.north west)}, anchor=east},
+%                xticklabel style={font=\scriptsize},
+                ytick={sqrt(0.5)},
+                yticklabel={$\omega_p$},
+    			xtick=\empty,
+                legend style={
+                at={(current axis.north west)},
+                anchor=north west,
+                draw=none,
+                row sep=0.5ex,
+                },
+                legend cell align=left,
+    			width=\linewidth,
+    			height=0.75\linewidth%
+    		]
+        \addplot[
+            blue,
+            thick,
+            mark=none,
+            domain=0:3,
+            smooth,
+            ] {sqrt(0.5 + x^2)};
+            \addlegendentry{$\omega = \sqrt{\omega_p^2 + c^2k^2}$}
+        \addplot[
+            red,
+            thick,
+            dashed,
+            mark=none,
+            domain=0:3,
+            smooth,
+            ] {x};
+            \addlegendentry{$\omega = ck$}
+    \end{axis}
+\end{tikzpicture}
