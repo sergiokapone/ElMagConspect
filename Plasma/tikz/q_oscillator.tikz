@@ -1,0 +1,16 @@
+\begin{tikzpicture}[scale=0.75]
+    \begin{axis}[domain=-3.5:3.5,
+    xtick=\empty,
+    ytick=\empty,
+    samples=50,
+    no markers,
+    axis lines=middle,
+    y=1cm,
+    thick]
+    \addplot [gray] {1/2*x^2};
+    \addplot[fill=blue!50, draw=blue] {1/(2*sqrt(1*1!))*exp(-x^2/2)+1} node[pos=0.95, above] {$E_0$};
+    \addplot[fill=red!50, draw=red] {1/(2*sqrt(2*1!))*2*x*exp(-x^2/2)+2} node[pos=0.95, above] {$E_1$};
+    \addplot[fill=green!50, draw=green] {1/(2*sqrt(4*2!))*(4*x^2-2)*exp(-x^2/2)+3} node[pos=0.95, above] {$E_2$};
+    \addplot[fill=cyan!50, draw=cyan] {1/(2*sqrt(8*3!))*(8*x^3-12*x)*exp(-x^2/2)+4} node[pos=0.95, above] {$E_3$};
+    \end{axis}
+\end{tikzpicture}

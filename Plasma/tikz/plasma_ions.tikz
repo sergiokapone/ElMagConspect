@@ -1,0 +1,19 @@
+\begin{tikzpicture}[scale=0.75,
+		ions/.style={
+				circle, ball color=blue!50, font=\tiny, inner sep=0, blue
+			},
+		electrons/.style={
+				circle, ball color=red, font=\tiny, inner sep=0, red
+			},
+	]
+
+	%        \draw[xshift=0.5cm, fill=gray!50] (0,0) rectangle ++(4,8);
+	%        \draw[dashed] (0,0) rectangle ++(4,8);
+
+	\foreach \x in {0,0.5,...,4} {
+			\foreach \y in {0,0.5,...,8} {
+					\node[ions] at (\x+0.3*rnd,\y+0.3*rnd) {$+$};
+					\node[electrons] at ({\x+0.75+0.3*rnd},\y+0.3*rnd) {$-$};
+				}
+		}
+\end{tikzpicture}

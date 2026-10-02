@@ -1,0 +1,63 @@
+\tdplotsetmaincoords{60}{0}
+\begin{tikzpicture}[>=latex, tdplot_main_coords]
+	\tdplotsetrotatedcoords{0}{20}{0}
+    % -------------- ion -----------------
+	\begin{scope}[tdplot_rotated_coords]
+		\coordinate (O) at (0,0,0);
+		\coordinate (z) at (0,0,1.5);
+		\coordinate (x) at (1,00);
+		\coordinate (y) at (0,1,0);
+		\coordinate (-z) at (0,0,-1.5);
+       	\coordinate (p) at (0,0,-2);
+
+		%    \draw[->] (O) -- (y) node[anchor=south] {$y$};
+		%    \draw[->] (O) -- (x) node[anchor=south] {$x$};
+
+		\draw[->, gray, thick] (O) -- (z) node[anchor=south] {$\vec{B}$};
+        \draw[->, orange, thin] (O) -- (p) node[anchor=east] {$\vec{p}_m$};
+		\draw[->, blue, thick] (O) -- (-z) node[anchor=west] {$\vec\Omega$};
+		\draw[canvas is xy plane at z=0,
+			draw=blue,
+            thick,
+			decoration={markings,
+					mark=at position 0.75 with {\arrow[rotate=180, xshift=2pt]{latex}},
+				},
+			postaction=decorate,
+		] (0,0) ++(90 :1) arc [start angle=90, delta angle=335, radius=1];
+
+		\begin{scope}[canvas is xy plane at z=0]
+            \node[circle, fill=blue, inner sep=1pt] at (0,0) {};
+			\node[transform shape=false, ball color=blue, circle, inner sep=0, text=white] at (45:1) {$+$};
+		\end{scope}
+
+        % -------------- electron -----------------
+		\begin{scope}[xshift=3cm]
+			\coordinate (O) at (0,0,0);
+			\coordinate (z) at (0,0,1.5);
+			\coordinate (x) at (1,00);
+			\coordinate (y) at (0,1,0);
+			\coordinate (w) at (0,0,1.25);
+           	\coordinate (p) at (0,0,-2);
+
+			%    \draw[->] (O) -- (y) node[anchor=south] {$y$};
+			%    \draw[->] (O) -- (x) node[anchor=south] {$x$};
+
+			\draw[->, gray, thick] (O) -- (z) node[anchor=south] {$\vec{B}$};
+			\draw[->, red, thick] (O) -- (w) node[anchor=north west] {$\vec\Omega$};
+            \draw[->, orange, thin] (O) -- (p) node[anchor=east] {$\vec{p}_m$};
+			\draw[canvas is xy plane at z=0,
+				draw=red,
+                thick,
+				decoration={markings,
+						mark=at position 0.2 with {\arrow[xshift=2pt]{latex}},
+					},
+				postaction=decorate,
+			] (0,0) ++(90 :1) arc [start angle=90, delta angle=335, radius=1];
+
+			\begin{scope}[canvas is xy plane at z=0]
+                \node[circle, fill=blue, inner sep=1pt] at (0,0) {};
+				\node[transform shape=false, ball color=red, circle, inner sep=1pt, text=white] at (105:1) {\tikz\draw[]  (0,0) -- ++(0.1,0);};
+			\end{scope}
+		\end{scope}
+	\end{scope}
+\end{tikzpicture}

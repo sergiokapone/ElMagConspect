@@ -1,0 +1,20 @@
+\begin{tikzpicture}[scale=0.75,
+		ions/.style={
+				circle, ball color=blue!50, font=\tiny, inner sep=0, blue, text=white,
+			},
+		electrons/.style={
+				circle, ball color=red, font=\tiny, inner sep=0.25pt, red, text=white,
+			},
+	]
+	\path[inner color=red, outer color=white] (0,0) circle(2.5);
+	\node[ions] at (0,0) {$+$};
+	\pgfmathsetseed{2}
+	\foreach \i in {0,10,...,360}
+		{
+			\node[electrons] at (\i:0.4+1*rnd) {\tikz\draw[thin] (0,0)--++(0.05,0);};
+			\node[ions] at (\i:1+1*rnd) {$+$};
+
+			\node[electrons] at (\i:1.5+1*rnd) {\tikz\draw[thin] (0,0)--++(0.05,0);};
+		}
+	%		\fill[ball color=red!50]  (45:1.5) coordinate (E2) circle (0.1);
+\end{tikzpicture}

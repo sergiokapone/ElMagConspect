@@ -1,0 +1,48 @@
+\tdplotsetmaincoords{80}{100}
+
+\begin{figure}[!h]
+	\centering
+
+
+
+	\begin{tikzpicture}[tdplot_main_coords, grid/.style={help lines,violet!40!white},scale=1, >=latex',
+			declare function={
+					r=3;
+					th=30;
+					ph=45;
+					x(\r,\th,\ph)=\r*sin(\th)*cos(\ph);
+					y(\r,\th,\ph)=\r*sin(\th)*sin(\ph);
+					z(\r,\th)=\r*cos(\th);
+				},
+		]
+		\coordinate (O) at (0,0,0);
+
+		\tdplotsetrotatedcoords{ph}{0}{0}
+		\draw[->] (O) -- (5,0,0) node[anchor=north east, inner sep=1pt] {$v_x$};
+		\draw[->] (O) -- (0,2,0) node[right] {$v_y$};
+		\draw[->] (O) -- (0,0,{z(r,th)}) node[above] {$v_\parallel$} coordinate (vpar);
+		\draw[->] (O) -- ({x(r,th,ph)}, {y(r,th,ph)}, {z(r,th)}) node[above] {$\vec{v}$} coordinate (v);
+
+		\draw[->] (O) -- ({x(r,th,ph)}, {y(r,th,ph)}, 0) node[below] {$\vec{v}_\perp$} coordinate (vperp);
+
+		\draw[densely dashed] (vperp) -- (v) -- (vpar);
+
+		\foreach \p in {0,0.02,...,1.5}
+			{
+				\draw[canvas is xy plane at z=\p, blue!20,opacity=0.5] circle[radius=\p*2/3];
+				\draw[canvas is xy plane at z=-\p, blue!20,opacity=0.5] circle[radius=\p*2/3];
+			}
+
+		%  \tdplotgetpolarcoords{x(1.5,atan(2/3),0)}{0}{z(1.5,atan(2/3),0)}
+		%      \draw[densely dashed] (O) -- ({x(1.5,atan(2/3),0)}, 0, {z(1.5,atan(2/3),0)});
+		%    \tdplotsetthetaplanecoords{\tdplotresphi}
+		%    \tdplotdrawarc[tdplot_rotated_coords]{(0,0,0)}{1}{0}%
+		%    {\tdplotrestheta}{inner sep=1pt, anchor=south west}{$\theta$}
+
+		\tdplotgetpolarcoords{x(r,th,ph)}{y(r,th,ph)}{z(r,th)}
+		\tdplotsetthetaplanecoords{\tdplotresphi}
+		\tdplotdrawarc[tdplot_rotated_coords]{(0,0,0)}{0.75}{0}%
+		{\tdplotrestheta}{inner sep=2pt, anchor=south}{$\theta$}
+
+	\end{tikzpicture}
+\end{figure}
