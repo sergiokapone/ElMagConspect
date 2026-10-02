@@ -1,0 +1,34 @@
+\begin{tikzpicture}[>=latex]
+
+    % ---- параметри ----
+    \def\L{7}          % довжина хвилеводу
+    \def\H{2.2}        % повна висота
+    \def\yCoreBot{0.7} % низ серцевини
+    \def\yCoreTop{1.5} % верх серцевини
+    \def\nBounce{6}    % кількість відбиттів (парних сегментів)
+
+    % ---- стилі ----
+    \tikzset{
+        clad/.style  = {fill=blue!8, draw=blue!40!black, thick},
+        core/.style  = {fill=yellow!15, draw=black, thick},
+        ray/.style   = {red!70!black, thick},
+    }
+
+    % ---- оболонка ----
+    \draw[clad] (0,0) rectangle (\L,\H);
+
+    % ---- серцевина ----
+    \draw[core] (0,\yCoreBot) rectangle (\L,\yCoreTop);
+
+    \node[left, font=\small] at (-0.1,{(\yCoreBot+\yCoreTop)/2}) {серцевина ($n_1$)};
+    \node[blue!40!black, font=\small] at ({\L/2},{\H-0.35}) {оболонка ($n_2 < n_1$)};
+
+    % ---- промінь: зигзаг ----
+
+    \foreach \i in {0,2,...,\nBounce}
+        {
+            \draw[ray, ->] (\i,\yCoreBot) -- ({\i+1}, \yCoreTop);
+            \draw[ray, ->] ({\i+1},\yCoreTop) -- ({\i+2}, \yCoreBot);
+        }
+
+\end{tikzpicture}

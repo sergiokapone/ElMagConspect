@@ -1,0 +1,50 @@
+\begin{tikzpicture}[>=stealth, line cap=round, line join=round]
+
+  % Параметри розмірів
+  \def\w{2.0}    % Внутрішня ширина a
+  \def\h{2.0}    % Внутрішня висота b
+  \def\t{0.3}   % Товщина стінки
+  \def\dx{2.2}   % Зсув по осі Z (перспектива)
+  \def\dy{1.8}
+
+
+  % 2. Зовнішні грані (грані хвилеводу вглиб)
+  \draw[thick] (-\t, \h+\t) -- (-\t+\dx, \h+\t+\dy) ;
+  \draw[thick] (\w+\t, \h+\t) -- (\w+\t+\dx, \h+\t+\dy);
+  \draw[thick] (\w+\t, -\t) -- (\w+\t+\dx, -\t+\dy);
+  \draw[thick] (0,0) -- (39.5:{\w/cos(39.5)});
+
+  % Хвилясті лінії обриву (задній край)
+  \draw[thick,]
+    (-\t+\dx, \h+\t+\dy) to[out=-25, in=125] (\w+\t+\dx, \h+\t+\dy);
+
+  \draw[thick]
+    (\w+\t+\dx, \h+\t+\dy) to[out=-105, in=85] (\w+\t+\dx, -\t+\dy);
+
+  % 3. Осі координат
+    % z
+  \draw[thick, ->, gray] (0, 0) -- (39.5:{1.2+\w/cos(39.5)}) node[anchor=south west] {$x$};
+
+  % Вісь Y (вгору від верхнього правого внутрішнього кута)
+  \draw[->, thick,gray] (0, \h) -- ++(0, 1.5) node[left] {$y$};
+
+  % Вісь X (вліво від нижнього лівого внутрішнього кута)
+  \draw[->, thick, gray] (0,0) -- (\w+2, 0) node[below left] {$z$};
+
+  % 4. Розмірні лінії
+  % Розмір 'a'
+  \draw[thin] (0, 0) -- (0, -1.0);
+  \draw[thin] (\w, 0) -- (\w, -1.0);
+  \draw[<->, thick] (0, -0.9) -- (\w, -0.9) node[midway, above] {$a$};
+
+  % Розмір 'b'
+  \draw[thin] (0, 0) -- (-1.0, 0);
+  \draw[thin] (0, \h) -- (-1.0, \h);
+  \draw[<->, thick] (-0.9, 0) -- (-0.9, \h) node[midway, left] {$b$};
+
+  % 1. Заповнення торця суцільним кольором (правило парності для кільцевої області)
+  \filldraw[fill=gray!40, draw=black, thick, even odd rule]
+    (-\t, -\t) rectangle (\w+\t, \h+\t)
+    (0, 0) rectangle (\w, \h);
+
+\end{tikzpicture}

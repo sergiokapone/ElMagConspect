@@ -1,0 +1,77 @@
+\begin{tikzpicture}[>=latex, thick]
+
+	% ==================== ПАРАМЕТРИ ====================
+	% Основні геометричні розміри
+	\pgfmathsetmacro{\railW}{6.2}         % Довжина рейок
+	\pgfmathsetmacro{\railH}{4.0}         % Відстань між рейками (висота)
+	\pgfmathsetmacro{\xRod}{3.5}          % Початкове положення стрижня
+	\pgfmathsetmacro{\dx}{2.0}            % Зміщення dx
+	\pgfmathsetmacro{\xNew}{\xRod + \dx}  % Нове положення стрижня (5.5)
+	\pgfmathsetmacro{\rContact}{0.12}     % Радіус контактів
+
+	% Крок та межі магнітного поля
+	\pgfmathsetmacro{\step}{0.4} \pgfmathsetmacro{\xMinField}{\step}
+	\pgfmathsetmacro{\xMaxField}{\railW - 0.2} \pgfmathsetmacro{\yMinField}{\step}
+	\pgfmathsetmacro{\yMaxField}{\railH - \step}
+	\pgfmathsetmacro{\xSecondField}{\xMinField + \step}
+	\pgfmathsetmacro{\ySecondField}{\yMinField + \step}
+
+	% Позиції стрілок та позначень
+	\pgfmathsetmacro{\yDx}{-0.5}          % Зміщення виносної лінії dx по y
+	\pgfmathsetmacro{\xJ}{\railW * 0.4}   % Позиція струму J по x
+	\pgfmathsetmacro{\yF}{\railH * 0.6} % Висота вектора F по y
+	% ===================================================
+
+	% ---- Магнітне поле ----
+	\foreach \x in {\xMinField, \xSecondField, ..., \xMaxField} { \foreach \y in
+	{\yMinField, \ySecondField, ..., \yMaxField} { \fill[blue!40] (\x,\y) circle (1.2pt);
+	} }
+
+	% ---- Рейки та ліва сторона ----
+	\draw (0,\railH) -- (\railW,\railH); \draw (0,0) -- (\railW,0); \draw (0,0) --
+	(0,\railH);
+
+	% ---- Стрижень ----
+	\draw (\xRod,0) -- (\xRod,\railH);
+
+	% ---- Контакти пунктиру ----
+	\node[circle, draw, fill=white, inner sep=2pt] (A1) at (\xNew,\railH) {};
+	\node[circle, draw, fill=white, inner sep=2pt] (B1) at (\xNew,0) {};
+
+	% ---- Пунктир ----
+	\draw[dashed, ultra thick] (\xNew,0) -- (\xNew,\railH);
+%	\draw[dashed] (\xNew,\railH) -- (\railW,\railH);
+%	\draw[dashed] (\xNew,0) -- (\railW,0);
+
+	% ---- Контакти пунктиру ----
+	\node[circle, draw, fill=white, inner sep=2pt] (A1) at (\xNew,\railH) {};
+	\node[circle, draw, fill=white, inner sep=2pt] (B1) at (\xNew,0) {};
+
+	% ---- Контакти ----
+	\node[circle, draw, fill=white, inner sep=2pt] (A) at (\xRod,\railH) {}; \node[circle,
+	draw, fill=white, inner sep=2pt] (B) at (\xRod,0) {};
+
+	% ---- dx ----
+	\draw[<->] (\xRod, \yDx) -- (\xNew, \yDx); \node[below] at ({(\xRod + \xNew)/2}, \yDx)
+	{\(dx\)};
+
+	% ---- F ----
+%	\draw[->, very thick, green!50! black] (\xRod, \yF) -- ++(0.9, 0) node[right] {\(\vect{F}\)};
+
+	% ---- J ----
+	\draw[->, very thick, red] (\xJ, 0) -- ++(-0.5, 0) node[above] {\(I\)};
+
+	% ---- B ----
+	\draw[->, very thick, blue] ({\xRod/2},{\railH/2}) -- ++(-1.1, -1.5) node[below left]
+	{\(\Bfield\)};
+
+    % charge
+    \node[circle, draw, ball color= red!50, minimum size=0.1cm, inner sep=1,
+    font=\scriptsize\bfseries, text=white] (e) at (\xRod, 2.5) {$+$};
+
+    \draw[->, ultra thick] (e) -- ++(1, 0) node[below] {$\vec{v}$}; \draw[->, ultra thick]
+    (e) -- ++(0, -1) node[right] {$\vec{u}$};
+
+    \draw[thick, ->, red] ({\xRod/2},{\railH/2}) [partial ellipse=45:{270+45}:1];
+
+\end{tikzpicture}
