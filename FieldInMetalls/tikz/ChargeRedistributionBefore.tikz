@@ -1,0 +1,49 @@
+\begin{tikzpicture}[>=latex]
+	\pgfmathsetseed{9}
+	\draw[ball color=gray!5, name path=metall, smooth] plot [smooth cycle,
+			samples=8,domain={1:10}]
+	(\x*360/10+5*rnd:0.5cm+1cm*rnd);
+
+	\foreach[count=\c] \y in {-3,...,4} {
+			\path[name path global=Q\c] (-2, 0.25*\y) -- ++(4, 0);
+		}
+
+	\foreach \c in {1,...,8} {
+			\path[name intersections={of=metall and Q\c}]  (intersection-1)
+			coordinate (A\c)
+			node[anchor=center, right,
+					text=blue, font=\tiny] {$-$}
+			(intersection-2) coordinate (B\c) node [anchor=center, left,
+					text=red, ,
+					font=\tiny] {$+$} ;
+		};
+
+	\begin{scope}
+		\clip (-3, -2.6) rectangle (3,2.6);
+		\draw[red, midarrowR] (A1) to [out=-135, in=-10] ++(-3, -0.7);
+		\draw[red, midarrowR] (A2) to [out=-145, in=0] ++(-3, -0.6);
+		\draw[red, midarrowR] (A3) to [out=-155, in=0] ++(-3, -0.4);
+		\draw[red, midarrowR] (A4) to [out=180, in=0] ++(-3, 0);
+		\draw[red, midarrowR] (A5) to [out=140, in=0] ++(-3, 0.4);
+		\draw[red, midarrowR] (A6) to [out=140, in=0] ++(-3, 0.6);
+		\draw[red, midarrowR] (A7) to [out=150, in=0] ++(-3, 0.7);
+		\draw[red, midarrowR] (A8) to [out=140, in=-15] ++(-2.5, 0.9);
+
+		\draw[red, midarrow] (B1) to [out=-45, in=180] ++(3, -1);
+		\draw[red, midarrow] (B2) to [out=-40, in=180] ++(3, -0.9);
+		\draw[red, midarrow] (B3) to [out=-40, in=180] ++(3, -0.8);
+		\draw[red, midarrow] (B4) to [out=-30, in=180] ++(3, -0.7);
+		\draw[red, midarrow] (B5) to [out=40, in=180] ++(3, 0.4);
+		\draw[red, midarrow] (B6) to [out=40, in=190] ++(3, 0.8);
+		\draw[red, midarrow] (B7) to [out=40, in=185] ++(3, 0.9);
+		\draw[red, midarrow] (B8) to [out=40, in=200] ++(3, 1.2);
+
+		\draw[red, midarrow] ([shift={(-2, -1.2)}]A1) to[out=20, in=160]
+		([shift={(3,
+					-1.7)}]B1);
+		\draw[red, midarrow] ([shift={(-2, +1.8)}]A6) to[out=-20, in=-160]
+		([shift={(3,
+					+2.3)}]B6);
+	\end{scope}
+	%			\path (-3,-2.6) node (x) {} -- ++(6,0);
+\end{tikzpicture}

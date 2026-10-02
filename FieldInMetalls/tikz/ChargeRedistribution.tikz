@@ -1,0 +1,26 @@
+\begin{tikzpicture}[>=latex]
+	\clip (-3, -2.6) rectangle (3,2.6);
+	\pgfmathsetseed{9}
+	\draw[ball color=gray!5, name path=metall, smooth] plot [smooth cycle,
+			samples=8,domain={1:10}]
+	(\x*360/10+5*rnd:0.5cm+1cm*rnd);
+
+
+	\foreach[] \y in {-3,...,3} {
+			\draw[->, red] (-3, 0.6*\y) -- ++(6, 0);
+		}
+
+	\foreach[count=\c] \y in {-3,...,4} {
+			\path[name path global=Q\c] (-2, 0.25*\y) -- ++(4, 0);
+		}
+
+	\foreach \c in {1,...,7} {
+			\path[name intersections={of=metall and Q\c}]  (intersection-1)
+			node[anchor=center, right,
+				text=blue, font=\tiny] (A\c) {$-$}
+			(intersection-2)  node  [anchor=center, left,
+				text=red, 							font=\tiny] (B\c) {$+$} ;
+			\draw[->, red, densely dashed] (B\c) -- (A\c);
+		};
+	%			\path (-3,2.23) node (x) {} -- ++(6,0);
+\end{tikzpicture}

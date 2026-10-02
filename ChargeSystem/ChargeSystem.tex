@@ -284,26 +284,7 @@ $q=0,\ \vect p\neq0$ --- диполь; при $q=0$ і $\vect p=0$ --- квад�
 неполярної молекули на кшталт $\ce{CO2}$.
 
 \begin{center}
-\begin{tikzpicture}[
-	charge/.style={circle, draw, minimum size=8mm, inner sep=0pt, font=\small},
-	>=Latex
-]
-	% вісь
-	\draw[->] (-3,0) -- (3,0) node[right] {$z$};
-
-	% центр
-	\draw[dashed, gray] (0,-0.3) -- (0,1.2);
-%	\node at (0,1.4) {$O$};
-
-	% заряди
-	\node[charge, fill=red!15] (qL) at (-1.5,0) {$+q$};
-	\node[charge, fill=blue!15] (qC) at (0,0)    {$-2q$};
-	\node[charge, fill=red!15] (qR) at (1.5,0)  {$+q$};
-
-	% позначення відстаней
-	\draw[<->] (-1.5,-0.8) -- (0,-0.8) node[midway, below] {$a$};
-	\draw[<->] (0,-0.8) -- (1.5,-0.8) node[midway, below] {$a$};
-\end{tikzpicture}
+	\localinput{linear_quadrupole.tikz}
 \end{center}
 
 Сумарний заряд системи дорівнює нулю:

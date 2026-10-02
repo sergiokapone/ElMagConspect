@@ -1,0 +1,46 @@
+\begin{tikzpicture}
+    \tikzset{
+        metalball/.style={ball color=gray!40, draw=black!70, line width=0.5pt},
+        chargeplus/.style={circle, fill=red!70, draw=black!50, line width=0.2pt, inner sep=0pt, minimum size=3pt},
+        fieldline/.style={-latex, thick, red!70!black}
+    }
+    \def\Rsmall{0.6}
+    \def\Rlarge{1.5}
+    \def\dwire{5.2}
+
+    \coordinate (C1) at (0,0);
+    \coordinate (C2) at (\dwire,0);
+
+    % wire
+    \draw[line width=1.2pt, gray!50!black] ($(C1)+(\Rsmall,0)$) -- ($(C2)+(-\Rlarge,0)$)
+        node[midway, above, font=\small, black] {дріт};
+
+    % spheres
+    \draw[metalball] (C1) circle (\Rsmall);
+    \draw[metalball] (C2) circle (\Rlarge);
+
+    % field arrows (longer/denser on the small sphere)
+    \foreach \a in {15,45,...,345}{
+        \draw[fieldline] ($(C1)+(\a:\Rsmall+0.05)$) -- ++(\a:0.7);
+    }
+    \foreach \a in {22.5,67.5,...,337.5}{
+        \draw[fieldline] ($(C2)+(\a:\Rlarge+0.05)$) -- ++(\a:0.35);
+    }
+
+    % surface charges (denser on the small sphere)
+    \foreach \a in {0,20,...,340}{
+        \node[chargeplus] at ($(C1)+(\a:\Rsmall)$) {};
+    }
+    \foreach \a in {0,40,...,320}{
+        \node[chargeplus] at ($(C2)+(\a:\Rlarge)$) {};
+    }
+
+    % radius labels
+    \draw[-latex, thin] (C1) -- ($(C1)+(120:\Rsmall)$) node[midway, above left, font=\small] {$R_1$};
+    \draw[-latex, thin] (C2) -- ($(C2)+(120:\Rlarge)$) node[midway, above left, font=\small] {$R_2$};
+
+    % sigma / potential labels
+    \node[font=\small] at ($(C1)+(0,-\Rsmall-1.1)$) {$\sigma_1 = \dfrac{\varphi}{4\pi R_1}$};
+    \node[font=\small] at ($(C2)+(0,-\Rlarge-0.7)$) {$\sigma_2 = \dfrac{\varphi}{4\pi R_2}$};
+    \node[font=\small] at ($(C1)!0.5!(C2)+(0,1.9)$) {$\varphi_1 = \varphi_2 = \varphi$};
+\end{tikzpicture}
