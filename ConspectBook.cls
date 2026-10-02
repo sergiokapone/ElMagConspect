@@ -823,7 +823,7 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 % з держстандартним стилем gost-numeric, інакше — вбудований механізм \bibliography
 % LaTeX з українською назвою розділу "Література".
 \ifbiblatex
-	\RequirePackage[backend=biber, bibstyle=gost-numeric, babel=other, isbn=true, url=false, defernumbers=true]{biblatex}
+	\RequirePackage[backend=biber, bibstyle=gost-numeric, autolang=other, isbn=true, url=false, defernumbers=true]{biblatex}
 	% Додає URL джерела як гіперпосилання прямо на назву (якщо url заповнено в .bib)
 	\newbibmacro{string+url}[1]{%
 		\iffieldundef{url}{#1}{\href{\thefield{url}}{#1}}%
