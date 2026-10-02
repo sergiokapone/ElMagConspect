@@ -1,11 +1,11 @@
 \begin{tikzpicture}[
-    >=Stealth,
-    font=\sffamily\small,
-    filled/.style={fill=blue!25},
-    empty/.style={fill=blue!5},
-    fermi/.style={dashed, red!80!black, thick},
-    axis/.style={->, thick}
-]
+        >=Stealth,
+        font=\sffamily\small,
+        filled/.style={fill=blue!25},
+        empty/.style={fill=blue!5},
+        fermi/.style={dashed, red!80!black, thick},
+        axis/.style={->, thick}
+    ]
 
     % =========================================================================
     % ГЛОБАЛЬНІ ФІКСОВАНІ МЕЖІ (Верх і низ системи зафіксовано для всіх)
