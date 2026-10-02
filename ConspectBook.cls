@@ -109,7 +109,9 @@
 	\setmonofont{JetBrains Mono}%{Consolas}                   % моноширинний шрифт (код)
 	\defaultfontfeatures{Ligatures={TeX}}
 	%	\newfontfamily\Annabelle{Annabelle}
-	\newfontfamily\Alexander{Alexander}    % додаткова декоративна гарнітура \Alexander{...}
+	\newfontfamily\Alexander[
+    Path=fonts/
+	]{Alexander.otf}    % додаткова декоративна гарнітура \Alexander{...}
 	\RequirePackage{luacolor}              % коректна робота кольору тексту під LuaLaTeX
 \else
 	% ---- Гілка pdfLaTeX: класична кирилична підтримка через T2A ----
