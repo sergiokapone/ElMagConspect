@@ -1,6 +1,6 @@
 # LaTeX у VS Code: довідник по налаштуванню (ElMagConspect)
 
-Перенесені макроси з TeXstudio, власне розширення **LocalInput Links** (версія 0.0.30), сніпети та потрібні налаштування.
+Перенесені макроси з TeXstudio, власне розширення **LocalInput Links** (версія 0.0.31), сніпети та потрібні налаштування.
 
 Позначки у таблицях: ✅ перевірено в роботі, 🧪 написано, але в живому VS Code ще не підтверджено.
 
@@ -27,7 +27,7 @@
 
 1. `Ctrl+Shift+P` → `Extensions: Install from VSIX...` → вибрати `localinput-links.vsix`.
 2. `Ctrl+Shift+P` → `Developer: Reload Window`.
-3. Перевірка: у вкладці Extensions має бути `LocalInput Links` версії 0.0.30.
+3. Перевірка: у вкладці Extensions має бути `LocalInput Links` версії 0.0.31.
 
 Оновлення виконується тією самою командою (новіша версія замінює старішу).
 
@@ -124,6 +124,8 @@
 | **Дії з таблицями** | Курсор у комірці таблиці (або виділені рядки), далі `Ctrl+Alt+M` чи правий клік → `LocalInput: Table operations (columns, sort, transpose)`. Доступно: додати стовпчик праворуч чи ліворуч, видалити стовпчик, відсортувати рядки за поточним стовпчиком (числа як числа, текст за українським алфавітом), транспонувати (лише якщо всі рядки мають однакове число комірок). Стовпчик визначається за числом `&` перед курсором. Після дії таблиця вирівнюється. Специфікацію стовпців (`colspec`) треба підправити вручну. | 🧪 |
 | **Панель рисунків** | `Ctrl+Alt+P` відкриває збоку панель мініатюр файлів з `Pictures/` поточного розділу (`png`, `jpg`, `jpeg`, `gif`, `webp`, `svg`; вкладені папки теж). Клік по мініатюрі: якщо курсор усередині `\includegraphics{...}`, ім'я замінюється, інакше вставляється `\includegraphics[width=\linewidth]{ім'я}` без розширення. `pdf` та `eps` у панелі не показуються (webview не відображає їх як зображення); для них використовуй `Ctrl+Alt+I`. | 🧪 |
 | **Файли без посилань** | `LocalInput: Files in Pictures/ and tikz/ with no references`. Показує список файлів, ім'я яких (без розширення, як ціле слово) не зустрічається в жодному `.tex` чи `.tikz`. Вибір у списку відкриває файл. Нічого не видаляє. | 🧪 |
+| **Винести `tikzpicture`/`circuitikz` у `tikz/`** | Курсор усередині `\begin{tikzpicture} ... \end{tikzpicture}` (або `circuitikz`), далі меню `edit` → `LocalInput: Extract tikzpicture/circuitikz at cursor to tikz/ and insert \localinput`. Усе оточення (з `\begin` і `\end`, без зайвого відступу) переноситься у файл `tikz/<ім'я>.tikz` поруч із поточним `.tex`, а на його місці лишається `\localinput{<ім'я>.tikz}` з тим самим відступом. Ім'я береться з `\label` найближчого оточення-рисунка (`figure`, `SCfigure`, `wrapfigure`, `subfigure` тощо) без префікса до двокрапки: `\label{tikz:Efield}` дає `tikz/Efield.tikz`; пробіли й недозволені символи стають `_`. Курсор може стояти й на `\caption` чи `\label` рисунка, якщо в ньому один малюнок. Якщо мітки немає, малюнок не в `figure`, або файл з таким іменем уже є, з'являється поле вводу (існуючий файл не перезаписується). Текст на тому ж рядку до `\begin` і після `\end` лишається. Після виконання можна відкрити створений файл; `Ctrl+Z` повертає код у документ, але файл у `tikz/` лишається. Закоментовані оточення пропускаються. | 🧪 |
+| **Винести всі малюнки файла** | `LocalInput: Extract all tikzpicture/circuitikz in file (or selection) to tikz/`: те саме для всіх малюнків файла (або виділення), з одним запитом на підтвердження. Імена беруться лише з міток, без запитань: малюнки без мітки й ті, чиє ім'я вже зайняте (на диску чи серед щойно названих), пропускаються, число пропущених показується в підсумку. Усі заміни в документі відбуваються однією дією, тож `Ctrl+Z` скасовує їх разом. | 🧪 |
 
 #### Компіляція з клавіатури
 
@@ -173,7 +175,7 @@
 | | ⏵⏵ (`run-all`) | Збірка всього документа (`main.tex`) + PDF (`Shift+F5`); лише для `.tex` |
 | | `link-external` | Відкрити PDF у зовнішній програмі (SumatraPDF) |
 | Текст | 🛠 (`tools`) | `Normalize file` з переглядом змін; лише для `.tex` |
-| Меню `edit` («Текст і структура»), лише `.tex` | випадає список | Normalize file, Normalize options; Typography, Join lines, Wrap paragraph, One sentence per line; Frame headings, Convert formula environment; Align table columns, Table operations |
+| Меню `edit` («Текст і структура»), лише `.tex` | випадає список | Normalize file, Normalize options; Typography, Join lines, Wrap paragraph, One sentence per line; Frame headings, Convert formula environment, Extract tikzpicture to tikz/ (one, all); Align table columns, Table operations |
 | Меню `list-tree` («Навігація й перевірка») | випадає список | Go to heading (`Ctrl+Alt+G`), Pick file name, Pictures (`Ctrl+Alt+P`); Check labels, Files with no references |
 | Меню `gear` («Збірка й прибирання») | випадає список | Compile whole document, no PDF; Toggle compile on save; Delete aux + PDF, Delete aux files (keep PDF) |
 | Рядок стану (зліва) | `▷ Chapter` (у `.tikz`-файлі `▷ Figure`) | Компіляція + відкрити PDF |
@@ -226,6 +228,7 @@
 | Ключ | За замовчуванням | Значення |
 |---|---|---|
 | `localinput.jobname` | `main` | Ім'я вихідного PDF/aux. `main` потрібен, щоб SyncTeX (`Ctrl+Alt+J`) вів у `main.pdf` при `% !TeX root = ../main.tex`. Порожній рядок означає ім'я відкритого файла. |
+| `localinput.tikzExtractEnvs` | `["tikzpicture", "circuitikz"]` | Які оточення виносять команди `Extract tikzpicture...` у `tikz/`. Можна додати `tikzcd`, `axis` та ін. |
 | `localinput.driver` | `alone.tex` | Файл-драйвер у корені проєкту. |
 | `localinput.latexmk` | `latexmk` | Виконуваний файл `latexmk`. |
 | `localinput.pdfBeside` | `true` | Відкривати PDF у сусідній панелі. |
@@ -358,6 +361,10 @@
 - Файл оновлюється сам, коли зберігається `.cls`/`.sty` (якщо файл уже створювався; `localinput.mathjaxAutoUpdate`). Ім'я файла задає `localinput.mathjaxMacrosFile`.
 - Обмеження: `\\vect\\nabla` у тексті документа в превʼю лишається небольд, бо `\\mathbf` не змінює `\\nabla`; усередині самих макросів (`\\grad`, `\\rot`) це враховано.
 - Коментарі над визначеннями в hover більше не містять рамок `--- ... ---`.
+
+### 2.19. Що змінилося у 0.0.31
+
+- Нові команди `LocalInput: Extract tikzpicture/circuitikz at cursor to tikz/ and insert \localinput` і `... Extract all tikzpicture/circuitikz in file (or selection) to tikz/` (меню `edit`). Оточення переноситься у `tikz/<мітка без префікса>.tikz`, у тексті лишається `\localinput{<ім'я>.tikz}`. Налаштування `localinput.tikzExtractEnvs`. Докладно в таблиці «Структура, таблиці, рисунки» розділу 2.3.
 
 ---
 
