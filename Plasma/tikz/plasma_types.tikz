@@ -1,0 +1,104 @@
+
+\begin{tikzpicture}[pltype/.style={
+				font=\tiny\itshape,
+				text width=3cm,
+				align=center,
+				gray
+			},
+		wraped/.style={
+				text width=2cm,
+				align=center,
+			},
+		sz/.style={
+				font=\scriptsize,
+				fill=white,
+				inner sep=0,
+				gray!50, opacity=0.75,text opacity=1, sloped
+			},
+	]
+	\begin{axis}[
+			ymode=log,
+			xmode=log,
+			xlabel={$n$, cm$^{-3}$},
+			ylabel={$T$, eV},
+			xmin=1e-5,
+			xmax=1e30,
+			ymin=1e-4,
+			ymax=1e8,
+			% xtick distance={1e3},
+			% ytick distance={1e1},
+			width=\linewidth,
+			height=0.75\linewidth,
+			axis background/.style={fill=white},
+			label style={font=\scriptsize},
+			ticklabel style={font=\scriptsize},
+		]
+
+
+		\def\C{743^2}
+		\def\Cn{6.95e-7}
+		\only<1>{
+			\foreach[count=\c from -2] \n in {-8,-6,...,6} {
+					\edef\temp{\noexpand
+						\addplot[red!50, domain=1e-5:1e40,
+							add node at y={1e\c}{[sz]{$r_D = 10^{\n}$ cm}}
+						] {1/\C*(1e\n)^2*x};
+					}
+
+
+					\temp
+				}
+
+			\foreach[count=\c from 0] \n in {0,2,...,14} {
+					\edef\temp{\noexpand%
+						\addplot[blue!20, domain=1e-5:1e40,
+							add node at y={10^(2 + \c * 0.6 )}{[sz]{$N_D = 10^{\n}$}}
+						] {(\Cn*(1e\n)^(2/3)*x^(1/3))};
+					}
+
+					\temp
+				}
+		}
+
+		\only<2>{
+			\addplot[domain=1e-5:1e30, red, name path=Ef,
+				add node at y={1e1}{[red, fill=white, sloped]{$T = E_F$}},
+			] {3e-16 * x^(2/3)};
+
+			\draw[red] (axis cs:1e-5, 5e5) --node[fill=white] {$T = m_ec^2$} (axis cs:1e30, 5e5);
+
+			\draw[red] (axis cs:1e-5, 5e5) --node[fill=white] {$T = m_ec^2$} (axis cs:1e30, 5e5);
+
+			\addplot[blue, domain=1e-5:1e28, name path=Wcorr,
+				add node at y={1e-1}{[fill=white, sloped, red]{$T = W_\text{кор}$}}
+			] {(\Cn*(1)^(2/3)*x^(1/3))};
+
+			\draw[red, dashed, name path=KvId] (axis cs:1e28, 1e-4) -- (axis cs:1e28, 1e3);
+
+
+
+			\node[pltype] at (axis cs: 1e15, 1e7) {Релятивістська\\ плазма};
+
+			\node[pltype] at (axis cs: 1e3, 1e3) {Класична\\ ідеальна плазма};
+
+			\node[pltype] at (axis cs: 1e14, 1e-3) {Класична\\ неідеальна плазма};
+
+			\node[pltype] at (axis cs: 1e24, 1e-3) {Квантова\\ неідеальна плазма};
+
+			\node[pltype, rotate=90] at (axis cs: 1e29, 1e-1) {Квантова ідеальна плазма};
+		}
+
+
+        \addplot[
+        scatter,
+        nodes near coords,
+        nodes near coords style={font=\scriptsize},
+        coordinate style/.condition={\coordindex==0}{text width=2cm, align=center},
+        coordinate style/.condition={\coordindex==6}{anchor=south east},
+        blue, only marks,
+        point meta=explicit symbolic
+        ] table [header=false,meta index=0,x index = 1, y index = 2,col sep=comma] {tikz/data.txt};
+
+
+	\end{axis}
+\end{tikzpicture}

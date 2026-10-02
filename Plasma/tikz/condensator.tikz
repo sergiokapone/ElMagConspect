@@ -1,0 +1,22 @@
+\begin{tikzpicture}[scale=0.75,
+		ions/.style={
+				circle, ball color=blue!50, font=\tiny, inner sep=0, blue
+			},
+		electrons/.style={
+				circle, ball color=red, font=\tiny, inner sep=0, red
+			},
+	]
+
+	\draw[xshift=0.75cm, fill=gray!50] (0,0) rectangle ++(4,8);
+	\draw[dashed] (0,0) rectangle ++(4,8);
+
+	\foreach \y in {1,...,7} {
+			\node at (0.3, \y) {$+$};
+			\node at (4.3, \y) {$-$};
+			\draw[-latex, red] (0.75, \y) -- (4, \y) \ifnum\y=7 node[above, pos=0.5] {$\vec{E}$} \fi ;
+		}
+
+	\draw[decorate,decoration={brace,amplitude=5pt,mirror,raise=0ex}] (0,-0.1)  -- (0.75,-0.1)
+	node[midway, yshift=-2ex] {$x$};
+
+\end{tikzpicture}

@@ -1,0 +1,53 @@
+\begin{tikzpicture}
+	\begin{axis}[%
+            clip=false,
+            axis equal,
+            xmin=0,
+			xlabel=$r$,
+			ylabel=$\phi$,
+			axis lines=middle,
+			every axis x label/.style={at={(current axis.right of origin)},anchor=west},
+			every axis y label/.style={at={(current axis.north west)},above=2mm},
+			xtick={0.5,1,...,2.5},
+            xticklabel={%
+                \pgfmathparse{int(\ticknum+1)}
+                \ifnum\pgfmathresult>1
+                    $\pgfmathresult r_D$
+                \else
+                    $r_D$
+                \fi
+            },
+            xticklabel style={font=\scriptsize},
+			ytick=\empty,
+			width=\linewidth,
+			height=0.75\linewidth%
+		]
+
+
+        \def\xa{0.2}
+        \def\xb{0.5}
+        \def\D{0.5}
+        \def\q{0.2}
+
+        \begin{scope}[opacity=0.7]
+            \path[inner color=red, outer color=white] (axis cs:0,0) circle(\D);
+            \draw[ball color=blue] (axis cs:0,0) circle (0.05 cm);
+        \end{scope}
+
+		\addplot[red, dashed, domain=0.1:3, smooth, variable=r] {
+            % -----------
+            \q/r
+            % -----------
+        };
+		\addplot[blue, domain=0.1:3, smooth, variable=r, samples=500] {
+            % -----------
+            \q/r*exp(-r/\D)
+            % -----------
+        };
+
+		\node[coordinate,pin={[pin edge={anchor=west}]45:{$\frac{e}{r}\exp{\left(-r/r_D\right)}$} } ] at (axis cs:\xb, {\q/\xb*exp(-\xb/\D)}) {};
+		\node[coordinate, pin={[pin edge={anchor=west}]45:{$\frac{e}{r}$} }]
+		at (axis cs:\xa, {\q/\xa}) {};
+
+	\end{axis}
+\end{tikzpicture}

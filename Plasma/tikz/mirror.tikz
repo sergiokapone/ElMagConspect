@@ -1,0 +1,39 @@
+\begin{tikzpicture}[>=latex',
+    declare function={
+    w=3;
+    v=0.5;
+    a=0.025;
+    R(\t)=1/sqrt(4+5*\t);
+    x(\t)=v*\t - a*\t^2;
+    y(\t)=R(\t)*cos(w*\t r);
+    },
+]
+
+
+	\foreach \i in {-1, 1} {
+			\draw[thick, red!20, ultra thick] (\i*2.5,0) [partial ellipse=-40:40:0.15cm and 0.5cm];
+		}
+	\foreach \f in {-1,-0.75,...,1}{
+			\draw[
+				blue!40,
+				yscale=\f,
+				postaction={decorate, decoration={markings, mark=at position 0.99 with {\arrow[scale=0.75]{latex}}}}
+			] (-3, 0.5) to[out=-45, in=-135] (-2, 0.5) to[out=45, in=135] (2, 0.5) to[out=-45, in =-135] (3,0.5);
+		}
+
+	\foreach \i in {-1, 1} {
+			\draw[thick, red!50, ultra thick,
+				postaction={decorate, decoration={markings, mark=at position 0.5 with {\arrow[scale=0.5]{latex}}}}
+			] (\i*2.5,0) [partial ellipse=40:320:0.15cm and 0.5cm];
+		}
+
+
+    \draw[->] (0,0) -- ++(0, 0.5) node[left, font=\scriptsize] {$\vec{v}_\perp$};
+    \draw[->] (0,0) -- ++(1, 0) node[right, font=\scriptsize] {$\vec{v}_\parallel$};;
+    \draw[->] (0,0) -- ++(1, 0.5) node[above, font=\scriptsize] {$\vec{v}$};;
+    \draw[densely dashed] (0,0.5) -- ++(1,0) -- ++(0,-0.5);
+    \draw[] (0,0) ++(0.5, 0) arc[start angle=0, delta angle=atan(0.5), radius=0.5] node[pos=0, inner sep=1pt, anchor=north west, font=\scriptsize] {$\theta_{\min}$};
+
+        \draw[red!80, domain=0:4.9*pi, variable=\t, samples=300, ->] plot ({x(\t)}, {y(\t)} );
+
+\end{tikzpicture}

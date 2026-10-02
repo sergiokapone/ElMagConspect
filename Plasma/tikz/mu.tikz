@@ -1,0 +1,48 @@
+\begin{figure}[h!]
+%---------------------------------------------------------
+\begin{subfigure}[t]{0.45\linewidth}\centering
+		\begin{tikzpicture}[>=latex']
+			\draw[red, ->, domain=1:4] plot({\x}, {1/\x});
+			\draw[red, ->] (1, 0) -- (4,0);
+			\draw[red, ->, domain=1:4] plot({\x}, {-1/\x});
+            \foreach \xc in {2} {
+
+            \draw[blue!55, ultra thick] (\xc, 0) [partial ellipse=-90:90:{0.5*1/\xc} and {1/\xc}];
+
+       		\draw[->, green!70!black, thick] (\xc, 0) -- ++(1.5/\xc, 0) node[inner sep=1pt, anchor=north west, font=\tiny, text=black] {$\vec{v}_\parallel$};
+            \draw[->, orange, thick] (\xc, 0) -- ++(-0.75, 0) node[inner sep=1pt, anchor=north east, font=\tiny, text=black] {$\vec{F}$};
+
+       		\draw[blue!60, ultra thick,
+       			decoration={markings,
+       					mark=at position 0.7 with {\arrow[xshift=2pt,scale=0.7]{>}},
+       					mark=at position 0.3 with {\node[circle, ball color=blue!60, text=white, inner sep=0, font=\tiny] {$+$};},
+       				},
+       			postaction={decorate}] (\xc, 0) [partial ellipse=-45:-315:{0.5*1/\xc} and {1/\xc}];
+            }
+		\end{tikzpicture}
+\end{subfigure}
+%---------------------------------------------------------
+\begin{subfigure}[t]{0.45\linewidth}\centering
+		\begin{tikzpicture}[>=latex']
+			\draw[red, ->, domain=1:4] plot({\x}, {1/\x});
+			\draw[red, ->] (1, 0) -- (4,0);
+			\draw[red, ->, domain=1:4] plot({\x}, {-1/\x});
+
+			\foreach \xc in {1.5, 3} {
+
+            \draw[blue!55, ultra thick] (\xc, 0) [partial ellipse=-90:90:{0.5*1/\xc} and {1/\xc}];
+
+
+					\draw[->, green!70!black, thick] (\xc, 0) -- ++(1.5/\xc, 0) node[inner sep=1pt, anchor=north west, font=\tiny, text=black] {$\vec{v}_\parallel$};
+                    \draw[blue!60, ultra thick,
+                           			decoration={markings,
+                           					mark=at position 0.7 with {\arrow[xshift=2pt,scale=0.7]{>}},
+                           					mark=at position 0.3 with {\node[circle, ball color=blue, text=white, inner sep=0, font=\tiny] {$+$};},
+                           				},
+                           			postaction={decorate}] (\xc, 0) [partial ellipse=-45:-315:{0.5*1/\xc} and {1/\xc}];
+
+				}
+		\end{tikzpicture}
+\end{subfigure}
+%---------------------------------------------------------
+\end{figure}

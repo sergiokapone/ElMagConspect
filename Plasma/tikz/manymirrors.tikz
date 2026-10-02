@@ -1,0 +1,5 @@
+\begin{tikzpicture}
+        \path[name path=A, domain=-3/2*pi:3/2*pi, samples=250] plot({\x}, {0.5+0.25*cos(2*\x r)});
+        \path[name path=B, domain=-3/2*pi:3/2*pi, samples=250] plot({\x}, {-0.5-0.25*cos(2*\x r)});
+        \tikzfillbetween[of=A and B]{red, opacity=0.1};
+\end{tikzpicture}
