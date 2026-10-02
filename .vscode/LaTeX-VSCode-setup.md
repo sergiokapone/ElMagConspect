@@ -27,7 +27,7 @@
 
 1. `Ctrl+Shift+P` → `Extensions: Install from VSIX...` → вибрати `localinput-links.vsix`.
 2. `Ctrl+Shift+P` → `Developer: Reload Window`.
-3. Перевірка: у вкладці Extensions має бути `LocalInput Links` версії 0.0.25.
+3. Перевірка: у вкладці Extensions має бути `LocalInput Links` версії 0.0.27.
 
 Оновлення виконується тією самою командою (новіша версія замінює старішу).
 
@@ -326,6 +326,18 @@
 
 - Кнопки в рядку вкладки згруповано за призначенням: збірка й перегляд (4 кнопки), `Normalize file` і три випадні меню (текст і структура, навігація й перевірка, збірка й прибирання).
 - Налаштування `localinput.quoteStyle`: у `Normalize file` і типографіці лапки можуть ставитись як «...» (за замовчуванням) або `\enquote{...}`; пункт додано в `Normalize options`.
+
+### 2.14. Що змінилося у 0.0.26
+
+- Режим `localinput.logParser = texlogsieve`: після збірки запускається `texlogsieve <job>.log`, і його вивід потрапляє у Problems (джерело `texlogsieve`): помилки, попередження, Overfull/Underfull `\hbox` (з блоків і з підсумку) та «Missing characters» (одним попередженням на шрифт і сторінку; літери беруться з кодів `U+XXXX`, тож кракозябри консолі не заважають). Попередження з пакетів TeX-дерева (biblatex, microtype тощо) відсікаються: лишаються лише файли проєкту. Статус 🧪.
+- Нові налаштування: `localinput.texlogsieveCommand` (за замовчуванням `texlogsieve`), `localinput.texlogsieveArgs` (за замовчуванням `["${log}"]`). Рівень для BadBox задає `localinput.pplatexBadBoxes`, поріг Overfull `localinput.overfullThreshold`.
+- Якщо `texlogsieve` не знайдено, показується одне попередження і діє вбудований розбір.
+- Обмеження: попередження без `on input line N` (напр. `\showhyphens`) і «Missing characters» ставляться на перший рядок файла; помилки без `file:line:` беруться з `l.N`. Опції texlogsieve перевір через `texlogsieve --help`.
+
+### 2.15. Що змінилося у 0.0.27
+
+- Помилки LaTeX (`файл.tex:рядок: текст` + контекст `l.N`) тепер читаються й із самого `<job>.log`, а не лише з виводу `latexmk`: у режимі `builtin` завжди, у режимі `texlogsieve` як запасний варіант, якщо texlogsieve помилок не дав.
+- Канал Output → `LocalInput`: після кожної збірки пише, який `logParser` діє, скільки записів знайдено, а якщо texlogsieve нічого не розібрав, початок його виводу. Стартова точка для діагностики, коли Problems порожній.
 
 ---
 
