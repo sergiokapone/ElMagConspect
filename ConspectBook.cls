@@ -25,6 +25,8 @@
 \newif\iftoc                 % (прапорець для змісту; використовується користувачем документа)
 \newif\ifbibliography        % (прапорець наявності бібліографії)
 \newif\ifintro                % (прапорець наявності вступу)
+\newif\iffonts                % (пкостиль для компіляції з папки, яка небачить fonts/ — не підвантажувати додаткові гарнітури)
+
 
 %===============================================================================
 %
@@ -40,6 +42,11 @@
 	\PassOptionsToPackage{pdfsubject={Version for Printing}}{hyperref}
 	\electronicfalse
 }
+
+\DeclareOption{nootherfonts}{
+	\fontsfalse
+} % (для компіляції з папки, яка не бачить fonts/ — не підвантажувати додаткові гарнітури)
+
 
 % Опція "electronic" — електронна версія: кольорові посилання малинового кольору.
 % \defcolor визначається тут же і застосовується нижче (\defcolor{}), бо колір "malina"
@@ -98,7 +105,7 @@
 % і pdfLaTeX (запасний варіант, з класичним fontenc/inputenc).
 \RequirePackage[fontsize=14pt]{fontsize}  % базовий кегль тексту книги
 \RequirePackage{iftex}                    % дає \ifluatex/\ifxetex для розгалуження нижче
-
+% ---------------------------- Пакети LaTeX3 -----------------------------------
 
 \ifluatex
 	% ---- Гілка LuaLaTeX: сучасні OpenType-шрифти через fontspec ----
@@ -108,10 +115,11 @@
 	\setsansfont{Roboto}%{Arial}                              % рублений шрифт (заголовки тощо)
 	\setmonofont{JetBrains Mono}%{Consolas}                   % моноширинний шрифт (код)
 	\defaultfontfeatures{Ligatures={TeX}}
-	%	\newfontfamily\Annabelle{Annabelle}
-	\newfontfamily\Alexander[
-    Path=fonts/
-	]{Alexander.otf}    % додаткова декоративна гарнітура \Alexander{...}
+    \iffonts
+		\newfontfamily\Alexander[
+			Path=./fonts/
+			]{Alexander.otf}    % додаткова декоративна гарнітура \Alexander{...}
+	\fi
 	\RequirePackage{luacolor}              % коректна робота кольору тексту під LuaLaTeX
 \else
 	% ---- Гілка pdfLaTeX: класична кирилична підтримка через T2A ----
@@ -193,17 +201,17 @@
 %\RequirePackage{subfig}
 %\renewcommand\thesubfigure{\alph{subfigure}}
 \RequirePackage{wrapstuff}   % обтікання тексту навколо рисунків/таблиць
+% --------------------------------------------------------------------------------
+\RequirePackage{lastpage}          % \pageref{LastPage} — номер останньої сторінки
+\RequirePackage[disable]{todonotes}% нотатки-нагадування у чернетці (вимкнено — не друкуються)
+\RequirePackage{pdftexcmds}        % низькорівневі pdfTeX-примітиви (потрібно деяким пакетам)
+
 % ---------------------------- Фалові операції ---------------------------------
 \RequirePackage{currfile}    % дає \currfilebase — ім'я поточного inputt-файлу без розширення
 % \localinput{ім'я} — підключити tikz-рисунок з підпапки tikz/ поточного файлу,
 % напр. у файлі "chapter1/chapter1.tex" виклик \localinput{fig.tikz}
 % підвантажить "chapter1/tikz/fig.tikz". Використовується у розділах-главах книги.
 \newcommand{\localinput}[1]{\input{\currfilebase/tikz/#1}}
-% ---------------------------- Пакети LaTeX3 -----------------------------------
-% --------------------------------------------------------------------------------
-\RequirePackage{lastpage}          % \pageref{LastPage} — номер останньої сторінки
-\RequirePackage[disable]{todonotes}% нотатки-нагадування у чернетці (вимкнено — не друкуються)
-\RequirePackage{pdftexcmds}        % низькорівневі pdfTeX-примітиви (потрібно деяким пакетам)
 
 %===============================================================================
 %
