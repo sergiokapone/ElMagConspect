@@ -46,7 +46,7 @@
             % -----------
         };
 
-		\node[coordinate,pin={[pin edge={anchor=west}]45:{$\frac{e}{r}\exp{\left(-r/r_D\right)}$} } ] at (axis cs:\xb, {\q/\xb*exp(-\xb/\D)}) {};
+		\node[coordinate,pin={[pin edge={anchor=west}]45:{$\frac{e}{r}\exp{\left(-r/\lambda_D\right)}$} } ] at (axis cs:\xb, {\q/\xb*exp(-\xb/\D)}) {};
 		\node[coordinate, pin={[pin edge={anchor=west}]45:{$\frac{e}{r}$} }]
 		at (axis cs:\xa, {\q/\xa}) {};
 

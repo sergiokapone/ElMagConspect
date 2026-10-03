@@ -1,0 +1,31 @@
+\begin{tikzpicture}[
+    scale=1.5,
+]
+    \begin{scope}[shift={(1, 0.3)}]
+        \draw[blue, thick, domain=-1.5*pi:0, samples=100] plot (\x, {cos(3*\x r)});
+        \draw[blue, thick, domain=0:3, samples=100] plot (\x, {exp(-0.9*\x)*cos(3*\x r)});
+        \foreach \x in {-1.45, -1.40, ..., 0}{
+        \draw[-latex, red!50] ({pi*\x}, 0) -- ++(0, {cos(3*pi*\x r)});
+        }
+    \end{scope}
+    \begin{scope}
+        \foreach \Z in {1,...,1234}
+        {
+         \pgfmathsetmacro{\Y}{1.5*pi*(0.5*rand)}
+         \pgfmathsetmacro{\X}{2*rnd}
+         \pgfmathtruncatemacro{\V}{ifthenelse(1*sin(deg(6*\Y))>rand,1,0)}
+         \ifnum\V=1
+            \fill[ball color=red, draw=none] (\X,\Y) circle (1pt);
+         \fi
+        }
+    \end{scope}
+    \begin{scope}[shift={(-1.5*pi, -2)}]
+        \draw[-latex] (0, 0) -- ++(1, 0) node[right] {$x$};
+        \draw[-latex] (0, 0) -- ++(0, 1) node[left] {$z$};
+    \end{scope}
+    \begin{scope}[shift={(3,2.1)}]
+        \node[circle, ball color=red, inner sep=2pt, font=\scriptsize, text=white] (e) at (0,0) {};
+        \node[circle, ball color=blue, inner sep=0, text=white, font=\scriptsize,] (i) at (0,-1) {$+$};
+        \draw[-latex, brown, thick, text=black] (e) -- node[right] {$p_z =  -ez$} (i) node[right=5pt, font=\tiny, gray] {Нерухомий іон};
+    \end{scope}
+\end{tikzpicture}
