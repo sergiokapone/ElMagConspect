@@ -1,0 +1,43 @@
+\begin{tikzpicture}
+\begin{axis}[
+    every axis plot post/.append style={line width=2pt},
+    width=12cm, height=9cm,
+    xlabel={$k_{\mathrm B}T$, еВ},
+    ylabel={$\alpha(T)$},
+    xmin=0, xmax=5,
+    ymin=0, ymax=1.05,
+    samples=500,
+    grid=both,
+    minor tick num=1,
+    legend style={at={(0.98,0.03)}, anchor=south east,
+                  fill=white, fill opacity=0.9, draw=black!40,
+                  font=\small,
+                  cells={anchor=west}},
+    every axis plot/.append style={thick, smooth},
+    tick label style={font=\small},
+    label style={font=\small},
+]
+
+% alpha = (-S + sqrt(S^2 + 4S))/2,  S = (C/n0) * u^{3/2} * exp(-13.6/u)
+% C = 3.02e21 (n0 в см^-3, u в еВ)
+
+\addplot[blue, domain=0.4:4.5]
+    {(-(3.02e21/1e15)*x^1.5*exp(-13.6/x)
+      + sqrt(((3.02e21/1e15)*x^1.5*exp(-13.6/x))^2
+             + 4*(3.02e21/1e15)*x^1.5*exp(-13.6/x)))/2};
+\addlegendentry{$n_0=10^{15}\ \text{см}^{-3}$}
+
+\addplot[red, domain=0.6:4.5]
+    {(-(3.02e21/1e17)*x^1.5*exp(-13.6/x)
+      + sqrt(((3.02e21/1e17)*x^1.5*exp(-13.6/x))^2
+             + 4*(3.02e21/1e17)*x^1.5*exp(-13.6/x)))/2};
+\addlegendentry{$n_0=10^{17}\ \text{см}^{-3}$}
+
+\addplot[black!70, green!50!black, domain=0.8:4.5]
+    {(-(3.02e21/1e19)*x^1.5*exp(-13.6/x)
+      + sqrt(((3.02e21/1e19)*x^1.5*exp(-13.6/x))^2
+             + 4*(3.02e21/1e19)*x^1.5*exp(-13.6/x)))/2};
+\addlegendentry{$n_0=10^{19}\ \text{см}^{-3}$}
+
+\end{axis}
+\end{tikzpicture}

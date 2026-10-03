@@ -7,7 +7,7 @@
 			},
 	]
 	\path[inner color=red, outer color=white] (0,0) circle(2.5);
-	\node[ions] at (0,0) {$+$};
+	\node[ions, inner sep=5pt, font=\small] at (0,0) {$+$};
 	\pgfmathsetseed{2}
 	\foreach \i in {0,10,...,360}
 		{

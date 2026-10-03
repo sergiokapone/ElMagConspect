@@ -1,0 +1,90 @@
+\begin{tikzpicture}[
+        x={(-0.6cm,-0.35cm)},
+        y={(0.8cm,0.2cm)},
+        z={(0cm,1cm)},
+        scale=1.4,
+        >=Stealth
+    ]
+    % Параметри елемента об'єму
+    \pgfmathsetmacro{\dx}{2.0}
+    \pgfmathsetmacro{\dy}{2.5}
+    \pgfmathsetmacro{\dz}{1.8}
+
+    % Вершини
+    \coordinate (O)   at (0,0,0);
+    \coordinate (X)   at (\dx,0,0);
+    \coordinate (Y)   at (0,\dy,0);
+    \coordinate (XY)  at (\dx,\dy,0);
+    \coordinate (Z)   at (0,0,\dz);
+    \coordinate (XZ)  at (\dx,0,\dz);
+    \coordinate (YZ)  at (0,\dy,\dz);
+    \coordinate (XYZ) at (\dx,\dy,\dz);
+
+    % Центри граней
+    \coordinate (Cx1) at (0, \dy/2, \dz/2);     % грань x = 0
+    \coordinate (Cx2) at (\dx, \dy/2, \dz/2);   % грань x = dx
+    \coordinate (Cy1) at (\dx/2, 0, \dz/2);     % грань y = 0
+    \coordinate (Cy2) at (\dx/2, \dy, \dz/2);   % грань y = dy
+    \coordinate (Cz1) at (\dx/2, \dy/2, 0);     % грань z = 0
+    \coordinate (Cz2) at (\dx/2, \dy/2, \dz);   % грань z = dz
+
+    % ========================================================
+    % Напівпрозоре зафарбовування видимих граней
+    \fill[blue!12, opacity=0.7] (X) -- (XY) -- (XYZ) -- (XZ) -- cycle; % грань x = dx
+    \fill[blue!20, opacity=0.7] (Y) -- (XY) -- (XYZ) -- (YZ) -- cycle; % грань y = dy
+    \fill[blue!5,  opacity=0.7] (Z) -- (XZ) -- (XYZ) -- (YZ) -- cycle; % грань z = dz
+
+    % Приховані (штрихові) ребра
+    \draw[gray!60, dashed, thick] (O) -- (X);
+    \draw[gray!60, dashed, thick] (O) -- (Y);
+    \draw[gray!60, dashed, thick] (O) -- (Z);
+
+    % Видимі ребра
+    \draw[thick, black!85] (X) -- (XY) -- (Y) -- (YZ) -- (XYZ) -- (XZ) -- cycle;
+    \draw[thick, black!85] (XY) -- (XYZ);
+    \draw[thick, black!85] (XZ) -- (Z) -- (YZ);
+
+    % Осі координат
+    \draw[gray!70, ->, thick] (X) -- (\dx+0.8, 0, 0) node[below left, black] {$x$};
+    \draw[gray!70, ->, thick] (Y) -- (0, \dy+0.8, 0) node[below right, black] {$y$};
+    \draw[gray!70, ->, thick] (Z) -- (0, 0, \dz+0.6) node[above, black] {$z$};
+
+    % ========================================================
+
+
+    % Позначення розмірів елемента dx, dy, dz
+    \node[above left, font=\small, inner sep=2pt] at ($ (XZ)!0.5!(Z) $) {$dx$};
+    \node[below left, font=\small, inner sep=2pt] at ($ (X)!0.5!(XY) $) {$dy$};
+    \node[right, font=\small, inner sep=2pt] at ($ (XY)!0.5!(XYZ) $) {$dz$};
+
+    \begin{scope}[on background layer]
+        % Вектори сил тиску (червоні стрілки на грані)
+        % Грань x = 0 (напрямок +x)
+        \draw[red!75!black, ultra thick, ->] (-1.1, \dy/2, \dz/2) -- (Cx1)
+        node[pos=0, above right, font=\small, inner sep=1pt] {$p\,dy\,dz$};
+
+        % Грань y = 0 (напрямок +y)
+        \draw[red!75!black, ultra thick, ->] (\dx/2, -1.1, \dz/2) -- (Cy1)
+        node[pos=0, above left, font=\small, inner sep=1pt] {$p\,dx\,dz$};
+
+        % Грань z = 0 (нижня, напрямок +z)
+        \draw[red!75!black, ultra thick, ->] (\dx/2, \dy/2, -0.9) -- (Cz1)
+        node[pos=0, below, font=\small, inner sep=2pt] {$p\,dx\,dy$};
+    \end{scope}
+
+    % Грань x = dx (напрямок -x)
+    \draw[red!75!black, ultra thick, ->] (\dx+1.1, \dy/2, \dz/2) -- (Cx2)
+    node[pos=0, below left, font=\small, inner sep=1pt] {$\left(p + \frac{\partial p}{\partial x}dx\right)dy\,dz$};
+
+
+    % Грань y = dy (напрямок -y)
+    \draw[red!75!black, ultra thick, ->] (\dx/2, \dy+1.1, \dz/2) -- (Cy2)
+    node[pos=0, right, font=\small, inner sep=1pt] {$\left(p + \frac{\partial p}{\partial y}dy\right)dx\,dz$};
+
+
+    % Грань z = dz (верхня, напрямок -z)
+    \draw[red!75!black, ultra thick, ->] (\dx/2, \dy/2, \dz+0.9) -- (Cz2)
+    node[pos=0, above, font=\small, inner sep=2pt] {$\left(p + \frac{\partial p}{\partial z}dz\right)dx\,dy$};
+
+
+\end{tikzpicture}
