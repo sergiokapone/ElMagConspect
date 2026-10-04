@@ -4,17 +4,11 @@
       "textMateRules": [
         {
           "scope": "support.function.be.latex",
-          "settings": {
-            "foreground": "#00ffc8",
-            "fontStyle": ""
-          }
+          "settings": { "foreground": "#00ffc8", "fontStyle": "" }
         },
         {
           "scope": "variable.parameter.function.latex",
-          "settings": {
-            "foreground": "#ffff7fc5",
-            "fontStyle": ""
-          }
+          "settings": { "foreground": "#ffff7fc5", "fontStyle": "" }
         },
         {
           "scope": "constant.character.math.tex",
@@ -22,106 +16,170 @@
         },
         {
           "scope": "constant.other.reference.label.latex",
-          "settings": {
-            "foreground": "#56b6c2",
-            "fontStyle": "underline"
-          }
+          "settings": { "foreground": "#56b6c2", "fontStyle": "underline" }
         },
         {
           "scope": "constant.other.general.math.tex",
-          "settings": {
-            "foreground": "#ffc59eda",
-            "fontStyle": ""
-          }
+          "settings": { "foreground": "#ffc59eda", "fontStyle": "" }
         },
         {
           "scope": "support.class.math.block.environment.latex",
-          "settings": {
-            "foreground": "#56b6c2"
-          }
+          "settings": { "foreground": "#56b6c2" }
         },
         {
           "scope": "keyword.control.label.latex",
-          "settings": {
-            "foreground": "#c678dd"
-          }
+          "settings": { "foreground": "#c678dd" }
         },
         {
           "scope": "keyword.control.ref.latex",
-          "settings": {
-            "foreground": "#56b6c2",
-            "fontStyle": ""
-          }
+          "settings": { "foreground": "#56b6c2", "fontStyle": "" }
         },
         {
           "scope": "punctuation.definition.constant.math.tex",
-          "settings": {
-            "foreground": "#98c379",
-            "fontStyle": ""
-          }
+          "settings": { "foreground": "#98c379", "fontStyle": "" }
         },
         {
           "scope": "comment.line.percentage.tex",
-          "settings": {
-            "foreground": "#5c6370",
-            "fontStyle": "italic"
-          }
+          "settings": { "foreground": "#5c6370", "fontStyle": "italic" }
         },
         {
           "scope": "keyword.other.item.latex",
-          "settings": {
-            "foreground": "#00ffc8"
-          }
+          "settings": { "foreground": "#00ffc8" }
         },
         {
           "scope": "support.function.math.latex",
-          "settings": {
-            "foreground": "#FF9D00"
-          }
+          "settings": { "foreground": "#FF9D00" }
         },
         {
           "scope": "meta.function.environment.latex.tikz",
-          "settings": {
-            "foreground": "#fff9f0",
-            "fontStyle": ""
-          }
+          "settings": { "foreground": "#fff9f0", "fontStyle": "" }
         }
       ]
     }
   },
   "ltex.language": "uk-UA",
   "ltex.enabled": ["latex"],
+
   "[latex]": {
     "rewrap.wrappingColumn": 120,
     "editor.wordBasedSuggestions": "off",
     "editor.tabCompletion": "onlySnippets",
     "editor.unicodeHighlight.ambiguousCharacters": true,
-    "editor.unicodeHighlight.invisibleCharacters": true
+    "editor.unicodeHighlight.invisibleCharacters": true,
+    "editor.defaultFormatter": "James-Yu.latex-workshop",
+    "editor.wordWrap": "on",
+    "editor.rulers": [120]
   },
+
+  "files.associations": {
+    "*.tikz": "latex"
+  },
+
   "latex-workshop.formatting.latex": "latexindent",
   "latex-workshop.bind.altKeymap.enabled": false,
   "latex-workshop.latex.clean.fileTypes": ["*.aux", "*.bak*", "*.bbl", "*.blg", "*.bcf", "*.idx", "*.ind", "*.log", "*.lof", "*.lot", "*.out", "*.toc", "*.acn", "*.acr", "*.alg", "*.glg", "*.glo", "*.gls", "*.fls", "*.xml", "*.fdb_latexmk", "*.snm", "*.synctex(busy)", "*.synctex.gz(busy)", "*.synctex.gz", "*.nav", "*.vrb", "*.xdv", "*.run", "*.run.xml"],
   "latex-workshop.latex.magic.args": ["-shell-escape", "-synctex=1", "-interaction=nonstopmode", "-file-line-error", "%DOC%"],
   "latex-workshop.view.pdf.zoom": "page-width",
   "latex-workshop.view.pdf.viewer": "tab",
+
   "workbench.editorAssociations": {
     "*.pdf": "latex-workshop-pdf-hook",
     "*.copilotmd": "vscode.markdown.preview.editor"
   },
-  "latex-workshop.latex.recipes": [
-    {
-      "name": "latexmk",
-      "tools": ["latexmk"]
-    }
-  ],
+
+  "latex-workshop.view.pdf.external.synctex.command": "d:/Programs/LaTeX/SumatraPDF/SumatraPDF.exe",
+  "latex-workshop.view.pdf.external.synctex.args": ["-forward-search", "%TEX%", "%LINE%", "-reuse-instance", "-inverse-search", "d:\\Programs\\VSCode\\Code.exe -r -g %f:%l", "%PDF%"],
+
   "latex-workshop.latex.tools": [
     {
       "name": "latexmk",
       "command": "latexmk",
       "args": ["-f", "-synctex=1", "-interaction=nonstopmode", "%DOC%"]
+    },
+    {
+      "name": "xelatex",
+      "command": "xelatex",
+      "args": ["-synctex=1", "-interaction=nonstopmode", "-file-line-error", "%DOC%"]
+    },
+    {
+      "name": "pdflatex",
+      "command": "pdflatex",
+      "args": ["-synctex=1", "-interaction=nonstopmode", "-file-line-error", "%DOC%"]
+    },
+    {
+      "name": "bibtex",
+      "command": "bibtex",
+      "args": ["%DOCFILE%"]
+    },
+    {
+      "name": "lualatex",
+      "command": "lualatex",
+      "args": ["-shell-escape", "-synctex=1", "-interaction=nonstopmode", "-file-line-error", "%DOC%"]
+    },
+    {
+      "name": "biber",
+      "command": "biber",
+      "args": ["%DOCFILE%"]
+    },
+    {
+      "name": "upmendex",
+      "command": "upmendex",
+      "args": ["%DOCFILE%"]
+    }
+  ],
+
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk",
+      "tools": ["latexmk"]
+    },
+    {
+      "name": "[User] pdflatex -> bibtex -> pdflatex*2",
+      "tools": ["pdflatex", "bibtex", "pdflatex", "pdflatex"]
+    },
+    {
+      "name": "[User] latexmk -> bibtex -> xelatex*2",
+      "tools": ["latexmk", "bibtex", "xelatex", "xelatex"]
+    },
+    {
+      "name": "[User] PDFLaTeX",
+      "tools": ["pdflatex"]
+    },
+    {
+      "name": "[User] LuaLaTeX -> biber -> upmendex -> LuaLaTeX*2",
+      "tools": ["lualatex", "biber", "upmendex", "lualatex", "lualatex"]
+    },
+    {
+      "name": "[User] LuaLaTeX -> biber -> LuaLaTeX",
+      "tools": ["lualatex", "biber", "lualatex"]
+    },
+    {
+      "name": "[User] LuaLaTeX",
+      "tools": ["lualatex"]
+    },
+    {
+      "name": "[User] XeLaTeX",
+      "tools": ["xelatex"]
+    },
+    {
+      "name": "[User] BibTeX",
+      "tools": ["bibtex"]
+    },
+    {
+      "name": "[User] Biber",
+      "tools": ["biber"]
+    },
+    {
+      "name": "[User] xelatex -> bibtex -> xelatex*2",
+      "tools": ["xelatex", "bibtex", "xelatex", "xelatex"]
+    },
+    {
+      "name": "[User] bibtex -> xelatex",
+      "tools": ["bibtex", "xelatex"]
     }
   ],
   "latex-workshop.latex.recipe.default": "latexmk",
+
   "latex-workshop.message.log.show": false,
   "latex-workshop.message.badbox.show": "both",
   "latex-workshop.message.warning.show": false,
@@ -134,10 +192,29 @@
   "latex-workshop.hover.citation.enabled": true,
   "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
   "latex-workshop.linting.chktex.exec.args": ["-wall", "-n19", "-n22", "-n30", "-q"],
+
   "localinput.jobname": "main",
   "localinput.driver": "alone.tex",
   "localinput.pdfBeside": true,
   "localinput.forceRebuild": true,
+  "localinput.normalizeLineBreaks": "wrap",
+  "localinput.blankLinesParagraph": 1,
+  "localinput.blankLinesHeading": 3,
+  "localinput.normalizeFrames": false,
+  "localinput.normalizeTables": false,
+  "localinput.normalizeTypography": true,
+  "localinput.displayMathToEquation": true,
+  "localinput.normalizeBlankLines": true,
+  "localinput.quoteStyle": "enquote",
+  "localinput.externalViewerCommand": "d:/Programs/LaTeX/SumatraPDF/SumatraPDF.exe",
+  "localinput.logParser": "texlogsieve",
+  "localinput.frameRules": {
+    "headings": "%% --------------------------------------------------------",
+    "section": "%% --------------------------------------------------------",
+    "formulas": "% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+    "align": "% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  },
+
   "files.exclude": {
     // --- Файлы ---
     "**/desktop.ini": true,
@@ -166,15 +243,16 @@
     "**/*.table": true,
     "**/*.gnuplot": true,
     "**/*.thm": true,
+    "**/*.bbl-*": true,
+    "**/*.bcf-*": true,
     // --- Папки ---
     "**/.archive": true,
     "**/build": true,
     "**/out": true,
-    "**/.vscode": false,   // оставляем видимой (можно убрать строку)
+    "**/.vscode": false,
     "**/__pycache__": true
   },
+
   "latex-workshop.hover.preview.newcommand.newcommandFile": "mathjax-macros.tex",
-  "latex-workshop.hover.preview.mathjax.extensions": [
-    "boldsymbol"
-  ]
+  "latex-workshop.hover.preview.mathjax.extensions": ["boldsymbol"]
 }
