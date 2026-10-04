@@ -26,6 +26,7 @@
 \newif\ifbibliography        % (прапорець наявності бібліографії)
 \newif\ifintro                % (прапорець наявності вступу)
 \newif\iffonts                % (пкостиль для компіляції з папки, яка небачить fonts/ — не підвантажувати додаткові гарнітури)
+\fontstrue
 
 
 %===============================================================================
@@ -117,7 +118,7 @@
 	\defaultfontfeatures{Ligatures={TeX}}
     \iffonts
 		\newfontfamily\Alexander[
-			Path=./fonts/
+			Path=fonts/
 			]{Alexander.otf}    % додаткова декоративна гарнітура \Alexander{...}
 	\fi
 	\RequirePackage{luacolor}              % коректна робота кольору тексту під LuaLaTeX
