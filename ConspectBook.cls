@@ -410,7 +410,8 @@
 % "the requested layer 'bg' is not part of the layer list".
 \pgfdeclarelayer{bg}          % фоновий шар для звичайних tikz-рисунків
 \pgfdeclarelayer{background}  % фоновий шар під "пергаментну" текстуру tornpage (див. розділ "Оформлення блоків")
-\pgfsetlayers{bg, background, main}  % порядок малювання: bg -> background -> main (стандартний)
+\pgfdeclarelayer{pre main}
+\pgfsetlayers{bg, background, pre main, main}  % порядок малювання: bg -> background -> main (стандартний)
 \usepgfplotslibrary{fillbetween}   % заливка області між двома кривими pgfplots/tikz
 \pgfplotsset{
 	%every tick label/.append style={scale=0.5},
