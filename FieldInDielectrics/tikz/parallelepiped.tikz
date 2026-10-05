@@ -9,11 +9,12 @@
 	\draw[thick, brown] (C) -- ++(-20:{2.5*cos(20)}) coordinate (P2) node[below]
 		{$P_{n}$};
 	\draw[->, thick, green!50!black] (C) -- ++(-20:1.5) node[below] {$\vect{n}$};
-	\draw[->] (0,-0.2) -- node[below] {$\vect{\ell}$} ++(3,0);
+	\draw[->] (0,-0.2) -- node[below] {$\symbfscr{l}$} ++(3,0);
 	\draw[dashed] (P1) -- (P2);
 	\foreach \i in {1,1.75,2.5} {
 			\node[text=blue] at (55:\i) {$-$};
-			\path (3, 0) ++(55:\i) node[text=red] {$+$};
+			\node[text=red] at ($(3,0) + (55:\i)$) {$+$};
 		}
-	\draw (C) ++(0:1.2) arc(0:-20:1.2) node[pos=0.5, right] {$\theta$};
+	\draw (C) ++(0:1.2) arc[start angle=0, end angle=-20, radius=1.2]
+    node[pos=0.5, right] {$\theta$};
 \end{tikzpicture}

@@ -177,32 +177,32 @@ $\rho$~--- густина заряду саме \emphx{рухомих} носі�
 товщі, елемент об'ємного струму зручно спростити до \emphx{елемента лінійного струму}.
 Нехай струм тече тонким провідником із площею поперечного перерізу $S$
 (рис.~\ref{pic:CurrentElement}). Уведемо вектор ділянки провідника завдовжки $d\ell$ за
-формулою $d\vect\ell = \vect n\, d\ell$, де $\vect n$~--- одиничний вектор уздовж осі
+формулою $d\symbfscr{l} = \vect n\, d\ell$, де $\vect n$~--- одиничний вектор уздовж осі
 провідника. Тоді $\vect j = j\vect n$, а~$I = jS$, тому
 % .........................................................
 \begin{equation}\label{eq:LinearCurrentElement}
-	\vect j\, dV = j\vect n\, S\, d\ell = I\, d\vect\ell,
+	\vect j\, dV = j\vect n\, S\, d\ell = I\, d\symbfscr{l},
 \end{equation}
 % .........................................................
 і~сила Ампера для елемента лінійного струму
 % .........................................................
 \begin{equation}\label{eq:AmpereForceLin}
 	\tcbhighmath{
-		d\vect F = \frac1c\left[I\, d\vect\ell\times\Bfield\right].
+		d\vect F = \frac1c\left[I\, d\symbfscr{l}\times\Bfield\right].
 	}
 \end{equation}
 % .........................................................
 
 \begin{SCfigure}[3.5][h!]\centering
 	\localinput{CurrentElementSpy.tikz}
-	\caption{Елемент лінійного струму $I\, d\vect\ell$: збільшений фрагмент показує напрям
+	\caption{Елемент лінійного струму $I\, d\symbfscr{l}$: збільшений фрагмент показує напрям
 	$\vect j$ уздовж осі провідника перерізу $S$\label{pic:CurrentElement}}
 \end{SCfigure}
 
 Залежно від того, як саме розподілений струм, зручно користуватись однією з~трьох
 еквівалентних форм елемента струму (рис.~\ref{pic:CurrentElementTypes}): \emphx{об'ємним}
 струмом $\vect j\, dV$ (коли важливий розподіл струму по товщі провідника),
-\emphx{лінійним} струмом $I\, d\vect\ell$ (коли провідник тонкий, і~досить знати лише
+\emphx{лінійним} струмом $I\, d\symbfscr{l}$ (коли провідник тонкий, і~досить знати лише
 повний струм у~ньому) або \emphx{поверхневим} струмом $\vect i\, dS$ (коли струм тече
 тонким шаром по поверхні~--- наприклад, струми в~надпровідниках чи високочастотні струми
 в~провідниках); тут $i = I/\ell_{\perp}$~--- поверхнева густина струму (сила струму, що
@@ -216,7 +216,7 @@ $\rho$~--- густина заряду саме \emphx{рухомих} носі�
 	\end{minipage}\hfill
 	\begin{minipage}[t]{0.32\linewidth}\centering
 		\localinput{LinCurrentElement.tikz}\\
-		\footnotesize Лінійний струм $I\, d\vect\ell$
+		\footnotesize Лінійний струм $I\, d\symbfscr{l}$
 	\end{minipage}\hfill
 	\begin{minipage}[t]{0.32\linewidth}\centering
 		\localinput{SurfCurrentElement.tikz}\\
@@ -394,7 +394,7 @@ q\vect v$),
 \end{center}
 
 Нехай точка спостереження перебуває на відстані $r$ від провідника; параметризуємо елемент
-струму кутом $\alpha$ між напрямком струму (елементом $d\vect{\ell}$) і~вектором
+струму кутом $\alpha$ між напрямком струму (елементом $d\symbfscr{l}$) і~вектором
 $\vect{\mathcal r}$, проведеним від елемента струму до точки спостереження. Тоді
 $d\ell = r\, d\alpha/\sin^2\alpha$, $\mathcal r = r/\sin\alpha$; кожен елемент дає
 внесок, напрямлений однаково (перпендикулярно до площини, що містить провідник і~точку
@@ -419,7 +419,7 @@ $d\ell = r\, d\alpha/\sin^2\alpha$, $\mathcal r = r/\sin\alpha$; кожен ел
 \begin{Example}{Поле відрізка провідника}
 Визначимо магнітне поле в~точці $P$ на відстані $r$ від \emphx{скінченного} відрізка
 провідника зі струмом; положення точки визначається кутами $\alpha_1$ і~$\alpha_2$ між
-напрямком струму (елементом $d\vect{\ell}$) і~векторами $\vect{\mathcal r}_1$,
+напрямком струму (елементом $d\symbfscr{l}$) і~векторами $\vect{\mathcal r}_1$,
 $\vect{\mathcal r}_2$, проведеними з~кінців відрізка до точки $P$.
 %(рис.~\ref{pic:FiniteWireAngles}).
 Обчислення повторює попередній приклад, тільки тепер межі інтегрування скінченні:
@@ -858,7 +858,7 @@ q_i$, а~дипольний момент \eqref{eq:el_momentum} з'являвс�
 вигляду:
 % ========================================================
 \begin{align}
-	\vect p_m &= \frac{I}{2c}\oint\limits_L \vect r\times d\vect\ell && \text{(лінійний замкнений струм)}, \label{eq:MagMomentLin}\\
+	\vect p_m &= \frac{I}{2c}\oint\limits_L \vect r\times d\symbfscr{l} && \text{(лінійний замкнений струм)}, \label{eq:MagMomentLin}\\
 	\vect p_m &= \frac1{2c}\sum_i q_i(\vect r_i\times\vect v_i) && \text{(система дискретних точкових зарядів).} \label{eq:MagMomentDiscrete}
 \end{align}
 % ========================================================
@@ -871,12 +871,12 @@ q_i$, а~дипольний момент \eqref{eq:el_momentum} з'являвс�
 
 Обчислимо за формулою~\eqref{eq:MagMomentLin} магнітний момент плоского колового витка
 радіуса $R$ зі струмом $I$ (рис.~\ref{pic:LoopMagMoment}). Оскільки $\vect r \perp
-d\vect\ell$ у~кожній точці кола, а~$|\vect r\times d\vect\ell| = R\, d\ell$, і~напрям
+d\symbfscr{l}$ у~кожній точці кола, а~$|\vect r\times d\symbfscr{l}| = R\, d\ell$, і~напрям
 цього добутку той самий у~кожній точці (по нормалі $\vect n$ до площини витка), маємо
 % .........................................................
 \begin{equation}\label{eq:MagMomentLoop}
 	\tcbhighmath{
-		\vect p_m = \frac{I}{2c}\oint\limits_L \vect r\times d\vect\ell = \frac1c I\pi R^2\vect n = \frac1c IS\vect n,
+		\vect p_m = \frac{I}{2c}\oint\limits_L \vect r\times d\symbfscr{l} = \frac1c I\pi R^2\vect n = \frac1c IS\vect n,
 	}
 \end{equation}
 % .........................................................
@@ -1146,10 +1146,10 @@ p_m\times\vect r)$, і~підстановка в~\eqref{eq:VectorPotentialTwoTer
 ($N$) і~південного ($S$), рис.~\ref{pic:DipoleCharges}:
 % .........................................................
 \begin{equation*}
-	\vect p_m = q_m\vect\ell,
+	\vect p_m = q_m\symbfscr{l},
 \end{equation*}
 % .........................................................
-де $q_m$~--- величина ефективного магнітного заряду, а~$\vect\ell$~--- \enquote{плече}
+де $q_m$~--- величина ефективного магнітного заряду, а~$\symbfscr{l}$~--- \enquote{плече}
 диполя.
 
 \begin{SCfigure}[9][h!]\centering
@@ -1201,7 +1201,7 @@ p_m\times\vect r)$, і~підстановка в~\eqref{eq:VectorPotentialTwoTer
 елементі витка~\eqref{eq:AmpereForceLin},
 % .........................................................
 \begin{equation*}
-	\vect M = \frac1c \oint\limits_L \vect r\times\left(I\, d\vect\ell\times\Bfield\right).
+	\vect M = \frac1c \oint\limits_L \vect r\times\left(I\, d\symbfscr{l}\times\Bfield\right).
 \end{equation*}
 % .........................................................
 
@@ -1277,7 +1277,7 @@ $r_i\,dr_j - r_j\,dr_i = \varepsilon_{ijk}(\vect r\times d\vect r)_k$, отри�
 \frac{I}{2c}\oint_L\vect r\times d\vect r = \frac{I}{c}\vect S$, де $\vect
 S=\frac12\oint_L\vect r\times d\vect r$~--- векторна площа контуру: це саме та формула
 магнітного моменту лінійного струму~\eqref{eq:MagMomentLin}, яку ми означили ще на початку
-цього розділу (тут просто $d\vect r$ відіграє роль елемента контуру $d\vect\ell$).
+цього розділу (тут просто $d\vect r$ відіграє роль елемента контуру $d\symbfscr{l}$).
 
 
 % ---------------------------------------------------------
@@ -1484,7 +1484,7 @@ S=\frac12\oint_L\vect r\times d\vect r$~--- векторна площа конт
 	  індукцією, а~не напруженістю,~--- у~чому історична причина цієї термінологічної
 	  асиметрії?
 	\item Запишіть магнітну складову сили Лоренца та повну силу Лоренца. Виведіть з~неї
-	  силу Ампера для елемента об'ємного $\vect j\,dV$ та лінійного $I\,d\vect\ell$
+	  силу Ампера для елемента об'ємного $\vect j\,dV$ та лінійного $I\,d\symbfscr{l}$
 	  струму.
 	\item Доведіть, що магнітна складова сили Лоренца не виконує роботи над зарядженою
 	  частинкою, $\delta A = 0$. Як цей факт узгоджується з~тим, що електродвигун виконує

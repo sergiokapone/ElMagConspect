@@ -276,7 +276,6 @@
 
 % \emphx{текст} — виділення терміна малиновим курсивом (означення, важливий термін)
 \NewDocumentCommand{\emphx}{m}{\emph{\textcolor{malina}{#1}}}
-
 %===============================================================================
 %
 %										Хімія
@@ -285,7 +284,7 @@
 % Використовується епізодично (напр. для формул речовин у прикладах) — не є
 % профільним предметом книги, тому підключено одним рядком без додаткових налаштувань.
 \RequirePackage[version=4]{mhchem}
-\RequirePackage{chemfig}
+% \RequirePackage{chemfig}
 
 %===============================================================================
 %
@@ -384,6 +383,7 @@
 % від найпростіших (contact, magarrow) до складних параметричних (parallelepiped).
 \RequirePackage{tikz, pgfplots, tikz-3dplot}
 \RequirePackage{circuitikz}    % електричні кола (резистори, батареї тощо) для схем
+\usetikzlibrary{babel}
 %---------------------------------------------------
 %\usetikzlibrary{external}
 %\usepgfplotslibrary{external}

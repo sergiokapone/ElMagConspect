@@ -57,7 +57,7 @@
     \draw[red!70!black, thin] (0, -0.7) circle ({\R} and {\Ry});
 
     % Стрілка довжини елемента поруч
-    \draw[red!80!black, ->, thick] (-0.35, -1.1) -- (-0.35, -0.7) node[midway, left] {$d\vect{\ell}$};
+    \draw[red!80!black, ->, thick] (-0.35, -1.1) -- (-0.35, -0.7) node[midway, left] {$d\symbfscr{l}$};
 
     % --- Передня частина контуру інтегрування L (перед провідником) ---
     \draw[blue!60!black, thick, arrowpos={0.75}{0pt}{4pt}]

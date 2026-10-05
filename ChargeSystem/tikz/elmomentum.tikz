@@ -12,5 +12,5 @@
 
 	\draw[->, red, thick] (0,0) -- (qp) node[pos=0.5, above, text=black] {$\vect{r}_+$};
 	\draw[->, red, thick] (0,0) -- (qn) node[pos=0.5, above, text=black] {$\vect{r}_-$};
-	\draw[->, thick, gray] (qn) -- node[above] {$\vect{\ell}$} (qp);
+	\draw[->, thick, gray] (qn) -- node[above] {$\symbfscr{l}$} (qp);
 \end{tikzpicture}
