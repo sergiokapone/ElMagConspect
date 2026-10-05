@@ -179,7 +179,6 @@
     }
   ],
   "latex-workshop.latex.recipe.default": "latexmk",
-
   "latex-workshop.message.log.show": false,
   "latex-workshop.message.badbox.show": "both",
   "latex-workshop.message.warning.show": false,
@@ -192,29 +191,28 @@
   "latex-workshop.hover.citation.enabled": true,
   "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
   "latex-workshop.linting.chktex.exec.args": ["-wall", "-n19", "-n22", "-n30", "-q"],
-
-  "localinput.jobname": "main",
-  "localinput.driver": "alone.tex",
-  "localinput.pdfBeside": true,
-  "localinput.forceRebuild": true,
-  "localinput.normalizeLineBreaks": "wrap",
-  "localinput.blankLinesParagraph": 1,
-  "localinput.blankLinesHeading": 3,
-  "localinput.normalizeFrames": false,
-  "localinput.normalizeTables": false,
-  "localinput.normalizeTypography": true,
-  "localinput.displayMathToEquation": true,
-  "localinput.normalizeBlankLines": true,
-  "localinput.quoteStyle": "enquote",
-  "localinput.externalViewerCommand": "d:/Programs/LaTeX/SumatraPDF/SumatraPDF.exe",
-  "localinput.logParser": "texlogsieve",
-  "localinput.frameRules": {
-    "headings": "%% --------------------------------------------------------",
-    "section": "%% --------------------------------------------------------",
-    "formulas": "% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
-    "align": "% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+   // tssworkflow
+  "tssworkflow.normalizeLineBreaks": "wrap",
+  "tssworkflow.blankLinesParagraph": 1,
+  "tssworkflow.blankLinesHeading": 2,
+  "tssworkflow.normalizeFrames": true,
+  "tssworkflow.normalizeTables": false,
+  "tssworkflow.normalizeTypography": true,
+  "tssworkflow.displayMathToEquation": true,
+  "tssworkflow.normalizeBlankLines": true,
+  "tssworkflow.quoteStyle": "enquote",
+  "tssworkflow.externalViewerCommand": "d:/Programs/LaTeX/SumatraPDF/SumatraPDF.exe",
+  "tssworkflow.logParser": "texlogsieve",
+  "tssworkflow.frameRules": {
+    "section":  "%% ========================================================",
+    "subsection":   "% ---------------------------------------------------------",
+    "equation":     "% .........................................................",
   },
-
+  "tssworkflow.jobname": "main",
+  "tssworkflow.driver": "alone.tex",
+  "tssworkflow.pdfBeside": true,
+  "tssworkflow.forceRebuild": true,
+  // ---------------------------
   "files.exclude": {
     // --- Файлы ---
     "**/desktop.ini": true,
