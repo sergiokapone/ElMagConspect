@@ -77,10 +77,14 @@
     % Точка спостереження P
     \fill (P) circle (1.5pt) node[right=4pt] {$P$};
 
-    % Кут \alpha у вершині P
-    \pgfmathsetmacro\angP{atan(1.3/2.4)} % Обчислення кута
-    \draw[->, thin] (P) ++(180:0.6) arc (180:{180+\angP}:0.6);
-    \path (P) ++({180+0.5*\angP}:0.85) node {$\alpha$};
+    % --- Кут \alpha між елементом d\ell та вектором \mathcal{r} ---
+    % Вершина кута — точка Dl (елемент струму)
+    % Перший промінь — вертикально вгору (напрямок струму d\ell)
+    % Другий промінь — уздовж вектора \mathcal{r} до точки P
+    \pgfmathsetmacro\angAlpha{atan2(2.4, 1.3)} % кут між вертикаллю та \mathcal{r}
+    \draw[->, thin, gray!70!black]
+        (Dl) ++(90:0.55) arc (90:{90-\angAlpha}:0.55);
+    \path (Dl) ++({90-0.5*\angAlpha}:0.85) node {$\alpha$};
 
     % Вектор магнітного поля dB (напрямлений за площину \otimes)
     \draw[thick] (P) ++(0.35, 0.35) circle (3pt) node[right=4pt] {$d\vect{B}$};
