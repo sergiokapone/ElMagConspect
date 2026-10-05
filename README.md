@@ -6,13 +6,6 @@
   Створено на базі LaTeX для студентів технічних та природничих спеціальностей
 </p>
 
-<p align="center">
-  <img src="logo/logo.png" alt="Logoer">
-  ./ElMagConspect.pdf📄 Завантажити PDF</a>
-  •
-  <a href="https://github.com/sergiokapone/ElMagConspect">💻 GitHub</a>
-</p>
-
 ---
 
 ## 📖 Про проєкт
