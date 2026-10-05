@@ -464,10 +464,12 @@ postaction={ decorate,
 % arrowpos={позиція}{зсув}{довжина} — стрілка в довільній точці шляху з керованим
 % зсувом та довжиною наконечника (гнучкіший за midarrow)
 \tikzset{
-	arrowpos/.style n args={3}{
-			decoration={markings,mark=at position #1 with {\arrow[xshift=#2]{Latex[length=#3]}}},
-			postaction={decorate}
-		}
+    arrowpos/.code n args={3}{
+        \tikzset{
+            decoration={markings, mark=at position #1 with {\arrow[xshift=#2]{Latex[length=#3]}}},
+            postaction={decorate}
+        }
+    }
 }
 
 % ------------------------------- Допоміжні pic-стилі ---------------------------
