@@ -217,7 +217,7 @@ $\vect F_\text{Л}=q\vect u_\perp\times\Bfield/c$, на яку ми вже зв�
 \end{equation*}
 і~викликає в~перемичці довжиною \(\ell\) ЕРС індукції, рівну
 \begin{equation*}
-	\emf_{\text{інд}} = \oint \Efield^* \cdot d\vect{\ell} = - E_{\text{стор}} \ell = -
+	\emf_{\text{інд}} = \oint \Efield^* \cdot d\symbfscr{l} = - E_{\text{стор}} \ell = -
 	\frac{1}{c} B \ell v.
 \end{equation*}
 Знак «\(-\)» тут пов'язаний з~тим, що \(\mathcal{E}_{\text{інд}}\) створює струм у
@@ -240,13 +240,13 @@ $\vect F_\text{Л}=q\vect u_\perp\times\Bfield/c$, на яку ми вже зв�
 
 Для контуру довільної форми, що рухається й~деформується в~стаціонарному, але
 неоднорідному полі, ЕРС руху знаходимо, підсумовуючи по контуру сторонню силу $[\vect
-		v\times\Bfield]/c$, де $\vect v$~--- швидкість елемента $d\vect\ell$:
+		v\times\Bfield]/c$, де $\vect v$~--- швидкість елемента $d\symbfscr{l}$:
 \begin{equation*}
-	\emf_\text{інд} = \frac1c\oint [\vect v\times\Bfield]\cdot d\vect\ell.
+	\emf_\text{інд} = \frac1c\oint [\vect v\times\Bfield]\cdot d\symbfscr{l}.
 \end{equation*}
-За час $dt$ елемент $d\vect\ell$ замітає площу $d\vect S = [\vect v\,dt\times
-			d\vect\ell]$, тому зміна потоку дорівнює $d\Phi = \oint\Bfield\cdot[\vect v\times
-		d\vect\ell]\,dt = -dt\oint[\vect v\times\Bfield]\cdot d\vect\ell$, і~знову
+За час $dt$ елемент $d\symbfscr{l}$ замітає площу $d\vect S = [\vect v\,dt\times
+			d\symbfscr{l}]$, тому зміна потоку дорівнює $d\Phi = \oint\Bfield\cdot[\vect v\times
+		d\symbfscr{l}]\,dt = -dt\oint[\vect v\times\Bfield]\cdot d\symbfscr{l}$, і~знову
 $\emf_\text{інд} = -\dfrac1c\dfrac{d\Phi}{dt}$, де магнітний потік визначається
 інтегралом~\eqref{eq:magnetic_flux} по площі, що обмежується контуром.
 
@@ -402,9 +402,9 @@ $\emf_\text{інд} = -\dfrac1c\dfrac{d\Phi}{dt}$, де магнітний по�
 Повернімося до питання, яке ми залишили відкритим: що саме прискорює нерухомі заряди при
 зміні $\Bfield$? Оскільки $\Phi = \iint_S \Bfield\cdot d\vect S$, а~ЕРС, за
 означенням~\eqref{eq:EMFDef} (гл.~\ref{SteadyCurrent}), дорівнює $\emf = \oint_L
-	\Efield\cdot d\vect\ell$, із закону індукції безпосередньо випливає:
+	\Efield\cdot d\symbfscr{l}$, із закону індукції безпосередньо випливає:
 \begin{equation}\label{eq:CurlEInt}
-	\tcbhighmath{ \oint\limits_L \Efield\cdot d\vect\ell = -\frac1c\iint\limits_S
+	\tcbhighmath{ \oint\limits_L \Efield\cdot d\symbfscr{l} = -\frac1c\iint\limits_S
 		\frac{\partial\Bfield}{\partial t}\cdot d\vect S. }
 \end{equation}
 Це~--- \emphx{теорема про циркуляцію} електричного поля: циркуляція напруженості
@@ -419,7 +419,7 @@ $\emf_\text{інд} = -\dfrac1c\dfrac{d\Phi}{dt}$, де магнітний по�
 Зауважимо, що теорему~\eqref{eq:CurlEInt} записано для \emphx{нерухомого} контуру. Якщо
 контур рухається, до $\Efield$ у~формулі для ЕРС слід додати силу Лоренца, що припадає на
 одиницю заряду: $\emf_\text{інд} = \oint\bigl(\Efield + [\vect
-		v\times\Bfield]/c\bigr)\cdot d\vect\ell = -\dfrac1c\dfrac{d\Phi}{dt}$. Це~--- загальний
+		v\times\Bfield]/c\bigr)\cdot d\symbfscr{l} = -\dfrac1c\dfrac{d\Phi}{dt}$. Це~--- загальний
 закон індукції~\eqref{eq:FaradayLawInt}, який охоплює обидва механізми: сила Лоренца
 відповідає за ЕРС руху (попередній параграф), а~вихрове електричне поле~--- за ЕРС у
 нерухомому контурі.
@@ -825,7 +825,7 @@ $\rot\Efield=-\dfrac1c\dfrac{\partial\Bfield}{\partial t}$: воно не є п�
 діє на заряд так само як і~електростатичне (бетатрон, індукційне нагрівання, струми Фуко).
 Поділ на ці два механізми залежить від системи відліку, а~загальний закон індукції охоплює
 обидва: $\emf_\text{інд}=\oint(\Efield+[\vect v\times\Bfield]/c)\cdot
-	d\vect\ell=-\dfrac1c\dfrac{d\Phi}{dt}$. Сила Лоренца (гл.~\ref{MagFieldVacuum}) демонструє
+	d\symbfscr{l}=-\dfrac1c\dfrac{d\Phi}{dt}$. Сила Лоренца (гл.~\ref{MagFieldVacuum}) демонструє
 фундаментальний зв'язок магнітного поля з~рухом зарядів, а~вихрове поле~--- з~тим, що
 змінне магнітне поле саме породжує електричне.
 
@@ -845,9 +845,9 @@ $\Phi_\text{зовн}+LI/c=\const$, а~індукційні струми не з
 
 % Основні формули розділу:
 % \begin{itemize}
-% 	\item закон індукції $\emf_\text{інд}=-\dfrac1c\dfrac{d\Phi}{dt}$, $\Phi=\iint\Bfield\cdot d\vect S$; ЕРС руху $\emf_\text{інд}=\dfrac1c\oint[\vect v\times\Bfield]\cdot d\vect\ell$, для перемички $\emf_\text{інд}=-B\ell v/c$;
+% 	\item закон індукції $\emf_\text{інд}=-\dfrac1c\dfrac{d\Phi}{dt}$, $\Phi=\iint\Bfield\cdot d\vect S$; ЕРС руху $\emf_\text{інд}=\dfrac1c\oint[\vect v\times\Bfield]\cdot d\symbfscr{l}$, для перемички $\emf_\text{інд}=-B\ell v/c$;
 % 	\item генератор: $\emf_\text{інд}=\dfrac{NBS\omega}{c}\sin\omega t$;
-% 	\item теорема про циркуляцію $\oint\Efield\cdot d\vect\ell=-\dfrac1c\iint\dfrac{\partial\Bfield}{\partial t}\cdot d\vect S$, $\rot\Efield=-\dfrac1c\dfrac{\partial\Bfield}{\partial t}$;
+% 	\item теорема про циркуляцію $\oint\Efield\cdot d\symbfscr{l}=-\dfrac1c\iint\dfrac{\partial\Bfield}{\partial t}\cdot d\vect S$, $\rot\Efield=-\dfrac1c\dfrac{\partial\Bfield}{\partial t}$;
 % 	\item самоіндукція: $\Phi=LI/c$, $\emf_\text{сі}=-\dfrac{L}{c^2}\dfrac{dI}{dt}$; соленоїд $L=4\pi\mu N^2S/l$, тороїд $L=2\mu N^2d\ln(b/a)$;
 % 	\item надпровідник: $\Phi_\text{зовн}+LI/c=\const$, $\Bfield=0$ у товщі, $\chi=-1/4\pi$, $\delta_L=\sqrt{mc^2/(4\pi n_sq^2)}$;
 % 	\item $LR$-коло: $I=\dfrac{\emf}{R}(1-e^{-t/\tau})$, $\tau=\dfrac{L}{c^2R}$; розмикання: $I=I_0e^{-t/\tau'}$, $\tau'=\dfrac{L}{c^2(R+r)}$.

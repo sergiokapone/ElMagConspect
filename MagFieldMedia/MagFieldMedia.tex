@@ -161,10 +161,10 @@
 \subsection*{Циркуляція вектора намагніченості}
 
 Виберемо тепер у речовині \emphx{довільний} замкнений контур $L$ (рис.~\ref{pic:Jloop}). За формулою~\eqref{eq:MolecularSurfaceCurrent} на елемент довжини
-контуру $d\vect\ell$ припадає молекулярний струм $dI_m = i_m\, d\ell = c\,\vect J\cdot d\vect\ell$, тому повний молекулярний струм, що
+контуру $d\symbfscr{l}$ припадає молекулярний струм $dI_m = i_m\, d\ell = c\,\vect J\cdot d\symbfscr{l}$, тому повний молекулярний струм, що
 перетинає (пронизує) контур,
 \begin{equation}\label{eq:CirculationJ}
-	I_m = c\oint\limits_L \vect J\cdot d\vect\ell.
+	I_m = c\oint\limits_L \vect J\cdot d\symbfscr{l}.
 \end{equation}
 
 \begin{SCfigure}[2][h!]\centering
@@ -174,7 +174,7 @@
 
 За теоремою Стокса цей вираз перетворюється так:
 \begin{equation*}
-	I_m = c\oint\limits_L \vect J\cdot d\vect\ell = c\iint\limits_S \rot\vect J\cdot d\vect S,
+	I_m = c\oint\limits_L \vect J\cdot d\symbfscr{l} = c\iint\limits_S \rot\vect J\cdot d\vect S,
 \end{equation*}
 де $S$ --- будь-яка поверхня, натягнута на контур $L$. З іншого боку, той самий струм $I_m$ можна виразити через його \emphx{об'ємну} густину
 $\vect j_m$: $I_m = \iint_S \vect j_m\cdot d\vect S$. Порівнюючи два вирази, отримуємо \emphx{зв'язок молекулярного струму з вектором
@@ -518,13 +518,13 @@ $\chi_m$. Знайдемо поверхневий і об'ємний молек�
 %			hline{2}={white}
 %		}
 %		Вектор намагніченості                     & $\displaystyle \vect J = \frac1V\sum_i \vect p_i$                               \\
-%		Циркуляція $\vect J$ (інтегральна форма)  & $\displaystyle c\oint\limits_L \vect J\cdot d\vect\ell = I_m$                    \\
+%		Циркуляція $\vect J$ (інтегральна форма)  & $\displaystyle c\oint\limits_L \vect J\cdot d\symbfscr{l} = I_m$                    \\
 %		Циркуляція $\vect J$ (диференціальна форма) & $\vect j_m = c\rot\vect J$                                                     \\
 %		Вектор напруженості                       & $\Hfield = \Bfield - 4\pi\vect J$                                                \\
 %		Для лінійних магнетиків                   & $\vect J = \chi_m\Hfield$                                                        \\
 %		Зв'язок проникності й сприйнятливості      & $\mu = 1+4\pi\chi_m$                                                             \\
 %		Для лінійних магнетиків                   & $\Bfield = \mu\Hfield$                                                           \\
-%		Циркуляція $\Hfield$ у речовині (інт.)    & $\displaystyle \oint\limits_L \Hfield\cdot d\vect\ell = \frac{4\pi}c \iint\limits_S \vect j\cdot d\vect S$ \\
+%		Циркуляція $\Hfield$ у речовині (інт.)    & $\displaystyle \oint\limits_L \Hfield\cdot d\symbfscr{l} = \frac{4\pi}c \iint\limits_S \vect j\cdot d\vect S$ \\
 %		Циркуляція $\Hfield$ у речовині (диф.)    & $\rot\Hfield = \dfrac{4\pi}c\vect j$                                             \\
 %		Гранична умова для $B_n$                  & $B_{1n}=B_{2n}$                                                                  \\
 %		Гранична умова для $H_\tau$                & $H_{2\tau}-H_{1\tau} = \dfrac{4\pi}c i_b$                                        \\

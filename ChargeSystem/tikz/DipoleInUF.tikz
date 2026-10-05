@@ -23,5 +23,5 @@
 	\draw[->, ultra thick, cyan] (O) -- node[left] {$\vect{r}_-$}(qn);
 	\draw[->, ultra thick, cyan] (O) -- node[right] {$\vec{r}_+$}(qp);
 
-	\draw[->, gray, ultra thick] (qn) -- node[above] {$\vect{\ell}$} (qp);
+	\draw[->, gray, ultra thick] (qn) -- node[above] {$\symbfscr{l}$} (qp);
 \end{tikzpicture}

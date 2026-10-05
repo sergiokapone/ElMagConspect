@@ -37,7 +37,7 @@
 двох точкових зарядів $q$, однакових за величиною і протилежних за знаком (рис.~\ref{tikz:el_dipole}).
 
 
-\emphx{Плече диполя} --- вектор ($\vect{\ell}$), що йде від <<$-$>> заряду до
+\emphx{Плече диполя} --- вектор ($\symbfscr{l}$), що йде від <<$-$>> заряду до
 <<$+$>>, довжина якого дорівнює відстані між зарядами.
 
 
@@ -49,7 +49,7 @@
 \end{SCfigure}
 \emphx{Дипольним моментом} елементарного диполя називається вектор
 \begin{equation}
-	\vect{p} = q\vect{\ell}.
+	\vect{p} = q\symbfscr{l}.
 \end{equation}
 
 
@@ -92,7 +92,7 @@
 		\vect{r}_+ =  \vect{r} - \vect{r}'_+
 	\end{cases}, \quad |\vect{r}'_-| = |\vect{r}'_+| = \frac{\ell}2.
 \end{equation*}
-Виразимо $\vect r_\pm$ через плече диполя $\vect{\ell}$ (воно напрямлене від $-q$ до $+q$): $\vect r_\pm=\vect r\mp\vect{\ell}/2$. Оскільки $\ell\ll r$, ці вектори лише трохи відрізняються від $\vect r$, тому знаменники $r_\pm^3$ зручно розкласти за малим зсувом. Для довільного вектора $\vect a$ з $|\vect a|\ll r$
+Виразимо $\vect r_\pm$ через плече диполя $\symbfscr{l}$ (воно напрямлене від $-q$ до $+q$): $\vect r_\pm=\vect r\mp\symbfscr{l}/2$. Оскільки $\ell\ll r$, ці вектори лише трохи відрізняються від $\vect r$, тому знаменники $r_\pm^3$ зручно розкласти за малим зсувом. Для довільного вектора $\vect a$ з $|\vect a|\ll r$
 \begin{equation*}
 	|\vect r-\vect a|^2 = r^2-2\,\vect r\cdot\vect a+a^2 \approx r^2\left(1-\frac{2\,\vect r\cdot\vect a}{r^2}\right)
 \end{equation*}
@@ -100,16 +100,16 @@
 \begin{equation}\label{eq:shift_first_order}
 	\frac1{|\vect r-\vect a|^{n}} \approx \frac1{r^{n}}\left(1+n\,\frac{\vect r\cdot\vect a}{r^2}\right).
 \end{equation}
-Для поля диполя потрібне $n=3$ (для потенціалу в розд.~\ref{sec:DipolePotential} буде $n=1$). Для $r_+=|\vect r-\vect{\ell}/2|$ беремо $\vect a=\vect{\ell}/2$, для $r_-=|\vect r+\vect{\ell}/2|$ --- $\vect a=-\vect{\ell}/2$, і суперпозицію записуємо як $\Efield=q\left(\vect r_+/r_+^3-\vect r_-/r_-^3\right)$:
+Для поля диполя потрібне $n=3$ (для потенціалу в розд.~\ref{sec:DipolePotential} буде $n=1$). Для $r_+=|\vect r-\symbfscr{l}/2|$ беремо $\vect a=\symbfscr{l}/2$, для $r_-=|\vect r+\symbfscr{l}/2|$ --- $\vect a=-\symbfscr{l}/2$, і суперпозицію записуємо як $\Efield=q\left(\vect r_+/r_+^3-\vect r_-/r_-^3\right)$:
 \begin{equation*}
-	\Efield \approx \frac{q}{r^3}\left[\left(\vect r-\frac{\vect{\ell}}2\right)\left(1+\frac{3\,\vect r\cdot\vect{\ell}}{2r^2}\right)
-	- \left(\vect r+\frac{\vect{\ell}}2\right)\left(1-\frac{3\,\vect r\cdot\vect{\ell}}{2r^2}\right)\right].
+	\Efield \approx \frac{q}{r^3}\left[\left(\vect r-\frac{\symbfscr{l}}2\right)\left(1+\frac{3\,\vect r\cdot\symbfscr{l}}{2r^2}\right)
+	- \left(\vect r+\frac{\symbfscr{l}}2\right)\left(1-\frac{3\,\vect r\cdot\symbfscr{l}}{2r^2}\right)\right].
 \end{equation*}
-Розкриваючи дужки, зберігаємо лише члени першого порядку за $\ell$: добутки виду $\vect{\ell}\,(\vect r\cdot\vect{\ell})$ мають другий порядок і відкидаються. Доданки з $\vect r$ --- це поля двох зарядів, взятих окремо, --- взаємно скорочуються, тож головний внесок дає саме перший порядок:
+Розкриваючи дужки, зберігаємо лише члени першого порядку за $\ell$: добутки виду $\symbfscr{l}\,(\vect r\cdot\symbfscr{l})$ мають другий порядок і відкидаються. Доданки з $\vect r$ --- це поля двох зарядів, взятих окремо, --- взаємно скорочуються, тож головний внесок дає саме перший порядок:
 \begin{equation*}
-	\Efield = \frac{q}{r^3}\left[\frac{3\,(\vect r\cdot\vect{\ell})\,\vect r}{r^2}-\vect{\ell}\right].
+	\Efield = \frac{q}{r^3}\left[\frac{3\,(\vect r\cdot\symbfscr{l})\,\vect r}{r^2}-\symbfscr{l}\right].
 \end{equation*}
-Множник $3$ походить від показника степеня в $r_\pm^{-3}$. У границі точкового диполя ($\ell\to0$, $\vect p=q\vect{\ell}$ фіксований) відкинуті члени зникають, і наближена рівність стає точною. Підставляючи $\vect p=q\vect{\ell}$, одержуємо:
+Множник $3$ походить від показника степеня в $r_\pm^{-3}$. У границі точкового диполя ($\ell\to0$, $\vect p=q\symbfscr{l}$ фіксований) відкинуті члени зникають, і наближена рівність стає точною. Підставляючи $\vect p=q\symbfscr{l}$, одержуємо:
 \begin{equation}\label{eq:dipole_field}
 	\tcbhighmath{
 		\Efield = \frac{3(\vect{p}\cdot\vect{r})\vect{r}}{r^5} -
@@ -148,12 +148,12 @@
 		\vect{r}_+ =  \vect{r} - \vect{r}'_+
 	\end{cases}, \quad |\vect{r}'_-| = |\vect{r}'_+| = \frac{\ell}2.
 \end{equation*}
-Скористаємося розкладом \eqref{eq:shift_first_order} при $n=1$, узявши $\vect a=\pm\vect{\ell}/2$ для $r_\pm=|\vect r\mp\vect{\ell}/2|$:
+Скористаємося розкладом \eqref{eq:shift_first_order} при $n=1$, узявши $\vect a=\pm\symbfscr{l}/2$ для $r_\pm=|\vect r\mp\symbfscr{l}/2|$:
 \begin{equation*}
-	\phi = q\left(\frac1{r_+}-\frac1{r_-}\right) \approx \frac qr\left[\left(1+\frac{\vect r\cdot\vect{\ell}}{2r^2}\right)-\left(1-\frac{\vect r\cdot\vect{\ell}}{2r^2}\right)\right]
-	= \frac{q\,\vect{\ell}\cdot\vect r}{r^3}.
+	\phi = q\left(\frac1{r_+}-\frac1{r_-}\right) \approx \frac qr\left[\left(1+\frac{\vect r\cdot\symbfscr{l}}{2r^2}\right)-\left(1-\frac{\vect r\cdot\symbfscr{l}}{2r^2}\right)\right]
+	= \frac{q\,\symbfscr{l}\cdot\vect r}{r^3}.
 \end{equation*}
-Доданки $1/r$ (кулонівські потенціали двох зарядів окремо) скорочуються через протилежні знаки зарядів, тому потенціал диполя спадає швидше за кулонівський. Врахувавши $\vect p=q\vect{\ell}$, маємо:
+Доданки $1/r$ (кулонівські потенціали двох зарядів окремо) скорочуються через протилежні знаки зарядів, тому потенціал диполя спадає швидше за кулонівський. Врахувавши $\vect p=q\symbfscr{l}$, маємо:
 \begin{equation}\label{eq:potential_dipole}
 	\tcbhighmath{
 		\phi = \frac{\vect{p}\cdot\vect{r}}{r^3}.
@@ -320,19 +320,19 @@ $z$, для кожного заряду $r_{ix}=r_{iy}=0$, $r_{iz}=z_i$, $r_i^2=
 
 %\begin{Attention}
 %    Далі нам знадобиться допоміжний математичний факт, який варто нагадати заздалегідь.
-%	Для двох близьких точок $\vect r$ і $\vect r + \vect\ell$ ($|\vect\ell|\to0$) різницю значень довільної скалярної функції $f(\vect r)$ можна
+%	Для двох близьких точок $\vect r$ і $\vect r + \symbfscr{l}$ ($|\symbfscr{l}|\to0$) різницю значень довільної скалярної функції $f(\vect r)$ можна
 %	записати за допомогою розкладу в ряд Тейлора, обмежившись першим порядком малості:
 %	\begin{equation}\label{eq:sc_diff}
-%		\Delta f = f(\vect r + \vect\ell) - f(\vect r) \approx
+%		\Delta f = f(\vect r + \symbfscr{l}) - f(\vect r) \approx
 %		\ell_x\frac{\partial f}{\partial x} + \ell_y\frac{\partial f}{\partial y} + \ell_z\frac{\partial f}{\partial z}
-%		= \vect\ell\cdot\vect\nabla f.
+%		= \symbfscr{l}\cdot\vect\nabla f.
 %	\end{equation}
 %	Та сама формула, застосована покомпонентно до кожної декартової складової векторного поля $\vect A(\vect r)$, дає аналогічний вираз для
 %	різниці векторної функції:
 %	\begin{equation}\label{eq:vec_diff}
-%		\Delta\vect A = \vect A(\vect r + \vect\ell) - \vect A(\vect r) \approx
+%		\Delta\vect A = \vect A(\vect r + \symbfscr{l}) - \vect A(\vect r) \approx
 %		\ell_x\frac{\partial\vect A}{\partial x} + \ell_y\frac{\partial\vect A}{\partial y} + \ell_z\frac{\partial\vect A}{\partial z}
-%		= (\vect\ell\cdot\vect\nabla)\vect A.
+%		= (\symbfscr{l}\cdot\vect\nabla)\vect A.
 %	\end{equation}
 %\end{Attention}
 
@@ -390,7 +390,7 @@ $z$, для кожного заряду $r_{ix}=r_{iy}=0$, $r_{iz}=z_i$, $r_i^2=
 
 Для точкового диполя різницю $\Delta\Efield$ можна записати використовуючи формулу \eqref{eq:vec_diff} у вигляді:
 \begin{equation*}
-	\Delta\Efield = \Efield(\vect{r} + \vect{\ell}) - \Efield(\vect{r})= \ell_x
+	\Delta\Efield = \Efield(\vect{r} + \symbfscr{l}) - \Efield(\vect{r})= \ell_x
 	\frac{\partial\Efield}{\partial x} +
 	\ell_y \frac{\partial\Efield}{\partial y} + \ell_z
 	\frac{\partial\Efield}{\partial z}.
@@ -415,9 +415,9 @@ $z$, для кожного заряду $r_{ix}=r_{iy}=0$, $r_{iz}=z_i$, $r_i^2=
 потенціал поля в точці знаходження заряду $q$. Диполь --- це система з двох зарядів, тому
 його енергія в зовнішньому полі $U= q\phi_+ + (-q)\phi_- = q (\phi_+ - \phi_-)$. Для різниці можна використати формулу~\eqref{eq:sc_diff}:
 \begin{equation*}
-	U= q\phi_+ + (-q)\phi_- = q (\phi_+ - \phi_-) = q \vect{\ell}\cdot\vect{\nabla}\phi.
+	U= q\phi_+ + (-q)\phi_- = q (\phi_+ - \phi_-) = q \symbfscr{l}\cdot\vect{\nabla}\phi.
 \end{equation*}
-Оскільки $-\vect{\nabla}\phi = \Efield$, а $\vect{p} = q\vect{\ell}$:
+Оскільки $-\vect{\nabla}\phi = \Efield$, а $\vect{p} = q\symbfscr{l}$:
 \begin{equation*}
 	\tcbhighmath{
 		U = -\vect{p}\cdot\Efield.
@@ -545,7 +545,7 @@ $q=0$, а всі моменти вищі за дипольний дорівню�
 \addcontentsline{toc}{section}{Підсумки}
 %% --------------------------------------------------------
 
-Щоб описати взаємодію системи зарядів з полем, недостатньо знати лише її сумарний заряд: при $q=0$ усе визначає взаємне розташування зарядів. Першою (після заряду) його характеристикою є \emphx{дипольний момент} $\vect p=\sum_i q_i\vect r_i$~\eqref{eq:el_momentum}, який для електронейтральної системи не залежить від вибору початку відліку. Найпростіша система з ненульовим $\vect p$ --- \emphx{диполь}, тобто пара рівних за величиною й протилежних за знаком зарядів, $\vect p=q\vect\ell$. У границі точкового диполя його поле $\Efield=\dfrac{3(\vect p\cdot\vect r)\vect r}{r^5}-\dfrac{\vect p}{r^3}$~\eqref{eq:dipole_field} спадає як $1/r^3$, а потенціал $\phi=\dfrac{\vect p\cdot\vect r}{r^3}$~\eqref{eq:potential_dipole} --- як $1/r^2$, тобто швидше, ніж кулонівські.
+Щоб описати взаємодію системи зарядів з полем, недостатньо знати лише її сумарний заряд: при $q=0$ усе визначає взаємне розташування зарядів. Першою (після заряду) його характеристикою є \emphx{дипольний момент} $\vect p=\sum_i q_i\vect r_i$~\eqref{eq:el_momentum}, який для електронейтральної системи не залежить від вибору початку відліку. Найпростіша система з ненульовим $\vect p$ --- \emphx{диполь}, тобто пара рівних за величиною й протилежних за знаком зарядів, $\vect p=q\symbfscr{l}$. У границі точкового диполя його поле $\Efield=\dfrac{3(\vect p\cdot\vect r)\vect r}{r^5}-\dfrac{\vect p}{r^3}$~\eqref{eq:dipole_field} спадає як $1/r^3$, а потенціал $\phi=\dfrac{\vect p\cdot\vect r}{r^3}$~\eqref{eq:potential_dipole} --- як $1/r^2$, тобто швидше, ніж кулонівські.
 
 Узагальнення цього результату~--- розклад потенціалу довільної системи зарядів на великих відстанях за мультипольними моментами~\eqref{eq:multipoles}: \emphx{монополь} $q/r$, \emphx{диполь} і~\emphx{квадруполь}, який задається симетричним безслідовим тензором $D_{\alpha\beta}$~\eqref{eq:quadrupole_momentum} з~п'ятьма незалежними компонентами. Кожен наступний доданок спадає швидше за попередній, тому на далеких відстанях поле визначає перший з~ненульових моментів. Так, у~молекули $\ce{CO2}$ немає дипольного моменту, і~її електростатична взаємодія визначається квадрупольним моментом.
 
@@ -624,7 +624,7 @@ $q=0$, а всі моменти вищі за дипольний дорівню�
 \begin{Questions}
 \begin{quizlist}
 	\item Чому для опису системи зарядів недостатньо знати лише сумарний заряд? Запишіть означення дипольного моменту системи зарядів. За якої умови він не залежить від вибору початку відліку?
-	\item Що таке електричний диполь і плече диполя? Куди напрямлений вектор $\vect{p} = q\vect{\ell}$ відносно зарядів диполя?
+	\item Що таке електричний диполь і плече диполя? Куди напрямлений вектор $\vect{p} = q\symbfscr{l}$ відносно зарядів диполя?
 	\item Чим відрізняються жорсткий і пружний диполі? Що таке елементарний (точковий) диполь і в якій границі його вводять?
 	\item Запишіть формулу для напруженості поля точкового диполя. Як вона залежить від відстані і чому поле диполя спадає швидше, ніж поле точкового заряду?
 	\item Запишіть потенціал поля точкового диполя. За яким законом він зменшується з відстанню? Чому в його виведенні вважають $\ell \ll r$ (рис.~\ref{tikz:dipolefield})?
