@@ -1,19 +1,62 @@
-\begin{tikzpicture}[>=latex, midarrow/.style={%
-   postaction={ decorate,
-   decoration={ markings, mark=at position .7 with {\arrow{latex}}}}}]
+\begin{tikzpicture}[
+    >=Stealth,
+    % Стиль для стрілок посередині силових ліній
+    midarrow/.style={
+        postaction={
+            decorate,
+            decoration={
+                markings,
+                mark=at position 0.65 with {\arrow{Stealth[length=4pt]}}
+            }
+        }
+    },
+    % Стилі елементів
+    field/.style={line width=0.6pt, red!60, midarrow},
+    force/.style={->, line width=1.2pt, red!80!black},
+    armvec/.style={->, line width=1pt, black},
+    chp/.style={circle, ball color=red!85!black, minimum size=6mm, inner sep=0pt, text=white, font=\bfseries\small},
+    chn/.style={circle, ball color=blue!85!black, minimum size=6mm, inner sep=0pt, text=white, font=\bfseries\small}
+]
 
+    % 1. Неоднорідне електричне поле E (віялоподібні лінії)
     \foreach \y in {-3,...,3}{
-        \draw[red, midarrow] plot[domain=1:4] (\x, 0.2*\y+0.05*\y*\x^2);
+        \draw[field] plot[domain=1:4.2, samples=50] (\x, {0.2*\y + 0.05*\y*\x^2});
     }
+    % \node[right, gray!90!black, font=\small] at (4.2, 1.6) {$\vect{E}$};
 
-	\node [circle, ball color=blue, inner sep=0pt, text=white, font=\scriptsize]
-	(qn) at (2.5,-1) {\mathstrut$-$};
+    % 2. Вузли зарядів
+    \node[chn] (qn) at (2.5, -1.0) {$-$};
+    \node[chp] (qp) at (3.3,  1.45) {$+$};
 
-	\node [circle, ball color=red, inner sep=0pt, text=white,
-		font=\scriptsize] (qp) at (3.3,1.45) {\mathstrut$+$};
+    % Підписи величин зарядів поруч
+    \node[below left=2pt of qn, font=\small] {$-q$};
+    \node[above left=2pt of qp, font=\small] {$+q$};
 
-        \draw[->, thick] (qp) -- ++(36:1) node[above] {$+q\Efield_+$};
-        \draw[->, thick] (qn) -- ++(155:2) node[above] {$-q\Efield_-$};
-        \draw[->, thick] (qn) -- (qp) node[right, pos=0.6] {$\symbfscr{l}$};
+    % 3. Вектор плеча диполя l (позначення збережено без змін)
+    \draw[armvec] (qn) -- node[right=3pt, pos=0.55, font=\small] {$\symbfscr{l}$} (qp);
+
+    % 4. Вектори сил у точках розташування зарядів
+    \draw[force] (qp) -- ++(36:1.2) node[above right=-2pt, font=\small] {$+q\vect{E}_+$};
+    \draw[force] (qn) -- ++(155:1.5) node[left, font=\small] {$-q\vect{E}_-$};
 
 \end{tikzpicture}
+
+% \begin{tikzpicture}[>=latex, midarrow/.style={%
+%    postaction={ decorate,
+%    decoration={ markings, mark=at position .7 with {\arrow{latex}}}}}]
+
+%     \foreach \y in {-3,...,3}{
+%         \draw[red, midarrow] plot[domain=1:4] (\x, 0.2*\y+0.05*\y*\x^2);
+%     }
+
+% 	\node [circle, ball color=blue, inner sep=0pt, text=white, font=\scriptsize]
+% 	(qn) at (2.5,-1) {\mathstrut$-$};
+
+% 	\node [circle, ball color=red, inner sep=0pt, text=white,
+% 		font=\scriptsize] (qp) at (3.3,1.45) {\mathstrut$+$};
+
+%         \draw[->, thick] (qp) -- ++(36:1) node[above] {$+q\Efield_+$};
+%         \draw[->, thick] (qn) -- ++(155:2) node[above] {$-q\Efield_-$};
+%         \draw[->, thick] (qn) -- (qp) node[right, pos=0.6] {$\symbfscr{l}$};
+
+% \end{tikzpicture}
