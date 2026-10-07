@@ -1982,57 +1982,57 @@ $I_{10}$ випереджає потік на малий кут, зумовле�
 \addcontentsline{toc}{section}{Задачі}
 %% --------------------------------------------------------
 
-\begin{problem}\label{prob:QuasiStationarity}
+\begin{problem}\label{prb:QuasiStationarity}
 	\emphx{Квазістаціонарність.} При якій найбільшій частоті коло довжиною $3$~м ще можна вважати квазістаціонарним, якщо вимагати $l\leq\lambda/10$? Яка частка довжини хвилі мережі 50~Гц припадає на ЛЕП завдовжки $1000$~км?
 	% \emphx{Відповідь:} $\nu_{\max}=c/(10l)=10$~МГц; $l/\lambda=10^{6}\ \text{м}/(6\cdot10^{6}\ \text{м})\approx0{,}17$ --- лінія вже становить відчутну частку довжини хвилі, і квазістаціонарне наближення неприпустиме.
 \end{problem}
 
-\begin{problem}\label{prob:FreeOscillationsNumbers}
+\begin{problem}\label{prb:FreeOscillationsNumbers}
 	\emphx{Вільні коливання в контурі.} Контур містить $L=0{,}5$~мГн, $C=200$~пФ і $R=5$~Ом. Знайдіть власну частоту, період, коефіцієнт затухання, логарифмічний декремент, добротність, кількість коливань, за які амплітуда спадає в $e$ разів, та критичний опір, при якому коливання стають неможливими.
 	% \emphx{Відповідь:} $\omega_0=1/\sqrt{LC}\approx3{,}16\cdot10^{6}$~с$^{-1}$ ($\nu\approx503$~кГц), $T\approx1{,}99$~мкс; $\gamma=R/2L=5\cdot10^{3}$~с$^{-1}$; $\delta=\gamma T\approx9{,}9\cdot10^{-3}$; $Q=\dfrac{1}{R}\sqrt{L/C}\approx316$; $n=1/\delta\approx100$; $R_\text{кр}=2\sqrt{L/C}\approx3{,}2$~кОм.
 \end{problem}
 
-\begin{problem}\label{prob:ForcedResonanceNumbers}
+\begin{problem}\label{prb:ForcedResonanceNumbers}
 	\emphx{Резонанс у послідовному контурі.} До контуру з попередньої задачі приєднано генератор із $\emf_m=1$~В. Знайдіть амплітуду струму й напруги на конденсаторі на резонансі та ширину резонансної кривої.
 	% \emphx{Відповідь:} $I_{m,\max}=\emf_m/R=0{,}2$~А; $V_{C,\max}=Q\emf_m\approx316$~В (у $316$ разів більше за напругу джерела); $\Delta\omega=2\gamma=10^{4}$~с$^{-1}$, тобто $\Delta\nu=\omega_0/(2\pi Q)\approx1{,}6$~кГц.
 \end{problem}
 
-\begin{problem}\label{prob:ImpedanceNumbers}
+\begin{problem}\label{prb:ImpedanceNumbers}
 	\emphx{Імпеданс і потужність.} Послідовно з'єднані резистор $R=100$~Ом, котушка $L=0{,}1$~Гн та конденсатор $C=10$~мкФ підключені до мережі $220$~В, $50$~Гц. Знайдіть імпеданс, зсув фаз, ефективний струм і споживану потужність. Чим викликано малий $\cos\varphi$?
 	% \emphx{Відповідь:} $X_L=31{,}4$~Ом, $X_C=318$~Ом, $Z=100-287i$~Ом, $|Z|\approx304$~Ом; $\varphi=\arg Z\approx-71^\circ$ (струм випереджає напругу, коло ємнісне); $I_\text{еф}=U/|Z|\approx0{,}72$~А; $P=I_\text{еф}^2R\approx52$~Вт; $\cos\varphi=R/|Z|\approx0{,}33$ --- через великий реактивний опір $|X_L-X_C|$.
 \end{problem}
 
-\begin{problem}\label{prob:ParallelResonanceNumbers}
+\begin{problem}\label{prb:ParallelResonanceNumbers}
 	\emphx{Резонанс струмів.} Паралельний контур ($R=100$~кОм, $L=1$~мГн) настроєно на $1$~МГц і під'єднано до джерела струму з амплітудою $I_m=1$~мА. Знайдіть ємність, добротність, амплітуду напруги на контурі та амплітуди струмів у котушці й конденсаторі.
 	% \emphx{Відповідь:} $C=1/(\omega_0^2L)\approx25$~пФ; $Q=R/(\omega_0L)\approx15{,}9$; $U_m=I_mR=100$~В; $I_{L0}=I_{C0}=QI_m\approx16$~мА --- у $Q$ разів більше за струм джерела.
 \end{problem}
 
-\begin{problem}\label{prob:PowerFactor}
+\begin{problem}\label{prb:PowerFactor}
 	\emphx{Коефіцієнт потужності.} Підприємство споживає активну потужність $P=1$~МВт при $\cos\varphi=0{,}6$ (індуктивне навантаження) від однофазного джерела $10$~кВ, $50$~Гц. Знайдіть струм, реактивну потужність і ємність батареї конденсаторів, що доводить $\cos\varphi$ до $1$. Як зміняться втрати в лінії?
 	% \emphx{Відповідь:} $I=P/(U\cos\varphi)\approx167$~А; $Q_\text{р}=P\tg\varphi\approx1{,}33$~Мвар; батарея, що створює $Q_C=U^2\omega C=Q_\text{р}$, має $C=Q_\text{р}/(\omega U^2)\approx42$~мкФ. Після компенсації $I=P/U=100$~А, втрати $\propto I^2$ зменшуються в $(0{,}6)^{-2}\approx2{,}8$ раза.
 \end{problem}
 
-\begin{problem}\label{prob:MatchingSpeaker}
+\begin{problem}\label{prb:MatchingSpeaker}
 	\emphx{Узгодження за допомогою трансформатора.} Підсилювач є джерелом із ЕРС $80$~В (ефективна) і внутрішнім опором $800$~Ом, гучномовець має опір $8$~Ом. Знайдіть потужність у гучномовці при безпосередньому підключенні та через ідеальний трансформатор, що узгоджує опори. Який коефіцієнт трансформації $n=N_1/N_2$ потрібен?
 	% \emphx{Відповідь:} без трансформатора $P=\dfrac{\emf^2R_\text{н}}{(R_\text{дж}+R_\text{н})^2}\approx0{,}078$~Вт. Узгодження: $n=\sqrt{R_\text{дж}/R_\text{н}}=10$; напруга на первинній обмотці $\emf/2=40$~В, на гучномовці $U_2=U_1/n=4$~В, $P=U_2^2/R_\text{н}=2$~Вт --- у $\approx25$ разів більше.
 \end{problem}
 
-\begin{problem}\label{prob:TransmissionLoss}
+\begin{problem}\label{prb:TransmissionLoss}
 	\emphx{Втрати в лінії.} Потужність $100$~МВт передають лінією з сумарним опором проводів $20$~Ом при напрузі $110$~кВ і $500$~кВ ($\cos\varphi=1$, розрахунок ведіть як для однофазної лінії). Порівняйте втрати.
 	% \emphx{Відповідь:} $P_\text{втр}=R(P/U)^2$: $\approx16{,}5$~МВт ($16{,}5\,\%$) при $110$~кВ і $0{,}8$~МВт ($0{,}8\,\%$) при $500$~кВ --- у $(500/110)^2\approx21$ раз менше.
 \end{problem}
 
-\begin{problem}\label{prob:RCFilter}
+\begin{problem}\label{prb:RCFilter}
 	\emphx{$RC$-фільтр низьких частот.} $R=1$~кОм, $C=0{,}16$~мкФ. Знайдіть граничну частоту, а також модуль і фазу коефіцієнта передачі при $10$~кГц. У скільки разів (і на скільки децибел) послаблюється сигнал?
 	% \emphx{Відповідь:} $\nu_c=1/(2\pi RC)\approx1$~кГц; $\omega RC\approx10$, $|K|=1/\sqrt{1+(\omega RC)^2}\approx0{,}10$, $\arg K=-\arctan(\omega RC)\approx-84^\circ$; послаблення у $\approx10$ разів, тобто $\approx20$~дБ.
 \end{problem}
 
-\begin{problem}\label{prob:StarDelta}
+\begin{problem}\label{prb:StarDelta}
 	\emphx{Зірка й трикутник.} Три однакові резистори по $22$~Ом з'єднано спочатку «зіркою», потім «трикутником» і під'єднано до мережі з фазною напругою $220$~В ($U_\text{л}\approx381$~В). Знайдіть фазні й лінійні струми та потужності. У скільки разів відрізняються потужності?
 	% \emphx{Відповідь:} зірка: $I_\text{л}=I_\text{ф}=U_\text{ф}/R=10$~А, $P=3I_\text{ф}^2R=6{,}6$~кВт; трикутник: $I_\text{ф}=U_\text{л}/R\approx17{,}3$~А, $I_\text{л}=\sqrt3I_\text{ф}=30$~А, $P=3U_\text{л}I_\text{ф}\approx19{,}8$~кВт --- у $3$ рази більше.
 \end{problem}
 
-\begin{problem}\label{prob:RotatingField}
+\begin{problem}\label{prb:RotatingField}
 	\emphx{Обертове поле.} Покажіть, що при зміні місцями двох фаз у котушках трифазної системи напрям обертання магнітного поля змінюється на протилежний.
 	% \emphx{Відповідь:} при $I_2\leftrightarrow I_3$ маємо $B_y=+\frac32B_m\cos\omega t$ при тому ж $B_x=\frac32B_m\sin\omega t$, тому кут $\theta$ вектора $\mathbf{B}$ визначається рівностями $\cos\theta=\sin\omega t$, $\sin\theta=\cos\omega t$, тобто $\theta=90^\circ-\omega t$ і вектор обертається за годинниковою стрілкою; раніше $\theta=\omega t-90^\circ$ (проти годинникової).
 \end{problem}
