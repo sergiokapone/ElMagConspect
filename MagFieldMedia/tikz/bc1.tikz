@@ -39,7 +39,7 @@
 %		\draw[->] (0, 0) -- ++(0, -0.75) node[anchor=west, inner sep=3pt] {$\vect{n}_2$};
 		\draw[dashed, red, line width=1pt] (A) -- (B') arc(180:360:{\R} and \r) -- (D);
 		\draw[dashed, red, line width=1pt] (B') arc(180:0:{\R} and \r);
-        \draw[<-, red, ultra thick] (0, 0) -- ++(25:-3) node[above, inner sep=3pt] {$\Bfield_1$};
+        \draw[<-, red, ultra thick] (0, 0) -- ++(25:-3) node[below, inner sep=3pt] {$\Bfield_1$};
     \draw[->, line width=1pt] ($(B')!0.5!(C')$) -- ++(0, -0.75) node[below] {$d\vect{S}_1$};
 	\end{scope}
 
