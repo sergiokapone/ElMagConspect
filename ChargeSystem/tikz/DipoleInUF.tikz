@@ -1,27 +1,70 @@
-\begin{tikzpicture}[>=latex]
-	\foreach \i in {-1,-0.5,...,1} {
-			\draw[->, red] (-3, \i) -- ++(6, 0);
-		}
+% \begin{tikzpicture}[>=latex]
+% 	\foreach \i in {-1,-0.5,...,1} {
+% 			\draw[->, red] (-3, \i) -- ++(6, 0);
+% 		}
 
-	\node [circle, ball color=blue, inner sep=0pt, text=white,
-		font=\scriptsize]
-	(qn) at (-1,-0.75) {\mathstrut$-$};
+% 	\node [circle, ball color=blue, inner sep=0pt, text=white,
+% 		font=\scriptsize]
+% 	(qn) at (-1,-0.75) {\mathstrut$-$};
 
-	\node [circle, ball color=red, inner sep=0pt, text=white,
-		font=\scriptsize] (qp) at (1,0.75) {\mathstrut$+$};
+% 	\node [circle, ball color=red, inner sep=0pt, text=white,
+% 		font=\scriptsize] (qp) at (1,0.75) {\mathstrut$+$};
 
 
-    	\draw[->, ultra thick, red] (qn) -- ++(-1, 0) node[left]
-	{$-q\Efield$};
+%     	\draw[->, ultra thick, red] (qn) -- ++(-1, 0) node[left]
+% 	{$-q\Efield$};
 
-	\draw[->, ultra thick, red] (qp) -- ++(1, 0) node[right]
-	{$+q\Efield$};
+% 	\draw[->, ultra thick, red] (qp) -- ++(1, 0) node[right]
+% 	{$+q\Efield$};
 
-	\node[inner sep=1pt, circle, fill] (O) at (0, -1.5) {};
-	\node[below] at (O) {$O$};
+% 	\node[inner sep=1pt, circle, fill] (O) at (0, -1.5) {};
+% 	\node[below] at (O) {$O$};
 
-	\draw[->, ultra thick, cyan] (O) -- node[left] {$\vect{r}_-$}(qn);
-	\draw[->, ultra thick, cyan] (O) -- node[right] {$\vec{r}_+$}(qp);
+% 	\draw[->, ultra thick, cyan] (O) -- node[left] {$\vect{r}_-$}(qn);
+% 	\draw[->, ultra thick, cyan] (O) -- node[right] {$\vec{r}_+$}(qp);
 
-	\draw[->, gray, ultra thick] (qn) -- node[above] {$\symbfscr{l}$} (qp);
+% 	\draw[->, gray, ultra thick] (qn) -- node[above] {$\symbfscr{l}$} (qp);
+% \end{tikzpicture}
+
+\begin{tikzpicture}[
+    >=Stealth,
+    % Стилі для кульок-зарядів
+    chp/.style={circle, ball color=red!85!black, minimum size=6mm, inner sep=0pt, text=white, font=\bfseries\small},
+    chn/.style={circle, ball color=blue!85!black, minimum size=6mm, inner sep=0pt, text=white, font=\bfseries\small},
+    % Стилі ліній
+    field/.style={->, line width=0.5pt, red!60},
+    force/.style={->, line width=1.2pt, red!80!black},
+    posvec/.style={->, line width=1pt, teal!80!black},
+    armvec/.style={->, line width=1pt, black}
+]
+
+    % 1. Однорідне електричне поле E (фонові лінії)
+    \foreach \y in {-1.2, -0.6, 0, 0.6, 1.2} {
+        \draw[field] (-3.2, \y) -- (3.2, \y);
+    }
+    \node[right, gray!90!black, font=\small] at (3.2, 1.2) {$\vect{E}$};
+
+    % 2. Початок координат O
+    \coordinate (O) at (0, -1.8);
+    \fill[black] (O) circle (2pt) node[below=2pt, font=\small] {$O$};
+
+    % 3. Вузли зарядів
+    \node[chn] (qn) at (-1.2, -0.6) {$-$};
+    \node[chp] (qp) at (1.2, 0.6) {$+$};
+
+    % Підписи точкових зарядів поруч із кульками
+    \node[below left=2pt of qn, font=\small] {$-q$};
+    \node[above right=2pt of qp, font=\small] {$+q$};
+
+    % 4. Радіус-вектори від O до зарядів
+    \draw[posvec] (O) -- node[left=2pt, pos=0.55, font=\small] {$\vect{r}_-$} (qn);
+    \draw[posvec] (O) -- node[right=2pt, pos=0.55, font=\small] {$\vect{r}_+$} (qp);
+
+    % 5. Вектор плеча диполя l (від -q до +q)
+    \draw[armvec] (qn) -- node[above, sloped, pos=0.5, font=\small] {$\symbfscr{l}$} (qp);
+
+    % 6. Вектори сил (напрямлені від центрів/країв зарядів)
+    \draw[force] (qn) -- ++(-1.4, 0) node[above left, font=\small] {$\vect{F}_- = -q\vect{E}$};
+    \draw[force] (qp) -- ++(1.4, 0) node[below right, font=\small] {$\vect{F}_+ = q\vect{E}$};
+
 \end{tikzpicture}

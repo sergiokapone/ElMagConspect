@@ -45,7 +45,7 @@
 	\centering
 	\localinput{elmomentum.tikz}
 	\caption{Електричний диполь}
-    \label{tikz:el_dipole}
+	\label{tikz:el_dipole}
 \end{SCfigure}
 \emphx{Дипольним моментом} елементарного диполя називається вектор
 \begin{equation}
@@ -78,7 +78,7 @@
 	\centering
 	\localinput{dipolefield.tikz}
 	\caption{До виведення напруженості та потенціалу поля диполя}
-    \label{tikz:dipolefield}
+	\label{tikz:dipolefield}
 \end{SCfigure}
 
 Поле точкового диполя можна знайти за допомогою принципу
@@ -103,7 +103,7 @@
 Для поля диполя потрібне $n=3$ (для потенціалу в розд.~\ref{sec:DipolePotential} буде $n=1$). Для $r_+=|\vect r-\symbfscr{l}/2|$ беремо $\vect a=\symbfscr{l}/2$, для $r_-=|\vect r+\symbfscr{l}/2|$ --- $\vect a=-\symbfscr{l}/2$, і суперпозицію записуємо як $\Efield=q\left(\vect r_+/r_+^3-\vect r_-/r_-^3\right)$:
 \begin{equation*}
 	\Efield \approx \frac{q}{r^3}\left[\left(\vect r-\frac{\symbfscr{l}}2\right)\left(1+\frac{3\,\vect r\cdot\symbfscr{l}}{2r^2}\right)
-	- \left(\vect r+\frac{\symbfscr{l}}2\right)\left(1-\frac{3\,\vect r\cdot\symbfscr{l}}{2r^2}\right)\right].
+		- \left(\vect r+\frac{\symbfscr{l}}2\right)\left(1-\frac{3\,\vect r\cdot\symbfscr{l}}{2r^2}\right)\right].
 \end{equation*}
 Розкриваючи дужки, зберігаємо лише члени першого порядку за $\ell$: добутки виду $\symbfscr{l}\,(\vect r\cdot\symbfscr{l})$ мають другий порядок і відкидаються. Доданки з $\vect r$ --- це поля двох зарядів, взятих окремо, --- взаємно скорочуються, тож головний внесок дає саме перший порядок:
 \begin{equation*}
@@ -169,19 +169,19 @@
 Знаючи вираз для потенціалу точкового диполя \eqref{eq:potential_dipole}, можна отримати вираз для поля \eqref{eq:dipole_field} використовуючи формулу зв'язку потенціалу і напруженості $\Efield=-\vect\nabla\phi$.
 
 \begin{Example}{Виведення}
-Запишемо $\phi=(\vect p\cdot\vect r)\,r^{-3}$ і застосуємо правило диференціювання добутку:
-\begin{equation*}
-	\vect\nabla\phi=r^{-3}\,\vect\nabla(\vect p\cdot\vect r)+(\vect p\cdot\vect r)\,\vect\nabla r^{-3}.
-\end{equation*}
-Знайдемо обидва градієнти. Оскільки $\vect p\cdot\vect r=p_x x+p_y y+p_z z$, де $\vect p$ --- сталий вектор, то частинні похідні за $x$, $y$, $z$ дорівнюють $p_x$, $p_y$, $p_z$, тобто $\vect\nabla(\vect p\cdot\vect r)=\vect p$. Далі, $r=\sqrt{x^2+y^2+z^2}$, тому $\dfrac{\partial r}{\partial x}=\dfrac xr$, і аналогічно для $y$ та $z$; отже, $\vect\nabla r=\dfrac{\vect r}{r}$. За правилом диференціювання складної функції
-\begin{equation*}
-	\vect\nabla r^{-3}=-3r^{-4}\,\vect\nabla r=-\frac{3\vect r}{r^5}.
-\end{equation*}
-Підставляючи, одержуємо
-\begin{equation*}
-	\Efield=-\vect\nabla\phi=\frac{3(\vect p\cdot\vect r)\,\vect r}{r^5}-\frac{\vect p}{r^3},
-\end{equation*}
-що збігається з \eqref{eq:dipole_field}.
+	Запишемо $\phi=(\vect p\cdot\vect r)\,r^{-3}$ і застосуємо правило диференціювання добутку:
+	\begin{equation*}
+		\vect\nabla\phi=r^{-3}\,\vect\nabla(\vect p\cdot\vect r)+(\vect p\cdot\vect r)\,\vect\nabla r^{-3}.
+	\end{equation*}
+	Знайдемо обидва градієнти. Оскільки $\vect p\cdot\vect r=p_x x+p_y y+p_z z$, де $\vect p$ --- сталий вектор, то частинні похідні за $x$, $y$, $z$ дорівнюють $p_x$, $p_y$, $p_z$, тобто $\vect\nabla(\vect p\cdot\vect r)=\vect p$. Далі, $r=\sqrt{x^2+y^2+z^2}$, тому $\dfrac{\partial r}{\partial x}=\dfrac xr$, і аналогічно для $y$ та $z$; отже, $\vect\nabla r=\dfrac{\vect r}{r}$. За правилом диференціювання складної функції
+	\begin{equation*}
+		\vect\nabla r^{-3}=-3r^{-4}\,\vect\nabla r=-\frac{3\vect r}{r^5}.
+	\end{equation*}
+	Підставляючи, одержуємо
+	\begin{equation*}
+		\Efield=-\vect\nabla\phi=\frac{3(\vect p\cdot\vect r)\,\vect r}{r^5}-\frac{\vect p}{r^3},
+	\end{equation*}
+	що збігається з \eqref{eq:dipole_field}.
 \end{Example}
 
 %\begin{Attention}
@@ -199,9 +199,9 @@
 
 %---------------------------------------------------------
 \begin{figure}[h!]\centering
-    \localinput{far_potential.tikz}
-    \caption{До визначення потенціалу на далеких відстанях}
-    \label{tikz:far_potential}
+	\localinput{far_potential.tikz}
+	\caption{До визначення потенціалу на далеких відстанях}
+	\label{tikz:far_potential}
 \end{figure}
 %---------------------------------------------------------
 
@@ -232,7 +232,7 @@
 
 Перші дві суми --- це вже знайомі нам повний заряд і дипольний момент системи:
 \begin{equation*}
-    q = \sum_i {q_i}, \quad \vect{p} = \sum_i q_i\vect{r}_i.
+	q = \sum_i {q_i}, \quad \vect{p} = \sum_i q_i\vect{r}_i.
 \end{equation*}
 Третю суму розпишемо покомпонентно, позначаючи декартові компоненти індексами $\alpha,\beta = x,y,z$ (за індексами, що повторюються, мається на
 увазі підсумовування):
@@ -280,35 +280,35 @@ $q=0,\ \vect p\neq0$ --- диполь; при $q=0$ і $\vect p=0$ --- квад�
 саме квадруполь-квадрупольною або квадруполь-дипольною взаємодією і є значно слабшою, ніж диполь-дипольна.
 
 \begin{Example}{Лінійний квадруполь}
-Розглянемо три заряди, розташовані на осі $Oz$: заряди $+q$ у точках $z=\pm a$ та заряд $-2q$ у початку координат $z=0$ --- грубу модель лінійної
-неполярної молекули на кшталт $\ce{CO2}$.
+	Розглянемо три заряди, розташовані на осі $Oz$: заряди $+q$ у точках $z=\pm a$ та заряд $-2q$ у початку координат $z=0$ --- грубу модель лінійної
+	неполярної молекули на кшталт $\ce{CO2}$.
 
-\begin{center}
-	\localinput{linear_quadrupole.tikz}
-\end{center}
+	\begin{center}
+		\localinput{linear_quadrupole.tikz}
+	\end{center}
 
-Сумарний заряд системи дорівнює нулю:
-\begin{equation*}
-	q_\Sigma = q + (-2q) + q = 0.
-\end{equation*}
-Дипольний момент також дорівнює нулю через симетрію розташування зарядів відносно початку координат:
-\begin{equation*}
-	\vect p = q\,a\vect e_z + (-2q)\cdot 0 + q\,(-a)\vect e_z = 0.
-\end{equation*}
-Отже, поле на далеких відстанях визначається квадрупольним моментом. Обчислимо компоненти тензора $D_{\alpha\beta}$. Оскільки всі заряди лежать на осі
-$z$, для кожного заряду $r_{ix}=r_{iy}=0$, $r_{iz}=z_i$, $r_i^2=z_i^2$. Тому недіагональні компоненти й компоненти $D_{xy}$ рівні нулю, а
-\begin{equation*}
-	D_{zz} = \sum_i q_i\left(3z_i^2 - z_i^2\right) = 2\sum_i q_i z_i^2
-	= 2\left[q\,a^2 + (-2q)\cdot 0 + q\,a^2\right] = 4qa^2,
-\end{equation*}
-\begin{multline*}
-	D_{xx} = \sum_i q_i\left(3\cdot0 - z_i^2\right) = -\sum_i q_i z_i^2 = -\left(qa^2 + qa^2\right) = -2qa^2, \\ D_{yy}=D_{xx}=-2qa^2
-\end{multline*}
-(перевірка сліду: $D_{xx}+D_{yy}+D_{zz} = -2qa^2-2qa^2+4qa^2=0$ --- узгоджується із загальною властивістю). Оскільки тензор уже діагональний, для точки
-спостереження на осі $z$ (де $\vect r = z\vect e_z$) залишається лише доданок з $D_{zz}$:
-\begin{equation*}
+	Сумарний заряд системи дорівнює нулю:
+	\begin{equation*}
+		q_\Sigma = q + (-2q) + q = 0.
+	\end{equation*}
+	Дипольний момент також дорівнює нулю через симетрію розташування зарядів відносно початку координат:
+	\begin{equation*}
+		\vect p = q\,a\vect e_z + (-2q)\cdot 0 + q\,(-a)\vect e_z = 0.
+	\end{equation*}
+	Отже, поле на далеких відстанях визначається квадрупольним моментом. Обчислимо компоненти тензора $D_{\alpha\beta}$. Оскільки всі заряди лежать на осі
+	$z$, для кожного заряду $r_{ix}=r_{iy}=0$, $r_{iz}=z_i$, $r_i^2=z_i^2$. Тому недіагональні компоненти й компоненти $D_{xy}$ рівні нулю, а
+	\begin{equation*}
+		D_{zz} = \sum_i q_i\left(3z_i^2 - z_i^2\right) = 2\sum_i q_i z_i^2
+		= 2\left[q\,a^2 + (-2q)\cdot 0 + q\,a^2\right] = 4qa^2,
+	\end{equation*}
+	\begin{multline*}
+		D_{xx} = \sum_i q_i\left(3\cdot0 - z_i^2\right) = -\sum_i q_i z_i^2 = -\left(qa^2 + qa^2\right) = -2qa^2, \\ D_{yy}=D_{xx}=-2qa^2
+	\end{multline*}
+	(перевірка сліду: $D_{xx}+D_{yy}+D_{zz} = -2qa^2-2qa^2+4qa^2=0$ --- узгоджується із загальною властивістю). Оскільки тензор уже діагональний, для точки
+	спостереження на осі $z$ (де $\vect r = z\vect e_z$) залишається лише доданок з $D_{zz}$:
+	\begin{equation*}
 		\phi_{\text{кв}}(z) = \frac{D_{zz}}{2z^3} = \frac{2qa^2}{z^3}.
-\end{equation*}
+	\end{equation*}
 \end{Example}
 
 
@@ -344,18 +344,18 @@ $z$, для кожного заряду $r_{ix}=r_{iy}=0$, $r_{iz}=z_i$, $r_i^2=
 Розглянемо диполь в однорідному електричному полі (рис.~\ref{tikz:Momentum_on_dipole_in_yniform_field}). Результуюча сила, що діє на цей диполь дорівнює
 нулю: $\vect{F} = (+q)\Efield + (-q)\Efield = 0$.
 
-\begin{SCfigure}[][h!]
+\begin{SCfigure}[0.75][h!]
 	\centering
 	\localinput{DipoleInUF.tikz}
 	\caption{до виведення моменту сил, що діє на диполь в однорідному електричному полі}
-    \label{tikz:Momentum_on_dipole_in_yniform_field}
+	\label{tikz:Momentum_on_dipole_in_yniform_field}
 \end{SCfigure}
 
 Однак цей диполь може орієнтуватися у такому полі, оскільки на нього може діяти обертовий момент сил. Розрахуємо його, використовуючи означення,
 відоме з курсу механіки:
 \begin{equation*}
-    \vect{M}_O = \vect{r}_+ \times \vect{F}_+ +   \vect{r}_- \times \vect{F}_- = \vect{r}_+ \times (+q)\Efield +   \vect{r}_- \times (-q)\Efield =
-    q(\vect{r}_+ - \vect{r}_-)\times \Efield.
+	\vect{M}_O = \vect{r}_+ \times \vect{F}_+ +   \vect{r}_- \times \vect{F}_- = \vect{r}_+ \times (+q)\Efield +   \vect{r}_- \times (-q)\Efield =
+	q(\vect{r}_+ - \vect{r}_-)\times \Efield.
 \end{equation*}
 Оскільки $q(\vect{r}_+ - \vect{r}_-) = \vect{p}$, то остаточно маємо:
 
@@ -385,7 +385,7 @@ $z$, для кожного заряду $r_{ix}=r_{iy}=0$, $r_{iz}=z_i$, $r_i^2=
 	\centering
 	\localinput{dipinnonuniformfield.tikz}
 	\caption{Диполь у неоднорідному полі}
-    \label{tikz:dipole_in_nonuniform_field}
+	\label{tikz:dipole_in_nonuniform_field}
 \end{SCfigure}
 
 Для точкового диполя різницю $\Delta\Efield$ можна записати використовуючи формулу \eqref{eq:vec_diff} у вигляді:
@@ -396,7 +396,7 @@ $z$, для кожного заряду $r_{ix}=r_{iy}=0$, $r_{iz}=z_i$, $r_i^2=
 	\frac{\partial\Efield}{\partial z}.
 \end{equation*}
 \begin{equation}\label{eq:EforceOnDipole}
-\tcbhighmath{
+	\tcbhighmath{
 		\vect{F} = p_x \frac{\partial\Efield}{\partial x} +
 		p_y \frac{\partial\Efield}{\partial y} + p_z \frac{\partial\Efield}{\partial z}
 		=
@@ -429,9 +429,18 @@ $z$, для кожного заряду $r_{ix}=r_{iy}=0$, $r_{iz}=z_i$, $r_i^2=
 момент зовнішніх сил, що повертає диполь до положення рівноваги.
 \begin{figure}[h!]
 	\centering
-
-	\localinput{dipoleenergy.tikz}
-
+	\begin{subcaptionblock}{.45\textwidth}
+		\centering
+		\localinput{parallel.tikz}
+		\caption{}
+		\label{tikz:parallel}
+	\end{subcaptionblock}
+	\begin{subcaptionblock}{.45\textwidth}
+		\centering
+		\localinput{angle.tikz}
+		\caption{}
+		\label{tikz:angle}
+	\end{subcaptionblock}
 	\caption{Положення диполя в однорідному електричному полі. Ліворуч (\subref{tikz:parallel}) --- положення стійкої рівноваги з мінімальною енергією.
 		Праворуч (\subref{tikz:angle}) --- нестійке
 		положення.}
@@ -520,8 +529,8 @@ $
 адже доданок, пропорційний $\delta_{\alpha\beta}$, зникає через безслідовість $\partial^2\phi/\partial x_\alpha\partial x_\beta$. Остаточно енергія
 довільної системи зарядів у зовнішньому полі --- це ряд за мультипольними моментами системи:
 \begin{equation}
-		U = \underbrace{q\,\phi(0)}_{\text{монополь}} \;-\; \underbrace{\vect p\cdot\Efield(0)}_{\text{диполь}} \;-\;
-		\underbrace{\frac16\sum_{\alpha\beta} D_{\alpha\beta}\, \frac{\partial E_\alpha}{\partial x_\beta}(0)}_{\text{квадруполь}} \;+\;\ldots
+	U = \underbrace{q\,\phi(0)}_{\text{монополь}} \;-\; \underbrace{\vect p\cdot\Efield(0)}_{\text{диполь}} \;-\;
+	\underbrace{\frac16\sum_{\alpha\beta} D_{\alpha\beta}\, \frac{\partial E_\alpha}{\partial x_\beta}(0)}_{\text{квадруполь}} \;+\;\ldots
 \end{equation}
 
 \begin{Attention}
@@ -622,27 +631,27 @@ $q=0$, а всі моменти вищі за дипольний дорівню�
 
 
 \begin{Questions}
-\begin{quizlist}
-	\item Чому для опису системи зарядів недостатньо знати лише сумарний заряд? Запишіть означення дипольного моменту системи зарядів. За якої умови він не залежить від вибору початку відліку?
-	\item Що таке електричний диполь і плече диполя? Куди напрямлений вектор $\vect{p} = q\symbfscr{l}$ відносно зарядів диполя?
-	\item Чим відрізняються жорсткий і пружний диполі? Що таке елементарний (точковий) диполь і в якій границі його вводять?
-	\item Запишіть формулу для напруженості поля точкового диполя. Як вона залежить від відстані і чому поле диполя спадає швидше, ніж поле точкового заряду?
-	\item Запишіть потенціал поля точкового диполя. За яким законом він зменшується з відстанню? Чому в його виведенні вважають $\ell \ll r$ (рис.~\ref{tikz:dipolefield})?
-	\item З яких доданків складається розклад потенціалу довільної системи зарядів на великих відстанях? Який із них є домінуючим при $q \neq 0$, а
-	коли суттєвим стає внесок диполя чи квадруполя?
-	\item За яких умов на систему зарядів поле на далеких відстанях визначається саме квадрупольним моментом? Запишіть означення тензора
-	квадрупольного моменту $D_{\alpha\beta}$ і виведіть його з розкладу $1/|\vect r-\vect r_i|$ до другого порядку.
-	\item Доведіть, що тензор квадрупольного моменту симетричний і безслідовий. Скільки незалежних компонент він має і скільки
-	--- у власній системі координат?
-	\item Запишіть формулу для потенціалу квадрупольного доданка $\phi_{\text{кв}}(\vect r)$ через $D_{\alpha\beta}$. Як він і відповідна
-	напруженість поля спадають з відстанню порівняно з дипольним і монопольним доданками?
-	\item Чому молекула $\ce{CO2}$ не має дипольного моменту, але має ненульовий квадрупольний момент? Обчисліть $D_{zz}$ для моделі лінійного
-	квадруполя --- зарядів $+q,-2q,+q$ на осі, симетрично розташованих на відстані $a$ від центру.
-	\item Чому результуюча сила, що діє на диполь в однорідному електричному полі, дорівнює нулю, а обертовий момент --- ні? Запишіть формулу для $\vect{M}$ і поясніть, чому він не залежить від вибору точки $O$.
-	\item Як буде орієнтуватися диполь в однорідному полі? Чому положення $\vect{p}\uparrow\uparrow\Efield$ є стійким, а $\vect{p}\uparrow\downarrow\Efield$ --- нестійким?
-	\item Що відбувається з диполем у неоднорідному електричному полі? Запишіть формулу для сили $\vect{F}$ і поясніть, чому диполь втягується в область сильного поля.
-	\item Виведіть та поясніть формулу для енергії жорсткого диполя в зовнішньому полі $U = -\vect{p}\cdot\Efield$. Як залежить енергія від кута між $\vect{p}$ і $\Efield$ і в яких положеннях вона мінімальна та максимальна?
-	\item Що таке поляризовність молекули $\alpha$? Як вона пов'язана з жорсткістю «пружини» $k$ і зарядом $q$ у моделі пружного диполя?
-	\item Чому енергія пружного диполя дорівнює $U = -\tfrac12\,\vect{p}\cdot\Efield$, тоді як для жорсткого диполя $U = -\vect{p}\cdot\Efield$? Звідки береться множник $\tfrac12$?
-\end{quizlist}
+	\begin{quizlist}
+		\item Чому для опису системи зарядів недостатньо знати лише сумарний заряд? Запишіть означення дипольного моменту системи зарядів. За якої умови він не залежить від вибору початку відліку?
+		\item Що таке електричний диполь і плече диполя? Куди напрямлений вектор $\vect{p} = q\symbfscr{l}$ відносно зарядів диполя?
+		\item Чим відрізняються жорсткий і пружний диполі? Що таке елементарний (точковий) диполь і в якій границі його вводять?
+		\item Запишіть формулу для напруженості поля точкового диполя. Як вона залежить від відстані і чому поле диполя спадає швидше, ніж поле точкового заряду?
+		\item Запишіть потенціал поля точкового диполя. За яким законом він зменшується з відстанню? Чому в його виведенні вважають $\ell \ll r$ (рис.~\ref{tikz:dipolefield})?
+		\item З яких доданків складається розклад потенціалу довільної системи зарядів на великих відстанях? Який із них є домінуючим при $q \neq 0$, а
+		коли суттєвим стає внесок диполя чи квадруполя?
+		\item За яких умов на систему зарядів поле на далеких відстанях визначається саме квадрупольним моментом? Запишіть означення тензора
+		квадрупольного моменту $D_{\alpha\beta}$ і виведіть його з розкладу $1/|\vect r-\vect r_i|$ до другого порядку.
+		\item Доведіть, що тензор квадрупольного моменту симетричний і безслідовий. Скільки незалежних компонент він має і скільки
+		--- у власній системі координат?
+		\item Запишіть формулу для потенціалу квадрупольного доданка $\phi_{\text{кв}}(\vect r)$ через $D_{\alpha\beta}$. Як він і відповідна
+		напруженість поля спадають з відстанню порівняно з дипольним і монопольним доданками?
+		\item Чому молекула $\ce{CO2}$ не має дипольного моменту, але має ненульовий квадрупольний момент? Обчисліть $D_{zz}$ для моделі лінійного
+		квадруполя --- зарядів $+q,-2q,+q$ на осі, симетрично розташованих на відстані $a$ від центру.
+		\item Чому результуюча сила, що діє на диполь в однорідному електричному полі, дорівнює нулю, а обертовий момент --- ні? Запишіть формулу для $\vect{M}$ і поясніть, чому він не залежить від вибору точки $O$.
+		\item Як буде орієнтуватися диполь в однорідному полі? Чому положення $\vect{p}\uparrow\uparrow\Efield$ є стійким, а $\vect{p}\uparrow\downarrow\Efield$ --- нестійким?
+		\item Що відбувається з диполем у неоднорідному електричному полі? Запишіть формулу для сили $\vect{F}$ і поясніть, чому диполь втягується в область сильного поля.
+		\item Виведіть та поясніть формулу для енергії жорсткого диполя в зовнішньому полі $U = -\vect{p}\cdot\Efield$. Як залежить енергія від кута між $\vect{p}$ і $\Efield$ і в яких положеннях вона мінімальна та максимальна?
+		\item Що таке поляризовність молекули $\alpha$? Як вона пов'язана з жорсткістю «пружини» $k$ і зарядом $q$ у моделі пружного диполя?
+		\item Чому енергія пружного диполя дорівнює $U = -\tfrac12\,\vect{p}\cdot\Efield$, тоді як для жорсткого диполя $U = -\vect{p}\cdot\Efield$? Звідки береться множник $\tfrac12$?
+	\end{quizlist}
 \end{Questions}
