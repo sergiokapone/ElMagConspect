@@ -320,18 +320,18 @@ $\Efield(r) = \dfrac{Q(t)}{r^3}\vect r$ (і~теж спадає з~часом), 
 	\caption{Система рівнянь Максвелла\label{tab:MaxwellSystem}}
 		\begin{tblr}{
 			colspec        = {Q[l,m, 4cm, bg=yellow!10, font=\small]X[l,m, bg=red!10]Q[l,m, 4cm, bg=blue!10]},
-			row{1}         = {c, fg=white, bg=themecolorlight, font=\bfseries\small},
-			cell{2-5}{2-Z} = {l, m, mode=dmath, font=\small},
 			hlines,
-			vlines
-			}
+			vlines,
+			row{1}         = {c, fg=white, bg=themecolorlight, font=\bfseries\small},
+			cell{2-5}{2-Z} = {l, m, mode=dmath, font=\small}
+		}
 			Рівняння & Інтегральна форма & Диференціальна форма \\
 			Теорема Гаусса для магнітного поля
 				& \oiint\limits_S \Bfield\cdot d\vect{S} = 0
 				& \divg\Bfield = 0 \\
 			Теорема про циркуляцію для електричного поля
-				& \oint\limits_L \Efield\cdot d\vect{r} = - \frac1c\iint\limits_S \frac{\partial\Bfield}{\partial t} \cdot d\vect{S}
-				& \rot\Efield = - \frac1c \frac{\partial\Bfield}{\partial t} \\
+				& \oint\limits_L \Efield\cdot d\vect{r} = - \frac1c\iint\limits_S\frac{\partial\Bfield}{\partial{t}} \cdot d\vect{S}
+				& \rot\Efield = - \frac1c\frac{\partial\Bfield}{\partial{t}} \\
 			Теорема Гаусса для електричного поля
 				& \oiint\limits_S \Dfield\cdot d\vect{S} = 4\pi \iiint\limits_{V} \rho dV
 				& \divg\Dfield = 4\pi\rho \\
