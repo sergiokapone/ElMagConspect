@@ -1,0 +1,7 @@
+\begin{tikzpicture}[>=latex, scale=0.75]
+	\foreach \i in {20,40,...,360}
+		{
+			\draw[->, red!50] (0,0)  ++(\i:0.1) -- ++(\i:2);
+		}
+	\node[circle, inner sep=1pt, ball color=red, text=white] at (0, 0) {$+$};
+\end{tikzpicture}
