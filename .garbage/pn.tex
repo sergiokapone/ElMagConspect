@@ -1,0 +1,187 @@
+% !TeX program = lualatex
+% !TeX encoding = utf8
+% !TeX spellcheck = uk_UA
+
+\documentclass[tikz, border=10pt]{standalone}
+
+\usepackage{fontsetup}
+\usepackage[english, russian, ukrainian]{babel}
+
+\usepackage{amsmath}
+\usetikzlibrary{arrows.meta, positioning, calc}
+
+\begin{document}
+
+% Mimpimo ya mipfhasho na vukulu (Variables to eliminate hardcoding)
+\newcommand{\xp}{1.8}     % Depletion layer width on p-side (x_p)
+\newcommand{\xn}{1.8}     % Depletion layer width on n-side (x_n)
+\newcommand{\xleft}{5.0}  % Left boundary (-x_left)
+\newcommand{\xright}{5.0} % Right boundary (+x_right)
+\newcommand{\ybox}{2.0}   % Height of junction box (+/- ybox)
+
+\begin{tikzpicture}[
+    >=Stealth,
+    font=\small,
+    ion/.style={circle, draw, inner sep=0.5pt, minimum size=5.5mm, align=center}
+]
+
+% ==========================================
+% 1. РІВНОВАЖНИЙ p-n ПЕРЕХІД (СХЕМА ЗЛІВА)
+% ==========================================
+
+% Прямокутники областей (Забарвлення)
+\fill[blue!40] (-\xleft,-\ybox) rectangle (-\xp,\ybox); % Нейтральна p-область
+\fill[blue!20] (-\xp,-\ybox) rectangle (0,\ybox);      % Збіднена p-область
+\fill[red!20]  (0,-\ybox) rectangle (\xn,\ybox);       % Збіднена n-область
+\fill[red!40]  (\xn,-\ybox) rectangle (\xright,\ybox);  % Нейтральна n-область
+
+% Контури прямокутника та межі
+\draw[thick] (-\xleft,-\ybox) rectangle (\xright,\ybox);
+\draw[thick] (0,-\ybox) -- (0,\ybox); % Фізична межа x=0
+\draw[dashed] (-\xp,-\ybox-0.3) -- (-\xp,\ybox+0.2); % Межа x = -x_p
+\draw[dashed] (\xn,-\ybox-0.3) -- (\xn,\ybox+0.2);   % Межа x = x_n
+
+% Металеві контакти на краях
+\fill[black] (-\xleft-0.15,-\ybox) rectangle (-\xleft,\ybox);
+\fill[black] (\xright,-\ybox) rectangle (\xright+0.15,\ybox);
+
+% --- Іони та носії в нейтральній p-області ---
+\foreach \coord in {(-4.4,1.3), (-3.2,1.3), (-4.4,-1.3), (-3.2,-1.3), (-3.8,0.1), (-2.7,0.1)} {
+    \node[ion, draw=black, fill=blue!25] at \coord {\scriptsize $\text{A}^-$};
+}
+
+% Вільні дірки (червоні точки)
+\foreach \coord in {(-4.3,0.4), (-3.8,0.9), (-4.6,-0.5), (-3.5,-0.6), (-2.9,0.7), (-2.6,-1.2)} {
+    \fill[red!90!black] \coord circle (2.5pt);
+}
+
+% --- Іони та носії в нейтральній n-області ---
+\foreach \coord in {(4.4,1.3), (3.2,1.3), (4.4,-1.3), (3.2,-1.3), (3.8,0.1), (2.7,0.1)} {
+    \node[ion, draw=black, fill=red!25] at \coord {\scriptsize $\text{D}^+$};
+}
+
+% Вільні електрони (чорні точки)
+\foreach \coord in {(4.1,0.5), (3.6,1.0), (4.5,-0.4), (3.4,-0.6), (2.9,0.6), (2.5,-1.0)} {
+    \fill[black] \coord circle (2.5pt);
+}
+
+% --- Іони в збідненому шарі ---
+% Негативні іони (p-side)
+\foreach \x in {-1.3, -0.5} {
+    \foreach \y in {-1.3, -0.45, 0.45, 1.3} {
+        \node[circle, draw, fill=blue!15, inner sep=0pt, minimum size=4.5mm] at (\x,\y) {\scriptsize $-$};
+    }
+}
+% Позитивні іони (n-side)
+\foreach \x in {0.5, 1.3} {
+    \foreach \y in {-1.3, -0.45, 0.45, 1.3} {
+        \node[circle, draw, fill=red!15, inner sep=0pt, minimum size=4.5mm] at (\x,\y) {\scriptsize $+$};
+    }
+}
+
+% Стрілки та текстові підписи всередині збідненого шару
+\node at (-0.9, 0.9) {\fontsize{6.5}{7.5}\selectfont Дрейф: ($\text{e}^- \rightarrow, \text{h}^+ \leftarrow$)};
+\draw[->] (-0.3, 0.65) -- (-0.6, 0.65);
+
+\node at (-0.9, -0.9) {\fontsize{6.5}{7.5}\selectfont Дифузія: ($\text{e}^- \leftarrow, \text{h}^+ \rightarrow$)};
+\draw[->] (-0.6, -0.65) -- (-0.3, -0.65);
+
+% Внутрішнє поле (велика центральна чорна стрілка)
+\draw[line width=2.8pt, ->] (1.1, 0) -- (-1.1, 0);
+
+% Розміри збідненого шару та позначення точок
+\draw[<->] (-\xp, \ybox+0.3) -- (\xn, \ybox+0.3) node[midway, above] {\shortstack{Збіднений\\шар}};
+\draw[<->] (-\xp, -\ybox-0.8) -- (\xn, -\ybox-0.8) node[midway, fill=white, inner sep=1pt] {$W$};
+
+\node[below=10pt] at (-\xp,-\ybox) {$-x_{\text{p}}$};
+\node[below] at (0,-\ybox) {$x = 0$};
+\node[below=10pt] at (\xn,-\ybox) {$x_{\text{n}}$};
+
+% Верхня легенда
+\node[anchor=west, align=left] at (-\xleft-0.2, \ybox+0.7) {\tikz\node[circle, draw, fill=blue!40, inner sep=0pt, minimum size=4mm] {\tiny $-$}; \small Нерухомі\\ негативні іони ($\text{A}^-$)};
+\node[anchor=west, align=left] at (\xn, \ybox+0.7) {\tikz\node[circle, draw, fill=red!40, inner sep=0pt, minimum size=4mm] {\tiny $+$}; \small Нерухомі\\ позитивні іони ($\text{D}^+$)};
+
+% Підписи областей
+\node at ({-(\xleft+\xp)/2}, -\ybox-0.3) {\large Область $p$};
+\node at ({(\xright+\xn)/2}, -\ybox-0.3) {\large Область $n$};
+
+% Пояснювальні блоки знизу з виносними лініями
+\node[align=center] (holes_txt) at (-4.2, -4.0) {Червоні точки:\\Вільні дірки\\(основні носії в $p$)};
+\draw[->] (holes_txt.north) -- (-4.3,0.4);
+
+\node[align=center] (field_txt) at (0, -5.0) {\large Внутрішнє\\\large електричне\\\large поле\\($\mathbf{E}_{\text{int}}$)};
+
+\node[align=center] (electrons_txt) at (4.2, -4.0) {Чорні точки:\\Вільні електрони\\(основні носії в $n$)};
+\draw[->] (electrons_txt.north) -- (3.4,-0.6);
+
+
+% ==========================================
+% 2. ГРАФІКИ РОЗПОДІЛІВ (СПРАВА)
+% ==========================================
+
+\begin{scope}[xshift=9.2cm]
+
+% --- 2.1 Розподіл заряду rho(x) ---
+\begin{scope}[yshift=1.8cm]
+    \draw[->, thick] (-2.5,0) -- (3.2,0) node[right] {$x$ [\textmu м]};
+    \draw[->, thick] (0,-1.2) -- (0,1.2) node[above] {$\rho(x)$ [Кл/см$^3$]};
+    
+    % Зафарбовані прямокутники
+    \fill[blue!40, draw=black, thick] (-\xp,-0.9) rectangle (0,0);
+    \fill[red!40, draw=black, thick] (0,0) rectangle (\xn,0.9);
+    
+    \node[above left] at (-\xp,0) {$-x_{\text{p}}$};
+    \node[below right] at (\xn,0) {$x_{\text{n}}$};
+    \node[below right] at (0,0) {$0$};
+    \node[right] at (0, -0.9) {$-q N_{\text{a}}$};
+    \node[left] at (0, 0.9) {$+q N_{\text{d}}$};
+\end{scope}
+
+% --- 2.2 Розподіл поля E(x) ---
+\begin{scope}[yshift=-1.5cm]
+    \draw[->, thick] (-2.5,0) -- (3.2,0) node[right] {$x$ [\textmu м]};
+    \draw[->, thick] (0,-1.5) -- (0,0.8) node[above] {$E(x)$ [В/см]};
+    
+    % Трикутник напрямленості поля
+    \fill[blue!50, draw=black, thick] (-\xp,0) -- (0,-1.2) -- (0,0) -- cycle;
+    \fill[red!50, draw=black, thick]  (0,0) -- (0, -1.2) -- (\xn,0) -- cycle;
+    
+    \node[below left] at (-\xp,0) {$-x_{\text{p}}$};
+    \node[below right] at (\xn,0) {$x_{\text{n}}$};
+    \node[above left] at (0,0) {$0$};
+    \node[right] at (0.2,-1.2) {$E_{\max}$};
+    \node[above right] at (2.1, 0.0) {$E(x)$};
+    
+    \draw[dashed] (0,-1.2) -- (-2.3,-1.2);
+\end{scope}
+
+% --- 2.3 Розподіл потенціалу phi(x) ---
+\begin{scope}[yshift=-6cm]
+    \draw[->, thick] (-2.5,0) -- (3.2,0) node[right] {$x$ [\textmu м]};
+    \draw[->, thick] (0,0) -- (0,1.8) node[above] {$\phi(x)$ [В]};
+    
+    % Гладка s-подібна крива потенціалу
+    \draw[very thick] (-2.5, 0.2) -- (-\xp, 0.2) 
+        .. controls (0, 0.2) and (0, 1.4) .. (\xn, 1.4) 
+        -- (2.7, 1.4) node[right] {$\phi_{\text{n}}$};
+        
+    \node[left] at (-2.5, 0.2) {$\phi_{\text{p}}$};
+    \node[below] at (-\xp,0) {$-x_{\text{p}}$};
+    \node[below] at (0,0) {$0$};
+    \node[below] at (\xn,0) {$x_{\text{n}}$};
+    
+    \draw[dashed] (-2.5, 0.2) -- (\xn, 0.2);
+    \draw[dashed] (-\xp, 0) -- (-\xp, 0.2);
+    
+    \draw[<->, thick] (1.6, 0.2) -- (1.6, 1.4) node[midway, right, align=left] {$\phi_{\text{k}} = \phi_{\text{n}} - \phi_{\text{p}}$};
+
+\end{scope}
+
+% ВЕРТИКАЛЬНІ ПУНКТИРИ МІЖ ГРАФІКАМИ ТА СХЕМОЮ
+\draw[dashed] (-\xp,2.8) -- (-\xp,-3.5);
+\draw[dashed] (\xn,2.8) -- (\xn,-3.5);
+
+\end{scope}
+
+\end{tikzpicture}
+\end{document}
