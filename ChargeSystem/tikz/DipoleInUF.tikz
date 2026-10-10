@@ -42,7 +42,7 @@
     \foreach \y in {-1.2, -0.6, 0, 0.6, 1.2} {
         \draw[field] (-3.2, \y) -- (3.2, \y);
     }
-    \node[right, gray!90!black, font=\small] at (3.2, 1.2) {$\vect{E}$};
+    \node[right, gray!90!black, font=\small] at (3.2, 1.2) {$\Efield$};
 
     % 2. Початок координат O
     \coordinate (O) at (0, -1.8);
@@ -64,7 +64,7 @@
     \draw[armvec] (qn) -- node[above, sloped, pos=0.5, font=\small] {$\symbfscr{l}$} (qp);
 
     % 6. Вектори сил (напрямлені від центрів/країв зарядів)
-    \draw[force] (qn) -- ++(-1.4, 0) node[above left, font=\small] {$\vect{F}_- = -q\vect{E}$};
-    \draw[force] (qp) -- ++(1.4, 0) node[below right, font=\small] {$\vect{F}_+ = q\vect{E}$};
+    \draw[force] (qn) -- ++(-1.4, 0) node[above left, font=\small] {$\vect{F}_- = -q\Efield$};
+    \draw[force] (qp) -- ++(1.4, 0) node[below right, font=\small] {$\vect{F}_+ = q\Efield$};
 
 \end{tikzpicture}

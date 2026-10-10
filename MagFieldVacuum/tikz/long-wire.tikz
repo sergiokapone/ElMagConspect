@@ -87,7 +87,7 @@
     \path (Dl) ++({90-0.5*\angAlpha}:0.85) node {$\alpha$};
 
     % Вектор магнітного поля dB (напрямлений за площину \otimes)
-    \draw[thick] (P) ++(0.35, 0.35) circle (3pt) node[right=4pt] {$d\vect{B}$};
+    \draw[thick] (P) ++(0.35, 0.35) circle (3pt) node[right=4pt] {$d\Bfield$};
     \draw[thick] (P) ++(0.35, 0.35) ++(-2pt,-2pt) -- ++(4pt,4pt);
     \draw[thick] (P) ++(0.35, 0.35) ++(-2pt,2pt) -- ++(4pt,-4pt);
 \end{tikzpicture}
