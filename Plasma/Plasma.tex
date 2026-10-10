@@ -212,7 +212,7 @@ $\sim0{,}1$~мм рт.~ст.: температура електронів дос
 виникла просторова локальна різниця густин. За теоремою Гаусса виникне кулонівське поле:
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}
-	\nabla \cdot \vect{E} = 4\pi \rho = 4\pi e (Z n_i - n_e).
+	\nabla \cdot \Efield = 4\pi \rho = 4\pi e (Z n_i - n_e).
 \end{equation}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Оскільки питомий заряд електрона $e/m_e$ величезний, це поле миттєво створить потужні
@@ -576,10 +576,10 @@ $\lambda_D\gg a$, або $n\ll(k_{\mathrm B}T/e^2)^3$. Парна кулонів
 \end{figure}
 
 Той самий результат дає й~опис без уявного конденсатора. З~рівняння неперервності
-$\partial_t\rho+\nabla\cdot\vect{j}=0$ та~рівняння руху $m_e\partial_t\vect{v}=-e\vect{E}$
+$\partial_t\rho+\nabla\cdot\vect{j}=0$ та~рівняння руху $m_e\partial_t\vect{v}=-e\Efield$
 при $\vect{j}=-n_ee\vect{v}$ маємо
-$\partial_t^2\rho=-\nabla\cdot\partial_t\vect{j}=-(n_ee^2/m_e)\nabla\cdot\vect{E}$, а~за
-теоремою Гаусса $\nabla\cdot\vect{E}=4\pi\rho$. Тому
+$\partial_t^2\rho=-\nabla\cdot\partial_t\vect{j}=-(n_ee^2/m_e)\nabla\cdot\Efield$, а~за
+теоремою Гаусса $\nabla\cdot\Efield=4\pi\rho$. Тому
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
 	\frac{\partial^2\rho}{\partial t^2}+\omega_{pe}^2\rho=0.
@@ -662,11 +662,11 @@ $\lambda_{De}\approx7{,}43\times10^{2}\sqrt{T_e[\text{еВ}]/n_e[\mathrm{см}^{
 	      хвилі ($\sim(v/c)eE$) можна знехтувати.
 	\item Амплітуда коливань електрона і~шлях теплового руху за період малі порівняно
 	      з~довжиною хвилі, тому поле можна вважати однорідним у~межах руху електрона:
-	      $\vect{E}=\vect{E}_0e^{-i\omega t}$.
+	      $\Efield=\Efield_0e^{-i\omega t}$.
 	\item Зіткнень немає (їхній вплив розглянуто в~§\ref{sec:plasma-collisions}).
 \end{enumerate}
 
-Рівняння руху електрона $m_e\ddot{\vect r}=-e\vect{E}$ має розв'язок
+Рівняння руху електрона $m_e\ddot{\vect r}=-e\Efield$ має розв'язок
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
 	\vect r=\frac{e}{m_e\omega^2}\vect E,

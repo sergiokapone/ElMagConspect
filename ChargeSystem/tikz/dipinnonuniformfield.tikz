@@ -22,7 +22,7 @@
     \foreach \y in {-3,...,3}{
         \draw[field] plot[domain=1:4.2, samples=50] (\x, {0.2*\y + 0.05*\y*\x^2});
     }
-    % \node[right, gray!90!black, font=\small] at (4.2, 1.6) {$\vect{E}$};
+    % \node[right, gray!90!black, font=\small] at (4.2, 1.6) {$\Efield$};
 
     % 2. Вузли зарядів
     \node[chn] (qn) at (2.5, -1.0) {$-$};
@@ -36,8 +36,8 @@
     \draw[armvec] (qn) -- node[right=3pt, pos=0.55, font=\small] {$\symbfscr{l}$} (qp);
 
     % 4. Вектори сил у точках розташування зарядів
-    \draw[force] (qp) -- ++(36:1.2) node[above right=-2pt, font=\small] {$+q\vect{E}_+$};
-    \draw[force] (qn) -- ++(155:1.5) node[left, font=\small] {$-q\vect{E}_-$};
+    \draw[force] (qp) -- ++(36:1.2) node[above right=-2pt, font=\small] {$+q\Efield_+$};
+    \draw[force] (qn) -- ++(155:1.5) node[left, font=\small] {$-q\Efield_-$};
 
 \end{tikzpicture}
 

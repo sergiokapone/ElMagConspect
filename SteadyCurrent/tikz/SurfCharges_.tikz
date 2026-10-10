@@ -13,7 +13,7 @@
 		{$E_{\tau}$} ;
 	\draw[->, red, thick] (-0.5,0.65) -- ++(0,1.5) coordinate (En) node[left] {$E_n$};
 	\draw[->, red, thick] (-0.5,0.65) -- ++({atan(1.5)}:{1/(cos(atan(1.5)))})
-	coordinate (E) node[above] {$\vect{E}$};
+	coordinate (E) node[above] {$\Efield$};
 	\draw[dashed] (En) -- (E) -- (Et);
 	\foreach \x in {-1, -0.75,..., 1} {
 			\node[inner sep=0, text=red, font=\scriptsize] at ({0.9*\x}, {\r-0.05}) {$+$};
