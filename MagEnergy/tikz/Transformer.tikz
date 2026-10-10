@@ -1,0 +1,235 @@
+\begin{tikzpicture}[>=Stealth, font=\sffamily]
+
+ % ====================================================
+ % 0. ГОЛОВНІ ПАРАМЕТРИ РИСУНКА (ЗМІНЮЙТЕ ТУТ)
+ % ====================================================
+ 
+ % Геометрія осердя
+ \def\wCore{5.2}       % Загальна ширина осердя (лицева рамка)
+ \def\hCore{5.2}       % Загальна висота осердя (лицева рамка)
+ \def\wLeg{1.0}        % Товщина вертикальних ніжок
+ \def\hBeam{1.0}       % Товщина горизонтальних брусів
+ \def\dx3D{0.5}        % 3D-глибина по X
+ \def\dy3D{0.4}        % 3D-глибина по Y
+
+ % Число витків та ОКРЕМІ КРОКИ ДЛЯ КОЖНОЇ ОБМОТКИ
+ \def\None{9}          % Кількість витків первинної обмотки N1
+ \def\Ntwo{10}          % Кількість витків вторинної обмотки N2
+ 
+ \def\pitchOne{0.20}   % Крок між витками для обмотки N1 (ліворуч)
+ \def\pitchTwo{0.20}   % Крок між витками для обмотки N2 (праворуч)
+ 
+ \def\dyside{0.14}     % Підйом витка на бічній 3D-грані
+
+ % Відстані до елементів кола
+ \def\distTerm{1.4}    % Відстань від осердя до клем
+ \def\distComp{0.9}    % Відстань від клем до джерела / навантаження
+
+ % Початкові висоти верхніх витків
+ \def\yStartNone{0.80} % Верхня точка первинної обмотки N1
+ \def\yStartNtwo{0.80} % Верхня точка вторинної обмотки N2
+
+ % ----------------------------------------------------
+ % Автоматичний розрахунок координат граней осердя
+ \pgfmathsetmacro{\xOutL}{-\wCore/2}                   % Зовнішня ліва межа (-2.6)
+ \pgfmathsetmacro{\xInL}{-\wCore/2 + \wLeg}             % Внутрішня ліва межа (-1.3)
+ \pgfmathsetmacro{\xInR}{\wCore/2 - \wLeg}              % Внутрішня права межа (1.3)
+ \pgfmathsetmacro{\xOutR}{\wCore/2}                    % Зовнішня права межа (2.6)
+ 
+ \pgfmathsetmacro{\yBot}{-\hCore/2}                     % Нижня межа осердя
+ \pgfmathsetmacro{\yTop}{\hCore/2}                      % Верхня межа осердя
+ \pgfmathsetmacro{\yWinBot}{-\hCore/2 + \hBeam}          % Нижня межа вікна
+ \pgfmathsetmacro{\yWinTop}{\hCore/2 - \hBeam}           % Верхня межа вікна
+
+ % Розрахунок кута та довжини вектора 3D-глибини
+ \pgfmathsetmacro{\angD}{atan(\dy3D/\dx3D)}
+ \pgfmathsetmacro{\lenD}{veclen(\dx3D, \dy3D)}
+
+ % Кольорова гама
+ \colorlet{corefront}{gray!40}
+ \colorlet{coretop}{gray!60}
+ \colorlet{coreright}{gray!70}
+ \colorlet{coreinner}{gray!55}
+ \colorlet{terminalgreen}{green!20!white}
+ \def\rcol{red!85!black}
+ \def\bcol{blue!85!black}
+
+ % ====================================================
+ % 1. ШАР 1: ЗАДНІ НАПІВВИТКИ (Малюються під осердям)
+ % ====================================================
+
+ % --- Задні витки N1 (Червоні, ліва ніжка) ---
+ \pgfmathsetmacro{\maxIone}{int(\None-1)}
+ \foreach \i in {0,...,\maxIone} {
+   \pgfmathsetmacro{\yfront}{\yStartNone - \i*\pitchOne}
+   \pgfmathsetmacro{\ybackstart}{\yfront + \dyside}
+   \pgfmathsetmacro{\ybackend}{\yfront - \pitchOne}
+   
+   \draw[\rcol, line width=1.8pt] ({\xInL+\dx3D}, \ybackstart) -- (\xOutL, \ybackend);
+ }
+
+ % --- Задні витки N2 (Сині, права ніжка) ---
+ \pgfmathsetmacro{\maxItwo}{int(\Ntwo-1)}
+ \foreach \i in {0,...,\maxItwo} {
+   \pgfmathsetmacro{\yfront}{\yStartNtwo - \i*\pitchTwo}
+   \pgfmathsetmacro{\ybackstart}{\yfront + \dyside}
+   \pgfmathsetmacro{\ybackend}{\yfront - \pitchTwo}
+   
+   \draw[\bcol, line width=1.8pt] (\xInR, \ybackend) -- ({\xOutR+\dx3D}, \ybackstart);
+ }
+
+ % ====================================================
+ % 2. ШАР 2: 3D-ОСЕРДЯ
+ % ====================================================
+
+ % А) Внутрішні стінки вікна (3D глибина)
+ \fill[coreinner] (\xInL, \yWinBot) -- ({\xInL+\dx3D}, {\yWinBot+\dy3D}) -- ({\xInL+\dx3D}, {\yWinTop+\dy3D}) -- (\xInL, \yWinTop) -- cycle;
+ \fill[coretop] (\xInL, \yWinBot) -- ({\xInL+\dx3D}, {\yWinBot+\dy3D}) -- ({\xInR+\dx3D}, {\yWinBot+\dy3D}) -- (\xInR, \yWinBot) -- cycle;
+
+ \draw[line width=0.6pt] (\xInL, \yWinTop) -- ({\xInL+\dx3D}, {\yWinTop+\dy3D}) -- ({\xInL+\dx3D}, {\yWinBot+\dy3D});
+ \draw[line width=0.6pt] ({\xInL+\dx3D}, {\yWinBot+\dy3D}) -- ({\xInR+\dx3D}, {\yWinBot+\dy3D}) -- (\xInR, \yWinBot);
+
+ % Б) ВНУТРІШНЯ ЛАМІНАЦІЯ (Малюється ДО передньої рамки!)
+ \foreach \f in {0.2, 0.4, 0.6, 0.8} {
+   \pgfmathsetmacro{\dist}{\f * \lenD}
+   
+   % Внутрішня ліва стінка вікна
+   \draw[gray!35!black, line width=0.35pt] 
+     (\xInL, \yWinBot) ++(\angD:\dist) -- ++(0, {\hCore - 2*\hBeam});
+     
+   % Внутрішня нижня стінка вікна
+   \draw[gray!35!black, line width=0.35pt] 
+     (\xInL, \yWinBot) ++(\angD:\dist) -- ++({\wCore - 2*\wLeg}, 0);
+ }
+
+ % В) Передня лицева рамка осердя (Перекриває внутрішній шар за межами прямокутника вікна)
+ \fill[corefront, even odd rule, draw=black, line width=0.8pt] 
+   (\xOutL, \yBot) rectangle (\xOutR, \yTop)
+   (\xInL, \yWinBot) rectangle (\xInR, \yWinTop);
+
+ % Г) Верхня 3D-грань осердя
+ \filldraw[fill=coretop, draw=black, line width=0.8pt] 
+   (\xOutL, \yTop) -- ({\xOutL+\dx3D}, {\yTop+\dy3D}) -- ({\xOutR+\dx3D}, {\yTop+\dy3D}) -- (\xOutR, \yTop) -- cycle;
+
+ % Д) Права зовнішня 3D-грань осердя
+ \filldraw[fill=coreright, draw=black, line width=0.8pt] 
+   (\xOutR, \yTop) -- ({\xOutR+\dx3D}, {\yTop+\dy3D}) -- ({\xOutR+\dx3D}, {\yBot+\dy3D}) -- (\xOutR, \yBot) -- cycle;
+
+ % Е) Зовнішня ламінація (на верхній та правій гранях)
+ \foreach \f in {0.2, 0.4, 0.6, 0.8} {
+   \pgfmathsetmacro{\dist}{\f * \lenD}
+   
+   % Верхня 3D-грань
+   \draw[gray!35!black, line width=0.35pt] 
+     (\xOutL, \yTop) ++(\angD:\dist) -- ++(\wCore, 0);
+     
+   % Права 3D-грань
+   \draw[gray!35!black, line width=0.35pt] 
+     (\xOutR, \yTop) ++(\angD:\dist) -- ++(0, -\hCore);
+ }
+
+ % ====================================================
+ % 3. ШАР 3: ВИДИМІ ПЕРЕДНІ ТА 3D-ВИТКИ (Поверх осердя)
+ % ====================================================
+
+ % --- Обмотка N1 (Червона, ліва ніжка) ---
+ \foreach \i in {0,...,\maxIone} {
+   \pgfmathsetmacro{\yfront}{\yStartNone - \i*\pitchOne}
+   \pgfmathsetmacro{\ybackstart}{\yfront + \dyside}
+
+   \draw[\rcol, line width=2.0pt, line cap=round] (\xOutL, \yfront) -- (\xInL, \yfront);
+   \draw[\rcol, line width=2.0pt, line cap=round] (\xInL, \yfront) -- ({\xInL+\dx3D}, \ybackstart);
+ }
+
+ % --- Обмотка N2 (Синя, права ніжка) ---
+ \foreach \i in {0,...,\maxItwo} {
+   \pgfmathsetmacro{\yfront}{\yStartNtwo - \i*\pitchTwo}
+   \pgfmathsetmacro{\ybackstart}{\yfront + \dyside}
+
+   \draw[\bcol, line width=2.0pt, line cap=round] (\xInR, \yfront) -- (\xOutR, \yfront);
+   \draw[\bcol, line width=2.0pt, line cap=round] (\xOutR, \yfront) -- ({\xOutR+\dx3D}, \ybackstart);
+ }
+
+ % ====================================================
+ % 4. МАГНІТНИЙ ПОТІК
+ % ====================================================
+ \pgfmathsetmacro{\xFluxL}{\xOutL + \wLeg/2}
+ \pgfmathsetmacro{\xFluxR}{\xOutR - \wLeg/2}
+ \pgfmathsetmacro{\yFluxTop}{\yTop - \hBeam/2}
+ \pgfmathsetmacro{\yFluxBot}{\yBot + \hBeam/2}
+
+ \draw[line width=1.2pt, dotted, rounded corners=10pt] 
+   (\xFluxL, \yFluxBot) rectangle (\xFluxR, \yFluxTop);
+ 
+ \draw[line width=1.2pt, <-] (0.2, \yFluxTop) -- (-0.2, \yFluxTop);
+ \draw[line width=1.2pt, ->] (\xFluxR, 0.1) -- (\xFluxR, -0.2);
+ \draw[line width=1.2pt, ->] (\xFluxL, -0.1) -- (\xFluxL, 0.2);
+ \draw[line width=1.2pt, ->] (0.2, \yFluxBot) -- (-0.2, \yFluxBot);
+
+ \node[font=\Large] at (\xFluxL + 1.55, 0) {$N_1$};
+ \node[font=\Large] at (\xFluxR - 1.00, 0) {$N_2$};
+
+ % ====================================================
+ % 5. ЕЛЕКТРИЧНІ КОЛА ТА ДИНАМІЧНІ ПІД'ЄДНАННЯ
+ % ====================================================
+
+ % Точки підключення дротів обмоток
+ \pgfmathsetmacro{\yNoneTop}{\yStartNone}
+ \pgfmathsetmacro{\yNoneBot}{\yStartNone - (\None-1)*\pitchOne - \pitchOne}
+ 
+ \pgfmathsetmacro{\yNtwoTop}{\yStartNtwo + \dyside}
+ \pgfmathsetmacro{\yNtwoBot}{\yStartNtwo - (\Ntwo-1)*\pitchTwo - \pitchTwo}
+
+ % Позиції клем та компонентів
+ \pgfmathsetmacro{\xTermL}{\xOutL - \distTerm}
+ \pgfmathsetmacro{\xCompL}{\xTermL - \distComp}
+
+ \pgfmathsetmacro{\xTermR}{\xOutR + \dx3D + \distTerm}
+ \pgfmathsetmacro{\xCompR}{\xTermR + \distComp}
+
+ % --- Первинна сторона (Ліворуч) ---
+ \draw[\rcol, line width=1.2pt] (\xOutL, \yNoneTop) -- (\xTermL, \yNoneTop);
+ \draw[\rcol, line width=1.2pt] (\xOutL, \yNoneBot) -- (\xTermL, \yNoneBot);
+ 
+ \draw[line width=0.8pt] (\xTermL, \yNoneTop) -- (\xCompL, \yNoneTop);
+ \draw[line width=0.8pt] (\xTermL, \yNoneBot) -- (\xCompL, \yNoneBot);
+ \filldraw[fill=white, draw=black, line width=0.8pt] (\xTermL, \yNoneTop) circle (2.2pt);
+ \filldraw[fill=white, draw=black, line width=0.8pt] (\xTermL, \yNoneBot) circle (2.2pt);
+
+ % Джерело змінного струму
+ \pgfmathsetmacro{\yCenterL}{(\yNoneTop + \yNoneBot)/2}
+ \draw[line width=0.8pt, fill=orange!25] (\xCompL, \yCenterL) circle (0.35cm);
+ \draw[line width=0.8pt] (\xCompL, \yNoneTop) -- (\xCompL, \yCenterL + 0.35);
+ \draw[line width=0.8pt] (\xCompL, \yNoneBot) -- (\xCompL, \yCenterL - 0.35);
+ \draw[line width=0.8pt] ({\xCompL-0.18}, \yCenterL) sin ({\xCompL-0.09}, \yCenterL + 0.10) cos (\xCompL, \yCenterL) sin ({\xCompL+0.09}, \yCenterL - 0.10) cos ({\xCompL+0.18}, \yCenterL);
+
+ % Стрелки та напруга ліворуч
+ \draw[<->, >=Stealth, line width=0.9pt] ({\xTermL}, \yNoneTop - 0.15) -- ({\xTermL}, \yNoneBot + 0.15) 
+   node[midway, fill=white, inner sep=1.5pt] {$\emf_1$};
+ \draw[->, >=Stealth, line width=0.9pt] ({\xTermL + 0.3}, \yNoneTop + 0.25) -- ({\xOutL - 0.2}, \yNoneTop + 0.25) 
+   node[midway, above] {$I_1$};
+ \draw[<-, >=Stealth, line width=0.9pt] ({\xTermL + 0.3}, \yNoneBot - 0.25) -- ({\xOutL - 0.2}, \yNoneBot - 0.25);
+
+ % --- Вторинна сторона (Праворуч) ---
+ \draw[\bcol, line width=1.2pt] ({\xOutR+\dx3D}, \yNtwoTop) -- (\xTermR, \yNtwoTop);
+ \draw[\bcol, line width=1.2pt] ({\xOutR+\dx3D}, \yNtwoBot) -- (\xTermR, \yNtwoBot);
+ 
+ \draw[line width=0.8pt] (\xTermR, \yNtwoTop) -- (\xCompR, \yNtwoTop);
+ \draw[line width=0.8pt] (\xTermR, \yNtwoBot) -- (\xCompR, \yNtwoBot);
+ \filldraw[fill=terminalgreen, draw=black, line width=0.8pt] (\xTermR, \yNtwoTop) circle (2.5pt);
+ \filldraw[fill=terminalgreen, draw=black, line width=0.8pt] (\xTermR, \yNtwoBot) circle (2.5pt);
+
+ % Навантаження (Резистор)
+ \pgfmathsetmacro{\yCenterR}{(\yNtwoTop + \yNtwoBot)/2}
+ \draw[line width=0.8pt, fill=cyan!20] ({\xCompR - 0.15}, \yCenterR - 0.35) rectangle ({\xCompR + 0.15}, \yCenterR + 0.35);
+ \draw[line width=0.8pt] (\xCompR, \yNtwoTop) -- (\xCompR, \yCenterR + 0.35);
+ \draw[line width=0.8pt] (\xCompR, \yNtwoBot) -- (\xCompR, \yCenterR - 0.35);
+
+ % Стрелки та напруга праворуч
+ \draw[<->, >=Stealth, line width=0.9pt] ({\xTermR}, \yNtwoTop - 0.15) -- ({\xTermR}, \yNtwoBot + 0.15) 
+   node[midway, fill=white, inner sep=1.5pt] {$\emf_2$};
+ \draw[->, >=Stealth, line width=0.9pt] ({\xOutR + \dx3D + 0.2}, \yNtwoTop + 0.25) -- ({\xTermR - 0.3}, \yNtwoTop + 0.25) 
+   node[midway, above] {$I_2$};
+ \draw[<-, >=Stealth, line width=0.9pt] ({\xOutR + \dx3D + 0.2}, \yNtwoBot - 0.25) -- ({\xTermR - 0.3}, \yNtwoBot - 0.25);
+
+\end{tikzpicture}
