@@ -28,19 +28,19 @@
     }
 
     % surface charges (denser on the small sphere)
-    \foreach \a in {0,20,...,340}{
-        \node[chargeplus] at ($(C1)+(\a:\Rsmall)$) {};
-    }
-    \foreach \a in {0,40,...,320}{
-        \node[chargeplus] at ($(C2)+(\a:\Rlarge)$) {};
-    }
+    % \foreach \a in {0,20,...,340}{
+    %     \node[chargeplus] at ($(C1)+(\a:\Rsmall)$) {};
+    % }
+    % \foreach \a in {0,40,...,320}{
+    %     \node[chargeplus] at ($(C2)+(\a:\Rlarge)$) {};
+    % }
 
     % radius labels
-    \draw[-latex, thin] (C1) -- ($(C1)+(120:\Rsmall)$) node[midway, above left, font=\small] {$R_1$};
-    \draw[-latex, thin] (C2) -- ($(C2)+(120:\Rlarge)$) node[midway, above left, font=\small] {$R_2$};
+    \draw[-latex, thin] (C1) -- ($(C1)+(120:\Rsmall)$) node[pos=0.5, right, font=\small] {$R_1$};
+    \draw[-latex, thin] (C2) -- ($(C2)+(120:\Rlarge)$) node[pos=0.5, right, font=\small] {$R_2$};
 
     % sigma / potential labels
-    \node[font=\small] at ($(C1)+(0,-\Rsmall-1.1)$) {$\sigma_1 = \dfrac{\varphi}{4\pi R_1}$};
-    \node[font=\small] at ($(C2)+(0,-\Rlarge-0.7)$) {$\sigma_2 = \dfrac{\varphi}{4\pi R_2}$};
-    \node[font=\small] at ($(C1)!0.5!(C2)+(0,1.9)$) {$\varphi_1 = \varphi_2 = \varphi$};
+    \node[font=\small] at ($(C1)+(0,-\Rsmall-1.2)$) {$\sigma_1 = \dfrac{\phi}{4\pi R_1}$};
+    \node[font=\small] at ($(C2)+(0,-\Rlarge-0.8)$) {$\sigma_2 = \dfrac{\phi}{4\pi R_2}$};
+    \node[font=\small] at ($(C1)!0.5!(C2)+(0,1.9)$) {$\phi_1 = \phi_2 = \phi$};
 \end{tikzpicture}
