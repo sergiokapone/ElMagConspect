@@ -1,3 +1,5 @@
+% !TeX root = ../../main.tex
+
 \begin{tikzpicture}[>=latex]
 	\draw[gray!60, line width=0.21cm] (0,0)  [partial ellipse=90:0:2];
 	\fill[gray!50, draw = gray!70] (0, 2) circle (0.05 and 0.1);

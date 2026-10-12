@@ -30,11 +30,14 @@
 \newcommand{\includetikz}[2]{\input{#1/tikz/#2.tikz}}
 
 \begin{document}
-\pagestyle{main}
 
 \ifdefined\TargetTikz
-  \includetikz{\TargetChapter}{\TargetTikz}
+  \pagestyle{empty}
+  \begin{center}
+    \includetikz{\TargetChapter}{\TargetTikz}
+  \end{center}
 \else
+  \pagestyle{main}
   \includechapter{\TargetChapter}
 \fi
 
