@@ -412,7 +412,7 @@ $\emf_\text{інд} = -\dfrac1c\dfrac{d\Phi}{dt}$, де магнітний по�
 \begin{SCfigure}[1][h!]\centering
 	\includegraphics[width=0.45\linewidth]{Eddy_currents}
 	\caption{Індукування вихрових струмів Фуко в~провідній пластині, яка знаходиться в змінному магнітному полі.
-	\label{pic:FukoCurrents}}
+		\label{pic:FukoCurrents}}
 \end{SCfigure}
 
 \begin{Attention}
@@ -421,7 +421,7 @@ $\emf_\text{інд} = -\dfrac1c\dfrac{d\Phi}{dt}$, де магнітний по�
 	зокрема, ґрунтується \emphx{індукційне нагрівання} металів. З~іншого боку, ті самі
 	струми, взаємодіючи з магнітним полем (сила Ампера), створюють силу, що
 	\emphx{гальмує} рух провідника відносно джерела поля~--- явище \emphx{магнітного
-	демпфування}, яке використовують, наприклад, в~електромагнітних гальмах
+		демпфування}, яке використовують, наприклад, в~електромагнітних гальмах
 	і~в~заспокоювачах коливань вимірювальних приладів. Швидкозмінні струми Фуко
 	витісняються до поверхні провідника (скін-ефект, гл.~\ref{MaxwellEqns}), тому масивні
 	осердя трансформаторів набирають з~ізольованих пластин або виготовляють із фериту, щоб
@@ -543,18 +543,20 @@ $\emf_\text{інд} = -\dfrac1c\dfrac{d\Phi}{dt}$, де магнітний по�
 		L = \frac{4\pi\mu N^2 S}{l}.
 	\end{equation}
 
-	\emphx{Тороїд.} Для тороїдальної котушки з~$N$ витками, прямокутним перерізом ширини $b-a$
-	(де $a$ і~$b$~--- внутрішній і~зовнішній радіуси) і~висотою $d$ (див. рис.) поле за
-	теоремою про циркуляцію дорівнює $B(r)=2\mu NI/(cr)$, а~потік крізь один виток ---
-	$\int_a^b B\,d\,dr$; тому індуктивність дорівнює
-
-	\begin{center}%[h!]\centering
-		\includegraphics[width=0.3\linewidth]{toroid}
+	\noindent%
+	\begin{minipage}{0.65\linewidth}
+		\emphx{Тороїд.} Для тороїдальної котушки з~$N$ витками, прямокутним перерізом
+		ширини $b-a$ (де $a$ і~$b$~--- внутрішній і~зовнішній радіуси) і~висотою $d$ (див.
+		рис.) поле за теоремою про циркуляцію дорівнює $B(r)=2\mu NI/(cr)$, а~потік крізь
+		один виток --- $\int_a^b B\,d\,dr$; тому індуктивність дорівнює
+		\begin{equation}\label{eq:ToroidInductance}
+			L = 2\mu N^2 d\ln\left(\frac{b}{a}\right).
+		\end{equation}
+	\end{minipage}
+	\begin{minipage}{0.35\linewidth}\centering
+		\localinput{toroid.tikz}
 		%	\caption{Тороїдальна котушка\label{pic:Toroid}}
-	\end{center}
-	\begin{equation}\label{eq:ToroidInductance}
-		L = 2\mu N^2 d\ln\left(\frac{b}{a}\right).
-	\end{equation}
+	\end{minipage}
 \end{Example}
 
 \begin{Attention}

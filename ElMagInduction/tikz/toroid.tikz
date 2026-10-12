@@ -1,0 +1,105 @@
+\begin{tikzpicture}[>=Stealth, font=\sffamily, scale=0.55]
+
+	% =========================================================
+	%  ПАРАМЕТРИ, ЯКІ МОЖНА ЗМІНЮВАТИ:
+	% =========================================================
+	\def\N{20}          % Число витків (10, 14, 18, 24...)
+	\def\gap{10}        % Зазор зверху між виводами (у градусах)
+	\def\R{3.2}         % Середній радіус тороїда (r)
+	\def\a{1.1}         % Радіус перерізу (товщина тора)
+	\def\b{0.32}        % Нахил витків
+	\def\angStart{90}   % Початковий кут правого (першого) виводу
+	\def\leadLen{1.5}   % Довжина підвідних провідників
+	% =========================================================
+
+	% Автоматичний розрахунок кроку та кута останнього витка
+	\pgfmathtruncatemacro{\NminusOne}{\N - 1}
+	\pgfmathsetmacro{\angStep}{(360 - \gap) / \N}
+	\pgfmathsetmacro{\angEnd}{\angStart - \NminusOne*\angStep}
+
+	% СТИЛІ
+	\tikzset{
+		wire/.style={
+				draw=black,
+				double=white,
+				double distance=2.6pt,
+				line width=0.8pt,
+				line cap=round
+			},
+		redarrow/.style={
+				->, red!80!black, line width=2.2pt
+			},
+		bluearrow/.style={
+				->, blue!80!black, ultra thick
+			}
+	}
+
+	% % 1. ЗАДНЯ ЧАСТИНА ВИТКІВ
+	% \foreach \i in {0,...,\NminusOne} {
+	%   \pgfmathsetmacro{\ang}{\angStart - \i*\angStep}
+	%   \draw[wire, rotate around={\ang:(0,0)}] 
+	%     ({\R + \a}, 0) arc[start angle=0, end angle=180, x radius=\a, y radius=\b];
+	% }
+
+	% 2. СЕРДЕЧНИК ТОРОЇДА
+	\fill[even odd rule,
+		top color=gray!30,
+		bottom color=gray!75,
+		middle color=gray!45,
+		draw=black,
+		thick]
+	(0,0) circle (\R + \a)
+	(0,0) circle (\R - \a);
+
+	\draw[black!70, thin] (0,0) circle (\R - \a);
+	\draw[black, thick] (0,0) circle (\R + \a);
+
+	% 3. ОСЬОВА СИНЯ ПУНКТИРНА ЛІНІЯ
+	\draw[blue!80!black, dotted, line width=1.8pt] (0,0) circle (\R);
+
+	% 4. ПЕРЕДНЯ ЧАСТИНА ВИТКІВ (починаючи з 1-го витка)
+	\foreach \i in {1,...,\NminusOne} {
+			\pgfmathsetmacro{\ang}{\angStart - \i*\angStep}
+			\draw[wire, rotate around={\ang:(0,0)}]
+			({\R - \a}, 0) arc[start angle=180, end angle=360, x radius=\a, y radius=\b];
+		}
+
+	% 5. ПІДВІДНІ ПРОВІДНИКИ
+	% Правий провідник (вхідний — замінює передню дугу 0-го витка і йде до внутрішнього отвору)
+	\coordinate (L_end)   at (\angStart : \R - \a);
+	\coordinate (L_start) at (\angStart : \R + \a + \leadLen);
+	\draw[wire] (L_start) -- (L_end);
+
+	% Лівий провідник (вихідний — продовжує останній виток від зовнішнього края)
+	\coordinate (R_start) at (\angEnd-10 : \R + \a);
+	\coordinate (R_end)   at (\angEnd-10: \R + \a + \leadLen);
+	\draw[wire] (R_start) -- (R_end);
+
+	% 6. СТРІЛКИ СТРУМУ I (РОЗМІЩЕНІ НАД СЕРДЕЧНИКОМ)
+	% Правий провідник (струм I заходить вниз)
+	\draw[redarrow] ($(L_end)!0.95!(L_start)$) -- ($(L_end)!0.62!(L_start)$)
+	node[right=4pt, pos=0, color=red!80!black, font=\bfseries] {$I$};
+
+	% Лівий провідник (струм I виходить вгору)
+	\draw[redarrow] ($(R_start)!0.18!(R_end)$) -- ($(R_start)!0.85!(R_end)$)
+	node[left=4pt, pos=1, color=red!80!black, font=\bfseries] {$I$};
+
+	% 7. ВЕКТОР B
+	\draw[bluearrow] (-172:\R) arc (-172:-188:\R);
+	% \node[blue!80!black, font=\bfseries] at (-163:\R) {B};
+
+	% \node[blue!80!black, font=\bfseries] at (16:\R) {B};
+	\draw[bluearrow] (8:\R) arc (8:-8:\R);
+
+	% 8. РАДІУСИ r ТА b
+	\coordinate (O) at (0,0);
+	% \draw[->, >=Stealth, thick] (O) -- (-35:\R)
+	% node[pos=0.4, below=2pt, font=\itshape] {r};
+
+	\draw[->, >=Stealth, thick] (O) -- (-10:\R + \a)
+	node[pos=0.25, below, font=\itshape] {b};
+
+	\draw[->, >=Stealth, thick] (O) -- (45:\R - \a)
+	node[pos=0.35, above, font=\itshape] {a};
+
+\end{tikzpicture}
