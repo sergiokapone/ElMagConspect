@@ -121,6 +121,7 @@
     }
   ],
   "latex-workshop.latex.recipe.default": "latexmk",
+  "tssworkflow.compileOnSave": false,
   "tssworkflow.wrapCmd.selectionHint": "lightbulb",
   "latex-workshop.message.log.show": false,
   "latex-workshop.message.badbox.show": "both",
