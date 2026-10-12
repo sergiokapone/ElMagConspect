@@ -1,3 +1,5 @@
+% !TeX root = ../../main.tex
+
 \begin{tikzpicture}[>=latex, every node/.style={font=\scriptsize}, scale=1.5]
 	\foreach \x in {0,...,2} {
 			\draw[->, blue] (\x, 0) -- ++(0, 2) \ifnum\x=1 node[right] {$\Bfield$}\fi;
