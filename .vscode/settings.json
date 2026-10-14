@@ -130,7 +130,7 @@
   "latex-workshop.synctex.afterBuild.enabled": true,
   "latex-workshop.linting.chktex.enabled": true,
   "latex-workshop.linting.run": "onSave",
-  "latex-workshop.latex.autoClean.run": "onBuilt",
+  "latex-workshop.latex.autoClean.run": "never",
   "latex-workshop.hover.preview.enabled": true,
   "latex-workshop.hover.citation.enabled": true,
   "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
@@ -206,5 +206,8 @@
   },
 
   "latex-workshop.hover.preview.newcommand.newcommandFile": "mathjax-macros.tex",
-  "latex-workshop.hover.preview.mathjax.extensions": ["boldsymbol"]
+  "latex-workshop.hover.preview.mathjax.extensions": [
+    "boldsymbol"
+  ],
+  "latex-workshop.hover.ref.enabled": false
 }
