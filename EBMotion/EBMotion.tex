@@ -228,16 +228,16 @@
 звідки знаходимо:
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:vy_solution}
-	v_y = v_0 \cos(\omega_c t + \varphi_0), \qquad
-	y = y_0 + \frac{v_0}{\omega_c} \sin(\omega_c t + \varphi_0).
+	v_y = v_0 \cos(\omega_c t + \phi_0), \qquad
+	y = y_0 + \frac{v_0}{\omega_c} \sin(\omega_c t + \phi_0).
 \end{equation}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 За допомогою другого рівняння системи \eqref{eq:Vx_vy_system} і~підстановки \eqref{eq:Vx_substitution} знаходимо $v_x(t)$ і~$x(t)$:
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:vx_x_solution}
 	\begin{gathered}
-		v_x = u - \frac{1}{\omega_c}\dot{v}_y = u + v_0 \sin(\omega_c t + \varphi_0), \\
-		x = x_0 + ut - \frac{v_0}{\omega_c} \cos(\omega_c t + \varphi_0).
+		v_x = u - \frac{1}{\omega_c}\dot{v}_y = u + v_0 \sin(\omega_c t + \phi_0), \\
+		x = x_0 + ut - \frac{v_0}{\omega_c} \cos(\omega_c t + \phi_0).
 	\end{gathered}
 \end{equation}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -245,13 +245,13 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:trochoid}
 	\begin{cases}
-		x = ut + \frac{v_0}{\omega_c}[\cos\varphi_0 - \cos(\omega_c t + \varphi_0)], \\
-		y = \frac{v_0}{\omega_c}[\sin(\omega_c t + \varphi_0) - \sin\varphi_0],
+		x = ut + \frac{v_0}{\omega_c}[\cos\phi_0 - \cos(\omega_c t + \phi_0)], \\
+		y = \frac{v_0}{\omega_c}[\sin(\omega_c t + \phi_0) - \sin\phi_0],
 	\end{cases}
 	\qquad
 	\begin{cases}
-		v_x = u + v_0 \sin(\omega_c t + \varphi_0), \\
-		v_y = v_0 \cos(\omega_c t + \varphi_0).
+		v_x = u + v_0 \sin(\omega_c t + \phi_0), \\
+		v_y = v_0 \cos(\omega_c t + \phi_0).
 	\end{cases}
 \end{equation}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -261,7 +261,7 @@
 	v_x(0) = v_y(0) = 0.
 \end{equation}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Тоді $\varphi_0 = \pi/2$, $v_0 = -u$ (тут $v_0$~--- алгебраїчна амплітуда, яка може бути від'ємною), і~з~\eqref{eq:trochoid} знаходимо:
+Тоді $\phi_0 = \pi/2$, $v_0 = -u$ (тут $v_0$~--- алгебраїчна амплітуда, яка може бути від'ємною), і~з~\eqref{eq:trochoid} знаходимо:
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:cycloid}
 	\begin{gathered}

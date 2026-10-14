@@ -626,7 +626,7 @@ $I_i$ та індуктивностях $L_{ik}$. Її за традицією �
 $\vect A(\vect r)$~--- аналогічно до того, як в~електростатиці енергія виражається через
 густину заряду $\rho$ та скалярний потенціал $\phi$? Саме магнітне поле \emphx{не є
 потенціальним}, тому скалярного потенціалу в~$\Bfield$ немає~--- його не можна подати як
-$\Bfield=-\grad\varphi$.
+$\Bfield=-\grad\phi$.
 
 \enquote{Потенціальною} енергію $W$ називають не тому, що її можна приписати полю як
 скалярний потенціал, а~тому, що вона відіграє роль \emphx{потенціальної функції
@@ -722,17 +722,17 @@ A=0$ у~кулонівському калібруванні), отримуємо
 	Поле всередині соленоїда однорідне, $B=4\pi\mu nI/c$. Векторний потенціал
 	у~циліндричних координатах, що задовольняє умову $\Bfield=\rot\vect A$, дорівнює:
 	\begin{equation}\label{eq:SolenoidVectorPotential}
-		A_\varphi(r) =
+		A_\phi(r) =
 		\begin{cases}
 			\dfrac{B r}{2},    & r < R, \\[10pt]
 			\dfrac{B R^2}{2r}, & r > R.
 		\end{cases}
 	\end{equation}
 	Струм намотки зосереджений на поверхні $r=R$, де $\vect j\,dV = I\,n\,\ell\,d\vect l$.
-	Підставляючи $A_\varphi(R) = BR/2$ у~формулу~\eqref{eq:MagEnergyViaVectorPotential}:
+	Підставляючи $A_\phi(R) = BR/2$ у~формулу~\eqref{eq:MagEnergyViaVectorPotential}:
 	\begin{equation*}
 		W = \frac1{2c}\iiint\limits_V \vect A\cdot\vect j\,dV
-		= \frac1{2c}\cdot I\cdot N\cdot A_\varphi(R)\cdot 2\pi R
+		= \frac1{2c}\cdot I\cdot N\cdot A_\phi(R)\cdot 2\pi R
 		= \frac1{2c}\cdot I\cdot N\cdot \frac{BR}{2}\cdot 2\pi R
 		= \frac{\pi N I B R^2}{2c}.
 	\end{equation*}

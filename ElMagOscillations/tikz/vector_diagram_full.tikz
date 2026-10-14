@@ -28,5 +28,5 @@
         \draw[dashed] (U_reac) -- (C);
 
         \draw (1.2, 0) arc (0:\phiDeg:1.2);
-        \node at ({\phiDeg/2}:1.6) {$\varphi_0$};
+        \node at ({\phiDeg/2}:1.6) {$\phi_0$};
 \end{tikzpicture}

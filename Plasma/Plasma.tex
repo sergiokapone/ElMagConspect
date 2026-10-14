@@ -175,7 +175,7 @@ $I=13{,}6$~еВ, що відповідає $1{,}6\times10^{5}$~К, проте г
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 У~газорозрядній плазмі енергія від зовнішнього поля спершу передається електронам. Через
-велику різницю мас ($m_i\geq1836\,m_e$) електрон при пружному зіткненні з~іоном передає
+велику різницю мас ($m_i\geqslant1836\,m_e$) електрон при пружному зіткненні з~іоном передає
 тому лише частку порядку $m_e/m_i$ своєї енергії, тому часто $T_e>T_i$. Лише за достатньо
 великої густини та тривалого часу електрон-іонні зіткнення вирівнюють температури:
 $T_e=T_i=T$. Отже, вираз \enquote{температура плазми} без уточнення неоднозначний,
@@ -251,46 +251,46 @@ $\sim0{,}1$~мм рт.~ст.: температура електронів дос
 \end{SCfigure}
 %---------------------------------------------------------
 
-Кожен сорт частинок $s$ перебуває в~стаціонарному потенціалі $\varphi(\vect{r})$
+Кожен сорт частинок $s$ перебуває в~стаціонарному потенціалі $\phi(\vect{r})$
 у~тепловій рівновазі зі своєю температурою $T_s$, тому розподіл частинок за Больцманом
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
-	n_s=n_{s0}\exp\left(-\frac{q_s\varphi}{k_{\mathrm B}T_s}\right).
+	n_s=n_{s0}\exp\left(-\frac{q_s\phi}{k_{\mathrm B}T_s}\right).
 \end{equation*}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Тут $n_{s0}$~--- невозмущена концентрація вдалині від заряду, де $\varphi\to0$, а~сумарний
+Тут $n_{s0}$~--- невозмущена концентрація вдалині від заряду, де $\phi\to0$, а~сумарний
 заряд плазми нульовий: $\sum_sq_sn_{s0}=0$. Густина заряду плазми
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
-	\rho=\sum_sq_sn_{s0}\exp\left(-\frac{q_s\varphi}{k_{\mathrm B}T_s}\right).
+	\rho=\sum_sq_sn_{s0}\exp\left(-\frac{q_s\phi}{k_{\mathrm B}T_s}\right).
 \end{equation*}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Для слабкого поля $|q_s\varphi|\ll k_{\mathrm B}T_s$ розкладемо експоненти. Нульовий
+Для слабкого поля $|q_s\phi|\ll k_{\mathrm B}T_s$ розкладемо експоненти. Нульовий
 доданок зникає завдяки нейтральності, залишається
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
-	\rho\simeq-\varphi\sum_s\frac{n_{s0}q_s^2}{k_{\mathrm B}T_s}.
+	\rho\simeq-\phi\sum_s\frac{n_{s0}q_s^2}{k_{\mathrm B}T_s}.
 \end{equation*}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Підставлення в~рівняння Пуассона $\Delta\varphi=-4\pi(\rho+q\delta(\vect{r}))$ дає
+Підставлення в~рівняння Пуассона $\Delta\phi=-4\pi(\rho+q\delta(\vect{r}))$ дає
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:poisson-screened}
-	\Delta\varphi-\frac{\varphi}{\lambda_D^2}=-4\pi q\,\delta(\vect{r}),
+	\Delta\phi-\frac{\phi}{\lambda_D^2}=-4\pi q\,\delta(\vect{r}),
 	\qquad
 	\tcbhighmath{\frac{1}{\lambda_D^2}=4\pi\sum_s\frac{n_{s0}q_s^2}{k_{\mathrm B}T_s}}.
 \end{equation}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Величина $\lambda_D$ називається \emphx{дебаївською довжиною} (радіусом екранування).
 
-Поле пробного заряду сферично симетричне, $\varphi=\varphi(r)$, і~при $r>0$ маємо
-$\Delta\varphi=\dfrac1r\dfrac{d^2(r\varphi)}{dr^2}$. Для $u=r\varphi$
+Поле пробного заряду сферично симетричне, $\phi=\phi(r)$, і~при $r>0$ маємо
+$\Delta\phi=\dfrac1r\dfrac{d^2(r\phi)}{dr^2}$. Для $u=r\phi$
 рівняння~\eqref{eq:poisson-screened} спрощується до $u''=u/\lambda_D^2$, загальний
-розв'язок якого $u=Ae^{-r/\lambda_D}+Be^{r/\lambda_D}$. Умова $\varphi\to0$ при
+розв'язок якого $u=Ae^{-r/\lambda_D}+Be^{r/\lambda_D}$. Умова $\phi\to0$ при
 $r\to\infty$ виключає зростаючий доданок ($B=0$), а~близько до заряду потенціал має
 збігатися з~кулонівським $q/r$, звідки $A=q$:
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:screened-potential}
-	\varphi(r)=\frac qr\exp\left(-\frac r{\lambda_D}\right).
+	\phi(r)=\frac qr\exp\left(-\frac r{\lambda_D}\right).
 \end{equation}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Кулонівське поле заряду експоненціально послаблюється на відстанях порядку $\lambda_D$
@@ -305,7 +305,7 @@ $r\to\infty$ виключає зростаючий доданок ($B=0$), а~б
 \end{figure}
 
 Знайдемо заряд \enquote{шуби}. Густина заряду плазми
-$\rho=-\Delta\varphi/4\pi=-\varphi/(4\pi\lambda_D^2)$ при $r>0$, тому
+$\rho=-\Delta\phi/4\pi=-\phi/(4\pi\lambda_D^2)$ при $r>0$, тому
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
 	\int\rho\,4\pi r^2dr=-\frac q{\lambda_D^2}\int_0^\infty re^{-r/\lambda_D}dr=-q.
@@ -337,15 +337,15 @@ $\lambda_D$. Для спостерігача на відстані $\gg\lambda_D
 під \enquote{дебаївською довжиною} найчастіше розуміють саме $\lambda_{De}$, тому в~кожній
 задачі слід перевіряти, які компоненти встигають перебудуватися.
 
-\emphx{Умова застосовності.} Лінеаризація експонент потребує $|q_s\varphi|\ll k_{\mathrm
+\emphx{Умова застосовності.} Лінеаризація експонент потребує $|q_s\phi|\ll k_{\mathrm
 			B}T_s$ принаймні на відстанях $r\gtrsim\lambda_D$. Для $q=e$ на $r=\lambda_D$ це
 $e^2/\lambda_D\ll k_{\mathrm B}T$, або, підставивши~\eqref{eq:poisson-screened}, $1/(4\pi
 	n\lambda_D^3)\ll1$. Тобто теорія виконується лише тоді, коли \emph{в~сфері радіуса
 	$\lambda_D$ міститься багато частинок}. До цього важливого висновку ми ще повернемось.
 
 Тепер можна уточнити зміст квазінейтральності. Нехай на масштабі $L$ виникла локальна
-неоднорідність концентрації $\delta n$. З~рівняння Пуассона $\varphi/L^2\sim4\pi e\,\delta
-	n$, а~потенціал не може перевищити теплову межу $\varphi\lesssim k_{\mathrm B}T/e$. Звідси
+неоднорідність концентрації $\delta n$. З~рівняння Пуассона $\phi/L^2\sim4\pi e\,\delta
+	n$, а~потенціал не може перевищити теплову межу $\phi\lesssim k_{\mathrm B}T/e$. Звідси
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
 	\frac{\delta n}n\lesssim\frac{k_{\mathrm B}T}{4\pi ne^2L^2}=\left(\frac{\lambda_{De}}L\right)^2.
@@ -366,55 +366,55 @@ $e^2/\lambda_D\ll k_{\mathrm B}T$, або, підставивши~\eqref{eq:pois
 %% --------------------------------------------------------
 
 
-Лінійна теорія екранування вимагає $|q_s\varphi|\ll k_{\mathrm B}T_s$. Але біля стінок
+Лінійна теорія екранування вимагає $|q_s\phi|\ll k_{\mathrm B}T_s$. Але біля стінок
 камери, зондів і~електродів потенціал може бути порівнянним з~$k_{\mathrm B}T/e$ чи навіть
 більшим. Для плоскої геометрії задачу можна розв'язати точно.
 
 Нехай півпростір $x>0$ заповнено плазмою з~електронів і~однозарядних іонів (концентрація
 вдалині $n$, $T_e=T_i=T$), а~на межі $x=0$ розташована площина з~поверхневою густиною
-заряду $\sigma$. За Больцманом концентрації $n^{\pm}=n\exp(\mp e\varphi/k_{\mathrm B}T)$,
-тому густина заряду $\rho=e(n^+-n^-)=-2ne\sinh(e\varphi/k_{\mathrm B}T)$, а~рівняння
-Пуассона дає ($E=-d\varphi/dx$)
+заряду $\sigma$. За Больцманом концентрації $n^{\pm}=n\exp(\mp e\phi/k_{\mathrm B}T)$,
+тому густина заряду $\rho=e(n^+-n^-)=-2ne\sinh(e\phi/k_{\mathrm B}T)$, а~рівняння
+Пуассона дає ($E=-d\phi/dx$)
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
-	\frac{dE}{dx}=4\pi\rho=-8\pi ne\sinh\frac{e\varphi}{k_{\mathrm B}T}.
+	\frac{dE}{dx}=4\pi\rho=-8\pi ne\sinh\frac{e\phi}{k_{\mathrm B}T}.
 \end{equation*}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Помножимо обидві частини на $2E\,dx=-2\,d\varphi$: $d(E^2)=16\pi
-	ne\sinh(e\varphi/k_{\mathrm B}T)\,d\varphi$. Інтегруємо з~умовою $E\to0$ при $\varphi\to0$
+Помножимо обидві частини на $2E\,dx=-2\,d\phi$: $d(E^2)=16\pi
+	ne\sinh(e\phi/k_{\mathrm B}T)\,d\phi$. Інтегруємо з~умовою $E\to0$ при $\phi\to0$
 ($x\to\infty$) і~користуємося тотожністю $\cosh y-1=2\sinh^2(y/2)$:
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
-	E^2=16\pi nk_{\mathrm B}T\left(\cosh\frac{e\varphi}{k_{\mathrm B}T}-1\right)=32\pi nk_{\mathrm B}T\sinh^2\frac{e\varphi}{2k_{\mathrm B}T}.
+	E^2=16\pi nk_{\mathrm B}T\left(\cosh\frac{e\phi}{k_{\mathrm B}T}-1\right)=32\pi nk_{\mathrm B}T\sinh^2\frac{e\phi}{2k_{\mathrm B}T}.
 \end{equation*}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Знак кореня такий, що $E$ і~$\varphi$ мають однаковий знак, отже
+Знак кореня такий, що $E$ і~$\phi$ мають однаковий знак, отже
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
-	-\frac{d\varphi}{dx}=4\sqrt{2\pi nk_{\mathrm B}T}\,\sinh\frac{e\varphi}{2k_{\mathrm B}T}.
+	-\frac{d\phi}{dx}=4\sqrt{2\pi nk_{\mathrm B}T}\,\sinh\frac{e\phi}{2k_{\mathrm B}T}.
 \end{equation*}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Це рівняння з~відокремлюваними змінними (використовуємо $\int dy/\sinh
 	y=\ln\operatorname{th}(y/2)$). Його розв'язок
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:gouy-chapman}
-	\operatorname{th}\frac{e\varphi}{4k_{\mathrm B}T}=\operatorname{th}\frac{e\varphi_0}{4k_{\mathrm B}T}\,e^{-x/\lambda_D},\qquad
+	\operatorname{th}\frac{e\phi}{4k_{\mathrm B}T}=\operatorname{th}\frac{e\phi_0}{4k_{\mathrm B}T}\,e^{-x/\lambda_D},\qquad
 	\lambda_D=\sqrt{\frac{k_{\mathrm B}T}{8\pi ne^2}},
 \end{equation}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-де $\varphi_0=\varphi(0)$. Коефіцієнт в~експоненті збігається з~дебаївською
+де $\phi_0=\phi(0)$. Коефіцієнт в~експоненті збігається з~дебаївською
 довжиною~\eqref{eq:debye-radius}, тобто вона є точним масштабом і~у~нелінійному режимі.
-Зв'язок $\varphi_0$ з~$\sigma$ дає теорема Гаусса: усередині плазми екрануючий заряд
+Зв'язок $\phi_0$ з~$\sigma$ дає теорема Гаусса: усередині плазми екрануючий заряд
 компенсує $\sigma$, поза площиною поля немає, тому $E(0)=4\pi\sigma$, звідки
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
-	\sinh\frac{e\varphi_0}{2k_{\mathrm B}T}=\sigma\sqrt{\frac{\pi}{2nk_{\mathrm B}T}}.
+	\sinh\frac{e\phi_0}{2k_{\mathrm B}T}=\sigma\sqrt{\frac{\pi}{2nk_{\mathrm B}T}}.
 \end{equation*}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Два граничні випадки. При $e\varphi_0\ll k_{\mathrm B}T$ маємо
-$\varphi=\varphi_0e^{-x/\lambda_D}$ з~$\varphi_0=4\pi\sigma\lambda_D$, як і~в~лінійній
-теорії. При $e\varphi_0\gg k_{\mathrm B}T$ права частина~\eqref{eq:gouy-chapman} прямує до
-одиниці, і~поблизу поверхні ($x\ll\lambda_D$) $\varphi\approx(2k_{\mathrm
+Два граничні випадки. При $e\phi_0\ll k_{\mathrm B}T$ маємо
+$\phi=\phi_0e^{-x/\lambda_D}$ з~$\phi_0=4\pi\sigma\lambda_D$, як і~в~лінійній
+теорії. При $e\phi_0\gg k_{\mathrm B}T$ права частина~\eqref{eq:gouy-chapman} прямує до
+одиниці, і~поблизу поверхні ($x\ll\lambda_D$) $\phi\approx(2k_{\mathrm
 			B}T/e)\ln(2\lambda_D/x)$: потенціал зростає до стінки лише логарифмічно, а~товщина шару
 залишається порядку $\lambda_D$. Саме такі \emph{дебаївські шари} утворюються біля стінок
 і~зондів, де квазінейтральність порушена.
@@ -429,11 +429,11 @@ $\varphi=\varphi_0e^{-x/\lambda_D}$ з~$\varphi_0=4\pi\sigma\lambda_D$, як і~
 
 Висновок дебаївського екранування спирається не на закон Больцмана як такий, а~лише на
 чутливість концентрації електронів до потенціалу. Нехай електрони перебувають у~рівновазі
-з~хімічним потенціалом $\mu$ (нерухомий іонний фон). У~потенціалі $\varphi$ електрон має
-додаткову енергію $-e\varphi$, тому рівновага вимагає, щоб локальна величина
-$\mu_{\mathrm{лок}}(n)-e\varphi$ була сталою. Звідси зміна концентрації $\delta
-	n=(\partial n/\partial\mu)\,e\varphi$, густина заряду $\rho=-e\,\delta n$, і~рівняння
-Пуассона набуває вигляду $\Delta\varphi=\varphi/\lambda^2$ з~
+з~хімічним потенціалом $\mu$ (нерухомий іонний фон). У~потенціалі $\phi$ електрон має
+додаткову енергію $-e\phi$, тому рівновага вимагає, щоб локальна величина
+$\mu_{\mathrm{лок}}(n)-e\phi$ була сталою. Звідси зміна концентрації $\delta
+	n=(\partial n/\partial\mu)\,e\phi$, густина заряду $\rho=-e\,\delta n$, і~рівняння
+Пуассона набуває вигляду $\Delta\phi=\phi/\lambda^2$ з~
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:screening-general}
 	\frac1{\lambda^2}=4\pi e^2\,\frac{\partial n}{\partial\mu}.
@@ -681,11 +681,11 @@ $\lambda_{De}\approx7{,}43\times10^{2}\sqrt{T_e[\text{еВ}]/n_e[\mathrm{см}^{
 	\vect P=n_e\vect p=-\frac{n_ee^2}{m_e\omega^2}\vect E\equiv\chi\vect E.
 \end{equation*}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Оскільки $\vect D=\vect E+4\pi\vect P=\varepsilon\vect E$, діелектрична проникність
-$\varepsilon=1+4\pi\chi$:
+Оскільки $\vect D=\vect E+4\pi\vect P=\epsilon\vect E$, діелектрична проникність
+$\epsilon=1+4\pi\chi$:
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:plasma-permittivity}
-	\tcbhighmath{\varepsilon(\omega)=1-\frac{4\pi n_ee^2}{m_e\omega^2}=1-\frac{\omega_p^2}{\omega^2}}.
+	\tcbhighmath{\epsilon(\omega)=1-\frac{4\pi n_ee^2}{m_e\omega^2}=1-\frac{\omega_p^2}{\omega^2}}.
 \end{equation}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Той самий результат дає опис через струм. Швидкість електрона $\vect v=\dot{\vect{r}}=-i\omega\vect r$, густина струму $\vect j=-n_ee\vect v=i\dfrac{n_ee^2}{m_e\omega}\vect
@@ -693,20 +693,20 @@ $\varepsilon=1+4\pi\chi$:
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:sigma-collisionless}
 	\sigma(\omega)=i\frac{\omega_p^2}{4\pi\omega},\qquad
-	\varepsilon=1+\frac{4\pi i\sigma}{\omega}=1-\frac{\omega_p^2}{\omega^2}.
+	\epsilon=1+\frac{4\pi i\sigma}{\omega}=1-\frac{\omega_p^2}{\omega^2}.
 \end{equation}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Провідність уявна: струм відстає від поля на чверть періоду (дія інерції електронів), тому
 енергія не поглинається. Формула~\eqref{eq:plasma-permittivity}~--- окремий випадок моделі
-Лоренца $\varepsilon=1+4\pi n_ee^2/[m_e(\omega_0^2-\omega^2)]$ при власній частоті
+Лоренца $\epsilon=1+4\pi n_ee^2/[m_e(\omega_0^2-\omega^2)]$ при власній частоті
 $\omega_0=0$: у~плазмі електрони \emph{вільні}, повертаючої сили немає.
 
-Результат якісно відрізняється від електростатики діелектриків: тут $\varepsilon<1$, а~при
-$\omega<\omega_p$ взагалі $\varepsilon<0$. Звернімо увагу ще на одне. Статичне екранування
+Результат якісно відрізняється від електростатики діелектриків: тут $\epsilon<1$, а~при
+$\omega<\omega_p$ взагалі $\epsilon<0$. Звернімо увагу ще на одне. Статичне екранування
 (§\ref{sec:plasma-basics}) теж можна записати мовою діелектричної проникності: Фур'є-образ
-потенціалу~\eqref{eq:screened-potential} дорівнює $\varphi_k=4\pi
-	q/(k^2+\lambda_D^{-2})=4\pi q/(k^2\varepsilon(k))$, де
-$\varepsilon(0,k)=1+1/(k\lambda_D)^2$. Тобто на статичне поле плазма реагує як середовище
+потенціалу~\eqref{eq:screened-potential} дорівнює $\phi_k=4\pi
+	q/(k^2+\lambda_D^{-2})=4\pi q/(k^2\epsilon(k))$, де
+$\epsilon(0,k)=1+1/(k\lambda_D)^2$. Тобто на статичне поле плазма реагує як середовище
 з~дуже великою (при $k\to0$~--- нескінченною) проникністю, як ідеальний провідник. На
 високу частоту ($\omega>\omega_p$) відповідь протилежна.
 
@@ -719,8 +719,8 @@ $\varepsilon(0,k)=1+1/(k\lambda_D)^2$. Тобто на статичне поле
 
 
 Для плоскої поперечної хвилі $\vect E=\vect E_0\exp(ikx-i\omega t)$ ($\vect k\cdot\vect
-	E=0$) рівняння Максвелла з~$\vect D=\varepsilon\vect E$ дають
-$k^2c^2=\varepsilon\omega^2$. Підставляючи~\eqref{eq:plasma-permittivity}, одержуємо
+	E=0$) рівняння Максвелла з~$\vect D=\epsilon\vect E$ дають
+$k^2c^2=\epsilon\omega^2$. Підставляючи~\eqref{eq:plasma-permittivity}, одержуємо
 \emphx{закон дисперсії}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:plasma-dispersion}
@@ -739,7 +739,7 @@ $k^2c^2=\varepsilon\omega^2$. Підставляючи~\eqref{eq:plasma-permitti
 \end{figure}
 
 \emphx{Хвилі з~$\omega>\omega_p$} поширюються з~довжиною $\lambda=2\pi
-	c/\sqrt{\omega^2-\omega_p^2}$, а~показник заломлення $n=\sqrt\varepsilon<1$. Швидкості
+	c/\sqrt{\omega^2-\omega_p^2}$, а~показник заломлення $n=\sqrt\epsilon<1$. Швидкості
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
 	v_{\mathrm{ф}}=\frac\omega k=\frac c{\sqrt{1-\omega_p^2/\omega^2}}>c,\qquad
@@ -774,10 +774,10 @@ $\approx0{,}5$~см.
 
 
 
-Запис $\vect D=\varepsilon\vect E$ і~рівняння $\nabla\cdot\vect D=0$ дають
-$\varepsilon\,\vect k\cdot\vect E=0$. Є дві можливості: або $\vect k\cdot\vect E=0$
-(поперечна хвиля, розглянута вище), або $\varepsilon(\omega)=0$ (поздовжня хвиля, $\vect
-	E\parallel\vect k$). З~\eqref{eq:plasma-permittivity} умова $\varepsilon=0$ дає
+Запис $\vect D=\epsilon\vect E$ і~рівняння $\nabla\cdot\vect D=0$ дають
+$\epsilon\,\vect k\cdot\vect E=0$. Є дві можливості: або $\vect k\cdot\vect E=0$
+(поперечна хвиля, розглянута вище), або $\epsilon(\omega)=0$ (поздовжня хвиля, $\vect
+	E\parallel\vect k$). З~\eqref{eq:plasma-permittivity} умова $\epsilon=0$ дає
 $\omega=\omega_p$~--- це відомі плазмові коливання (§\ref{sec:plasma-oscillations}).
 У~холодній плазмі їхня частота не залежить від $k$, групова швидкість нульова, і~збурення
 не поширюється.
@@ -820,10 +820,10 @@ $k\lambda_{De}\gtrsim1$ хвиля сильно загасає навіть \emp
 відбиття (формули Френеля, $\mu=1$)
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
-	r=\frac{1-\sqrt\varepsilon}{1+\sqrt\varepsilon}.
+	r=\frac{1-\sqrt\epsilon}{1+\sqrt\epsilon}.
 \end{equation*}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-При $\omega<\omega_p$ величина $\sqrt\varepsilon=i\kappa$ чисто уявна, тому
+При $\omega<\omega_p$ величина $\sqrt\epsilon=i\kappa$ чисто уявна, тому
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
 	R=|r|^2=\left|\frac{1-i\kappa}{1+i\kappa}\right|^2=1.
@@ -835,8 +835,8 @@ $\omega\gg\omega_p$ показник заломлення $n\to1$, $R\to0$, пл
 (рентгенівське випромінювання).
 
 \emphx{Похиле падіння.} При $\omega>\omega_p$ плазма~--- середовище з~дійсним показником
-заломлення $n=\sqrt\varepsilon<1$, тобто вакуум для хвилі оптично густіший. Тому можливе
-повне внутрішнє відбиття при $\sin\theta\geq n$. Критичний кут
+заломлення $n=\sqrt\epsilon<1$, тобто вакуум для хвилі оптично густіший. Тому можливе
+повне внутрішнє відбиття при $\sin\theta\geqslant n$. Критичний кут
 $\sin\theta_{\mathrm{кр}}=\sqrt{1-\omega_p^2/\omega^2}$ прямує до нуля при
 $\omega\to\omega_p+0$, і~плазма відбиває при будь-якому куті падіння.
 
@@ -868,11 +868,11 @@ $\omega\to\omega_p+0$, і~плазма відбиває при будь-яком
 
 При похилому падінні під кутом $\theta_0$ з~вакууму в~шарувате середовище зберігається
 тангенційна складова хвильового вектора, тобто закон Снелліуса
-$\sqrt{\varepsilon(x)}\sin\theta(x)=\sin\theta_0$. Поворот відбувається там, де
+$\sqrt{\epsilon(x)}\sin\theta(x)=\sin\theta_0$. Поворот відбувається там, де
 $\theta=90^\circ$:
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation*}
-	\varepsilon(x_t)=\sin^2\theta_0\quad\Rightarrow\quad n_e(x_t)=n_{\mathrm{кр}}\cos^2\theta_0.
+	\epsilon(x_t)=\sin^2\theta_0\quad\Rightarrow\quad n_e(x_t)=n_{\mathrm{кр}}\cos^2\theta_0.
 \end{equation*}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Тому хвилю, що падає похило, плазма відбиває за меншої концентрації: максимальна частота,
@@ -1023,7 +1023,7 @@ $n_e\gtrsim10^{11}~\mathrm{см}^{-3}$, що за формулою~\eqref{eq:cri
 а~$B_{\max}$ на кінцях, то частинка з~пітч-кутом $\theta$ у~центрі відбивається, якщо
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:mirror-condition}
-	\tcbhighmath{\sin^2\theta\geq\frac{B_{\min}}{B_{\max}}.}
+	\tcbhighmath{\sin^2\theta\geqslant\frac{B_{\min}}{B_{\max}}.}
 \end{equation}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Частинки з~меншим кутом потрапляють у~так званий конус втрат і~вилітають через кінці
@@ -1296,7 +1296,7 @@ q_J\propto T_e^{-3/2},
 	\sigma(\omega)=
 	\frac{\sigma_0}{1-i\omega/\nu_{ei}},
 	\qquad
-	\varepsilon(\omega)=
+	\epsilon(\omega)=
 	1-\frac{\omega_p^2}
 	{\omega(\omega+i\nu_{ei})}.
 \end{equation*}
