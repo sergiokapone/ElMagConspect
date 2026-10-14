@@ -22,7 +22,7 @@
 \addplot[red, dashed] {0.4*exp(-(x-12)^2/9)};
 \addlegendentry{$z=300$ км}
 
-% Після 1000 км — майже «розмазаний» прямокутник
+% Після 1000 км — майже \enquote{розмазаний} прямокутник
 \addplot[orange, dotted] {0.18*exp(-(x-15)^2/25)};
 \addlegendentry{$z=1000$ км}
 \end{axis}

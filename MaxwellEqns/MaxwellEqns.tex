@@ -3,6 +3,8 @@
 % !TeX spellcheck = uk_UA
 % !TeX root = ../main.tex
 
+% chktex-file 1
+% chktex-file 8
 
 %% --------------------------------------------------------
 \chapter{Система рівнянь Максвелла}\label{\currfilebase}\hypertarget{MaxwellEqns}{}
@@ -23,7 +25,7 @@
 
 
 Теорію електромагнітного поля, початки якої заклав \emphx{Фарадей}, математично завершив
-\emphx{Максвелл}. Однією з~найважливіших нових ідей, висунутих Максвеллом, була думка про
+\emphx{Максвелл} (рис.~\ref{pic:FaradayMaxwell}). Однією з~найважливіших нових ідей, висунутих Максвеллом, була думка про
 \emphx{симетрію} у~взаємозалежності електричного й~магнітного полів: якщо змінне магнітне
 поле породжує електричне (закон Фарадея, гл.~\ref{ElMagInduction}), то, за красивою
 симетрією, змінне електричне поле мусить породжувати магнітне. Ця ідея, як ми зараз
@@ -253,7 +255,8 @@ j=0$) у~вакуумі ($\epsilon=\mu=1$, тобто $\Efield=\Dfield$, $\Hfiel
 	\begin{center}%[2][h!]\centering
 		\localinput{radial-leak.tikz}
 		\captionof*{figure}{Радіальне стікання заряду з~кулі:\\ струм провідності $I$
-		і~струм зміщення $I_\text{зм}$\label{pic:RadialLeak}}
+		і~струм зміщення $I_\text{зм}$}
+		% \label{pic:RadialLeak}
 	\end{center}
 
 	Стікання заряду створює радіальний струм провідності $I = -\dfrac{\partial Q}{\partial
@@ -301,7 +304,8 @@ j=0$) у~вакуумі ($\epsilon=\mu=1$, тобто $\Efield=\Dfield$, $\Hfiel
 	\begin{center}%[h!]\centering
 		\localinput{two-surfaces-loop.tikz}
 		\captionof*{figure}{Дві різні поверхні, натягнуті на один і~той самий контур
-		$L$\label{pic:TwoSurfaces}}
+		$L$}
+		% \label{pic:TwoSurfaces}
 	\end{center}
 
 	Але циркуляція по одному й~тому самому контуру не може залежати від вибору поверхні,
@@ -615,11 +619,12 @@ $\phi\to\phi-\frac1c\parttime{f}$ не змінює ні $\Bfield$, ні $\Efiel
 висоти ми піднімалися крок за кроком, уточнюючи поняття й~розкриваючи глибинні принципи
 цієї науки: кожен пройдений розділ~--- електростатика, закони постійного струму,
 магнітостатика, явище електромагнітної індукції~--- був немов базовий табір на шляху до
-вершини.
+вершини (рис.~\ref{pic:Mountain}).
 
 \begin{figure}[h!]\centering
 	\includegraphics[width=\linewidth]{Mountain}
 	\caption{Теорія Максвелла~--- це вершина класичної науки про електромагнітне поле}
+	\label{pic:Mountain}
 \end{figure}
 
 На вершині перед нами постають рівняння Максвелла~--- велична симфонія електричного
@@ -894,7 +899,8 @@ $\Hfield\cdot\parttime{\Bfield} = \parttime{}\left(\tfrac12\mu H^2\right)$):
 	\begin{center}
 		\localinput{wire-poynting.tikz}
 		\captionof*{figure}{Поля $\Efield$, $\Hfield$ і~вектор Пойнтінга $\vect\Pi$ на
-		поверхні довгого провідника зі струмом\label{pic:WirePoynting}}
+		поверхні довгого провідника зі струмом}
+		% \label{pic:WirePoynting}
 	\end{center}
 
 	Вектор Пойнтінга виявляється спрямованим \emphx{до осі} провідника й~дорівнює за
