@@ -49,6 +49,6 @@ smooth] (fieldx,fieldy);
 \pgfmathsetmacro{\X}{int(6-\C)}
 \pgfmathsetmacro{\rzero}{\c}
 \pgfmathsetmacro{\fieldtheta}{\a}
-\node at (fieldx,fieldy) {$\varphi_{\X}$};
+\node at (fieldx,fieldy) {$\phi_{\X}$};
 }
 \end{tikzpicture}

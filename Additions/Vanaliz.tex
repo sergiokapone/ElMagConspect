@@ -164,13 +164,13 @@
 За допомогою~\eqref{eq:Levi-Chiv} можна записати \(i\)-ту компоненту векторного добутку:
 
 \begin{equation*}
-[\vect{A} \times \Bfield]_i = \varepsilon_{ijk} A_j B_k
+[\vect{A} \times \Bfield]_i = \epsilon_{ijk} A_j B_k
 \end{equation*}
 %
 де \((A_i, B_i\) --- компоненти векторів \(\vect{A}\) та \(\Bfield)\), а також ротор:
 
 \begin{equation*}
-\Rot(\vect{A})_i = \varepsilon_{ijk} \partial_j A_k.
+\Rot(\vect{A})_i = \epsilon_{ijk} \partial_j A_k.
 \end{equation*}
 
 %% --------------------------------------------------------
@@ -184,7 +184,7 @@
 \end{equation*}
 
 \begin{equation*}
-\Rot(F \vect{A})_i = \varepsilon_{ijk} \partial_j (F A_k) = \varepsilon_{ijk} (\grad F)_j A_k + F \varepsilon_{ijk} \partial_j A_k,
+\Rot(F \vect{A})_i = \epsilon_{ijk} \partial_j (F A_k) = \epsilon_{ijk} (\grad F)_j A_k + F \epsilon_{ijk} \partial_j A_k,
 \end{equation*}
 %
 або
@@ -200,18 +200,18 @@
 Дивергенція векторного добутку:
 
 \begin{multline*}
-\Div[\vect{A} \times \Bfield] = \partial_i (\varepsilon_{ijk} A_j B_k) = B_k \varepsilon_{ijk} \partial_i A_j + A_j \varepsilon_{ijk} \partial_i B_k =
-B_k \varepsilon_{kij} \partial_i A_j - A_j \varepsilon_{ijk} \partial_i B_k = \\ = \Bfield \cdot \Rot \vect{A} - \vect{A} \cdot \Rot \Bfield.
+\Div[\vect{A} \times \Bfield] = \partial_i (\epsilon_{ijk} A_j B_k) = B_k \epsilon_{ijk} \partial_i A_j + A_j \epsilon_{ijk} \partial_i B_k =
+B_k \epsilon_{kij} \partial_i A_j - A_j \epsilon_{ijk} \partial_i B_k = \\ = \Bfield \cdot \Rot \vect{A} - \vect{A} \cdot \Rot \Bfield.
 \end{multline*}
 
 %% --------------------------------------------------------
 \subsubsection{Згортка символів \texorpdfstring{\(\epsilon_{ijk}\)}{}}
 %% --------------------------------------------------------
 
-Далі будуть потрібні формули для \emph{згортки двох символів} \(\varepsilon_{ijk}\). Користуючись властивостями визначника, легко перевірити, що:
+Далі будуть потрібні формули для \emph{згортки двох символів} \(\epsilon_{ijk}\). Користуючись властивостями визначника, легко перевірити, що:
 
 \begin{equation*}
-\varepsilon_{ijk} =
+\epsilon_{ijk} =
 \begin{vmatrix}
 \delta_{i1} & \delta_{i2} & \delta_{i3} \\
 \delta_{j1} & \delta_{j2} & \delta_{j3} \\
@@ -222,7 +222,7 @@ B_k \varepsilon_{kij} \partial_i A_j - A_j \varepsilon_{ijk} \partial_i B_k = \\
 де \(\delta_{ij}\) --- символ Кронекера, а також:
 
 \begin{equation*}
-\varepsilon_{ijk} \varepsilon_{pqr} =
+\epsilon_{ijk} \epsilon_{pqr} =
 \begin{vmatrix}
 \delta_{ip} & \delta_{iq} & \delta_{ir} \\
 \delta_{jp} & \delta_{jq} & \delta_{jr} \\
@@ -233,14 +233,14 @@ B_k \varepsilon_{kij} \partial_i A_j - A_j \varepsilon_{ijk} \partial_i B_k = \\
 Якщо в останньому співвідношенні розкрити визначник за правилом трикутників:
 
 \begin{equation*}
-\varepsilon_{ijk} \varepsilon_{pqr} = \delta_{ip} \delta_{jq} \delta_{kr} + \delta_{iq} \delta_{jr} \delta_{kp} + \delta_{ir} \delta_{jp} \delta_{kq} -
+\epsilon_{ijk} \epsilon_{pqr} = \delta_{ip} \delta_{jq} \delta_{kr} + \delta_{iq} \delta_{jr} \delta_{kp} + \delta_{ir} \delta_{jp} \delta_{kq} -
 \delta_{ip} \delta_{jr} \delta_{kq} - \delta_{iq} \delta_{jp} \delta_{kr} - \delta_{ir} \delta_{jq} \delta_{kp},
 \end{equation*}
 
 та взяти суму по \( k = r \), отримаємо формулу згортки:
 
 \begin{equation}
-\varepsilon_{ijk} \varepsilon_{pqk} = \delta_{ip} \delta_{jq} - \delta_{iq} \delta_{jp}.
+\epsilon_{ijk} \epsilon_{pqk} = \delta_{ip} \delta_{jq} - \delta_{iq} \delta_{jp}.
 \label{eq:epsilon_contraction}
 \end{equation}
 
@@ -251,8 +251,8 @@ B_k \varepsilon_{kij} \partial_i A_j - A_j \varepsilon_{ijk} \partial_i B_k = \\
 Отримаємо за допомогою~\eqref{eq:epsilon_contraction} правило для подвійного векторного добутку:
 
 \begin{equation*}
-([\vect{A} \times [\Bfield \times \vect{C}]])_i \equiv \varepsilon_{ijk} A_j ([\Bfield \times \vect{C}])_k \equiv \varepsilon_{ijk} A_j
-\varepsilon_{kpq} B_p C_q.
+([\vect{A} \times [\Bfield \times \vect{C}]])_i \equiv \epsilon_{ijk} A_j ([\Bfield \times \vect{C}])_k \equiv \epsilon_{ijk} A_j
+\epsilon_{kpq} B_p C_q.
 \end{equation*}
 
 Завдяки~\eqref{eq:epsilon_contraction}:
@@ -275,7 +275,7 @@ B_k \varepsilon_{kij} \partial_i A_j - A_j \varepsilon_{ijk} \partial_i B_k = \\
 Обчислимо за допомогою~\eqref{eq:epsilon_contraction} подвійний ротор:
 
 \begin{equation*}
-(\Rot \Rot \vect{A})_i = \varepsilon_{ijk} \partial_j (\Rot \vect{A})_k = \varepsilon_{ijk} \partial_j \varepsilon_{kpq} \partial_p A_q.
+(\Rot \Rot \vect{A})_i = \epsilon_{ijk} \partial_j (\Rot \vect{A})_k = \epsilon_{ijk} \partial_j \epsilon_{kpq} \partial_p A_q.
 \end{equation*}
 
 Завдяки~\eqref{eq:epsilon_contraction}:

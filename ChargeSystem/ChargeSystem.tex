@@ -212,12 +212,12 @@ $Oy$, симетрично відносно початку координат (�
 Початок системи координат вибираємо всередині системи зарядів і знайдемо потенціал на відстанях, що набагато більші за розмір області, в якій
 локалізуються заряди ($r_i \ll r$). У розд.~\ref{sec:DipolePotential} ми зберігали в розкладі $1/|\vect r-\vect r_i|$ лише члени першого порядку малості за $r_i/r$ \eqref{eq:shift_first_order} --- для диполя цього досить. Але якщо $q=0$ і $\vect p=0$, ці члени нічого не дають, тому потрібне наступне наближення. Отримаємо його тим самим прийомом, не відкидаючи тепер квадратичних доданків:
 \begin{equation*}
-	\frac1{|\vect r-\vect r_i|} = \frac1r\,(1+\varepsilon)^{-1/2}, \qquad
-	\varepsilon = -\frac{2\,\vect r\cdot\vect r_i}{r^2}+\frac{r_i^2}{r^2}\ll1.
+	\frac1{|\vect r-\vect r_i|} = \frac1r\,(1+\epsilon)^{-1/2}, \qquad
+	\epsilon = -\frac{2\,\vect r\cdot\vect r_i}{r^2}+\frac{r_i^2}{r^2}\ll1.
 \end{equation*}
-Розкладаємо за малим $\varepsilon$: $(1+\varepsilon)^{-1/2}\approx1-\frac{\varepsilon}2+\frac{3\varepsilon^2}8$. Доданок $-2\,\vect r\cdot\vect r_i/r^2$ у $\varepsilon$ має перший порядок за $r_i/r$, а $r_i^2/r^2$ --- другий, тому в $\varepsilon^2$ залишаємо лише $4(\vect r\cdot\vect r_i)^2/r^4$:
+Розкладаємо за малим $\epsilon$: $(1+\epsilon)^{-1/2}\approx1-\frac{\epsilon}2+\frac{3\epsilon^2}8$. Доданок $-2\,\vect r\cdot\vect r_i/r^2$ у $\epsilon$ має перший порядок за $r_i/r$, а $r_i^2/r^2$ --- другий, тому в $\epsilon^2$ залишаємо лише $4(\vect r\cdot\vect r_i)^2/r^4$:
 \begin{equation*}
-	(1+\varepsilon)^{-1/2}\approx 1+\frac{\vect r\cdot\vect r_i}{r^2}-\frac{r_i^2}{2r^2}+\frac{3(\vect r\cdot\vect r_i)^2}{2r^4}.
+	(1+\epsilon)^{-1/2}\approx 1+\frac{\vect r\cdot\vect r_i}{r^2}-\frac{r_i^2}{2r^2}+\frac{3(\vect r\cdot\vect r_i)^2}{2r^4}.
 \end{equation*}
 Доданок $-r_i^2/(2r^2)$ породжує $-r^2r_i^2$ у чисельнику третього члена; саме він у підсумку робить тензор квадрупольного моменту безслідним (див. нижче). Помноживши на $1/r$, маємо розклад до другого порядку за $r_i/r$ включно:
 \begin{equation}\label{eq:multipole_second_order}

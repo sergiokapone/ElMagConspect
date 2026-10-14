@@ -2,7 +2,7 @@
     \begin{axis}[
             axis lines=center,
             xlabel={$\omega$},
-            ylabel={$\varphi_0$},
+            ylabel={$\phi_0$},
             x label style={anchor=south west, at={(axis description cs:0.95,0.88)}},
             y label style={anchor=south east, at={(axis description cs:0.25,0.98)}},
             xmin=0, xmax=2.5,

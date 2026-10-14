@@ -352,13 +352,13 @@ c$), можна довести, що головний член розкладу 
 швидше, і~на великих відстанях нехтовно малі):
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{equation}\label{eq:WaveZoneFields}
-	\tcbhighmath{ E_\theta = B_\varphi = \frac{\sin\theta}{c^2r}\,\ddot{p}\!\left(t-\frac{r}c\right), \qquad E_r=E_\varphi=B_r=B_\theta=0. }
+	\tcbhighmath{ E_\theta = B_\phi = \frac{\sin\theta}{c^2r}\,\ddot{p}\!\left(t-\frac{r}c\right), \qquad E_r=E_\phi=B_r=B_\theta=0. }
 \end{equation}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 \begin{SCfigure}[1][h!]\centering
 	\includegraphics[width=0.45\linewidth]{wave_zone}
-	\caption{Поля $E_\theta$ і~$B_\varphi$ у~хвильовій зоні диполя\label{pic:WaveZone}}
+	\caption{Поля $E_\theta$ і~$B_\phi$ у~хвильовій зоні диполя\label{pic:WaveZone}}
 \end{SCfigure}
 
 У~хвильовій зоні поля $\Efield$ і~$\Bfield$ поперечні, чисельно рівні одне одному
@@ -441,14 +441,14 @@ c$), можна довести, що головний член розкладу 
 Густина потоку електромагнітної енергії характеризується вектором Пойнтінга $\vect\Pi$
 (гл.~\ref{MaxwellEqns}); потік енергії крізь поверхню сфери радіуса $r$, що оточує
 осцилятор, і~називають \emphx{потужністю випромінювання}. Елемент площі сфери в~сферичних
-координатах $d\sigma = r^2\sin\theta\, d\theta\, d\varphi$, тому, підставляючи поля
+координатах $d\sigma = r^2\sin\theta\, d\theta\, d\phi$, тому, підставляючи поля
 хвильової зони~\eqref{eq:WaveZoneFields} у~$\Pi = \dfrac{c}{4\pi}EB = \dfrac{c}{4\pi}E^2$:
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \begin{multline}\label{eq:PowerInstant}
 	\frac{dW}{dt} = \oiint\limits_\sigma \Pi\, d\sigma =
 	\frac{c}{4\pi}\int\limits_0^{2\pi}\!\!\int\limits_0^\pi
 	\left[\frac{\sin\theta}{c^2r}\, \ddot{p}\!\left(t-\frac{r}{c}\right)\right]^2
-	r^2\sin\theta\, d\theta\, d\varphi \\=\\ \frac{\ddot{p}^2\!\left(t-\dfrac{r}{c}\right)}{4\pi c^3}\cdot2\pi\int\limits_0^\pi\sin^3\theta\,
+	r^2\sin\theta\, d\theta\, d\phi \\=\\ \frac{\ddot{p}^2\!\left(t-\dfrac{r}{c}\right)}{4\pi c^3}\cdot2\pi\int\limits_0^\pi\sin^3\theta\,
 	d\theta.
 \end{multline}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -819,7 +819,7 @@ $\cos^2\omega t$ максимальний, $\sin^2\omega t$~--- мінімаль
 	\item Чим поле диполя в~ближній зоні ($r\ll\lambda/2\pi$) відрізняється від поля
 	  в~хвильовій зоні ($r\gg\lambda/2\pi$)? Чому в~ближній зоні поле практично збігається
 	  зі статичним полем диполя того самого моментального значення $p(t)$?
-	\item Запишіть поля хвильової зони диполя $E_\theta=B_\varphi=\sin\theta\,\ddot{p}(t-r/c)/(c^2r)$. Які риси плоскої електромагнітної хвилі вони відтворюють? Чому
+	\item Запишіть поля хвильової зони диполя $E_\theta=B_\phi=\sin\theta\,\ddot{p}(t-r/c)/(c^2r)$. Які риси плоскої електромагнітної хвилі вони відтворюють? Чому
 	  диполь не випромінює вздовж власної осі?
 	\item Що таке діаграма спрямованості дипольного випромінювача? Чому вона має
 	  характерну форму <<бублика>>, з~максимумом в~екваторіальній площині?
