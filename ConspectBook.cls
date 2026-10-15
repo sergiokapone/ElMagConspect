@@ -294,9 +294,14 @@
 
 % \emphx{текст} — виділення терміна малиновим курсивом (означення, важливий термін)
 % \NewDocumentCommand{\emphx}{m}{\emph{\textcolor{malina}{#1}}}
-\NewDocumentCommand{\emphx}{m o}{%
+% \NewDocumentCommand{\emphx}{m o}{%
+%   \emph{\textcolor{malina}{#1}}%
+%   \IfNoValueTF{#2}{\index{#1}}{\index{#2}}%
+% }
+
+\NewDocumentCommand{\emphx}{m}{%
   \emph{\textcolor{malina}{#1}}%
-  \IfNoValueTF{#2}{\index{#1}}{\index{#2}}%
+%   \IfNoValueTF{#2}{\index{#1}}{\index{#2}}%
 }
 
 %===============================================================================
