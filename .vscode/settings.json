@@ -120,6 +120,7 @@
       "tools": ["bibtex", "xelatex"]
     }
   ],
+  "tssworkflow.termMacros": ["\\emphx"],
   "latex-workshop.latex.recipe.default": "latexmk",
   "tssworkflow.compileOnSave": false,
   "tssworkflow.wrapCmd.selectionHint": "lightbulb",
