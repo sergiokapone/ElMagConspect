@@ -1,0 +1,21 @@
+@import url("lwarp.css");
+/* conspect.css - styles for the HTML blocks of ConspectBookHTML (colours from ConspectBook.cls) */
+:root{--dark:#002e64;--main:#3333b2;--malina:#990000;--teal:#006766}
+.cb-theory,.cb-attention,.cb-example,.cb-historical,.cb-quote,.cb-questions,.cb-answer,.cb-pict{
+  margin:1.2em 0;padding:.6em 1em;border-left:6px solid var(--dark);background:#fff;overflow-x:auto}
+.cb-theory{background:#e6ebf2;font-size:.95em}
+.cb-attention{background:#fffde6;border-left-color:#e6c800;font-style:italic}
+.cb-attention::before{content:"!";float:left;margin-right:.6em;font:bold 1.4em sans-serif;color:var(--dark)}
+.cb-example{border:1px solid var(--dark);border-left-width:6px;font-size:.95em;
+  background-image:linear-gradient(#cfe0f2 1px,transparent 1px),linear-gradient(90deg,#cfe0f2 1px,transparent 1px);
+  background-size:1.2em 1.2em}
+.cb-historical{background:#f7f3e3;border-left-color:#6b4a1f;font-size:.95em}
+.cb-quote{background:#efe3a0;border-left:none;font-style:italic;font-size:.95em}
+.cb-pict{border:1px solid #888;border-left-width:1px;text-align:center}
+.cb-questions{background:#f0f8f8;border:1px solid var(--teal);border-left-width:6px;border-left-color:var(--teal);font-size:.95em}
+.cb-answer{background:#f5f5f5;border-left-color:#e6c800;font-style:italic}
+.theorembodyproblem{margin:1em 0;padding:.4em 1em;border-left:6px solid #e6c800;background:#f5f5f5}
+.theorembodyproblem ul{margin:0;padding:0}
+.epigraph{max-width:80%;margin:1em 0 1.5em auto;font-style:italic}
+.textcolor{color:inherit}
+img.lateximage,img.inlineimage{max-width:100%;height:auto}
