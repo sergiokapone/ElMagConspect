@@ -26,7 +26,6 @@ books.session
 *.bbl-SAVE-ERROR
 test.pdf
 main.pdf
-test.tex
 *.curve.gnuplot
 *.curve.table
 *.gnuplot
@@ -34,4 +33,13 @@ test.tex
 *.ind
 *.idx
 *.ilg
+lwarp*
+*.cut
+_html/
+main-html.pdf
+main-html.lwarp*
+sample_project.css
+*.svg
+
+
 
