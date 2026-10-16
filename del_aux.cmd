@@ -22,3 +22,8 @@ del *.curve.table
 del *.curve.gnuplot
 del *.vrb
 del *.tmp
+del *.cut
+del lwarp*
+del sample_project.css
+del *.sidetoc
+del *.lwarpmkconf
