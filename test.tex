@@ -1,11 +1,10 @@
-% !TeX program = lualatex
-% !TeX encoding = utf8
-% !TeX spellcheck = uk_UA
+\documentclass[biblatex]{ConspectBook}
+% \tracinglostchars=3
+\errorcontextlines=10
+% \let\enquote\emph
 
-
-
-\documentclass[]{ConspectBook}
-\let\enquote\emph
+% \addbibresource{d:/Projects/LaTeX/MyPackages/bib/MyBase.bib}
+% \addbibresource{./bibliography/Articles.bib}
 
 %  1) Charges
 % 17) SteadyEfield
@@ -16,7 +15,7 @@
 %  6) EMOscillations
 %  7) EMWaves
 %  8) FieldInDielectrics
-%  9) FieldInMetalls
+%  9) FieldInMetall
 % 10) MagEnergy
 % 11) MagFieldMedia
 % 12) MagFieldVacuum
@@ -26,15 +25,21 @@
 % 16) SteadyCurrent
 % 18) Telegraph
 % 19) Waveguides
-%CurrentsInMedia
 
 \newcommand{\includechapter}[1]{\input{#1/#1}}
 \newcommand{\includetikz}[2]{\input{#1/tikz/#2.tikz}}
 
-
 \begin{document}
 
-\includechapter{Plasma}
+\ifdefined\TargetTikz
+  \pagestyle{empty}
+  \begin{center}
+    \includetikz{\TargetChapter}{\TargetTikz}
+  \end{center}
+\else
+  \pagestyle{main}
+  \includechapter{\TargetChapter}
+\fi
 
 \end{document}
 
