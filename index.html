@@ -36,6 +36,12 @@
 
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="assets/designs.css">
+    <style>
+        .hero-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:.8rem;position:relative;z-index:1}
+        .pdf-button-primary{background:var(--gold);border-color:var(--gold);color:#1b0e0c}
+        .pdf-button-primary .btn-icon{color:inherit}
+        .pdf-button-primary:hover{background:var(--gold-bright);border-color:var(--gold-bright);color:#1b0e0c}
+    </style>
 </head>
 <body>
 <div class="container">
@@ -52,10 +58,15 @@
         <h1>Електрика та магнетизм</h1>
         <div class="subtitle">Підручник</div>
         <div class="hero-rule"></div>
-        <a href="ElMagConspect.pdf" class="pdf-button">
-            <span class="btn-icon">&#8595;</span> Завантажити повний підручник (PDF)
-        </a>
-        <p class="pdf-note">Повна версія підручника у форматі PDF</p>
+        <div class="hero-actions">
+            <a href="main-html.html" class="pdf-button pdf-button-primary">
+                <span class="btn-icon">&#9657;</span> Читати онлайн
+            </a>
+            <a href="ElMagConspect.pdf" class="pdf-button">
+                <span class="btn-icon">&#8595;</span> Завантажити повний підручник (PDF)
+            </a>
+        </div>
+        <p class="pdf-note">Онлайн-версія та повна версія у форматі PDF</p>
     </div>
 
     <div class="content">
