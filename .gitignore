@@ -35,10 +35,15 @@ main.pdf
 *.ilg
 lwarp*
 *.cut
+main-html_html.pdf
+main-html_html.html
 main-html.pdf
 main-html.lwarp*
+main-html-images.txt
 sample_project.css
 _html/
+!main-html-images/*.svg
+!*/Pictures/*.svg
 
 
 
