@@ -33,6 +33,12 @@ Additions/SGStoSI.tex is not a chapter folder file and is not processed.
 Stray ^ in the HTML (<meta ... ^/>, -^->, ^</title>, https:^//): lwarp types HTML tags in the monospace font, and the programming
 ligatures (calt) of JetBrains Mono (--> </ /> //) make pdftotext print a ^. The class switches calt/liga off for that font
 (reproduced and verified). After rebuilding, a post-processing script like fix_html.py should not be needed.
+The same ligatures also corrupted formulas (`\frac 1^{|..}`, `_^-|`, `]^{{`): fixed by the same class change.
+check-mathjax-html.js (node + `npm i mathjax-full`) runs every formula of a page through MathJax and lists the failing ones.
+Operators from babel (\tg, \ctg, \arctg, \sh, \ch, \cth, \cosec) are not in the class, so mathjax2lwarp.py adds them to the MathJax macros.
+\emf is always defined for MathJax (mathjax2lwarp.py, ALWAYS): in LaTeX it is \mathemf{E} (BOONDOX-cal alphabet of the emf package), MathJax
+has no such alphabet, so it uses \mathcal{E}: close, not identical to the print.
+Known: `\tag{\theequation а}` (2 places in SteadyEfield) cannot work in MathJax: \theequation is a LaTeX counter.
 Known: 1 undefined reference (Grin1) and 1 citation (Jefimenko1962; MyBase.bib was not in the zip) in the log.
 Decisions: \vect -> \mathbf in MathJax (bold upright like print, Greek letters not bold); in HTML tblr tables are
 images, wrapstuff is a figure, solution is an inline block, \tikzmarknode/\tikz overlays inside formulas are dropped.

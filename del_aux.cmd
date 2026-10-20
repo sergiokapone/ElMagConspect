@@ -2,7 +2,6 @@
 :: Удаление папок
 if exist _html rmdir /s /q _html
 if exist _minted* rmdir /s /q _minted*
-if exist main-html-images rmdir /s /q main-html-images
 
 :: Удаление вспомогательных файлов
 del *.aux 2>nul
@@ -33,7 +32,9 @@ del *.sidetoc 2>nul
 del *.lwarpmkconf 2>nul
 del main-html_html.tex 2>nul
 del main-html-images.txt 2>nul
+del main-html.pdf 2>nul
+del main-html_html.pdf 2>nul
 
 :: Удаление всех .html в корне, кроме index.html и google*.html
-powershell -Command "Get-ChildItem *.html | Where-Object { $_.Name -ne 'index.html' -and $_.Name -notlike 'google*.html' } | Remove-Item"
+powershell -Command "Get-ChildItem *.html | Where-Object { $_.Name -ne 'index.html' -and $_.Name -notlike 'google*.html' -and $_.Name -notlike 'ch*.html' -and $_.Name -notlike 'main*.html' } | Remove-Item"
 
