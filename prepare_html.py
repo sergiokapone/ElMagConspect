@@ -289,6 +289,99 @@ def convert_tables(t):
     res.append(t[pos:])
     return ''.join(res), conv, skipped
 
+# ---------------------------------------------------------------------------------------------
+# formulas: lwarp hands the text of a formula to MathJax unchanged, so LaTeX-only things in it show up as red text
+# ---------------------------------------------------------------------------------------------
+MATH_ENV = re.compile(r'\\begin\{(equation\*?|align\*?|gather\*?|multline\*?|eqnarray\*?)\}(.*?)\\end\{\1\}', re.S)
+
+def remove_braced_command(body, pattern):
+    """Remove every `pattern{...}` (pattern ends with an opening brace) together with the balanced braces."""
+    out, pos, n = [], 0, 0
+    for m in re.finditer(pattern, body):
+        if m.start() < pos: continue
+        i, d = m.end(), 1
+        while i < len(body) and d:
+            d += (body[i] == '{') - (body[i] == '}'); i += 1
+        out.append(body[pos:m.start()]); pos = i; n += 1
+    out.append(body[pos:])
+    return ''.join(out), n
+
+def fix_math_tikz(t):
+    r"""\tikzmarknode{n}{x} -> x, \tikzmark{n} -> nothing, \tikz[..]{..} (overlay arrows) -> nothing, inside formulas."""
+    total = [0]
+    def fix(m):
+        body = m.group(2)
+        body, a = re.subn(r'\\tikzmarknode\s*(?:\[[^\]]*\])?\s*\{[^{}]*\}\s*\{((?:[^{}]|\{[^{}]*\})*)\}', r'\1', body)
+        body, b = re.subn(r'\\tikzmark\s*(?:\[[^\]]*\])?\s*\{[^{}]*\}', '', body)
+        body, c = remove_braced_command(body, r'\\tikz\s*(?:\[[^\]]*\])?\s*\{')
+        total[0] += a + b + c
+        if a + b + c: body = re.sub(r'\r?\n[ \t]*\r?\n', '\n', body)       # a blank line in a formula is a paragraph break = error
+        return '\\begin{%s}%s\\end{%s}' % (m.group(1), body, m.group(1))
+    return MATH_ENV.sub(fix, t), total[0]
+
+def load_labels(auxname):
+    try: a = open(auxname, 'rb').read().decode('utf-8', 'replace')
+    except OSError: return None
+    return {m.group(1): m.group(2) for m in re.finditer(r'\\newlabel\{([^}]+)\}\{\{+([^{}]*)\}', a)}
+
+def fix_tags(t, labels):
+    r"""\tag{\theequation x} is a LaTeX counter, MathJax cannot expand it: put the number in (taken from the aux file)."""
+    if not labels: return t, 0
+    out, pos, n, base = [], 0, 0, None
+    for m in re.finditer(r'\\begin\{(equation|align|gather|multline|eqnarray)\}(.*?)\\end\{\1\}', t, re.S):
+        body = m.group(2)
+        tg = re.search(r'\\tag\{\\theequation\s*([^{}]*)\}', body)
+        if not tg:
+            if not re.search(r'\\notag|\\nonumber', body): base = None            # a new number intervenes
+            continue
+        suffix = tg.group(1).strip()
+        lab = re.search(r'\\label\{([^}]+)\}', body)
+        text = None
+        if lab and lab.group(1) in labels:
+            text = labels[lab.group(1)]
+            base = text[:-len(suffix)] if suffix and text.endswith(suffix) else None
+        elif base:
+            text = base + suffix
+        if text:
+            new_body = body[:tg.start()] + '\\tag{%s}' % text + body[tg.end():]
+            out.append(t[pos:m.start(2)] + new_body); pos = m.end(2); n += 1
+    out.append(t[pos:])
+    return ''.join(out), n
+
+def chapter_copies(auxname='main-html.aux'):
+    """_html/<Dir>/<Dir>.tex for every chapter that needs changes (the chapters themselves are never edited)."""
+    capfixed, tabfixed, tabskipped, mathfixed, tagfixed = [], [], [], [], []
+    labels = load_labels(auxname)
+    for f in sorted(glob.glob('*/*.tex')):
+        d, b = os.path.split(f)
+        if d.startswith(('_html', '.')) or b != d + '.tex': continue
+        raw = open(f, 'rb').read().decode('utf-8', errors='surrogateescape')
+        new, n = fix_captions(raw)
+        new, nt, sk = convert_tables(new)
+        new, nm = fix_math_tikz(new)
+        new, ng = fix_tags(new, labels)
+        for reason, line in sk: tabskipped.append((f, line, reason))
+        if n or nt or nm or ng:
+            out = os.path.join('_html', d, b); os.makedirs(os.path.dirname(out), exist_ok=True)
+            open(out, 'wb').write(new.encode('utf-8', errors='surrogateescape'))
+            if n: capfixed.append((f, n))
+            if nt: tabfixed.append((f, nt))
+            if nm: mathfixed.append((f, nm))
+            if ng: tagfixed.append((f, ng))
+    return capfixed, tabfixed, tabskipped, mathfixed, tagfixed, labels
+
+def report_chapters(r):
+    capfixed, tabfixed, tabskipped, mathfixed, tagfixed, labels = r
+    for f, n in tabfixed: print('  tblr -> tabularx: %s (%d)' % (f, n))
+    for f, line, reason in tabskipped: print('  tblr NOT converted (%s): %s line %d -> stays an image' % (reason, f, line))
+    for f, n in capfixed: print('  \\ce in captions wrapped in $..$: %s (%d)' % (f, n))
+    for f, n in mathfixed: print('  \\tikzmark / overlay arrows removed from formulas: %s (%d)' % (f, n))
+    for f, n in tagfixed: print('  \\tag{\\theequation ..} replaced by the number from the aux file: %s (%d)' % (f, n))
+    if labels is None: print('  (no aux file yet: \\tag{\\theequation ..} is resolved after the first lualatex pass; run prepare_html.py --tags then)')
+
+if '--tags' in sys.argv:                       # only the chapter copies (after the first lualatex pass: aux file exists)
+    os.makedirs('_html', exist_ok=True); report_chapters(chapter_copies()); sys.exit(0)
+
 hoisted, wrapped, hoistfiles, picwrapped = [], [], [], []
 os.makedirs('_html', exist_ok=True)
 for f in sorted(glob.glob('*/tikz/*.tikz')):
@@ -313,20 +406,7 @@ for f in sorted(glob.glob('*/tikz/*.tikz')):
     os.makedirs(os.path.dirname(out), exist_ok=True)
     open(out, 'w', encoding='utf-8').write(content)
 
-# chapter copies: _html/<Dir>/<Dir>.tex  (\ce in captions wrapped in $..$; tblr tables -> tabularx)
-capfixed, tabfixed, tabskipped = [], [], []
-for f in sorted(glob.glob('*/*.tex')):
-    d, b = os.path.split(f)
-    if d.startswith(('_html', '.')) or b != d + '.tex': continue
-    raw = open(f, 'rb').read().decode('utf-8', errors='surrogateescape')
-    new, n = fix_captions(raw)
-    new, nt, sk = convert_tables(new)
-    for reason, line in sk: tabskipped.append((f, line, reason))
-    if n or nt:
-        out = os.path.join('_html', d, b); os.makedirs(os.path.dirname(out), exist_ok=True)
-        open(out, 'wb').write(new.encode('utf-8', errors='surrogateescape'))
-        if n: capfixed.append((f, n))
-        if nt: tabfixed.append((f, nt))
+chapter_result = chapter_copies()
 
 with open('lwarp-tikzdefs.tex', 'w', encoding='utf-8') as g:
     g.write('% Generated by prepare_html.py. Code hoisted from tikz files into the preamble (there a dollar sign is still a math shift).\n')
@@ -335,9 +415,7 @@ print('tikz files wrapped as one image: %d, code hoisted: %d, pictures with .pic
 for f in wrapped: print('  wrap  ', f)
 for f in hoistfiles: print('  hoist ', f)
 for f, n in picwrapped: print('  pic    %s (%d)' % (f, n))
-for f, n in tabfixed: print('  tblr -> tabularx: %s (%d)' % (f, n))
-for f, line, reason in tabskipped: print('  tblr NOT converted (%s): %s line %d -> stays an image' % (reason, f, line))
-for f, n in capfixed: print('  \\ce in captions wrapped in $..$: %s (%d)' % (f, n))
+report_chapters(chapter_result)
 if '--no-pdf' not in sys.argv:
     pdfs = [p for p in glob.glob('*/Pictures/*.pdf') if not os.path.exists(p[:-4] + '.svg')]
     print('PDF pictures to convert: %d' % len(pdfs))

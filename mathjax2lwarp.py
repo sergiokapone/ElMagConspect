@@ -13,7 +13,10 @@ RENEW = {'phi', 'epsilon', 'iint', 'iiint'}        # already defined in MathJax
 
 # Macros that MathJax must always have, even if mathjax-macros.tex lacks them or defines them in a way MathJax cannot read.
 # \emf (package emf) is \mathemf{E} in LaTeX: a calligraphic E in the BOONDOX-cal alphabet; MathJax has no such alphabet.
-ALWAYS = {'emf': r'\newcommand{\emf}{\mathcal{E}}'}
+ALWAYS = {'emf': r'\newcommand{\emf}{\mathcal{E}}',
+          'tikzmarknode': r'\newcommand{\tikzmarknode}[2]{#2}',   # tikzmark has no meaning in HTML
+          'tikzmark': r'\newcommand{\tikzmark}[1]{}',
+          'enquote': r'\newcommand{\enquote}[1]{«#1»}'}   # csquotes, used inside \text{..} in a formula
 
 # Math operators that come from babel (Ukrainian/Russian), not from the class, so mathjax-macros.tex does not have them.
 BABEL_OPS = [('sh', 'sh'), ('ch', 'ch'), ('tg', 'tg'), ('ctg', 'ctg'), ('arctg', 'arctg'), ('arcctg', 'arcctg'), ('cth', 'cth'), ('cosec', 'cosec')]

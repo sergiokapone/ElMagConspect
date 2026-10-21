@@ -126,6 +126,40 @@ function Get-BuildFiles([string[]]$exts) {
     foreach ($e in $exts) { Get-ChildItem -LiteralPath . -File -Filter "$main*.$e" -ErrorAction SilentlyContinue }
 }
 
+# lwarpmk converts the images in parallel and sometimes leaves a 0-byte SVG and a lateximagetemp-N.pdf behind
+# (seen: 67 of 253). This redoes exactly those conversions with the commands lwarpmk uses. Returns the number repaired.
+function Repair-Images([string]$dir, [string]$txt) {
+    if (-not (Test-Path $dir)) { return 0 }
+    $names = @{}
+    if (Test-Path $txt) {
+        foreach ($l in (Get-Content -LiteralPath $txt -Encoding UTF8)) {
+            if ($l -match '^\|(\d+)\|[^|]*\|([^|]+)\|') { $names[$Matches[1]] = $Matches[2] }
+        }
+    }
+    $fixed = 0
+    $old = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+    foreach ($t in @(Get-ChildItem -LiteralPath $dir -File -Filter 'lateximagetemp-*.pdf' -ErrorAction SilentlyContinue)) {
+        if ($t.Name -notmatch '^lateximagetemp-(\d+)\.pdf$') { continue }
+        $name = $names[$Matches[1]]
+        if (-not $name) { continue }
+        $pdf = Join-Path $dir ($name + '.pdf'); $svg = Join-Path $dir ($name + '.svg')
+        & pdfcrop --hires --margins '0 1 0 0' $t.FullName $pdf 2>&1 | Out-Null
+        if ($LASTEXITCODE -ne 0 -or -not (Test-Path $pdf)) { continue }
+        & pdftocairo -svg -noshrink $pdf $svg 2>&1 | Out-Null
+        if ((Test-Path $svg) -and ((Get-Item $svg).Length -gt 0)) {
+            Remove-Item -LiteralPath $pdf, $t.FullName -Force -ErrorAction SilentlyContinue
+            $fixed++
+        }
+    }
+    $ErrorActionPreference = $old
+    return $fixed
+}
+
+function Get-EmptySvg([string]$dir) {
+    if (-not (Test-Path $dir)) { return @() }
+    return @(Get-ChildItem -LiteralPath $dir -File -Filter '*.svg' -ErrorAction SilentlyContinue | Where-Object { $_.Length -eq 0 })
+}
+
 # --- checks ------------------------------------------------------------------
 $py = $null
 foreach ($c in 'py', 'python') { if (Get-Command $c -ErrorAction SilentlyContinue) { $py = $c; break } }
@@ -183,6 +217,8 @@ Step "lualatex -shell-escape $main" {
     lualatex -shell-escape -interaction=nonstopmode -halt-on-error $main
 } "$main.log" $false
 Write-Host "      (the print PDF is thrown away: its 'rerun' and undefined references do not matter, the HTML pass redoes them)" -ForegroundColor DarkGray
+# \tag{\theequation ..} cannot be expanded by MathJax: its number is taken from the aux file of the pass above.
+Step 'equation numbers for \tag{\theequation ..}' { & $py prepare_html.py --tags }
 Step "biber $main" { biber $main }
 
 # --- 3. HTML ---------------------------------------------------------------------
@@ -245,6 +281,31 @@ if (-not $NoImages) {
     }
     if ($imagesDone) { Write-Host "  images finished" -ForegroundColor Green }
     else { Write-Host "  images are still being converted after 10 min; temporary files are kept." -ForegroundColor Yellow }
+    if ($imagesDone) {
+        $imgDir = "$main-images"; $imgTxt = "$main-images.txt"
+        $empty = @(Get-EmptySvg $imgDir)
+        if ($empty.Count -gt 0) {
+            Write-Host ("  {0} images came out empty (lwarpmk converts in parallel); redoing them ..." -f $empty.Count) -ForegroundColor Yellow
+            $n = Repair-Images $imgDir $imgTxt
+            $left = @(Get-EmptySvg $imgDir).Count
+            if ($left -gt 0) {
+                Write-Host ("  {0} still empty: running lwarpmk limages once more" -f $left) -ForegroundColor Yellow
+                Step 'lwarpmk limages (second try)' { lwarpmk limages -p $main }
+                $deadline = (Get-Date).AddMinutes(5)
+                while ((Get-Process -Name $workers -ErrorAction SilentlyContinue) -and ((Get-Date) -lt $deadline)) { Start-Sleep -Seconds 2 }
+                $n += Repair-Images $imgDir $imgTxt
+                $left = @(Get-EmptySvg $imgDir).Count
+            }
+            if ($left -gt 0) {
+                Write-Host ("  {0} images are still empty - see the folder {1}" -f $left, $imgDir) -ForegroundColor Red
+                $script:problems += $left
+            } else {
+                Write-Host ("  all empty images repaired ({0})" -f $n) -ForegroundColor Green
+            }
+        } else {
+            Write-Host "  no empty images" -ForegroundColor Green
+        }
+    }
 } else {
     Write-Host "  (skipped: -NoImages)" -ForegroundColor DarkGray
 }

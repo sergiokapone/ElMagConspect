@@ -38,7 +38,10 @@ check-mathjax-html.js (node + `npm i mathjax-full`) runs every formula of a page
 Operators from babel (\tg, \ctg, \arctg, \sh, \ch, \cth, \cosec) are not in the class, so mathjax2lwarp.py adds them to the MathJax macros.
 \emf is always defined for MathJax (mathjax2lwarp.py, ALWAYS): in LaTeX it is \mathemf{E} (BOONDOX-cal alphabet of the emf package), MathJax
 has no such alphabet, so it uses \mathcal{E}: close, not identical to the print.
-Known: `\tag{\theequation а}` (2 places in SteadyEfield) cannot work in MathJax: \theequation is a LaTeX counter.
+Formulas: lwarp gives MathJax the text of a formula unchanged, so prepare_html.py rewrites it in the chapter copies: \tikzmarknode{n}{x} -> x,
+\tikzmark and \tikz[..]{..} (overlay arrows) are removed, \tag{\theequation x} gets its number from main-html.aux
+(run `python prepare_html.py --tags` after the first lualatex pass; build-html.ps1 does it). The overlay arrow of the Gauss equations is lost in HTML.
+\emphx{term}[index entry]: the optional [..] is swallowed in HTML (print puts it into the index).
 Known: 1 undefined reference (Grin1) and 1 citation (Jefimenko1962; MyBase.bib was not in the zip) in the log.
 Decisions: \vect -> \mathbf in MathJax (bold upright like print, Greek letters not bold); in HTML tblr tables are
 images, wrapstuff is a figure, solution is an inline block, \tikzmarknode/\tikz overlays inside formulas are dropped.

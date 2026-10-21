@@ -88,7 +88,8 @@
   \newcommand{\Laplasian}{\Delta}
   \let\iiint\int \let\iint\int \let\oiint\oint}
 \newcommand{\tcbhighmath}[1]{\boxed{#1}}   % boxed formula (print uses tcolorbox)
-\NewDocumentCommand{\emphx}{m}{\emph{\textcolor{malina}{#1}}}
+% \emphx{term}[index entry]: the print class puts the optional [..] into the index; in HTML it must not be typeset
+\NewDocumentCommand{\emphx}{m !o}{\emph{\textcolor{malina}{#1}}}
 \RequirePackage[version=4]{mhchem}
 \RequirePackage{tabularray}\UseTblrLibrary{booktabs}
 % tabularray is not supported by lwarp -> every tblr becomes an image (like tikzpicture does)
