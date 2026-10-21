@@ -1,3 +1,4 @@
+{% raw %}
 # ConspectWeb: HTML version of ElMagConspect (lwarp)
 
 Put the files from src/ into the project root (next to main.tex). Chapters are not modified.
@@ -45,3 +46,4 @@ Formulas: lwarp gives MathJax the text of a formula unchanged, so prepare_html.p
 Known: 1 undefined reference (Grin1) and 1 citation (Jefimenko1962; MyBase.bib was not in the zip) in the log.
 Decisions: \vect -> \mathbf in MathJax (bold upright like print, Greek letters not bold); in HTML tblr tables are
 images, wrapstuff is a figure, solution is an inline block, \tikzmarknode/\tikz overlays inside formulas are dropped.
+{% endraw %}

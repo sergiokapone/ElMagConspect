@@ -82,7 +82,7 @@ Write-Host
 
 # --- Compile ---
 $sw = [System.Diagnostics.Stopwatch]::StartNew()
-latexmk -f -g -lualatex $TEXFILE
+latexmk -f -g -lualatex="lualatex --shell-escape %O %S" $TEXFILE
 $EC = $LASTEXITCODE
 $sw.Stop()
 $elapsed = [int]$sw.Elapsed.TotalSeconds
