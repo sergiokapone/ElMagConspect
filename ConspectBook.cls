@@ -759,6 +759,13 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 \setlength\chapnumb{4cm}   % ширина колонки під великий номер глави в заголовку
 
 % Заголовок частини (part) — великим шрифтом, з відступом і центруванням
+
+\newcommand\currentparttitle{}
+\titleformat{\part}[display]{\bfseries\sffamily\huge}{\partname\ \thepart}{0pt}%
+  {\addvspace{1em}\Huge\centering\color{themecolordark} #1%
+   \begingroup\def\\{ }\xdef\@currentlabelname{#1}\endgroup
+   \gdef\currentparttitle{#1}}
+
 \titleformat{\part}[display]{\bfseries\sffamily\huge}{\partname\ \thepart}{0pt}%
   {\addvspace{1em}\Huge\centering\color{themecolordark} #1%
    \begingroup\def\\{ }\xdef\@currentlabelname{#1}\endgroup}
@@ -816,8 +823,10 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 % спеціальних стилів для Відповідей/Додатків/Бібліографії, де замість назви
 % глави друкується фіксований текст). Номер сторінки — завжди знизу по центру.
 \newpagestyle{main}{\headrule%
-	\sethead{\ifodd\thepage\relax\else\itshape\small\thechapter.\ \chaptertitle\fi}{}{\ifodd\thepage\itshape\small\thechapter.\
-			\chaptertitle\else\relax\fi}
+	\sethead
+		{\ifodd\thepage\relax\else\itshape\small\partname~\thepart.\ \begingroup\let\\\space\currentparttitle\endgroup\fi}
+		{}
+		{\ifodd\thepage\itshape\small\thechapter.\ \chaptertitle\else\relax\fi}
 	\setfoot{}{\small\thepage}{}}
 
 \newpagestyle{answers}{\headrule%

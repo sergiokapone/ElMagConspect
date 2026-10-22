@@ -1,0 +1,105 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{fontsetup}
+\usepackage[english, russian, ukrainian]{babel}
+
+
+\usepackage{geometry}
+\geometry{left=3cm,right=1cm,top=1cm,bottom=1cm}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tabularray}
+\UseTblrLibrary{booktabs}
+\usepackage[
+    colorlinks=true,
+	urlcolor = blue, %Colour for external hyperlinks
+	linkcolor  = malina, %Colour of internal links
+	citecolor  = green, %Colour of citations
+	bookmarks = true,
+	bookmarksnumbered=true,
+	unicode,
+	linktoc = all,
+	hypertexnames=false,
+	pdftoolbar=false,
+	pdfpagelayout=TwoPageRight,
+	pdfauthor={Ponomarenko S.M. aka sergiokapone},
+	pdfdisplaydoctitle=true,
+	pdfencoding=auto
+	]%
+	{hyperref}
+		\makeatletter
+	\AtBeginDocument{
+	\hypersetup{
+		pdfinfo={
+		Title={\@title},
+		}
+	}
+	}
+	\makeatother
+
+
+
+\begin{document}
+
+\begin{center}
+    \textbf{\large Відомості}\\[0.5em]
+    \textbf{\large про авторів, рецензентів, відповідального редактора}\\[1.5em]
+    \textbf{Інформація про авторів та їх внесок у спільну працю з підготовки рукопису}
+\end{center}
+
+\vspace{1em}
+
+% Таблиця у стилі зразка
+
+\begin{center}\small
+\begin{tblr}{
+  colspec = {
+    X[c, m] % Прізвище, ім'я, по батькові
+    X[c, m] % Вчене звання, науковий ступінь, посада, місце роботи
+    X[c, m] % Контактні телефони, e-mail
+    Q[2cm, c, m] % Авторський внесок, %
+    Q[2cm, c, m] % Підпис автора
+  },
+  hlines = {1pt, solid}, % Зовнішні горизонтальні лінії
+  vlines = {1pt, solid}, % Зовнішні вертикальні лінії
+  hline{1,Z} = {1pt, solid},
+  vline{1,Z} = {1pt, solid},
+  rowhead = 1,
+  row{1} = {font=\bfseries, m, bg=white},
+  % Внутрішні лінії (тонші)
+  hline{2-Y} = {0.5pt, solid},
+  vline{2-Y} = {0.5pt, solid}
+}
+Прізвище, ім'я, по батькові & Вчене звання, науковий ступінь, посада, місце роботи & Контактні телефони, e-mail & Авторський внесок, \% & {Підпис\\ автора} \\
+%
+Пономаренко Сергій Миколайович &
+к.ф.-м.н., доцент, доцент кафедри прикладної фізики НН ФТІ КПІ ім. Ігоря Сікорського &
+093 563 29 53, \href{mailto:admin-sergiy.ponomarenko-ipt@edu.kpi.ua}{admin-sergiy.ponomarenko-ipt@edu.kpi.ua} &
+100 &
+\includegraphics[height=1cm]{psm.png}
+
+\end{tblr}
+\end{center}
+
+\vspace{2em}
+
+\noindent\textbf{Рецензенти:}\\[1ex]
+\href{https://staff.lpnu.ua/profile/Ihor.R.Zachek}{І.~Р.~Зачек}, д.ф.-м.н.,
+		професор кафедри загальної фізики Інституту прикладної математики та
+		фундаментальних наук Національного університету <<Львівська політехніка>>.\\[1ex]
+\href{https://esu.com.ua/article-76544}{О.~Я.~Оліх}, д.ф.-м.н., професор,
+		завідувач кафедри загальної фізики, фізичного факультету КНУ імені Тараса
+		Шевченка.
+\vspace{1.5em}
+
+\noindent\textbf{Відповідальний редактор:}\\[1ex]
+\href{https://is.ipt.kpi.ua/is/litvinovatv/}{Т.~В.~Литвинова}, к.т.н.,
+				доцент, перший заступник директора НН ФТІ КПІ ім. Ігоря Сікорського.
+
+\vspace{1.5em}
+
+\noindent\textbf{Контактна особа:}\\[1ex]
+Прізвище, ім'я, по батькові: Пономаренко Сергій Миколайович\\
+Контактні телефони: 093 563 29 53\\
+e-mail: \href{mailto:admin-sergiy.ponomarenko-ipt@edu.kpi.ua}{admin-sergiy.ponomarenko-ipt@edu.kpi.ua}
+
+\end{document}
