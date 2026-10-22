@@ -299,9 +299,9 @@
 %   \IfNoValueTF{#2}{\index{#1}}{\index{#2}}%
 % }
 
-\NewDocumentCommand{\emphx}{m}{%
+\NewDocumentCommand{\emphx}{m O{}}{%
   \emph{\textcolor{malina}{#1}}%
-%   \IfNoValueTF{#2}{\index{#1}}{\index{#2}}%
+  \IfBlankTF{#2}{\index{#1}}{\index{#2}}%
 }
 
 %===============================================================================
