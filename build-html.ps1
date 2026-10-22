@@ -6,6 +6,8 @@
 #          .\build-html.ps1 -Full           show the complete output of every tool (old behaviour)
 #          .\build-html.ps1 -Keep           do not delete temporary files at the end
 #          .\build-html.ps1 -NoClean        do not delete the results of the previous build at the start
+#          .\build-html.ps1 -NoPublish      do not move the finished book to the publish folder
+#          .\build-html.ps1 -OutDir site    publish folder (default: docs; this is what GitHub Pages serves)
 # On an error the script stops and writes the first LaTeX error with its context to build-error.txt
 # (send that file's text). ASCII only on purpose: Windows PowerShell 5 reads files without BOM as ANSI.
 param(
@@ -14,13 +16,15 @@ param(
     [switch]$NoImages,
     [switch]$Full,
     [switch]$Keep,
-    [switch]$NoClean
+    [switch]$NoClean,
+    [switch]$NoPublish,
+    [string]$OutDir = 'docs'
 )
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath $PSScriptRoot
 try { [Console]::OutputEncoding = [Text.Encoding]::UTF8 } catch { }
 $main = 'main-html'
-$totalStages = 6
+$totalStages = 7
 $script:problems = 0
 
 # Prints (and saves to build-error.txt) the first LaTeX error of a log: file being read, error, context.
@@ -176,7 +180,7 @@ if (-not $script:hasSieve) {
     Write-Host "Warning: texlogsieve not found in PATH - logs will not be filtered (tlmgr install texlogsieve)." -ForegroundColor Yellow
 }
 if ($missing.Count -gt 0) { throw "Not found in PATH: $($missing -join ', ')" }
-foreach ($f in "$main.tex", 'ConspectBookHTML.cls', 'mathjax-macros.tex', 'mathjax2lwarp.py', 'prepare_html.py') {
+foreach ($f in "$main.tex", 'ConspectBookHTML.cls', 'mathjax-macros.tex', 'mathjax2lwarp.py', 'prepare_html.py', 'publish_html.py') {
     if (-not (Test-Path $f)) { throw "File not found: $f" }
 }
 Remove-Item -ErrorAction SilentlyContinue build-error.txt
@@ -310,9 +314,21 @@ if (-not $NoImages) {
     Write-Host "  (skipped: -NoImages)" -ForegroundColor DarkGray
 }
 
-# --- 6. cleanup (only after a successful build) ----------------------------------
+# --- 6. publish ----------------------------------------------------------------------------
+# Moves what only the site needs (lwarp pages, lwarp css, sitemap, lateximages, <main>-images, and once: index.html,
+# google*.html, assets/) to $OutDir and COPIES what the TeX project needs too (chapter pictures, the PDF).
+# $OutDir is emptied on every run except the site's own files (index.html, assets/, google*.html, CNAME).
+Stage 6 "Publish to $OutDir/"
+if ($NoPublish) {
+    Write-Host "  (skipped: -NoPublish)" -ForegroundColor DarkGray
+} else {
+    & $py publish_html.py --out $OutDir --extra ElMagConspect.pdf
+    if ($LASTEXITCODE -ne 0) { throw "publish_html.py failed (exit code $LASTEXITCODE)" }
+}
+
+# --- 7. cleanup (only after a successful build) ----------------------------------
 # Only files of this build ("$main*") in the project root are touched. The final HTML and lateximages stay.
-Stage 6 'Cleanup'
+Stage 7 'Cleanup'
 if ($Keep -or -not $imagesDone) {
     Write-Host "  (skipped)" -ForegroundColor DarkGray
 } else {
@@ -324,13 +340,18 @@ if ($Keep -or -not $imagesDone) {
     }
     $r = Remove-Files (Get-BuildFiles $exts)
     $removed = $r[0]; $bytes = $r[1]
+    if ($script:problems -eq 0) {
+        # the raw single-file output of lwarp (read by the checks of stage 4 only); with warnings it is kept for inspection
+        $raw = @(Get-ChildItem -LiteralPath . -File -Filter "${main}_html.html" -ErrorAction SilentlyContinue)
+        $r2 = Remove-Files $raw; $removed += $r2[0]; $bytes += $r2[1]
+    }
     Write-Host ("  removed {0} files ({1:N1} MB)" -f $removed, ($bytes / 1MB)) -ForegroundColor Green
 }
 
 $sw.Stop()
 Write-Host ""
 if ($script:problems -gt 0) {
-    Write-Host ("Done in {0:mm\:ss}, with warnings. Open {1}.html in a browser (internet is needed for MathJax)." -f $sw.Elapsed, $main) -ForegroundColor Yellow
+    Write-Host ("Done in {0:mm\:ss}, with warnings. Open {1}/{2}.html in a browser (internet is needed for MathJax)." -f $sw.Elapsed, $OutDir, $main) -ForegroundColor Yellow
 } else {
-    Write-Host ("Done in {0:mm\:ss}. Open {1}.html in a browser (internet is needed for MathJax)." -f $sw.Elapsed, $main) -ForegroundColor Green
+    Write-Host ("Done in {0:mm\:ss}. Open {1}/{2}.html in a browser (internet is needed for MathJax)." -f $sw.Elapsed, $OutDir, $main) -ForegroundColor Green
 }

@@ -3,7 +3,7 @@
 $ErrorActionPreference = 'SilentlyContinue'
 Set-Location -LiteralPath $PSScriptRoot
 
-$main = 'ClassicalElectrodynamics-html'
+$main = 'main-html'
 
 Write-Host "Починаємо повне очищення проектних файлів Lwarp..." -ForegroundColor Cyan
 
@@ -64,8 +64,8 @@ $patterns = @(
     "$main*.idx"
 
     # Згенеровані HTML-сторінки
-    #"$main*.html",
-    #"ch*.html",
+    "$main*.html",
+    "ch*.html"
 )
 
 $deletedCount = 0
