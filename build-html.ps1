@@ -317,6 +317,8 @@ if (-not $NoImages) {
 # --- 6. publish ----------------------------------------------------------------------------
 # Moves what only the site needs (lwarp pages, lwarp css, sitemap, lateximages, <main>-images, and once: index.html,
 # google*.html, assets/) to $OutDir and COPIES what the TeX project needs too (chapter pictures, the PDF).
+# book.js and conspect.css live in $OutDir/assets/ (links in the pages are rewritten, book.js is added to each page).
+# Empty folders left in the project root (main-html-images/, lateximages/ ...) are removed.
 # $OutDir is emptied on every run except the site's own files (index.html, assets/, google*.html, CNAME).
 Stage 6 "Publish to $OutDir/"
 if ($NoPublish) {

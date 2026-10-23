@@ -41,8 +41,12 @@ main-html.pdf
 main-html.lwarp*
 main-html-images.txt
 sample_project.css
-_html/
-!main-html-images/*.svg
+/_html/
+# results of the HTML build lie in the root only until publish_html.py moves them to docs/ (anchored with /: docs/ is tracked)
+/ch*.html
+/main-html.html
+/lateximages/
+/main-html-images/
 !*/Pictures/*.svg
 
 

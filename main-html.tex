@@ -1,11 +1,32 @@
 % !TeX program = lualatex
 \documentclass{ConspectBookHTML}
 \addbibresource{Bibliography/Articles.bib}
+% MyBase.bib: the local copy Bibliography/MyBase.bib if there is one, otherwise the same path as in main.tex
+% (the path is not checked here: if the file is missing, biber says so; without it the list of literature stays empty)
+
+\addbibresource{Bibliography/Articles.bib}
+\addbibresource{Bibliography/Books.bib}
+
 \title{Електрика та магнетизм}
 \author{С.~М.~Пономаренко}
 \begin{document}
 \maketitle
 \tableofcontents
 \multiinclude{Charges,SteadyEfield,ChargeSystem,FieldInMetalls,FieldInDielectrics,ElEnergy,SteadyCurrent,CurrentsInMedia,MagFieldVacuum,MagFieldMedia,EBMotion,ElMagInduction,MagEnergy,MaxwellEqns,Relativity,ElMagWaves,Radiation,ElMagOscillations,Telegraph,Waveguides}[]
-\printbibliography
+% appendices (as in main.tex)
+\appendix
+\htmlinput{Additions/SGStoSI}
+\htmlinput{Additions/Vanaliz}
+% bibliography: the same list of books as in main.tex
+\nocite{%
+  ZhdanovElectro1,
+  ZhdanovElectro2,
+  ParnovskyElectro,
+  Ponomarenko,
+  FLP2,
+  Fedorchenko1992,
+  Suhakov1975,
+  purcell2013electricity,
+}
+\printbibliography[heading=bibintoc]
 \end{document}

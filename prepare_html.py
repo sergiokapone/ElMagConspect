@@ -242,7 +242,9 @@ def parse_selector(sel, n):
     out = set()
     for tok in split_commas(strip_braces(sel)):
         tok = tok.strip()
-        if tok == 'odd': out |= set(range(1, n + 1, 2))
+        mo = re.fullmatch(r'(odd|even)\s*\[(\d+)\]', tok)           # odd[2]: every second row counted from row 2
+        if mo: out |= set(range(int(mo.group(2)) + (mo.group(1) == 'even'), n + 1, 2))
+        elif tok == 'odd': out |= set(range(1, n + 1, 2))
         elif tok == 'even': out |= set(range(2, n + 1, 2))
         elif re.fullmatch(r'\d+', tok): out.add(int(tok))
         else:
@@ -292,6 +294,7 @@ def tblr_to_tabularx(opts, body):
             for cm in re.finditer(r'([XQ])\s*\[((?:[^\[\]{}]|\{[^{}]*\})*)\]|([lcrXQ])', cs):
                 if cm.group(3): cols.append({'kind': cm.group(3)}); continue
                 d = parse_keys(cm.group(2), allow_width=True); d['kind'] = cm.group(1); cols.append(d)
+        elif key in ('hline', 'vline'): pass                        # colour/width of single rules: not expressible in tabularx
         elif key == 'hlines': hl = True
         elif key == 'vlines': vl = True
         elif key == 'row' and len(sels) == 1: rowstyles.append((sels[0], parse_keys(val)))
@@ -424,12 +427,13 @@ def fix_tags(t, labels):
     return ''.join(out), n
 
 def chapter_copies(auxname='main-html.aux'):
-    """_html/<Dir>/<Dir>.tex for every chapter that needs changes (the chapters themselves are never edited)."""
+    """_html/<Dir>/<Dir>.tex (and _html/Additions/*.tex) for every file that needs changes (the sources themselves are never edited)."""
     capfixed, tabfixed, tabskipped, mathfixed, tagfixed = [], [], [], [], []
     labels = load_labels(auxname)
     for f in sorted(glob.glob('*/*.tex')):
         d, b = os.path.split(f)
-        if d.startswith(('_html', '.')) or b != d + '.tex': continue
+        if d.startswith(('_html', '.')): continue
+        if b != d + '.tex' and d != 'Additions': continue          # chapters (<Dir>/<Dir>.tex) and the appendices (Additions/*.tex)
         raw = open(f, 'rb').read().decode('utf-8', errors='surrogateescape')
         new, n = fix_captions(raw)
         new, nt, sk = convert_tables(new)
