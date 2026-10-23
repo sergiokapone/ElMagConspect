@@ -184,6 +184,18 @@ for rel, src in sorted(sources.items()):
 # --- 5. the pages: links to assets/, book.js on every page ---------------------------------------
 LINK_CSS = re.compile(r'''(\bhref\s*=\s*["'])(?:\./)?conspect\.css(["'])''', re.I)
 LINK_JS = re.compile(r'''(\bsrc\s*=\s*["'])(?:\./)?book\.js(["'])''', re.I)
+TITLE = re.compile(r'<title>(.*?)</title>', re.S)
+
+def mark_for_search(name, text):
+    """Search (Pagefind, run by build-html.ps1): only the text of the chapter pages is indexed. The result is titled
+    by the chapter (<title> is 'book — chapter'), not by the <h1>, which is the book title on every page."""
+    if not re.fullmatch(r'ch\d+\.html', name) or 'data-pagefind-body' in text: return text
+    m = TITLE.search(text)
+    title = (m.group(1).split(' — ', 1)[-1] if m else name).strip().replace('"', '&quot;')
+    text = text.replace('<main class="bodycontainer">', '<main class="bodycontainer" data-pagefind-body '
+                        'data-pagefind-meta="title[data-title]" data-title="%s">' % title, 1)
+    return text.replace('<h1>', '<h1 data-pagefind-ignore>', 1)
+
 n_pages = n_script = 0
 for name in sorted(os.listdir(OUT)):
     if not name.endswith('.html') or is_site_own(name): continue
@@ -191,6 +203,7 @@ for name in sorted(os.listdir(OUT)):
     text = open(path, 'rb').read().decode('utf-8')
     new = LINK_CSS.sub(r'\1%s/conspect.css\2' % ASSET_DIR, text)
     new = LINK_JS.sub(r'\1%s/book.js\2' % ASSET_DIR, new)
+    new = mark_for_search(name, new)
     if 'book.js' not in new and '</body>' in new:
         new = new.replace('</body>', '<script src="%s/book.js" defer></script>\n</body>' % ASSET_DIR, 1); n_script += 1
     if new != text:

@@ -342,6 +342,13 @@ if ($NoPublish) {
 } else {
     & $py publish_html.py --out $OutDir --extra ElMagConspect.pdf
     if ($LASTEXITCODE -ne 0) { throw "publish_html.py failed (exit code $LASTEXITCODE)" }
+    # search index for book.js: $OutDir/pagefind/ (only the chapter text, marked by publish_html.py). Needs node (npx).
+    if (Get-Command npx -ErrorAction SilentlyContinue) {
+        Step 'search index (Pagefind)' { npx -y pagefind@1.3.0 --site $OutDir }
+    } else {
+        Write-Host "  Warning: npx (node) not found - no search index, the search field stays hidden." -ForegroundColor Yellow
+        $script:problems++
+    }
 }
 
 # --- 7. cleanup (only after a successful build) ----------------------------------
