@@ -18,6 +18,9 @@
 \setcounter{tocdepth}{1}
 \setcounter{secnumdepth}{2}
 \HTMLLanguage{uk}
+% chapter headings show only the number (no "Розділ" before it): the number already stands out in the banner
+% (lwarp defines \LWR@printchaptername only at \begin{document})
+\makeatletter\AtBeginDocument{\def\LWR@printchaptername{}}\makeatother
 \CSSFilename{conspect.css}   % boxes styles; conspect.css lies next to the project
 
 % ---- language and fonts (fonts matter only for images made by lateximage) ------
