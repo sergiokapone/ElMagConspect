@@ -250,7 +250,11 @@ figure div.minipage{
 figure div.minipage>p{margin:.2rem 0;line-height:1.35}
 figure .center:has(>div.minipage)>.figurecaption{flex:0 0 100%}
 img{max-width:100%;height:auto}
-img.lateximage,img.inlineimage{max-width:100%!important;height:auto!important;vertical-align:middle}
+img.lateximage,img.inlineimage{max-width:100%!important;vertical-align:middle}
+/* lwarp задає розмір інлайном: або width, або height. Не перебиваємо його через !important — інакше рисунки з
+   height:199pt (Soft/Hard тощо) розтягуються до натурального розміру і не стають поруч. */
+img.lateximage:not([style*="height"]),img.inlineimage:not([style*="height"]){height:auto}
+@media (max-width:700px){img.lateximage,img.inlineimage{height:auto!important}}
 .figurecaption{
   margin:.9rem auto 0;font:500 .86rem/1.4 var(--sans);color:#4a5670;text-align:center;
   max-width:34rem;
