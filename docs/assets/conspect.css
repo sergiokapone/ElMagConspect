@@ -240,6 +240,8 @@ figure .center{
   border-radius:4px;padding:1.2rem 1rem .9rem;text-align:center;overflow-x:auto;
 }
 figure .center>p{margin:0}
+/* рисунок без обгортки .center (lwarp: <figure><p><a><img>) — центруємо сам абзац */
+figure>p{margin:0;text-align:center}
 /* Кілька minipage в одному рисунку (портрети, підрисунки) — поруч, як у друкованій книзі; на вузькому екрані
    переносяться. lwarp задає їм лише ширину (style="width:219pt"), розкладку дає його власний CSS, якого тут немає. */
 figure .center:has(>div.minipage){
@@ -651,11 +653,13 @@ nav.toc .sidetoc-appendix-title{
   .cb-example{background-image:none}
 }
 
-/* Рисунки в тексті: не ширші за --fig-max-w і не вищі за --fig-max-h/екран (пропорції зберігаються, бо ширина auto); ті, що мають інлайнову ширину
-   від lwarp (підрисунки, портрети), не чіпаємо. Повний розмір — за кліком (lightbox у book.js). */
-/* межі розміру рисунка в тексті: змініть ці два числа під смак */
-:root{--fig-max-w:26rem;--fig-max-h:20rem}
-figure img.inlineimage:not([style*="width"]){max-width:min(100%,var(--fig-max-w))!important;max-height:min(70vh,var(--fig-max-h));width:auto}
+/* Рисунки в тексті: не ширші за --fig-max-w; ті, що мають лише висоту, ще й не вищі за --fig-max-h/екран.
+   lwarp переносить з TeX інлайнову ширину (width:434pt тощо) — вона перебивалась би без !important.
+   Висота auto => пропорції зберігаються. Повний розмір — за кліком (lightbox у book.js). */
+:root{--fig-max-w:18rem;--fig-max-h:20rem}
+figure img.inlineimage{max-width:min(100%,var(--fig-max-w))!important}
+figure img.inlineimage[style*="width"]{height:auto!important}
+figure img.inlineimage:not([style*="width"]){max-height:min(70vh,var(--fig-max-h));width:auto}
 figure a[href]>img.inlineimage{cursor:zoom-in}
 
 .lightbox{position:fixed;inset:0;z-index:1000;display:flex;overflow:auto;padding:1rem;
