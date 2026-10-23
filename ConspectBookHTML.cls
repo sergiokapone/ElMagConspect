@@ -83,6 +83,8 @@
  {\clist_set:Nx \l_Chapters_clist{ #1 }
   \clist_map_inline:Nn \l_Chapters_clist { \IfFileExists{_html/##1/##1#2.tex}{\input{_html/##1/##1#2.tex}}{\InputIfFileExists{##1/##1#2}{}{}}\par}}
 \ExplSyntaxOff
+% \htmlinput{Additions/SGStoSI}: like \input, but the fixed copy _html/<path>.tex (prepare_html.py) is read first
+\newcommand{\htmlinput}[1]{\IfFileExists{_html/#1.tex}{\input{_html/#1.tex}}{\InputIfFileExists{#1}{}{\ClassWarning{ConspectBookHTML}{#1.tex not found}}}}
 
 
 % ---- TikZ, PGFPlots, CircuiTikz and all picture styles: taken from ConspectBook.cls
@@ -90,6 +92,24 @@
 
 % ---- bibliography: the biblatex setup of ConspectBook.cls
 \ConspectShared{biblio}
+% lwarp opens a new HTML page for a starred \chapter* only after \ForceHTMLPage (otherwise the text goes
+% to the end of the previous chapter's page): \schapterpage = \schapter on a page of its own
+\newcommand{\schapterpage}[1]{\ForceHTMLPage\schapter{#1}}
+% the print heading is a \part* (\addcontentsline{toc}{part}); in HTML the bibliography is a page of its own
+\defbibheading{bibintoc}{\schapterpage{Література}}
+
+% ---- appendices: sections A, B, ... on one page "Додатки" (print: \appendix in ConspectBook.cls) ----
+\makeatletter
+\let\ConspectOrigAppendix\appendix
+\renewcommand\appendix{%
+  \ConspectOrigAppendix
+  \setcounter{section}{0}%
+  \gdef\thesection{\@Alph\c@section}%
+  \@addtoreset{table}{section}\@addtoreset{equation}{section}%
+  \renewcommand\thetable{\thesection.\@arabic\c@table}%
+  \renewcommand\theequation{\thesection.\arabic{equation}}%
+  \schapterpage{Додатки}}
+\makeatother
 
 
 %===============================================================================

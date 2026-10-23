@@ -12,7 +12,7 @@ Put the files from src/ into the project root (next to main.tex). Chapters are n
 Open main-html.html (title + contents) in a browser with internet (MathJax comes from a CDN).
 After changing the class or chapters: `lwarpmk again`, then `lwarpmk html`.
 Needs TeX Live (lwarp, biber, pdfcrop), Python 3. Output names are ch1.html ... (HTMLFilename={ch}), your index.html is untouched.
-Add to .gitignore: _html/ lwarp-*.tex main-html_html.* *.lwarpmkconf lateximagetemp-* main-html-images/ ch*.html
+Add to .gitignore (anchored with / so that docs/ stays tracked): /_html/ lwarp-*.tex main-html_html.* *.lwarpmkconf lateximagetemp-* main-html-images/ ch*.html
 
 Verified (Linux sandbox, TeX Live 2023, fonts: FreeSerif instead of Bookman): all 20 chapters and the whole book build
 without LaTeX errors; 15 387 formula fragments; 266 images generated, all referenced files exist, 12 sampled figures look right.
@@ -43,6 +43,12 @@ Formulas: lwarp gives MathJax the text of a formula unchanged, so prepare_html.p
 \tikzmark and \tikz[..]{..} (overlay arrows) are removed, \tag{\theequation x} gets its number from main-html.aux
 (run `python prepare_html.py --tags` after the first lualatex pass; build-html.ps1 does it). The overlay arrow of the Gauss equations is lost in HTML.
 \emphx{term}[index entry]: the optional [..] is swallowed in HTML (print puts it into the index).
+Appendices and bibliography: main-html.tex has \appendix + Additions/SGStoSI, Additions/Vanaliz (read through \htmlinput, so the fixed
+copies of prepare_html.py are used: tblr -> tabularx, tags) and \printbibliography with the same \nocite list as main.tex.
+MyBase.bib is taken from Bibliography/MyBase.bib if it exists there, otherwise from d:/Projects/LaTeX/MyPackages/bib/ (as in main.tex).
+Layout of docs/ after publish_html.py: index.html, google*.html, ElMagConspect.pdf, assets/ (styles.css, designs.css, script.js of the
+landing page + book.js and conspect.css of the book), main-html.html, ch*.html, pictures. The links to conspect.css / book.js in the
+pages are rewritten to assets/..., book.js is added to every page. Empty folders in the project root are removed after the move.
 Known: 1 undefined reference (Grin1) and 1 citation (Jefimenko1962; MyBase.bib was not in the zip) in the log.
 Decisions: \vect -> \mathbf in MathJax (bold upright like print, Greek letters not bold); in HTML tblr tables are
 images, wrapstuff is a figure, solution is an inline block, \tikzmarknode/\tikz overlays inside formulas are dropped.
