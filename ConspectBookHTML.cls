@@ -92,6 +92,9 @@
 
 % ---- bibliography: the biblatex setup of ConspectBook.cls
 \ConspectShared{biblio}
+% lwarp's \href takes its URL unexpanded (href="\csuse {abx@field@url}"): expand the url field first
+\renewbibmacro{string+url}[1]{%
+  \iffieldundef{url}{#1}{\begingroup\edef\x{\endgroup\noexpand\href{\thefield{url}}}\x{#1}}}
 % lwarp opens a new HTML page for a starred \chapter* only after \ForceHTMLPage (otherwise the text goes
 % to the end of the previous chapter's page): \schapterpage = \schapter on a page of its own
 \newcommand{\schapterpage}[1]{\ForceHTMLPage\schapter{#1}}
@@ -152,6 +155,12 @@
 \newcommand{\htmlpicture}[1]{\fbox{figure}}
 \begin{warpHTML}
 \renewcommand{\htmlpicture}[1]{\includegraphics{#1}}
+\end{warpHTML}
+% chapters write \section*{Підсумки}\phantomsection\addcontentsline{toc}{section}{Підсумки}; lwarp's \phantomsection
+% is an empty \section*{} (an empty <h4>, hidden by conspect.css), so the contents link pointed to a hidden heading
+% and did nothing. In HTML the link goes to the \section* just before it.
+\begin{warpHTML}
+\AtBeginDocument{\renewcommand{\phantomsection}{}}
 \end{warpHTML}
 \InputIfFileExists{lwarp-tikzdefs.tex}{}{}
 \InputIfFileExists{lwarp-mathjax.tex}{}{\ClassWarning{ConspectBookHTML}{lwarp-mathjax.tex not found: formulas with your macros will be red in HTML}}
