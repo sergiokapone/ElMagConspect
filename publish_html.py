@@ -198,9 +198,19 @@ def mark_for_search(name, text):
 
 SITE_LINKS = '<a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a>'
 
+def add_home_sidebar(text, donor):
+    """The book home page of lwarp (homepagegrid) has no side panel, so no search either: it gets the top navigation and
+    the side panel of an already processed chapter page (donor): contents, search, theme, drawer on phones are the same
+    on every page of the book (book.js highlights only 'Головна' there). Safe to run again."""
+    if not donor or 'class="homepagegrid"' not in text or 'class="sidetoccontainer"' in text: return text
+    m = re.search(r'<nav class="topnavigation">.*?</nav>\s*<div class="sidetoccontainer"[^>]*>.*?</nav>\s*</div>', donor, re.S)
+    if not m: return text
+    text = re.sub(r'\n?<nav class="book-meta">.*?</nav>', '', text, count=1, flags=re.S)  # the panel has these links
+    return text.replace('<div class="homepagegrid">', '<div class="homepagegrid pagegrid">\n' + m.group(0) + '\n', 1)
+
 def add_site_links(name, text):
     """From the book back to the landing page index.html (and the PDF): in the side panel 'Contents' becomes these
-    links; the book home page (main-html.html) has no side panel, so it gets them as a line above the title."""
+    links; a book home page without a side panel (no chapter page to copy it from) gets them as a line above the title."""
     text = re.sub(r'(class="linkhome"\s*>\s*)Home(\s*</a>)', r'\1Головна\2', text)
     if 'sidetoc-meta' in text or 'class="book-meta"' in text: return text
     new = re.sub(r'(<div class="sidetoctitle">(?:(?!</div>).)*?)<p>\s*Contents\s*</p>',
@@ -219,19 +229,23 @@ def wrap_toc_titles(text):
     return TOC_ENTRY.sub(r'\1<span class="toctitle">\2</span>\3', text)
 
 n_pages = n_script = 0
-for name in sorted(os.listdir(OUT)):
-    if not name.endswith('.html') or is_site_own(name): continue
+donor = None                                   # a processed chapter page: its side panel goes to the book home page
+pages = sorted((n for n in os.listdir(OUT) if n.endswith('.html') and not is_site_own(n)),
+               key=lambda n: (not re.fullmatch(r'ch\d+\.html', n), n))       # chapters first, then the home page
+for name in pages:
     path = os.path.join(OUT, name)
     text = open(path, 'rb').read().decode('utf-8')
     new = LINK_CSS.sub(r'\1%s/conspect.css\2' % ASSET_DIR, text)
     new = LINK_JS.sub(r'\1%s/book.js\2' % ASSET_DIR, new)
     new = mark_for_search(name, new)
+    new = add_home_sidebar(new, donor)
     new = add_site_links(name, new)
     new = wrap_toc_titles(new)
     if 'book.js' not in new and '</body>' in new:
         new = new.replace('</body>', '<script src="%s/book.js" defer></script>\n</body>' % ASSET_DIR, 1); n_script += 1
     if new != text:
         open(path, 'wb').write(new.encode('utf-8')); n_pages += 1
+    if donor is None and re.fullmatch(r'ch\d+\.html', name) and 'class="sidetoccontainer"' in new: donor = new
 for rel in ASSET_FILES:
     if not os.path.isfile(os.path.join(OUT, ASSET_DIR, rel)):
         print('  WARNING: %s/%s not found: the pages link to it' % (ASSET_DIR, rel))
