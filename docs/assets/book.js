@@ -23,6 +23,7 @@
 
   function init() {
     var title = document.querySelector('.sidetoctitle');
+    var actions = null;
     if (title) {
       var tb = document.createElement('button');
       tb.type = 'button'; tb.className = 'theme-btn';
@@ -31,8 +32,10 @@
         setTheme(next);
         try { localStorage.setItem(KEY, next); } catch (e) {}
       });
-      title.appendChild(tb);
-            tb.textContent = isDark() ? 'Світла тема' : 'Темна тема';
+      actions = document.createElement('div'); actions.className = 'sidetoc-actions';
+      actions.appendChild(tb);
+      title.appendChild(actions);
+      tb.textContent = isDark() ? 'Світла тема' : 'Темна тема';
     }
 
     var box = document.querySelector('.sidetoccontents');
@@ -64,13 +67,15 @@
     render();
 
     var all = document.createElement('button');
-    all.type = 'button'; all.className = 'toc-all'; all.textContent = 'Показати всі параграфи';
+    all.type = 'button'; all.className = actions ? 'theme-btn' : 'toc-all'; all.textContent = 'Усі параграфи';
     all.addEventListener('click', function () {
       openAll = !openAll;
-      all.textContent = openAll ? 'Лише поточний розділ' : 'Показати всі параграфи';
+      all.textContent = openAll ? 'Лише поточний' : 'Усі параграфи';
+      all.title = openAll ? 'Показати параграфи лише поточного розділу' : 'Показати параграфи всіх розділів';
       render();
     });
-    box.appendChild(all);
+    all.title = 'Показати параграфи всіх розділів';
+    (actions || box).appendChild(all);   /* поруч із кнопкою теми, угорі панелі */
     if (current) { /* прокручуємо лише сам зміст, а не сторінку */
       var br = box.getBoundingClientRect(), lr = current.link.getBoundingClientRect();
       box.scrollTop += lr.top - br.top - box.clientHeight / 3;
@@ -213,4 +218,56 @@
   }
 
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
+})();
+
+/* ── Збільшення рисунків за кліком (для слабкозорих) ──
+   У тексті рисунок обмежений за висотою (conspect.css); клік відкриває його на весь екран, повторний клік —
+   у натуральному розмірі (з прокруткою). Esc, ×, клік поза рисунком — закрити. Ctrl/Shift/середня кнопка — як було
+   (відкрити файл у новій вкладці). */
+(function () {
+  'use strict';
+  var SEL = 'figure a[href] > img.inlineimage';
+  var box = null, big = null, lastFocus = null;
+
+  function close() {
+    if (!box) { return; }
+    document.documentElement.classList.remove('lightbox-open');
+    box.remove(); box = big = null;
+    if (lastFocus && lastFocus.focus) { lastFocus.focus(); }
+  }
+  function open(a, img) {
+    lastFocus = a;
+    box = document.createElement('div');
+    box.className = 'lightbox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+    box.setAttribute('aria-label', 'Збільшений рисунок');
+    var x = document.createElement('button');
+    x.type = 'button'; x.className = 'lightbox-close'; x.textContent = '×'; x.setAttribute('aria-label', 'Закрити');
+    big = document.createElement('img');
+    big.src = a.getAttribute('href'); big.alt = img.alt || '';
+    big.title = 'Клік — натуральний розмір / вписати';
+    box.appendChild(x); box.appendChild(big);
+    box.addEventListener('click', function (e) {
+      if (e.target === big) { box.classList.toggle('zoomed'); return; }
+      close();
+    });
+    document.documentElement.classList.add('lightbox-open');
+    document.body.appendChild(box);
+    x.focus();
+  }
+
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) { return; }
+    var img = e.target.closest && e.target.closest(SEL);
+    if (!img) { return; }
+    var a = img.parentNode;
+    if (!/\.(jpe?g|png|gif|webp|svg|avif)(\?.*)?$/i.test(a.getAttribute('href') || '')) { return; }
+    e.preventDefault();
+    open(a, img);
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { close(); } });
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll(SEL).forEach(function (img) {
+      img.parentNode.title = 'Клік — збільшити';
+    });
+  });
 })();

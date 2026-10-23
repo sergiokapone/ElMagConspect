@@ -142,6 +142,9 @@ main.bodycontainer{grid-column:2;grid-row:2;min-width:0}
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
   border-radius:999px;padding:.3rem .85rem;margin-top:.8rem;
 }
+/* кнопки угорі бічної панелі: тема + «Усі параграфи» в один ряд */
+.sidetoc-actions{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.8rem}
+.sidetoc-actions .theme-btn{margin-top:0}
 .theme-btn:hover,.toc-fab:hover{background:rgba(255,255,255,.16);color:#fff}
 
 /* ── Заголовки ──────────────────────────────────────────────── */
@@ -247,6 +250,9 @@ figure div.minipage{
   display:flex;flex-direction:column;align-items:center;flex:0 1 auto;
   min-width:0;max-width:100%;text-align:center;font-size:1.125rem;
 }
+/* minipage без явної ширини (як Soft/Hard у ch10): без цього її базова ширина = довжина підпису в один рядок,
+   тож дві такі не вміщаються поруч. min-content звужує її до рисунка, min-width лишає підпису пристойну ширину. */
+figure div.minipage:not([style*="width"]){width:min-content;min-width:14rem}
 figure div.minipage>p{margin:.2rem 0;line-height:1.35}
 figure .center:has(>div.minipage)>.figurecaption{flex:0 0 100%}
 img{max-width:100%;height:auto}
@@ -644,3 +650,20 @@ nav.toc .sidetoc-appendix-title{
   h3 .sectionnumber{color:#000}
   .cb-example{background-image:none}
 }
+
+/* Рисунки в тексті: не ширші за --fig-max-w і не вищі за --fig-max-h/екран (пропорції зберігаються, бо ширина auto); ті, що мають інлайнову ширину
+   від lwarp (підрисунки, портрети), не чіпаємо. Повний розмір — за кліком (lightbox у book.js). */
+/* межі розміру рисунка в тексті: змініть ці два числа під смак */
+:root{--fig-max-w:26rem;--fig-max-h:20rem}
+figure img.inlineimage:not([style*="width"]){max-width:min(100%,var(--fig-max-w))!important;max-height:min(70vh,var(--fig-max-h));width:auto}
+figure a[href]>img.inlineimage{cursor:zoom-in}
+
+.lightbox{position:fixed;inset:0;z-index:1000;display:flex;overflow:auto;padding:1rem;
+  background:rgba(8,16,32,.9);-webkit-overflow-scrolling:touch}
+.lightbox>img{margin:auto;max-width:96vw;max-height:94vh;width:auto;height:auto;background:#fff;
+  border-radius:4px;cursor:zoom-in;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+.lightbox.zoomed>img{max-width:none;max-height:none;cursor:zoom-out}
+.lightbox-close{position:fixed;top:.6rem;right:.9rem;z-index:1;width:2.6rem;height:2.6rem;border-radius:50%;
+  border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.55);color:#fff;font:400 1.7rem/1 var(--sans);cursor:pointer}
+.lightbox-close:hover{background:rgba(255,255,255,.2)}
+html.lightbox-open{overflow:hidden}
