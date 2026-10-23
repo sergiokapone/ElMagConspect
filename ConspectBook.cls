@@ -773,11 +773,38 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 % Другий аргумент ({}) навмисно порожній: сюди потрапляють і "Додатки" та
 % "Література" (без номера частини), тому автоматичний префікс "Частина ~"
 % тут не потрібен.
+% Лінійка під записом -- \tocpartrule; \tocnorule (main.tex пише його у зміст перед Літературою)
+% прибирає її для решти записів: під Літературою й Алфавітним покажчиком лінійки немає.
+\newcommand\tocpartrule{\titlerule}
+\newcommand\tocnorule{\let\tocpartrule\relax}
+% Розриви сторінок змісту -- як у стандартному \l@part: перед частиною розрив бажаний
+% (\addpenalty{-\@highpenalty}), після її запису й лінійки заборонений (\nopagebreak), тож назва
+% частини не лишається внизу сторінки без своїх глав і ручні \clearpage у змісті не потрібні.
 \titlecontents{part}%
-[0pt]{\sffamily\bfseries\large\protect\addvspace{25pt}\addvspace{1.5ex}}
+[0pt]{\addpenalty{-\@highpenalty}\sffamily\bfseries\large\protect\addvspace{25pt}\addvspace{1.5ex}}
 {}{}
 {\hfill\contentspage}%
-[\addvspace{0.7ex}\titlerule\addvspace{10pt}]%
+[\nopagebreak\addvspace{0.7ex}\tocpartrule\nopagebreak\addvspace{10pt}\nopagebreak\global\tocafterparttrue]%
+% Стандартний \l@chapter ставить перед главою \addpenalty{-\@highpenalty} -- бажаний розрив,
+% який перебив би заборону вище: одразу після частини його не ставимо. titletoc зберіг
+% стандартне означення в \ttl@savel@chapter (сам \l@chapter у нього -- \ttl@lselect{chapter}).
+\RequirePackage{etoolbox}
+\newif\iftocafterpart
+\patchcmd{\ttl@savel@chapter}{\addpenalty{-\@highpenalty}}%
+  {\iftocafterpart\global\tocafterpartfalse\else\addpenalty{-\@highpenalty}\fi}{}%
+  {\ClassWarning{ConspectBook}{\string\l@chapter\space not patched: a part may stay alone at the bottom of a contents page}}
+% ... а після рядка глави (там \penalty\@highpenalty -- лише небажаний розрив) розрив заборонено:
+% глава не лишається внизу сторінки без свого першого параграфа.
+\patchcmd{\ttl@savel@chapter}{\penalty\@highpenalty}{\penalty\@M}{}%
+  {\ClassWarning{ConspectBook}{\string\l@chapter\space not patched: a chapter may stay alone at the bottom of a contents page}}
+% Підсумки й Задачі -- останні рядки кожної глави: перед ними розрив заборонено, щоб хвіст
+% глави не переходив сам на нову сторінку змісту.
+\AtBeginDocument{%
+  \let\ConspectContentsline\contentsline
+  \renewcommand*\contentsline[2]{%
+    \ifstrequal{#1}{section}{\ifboolexpr{test{\ifstrequal{#2}{Підсумки}} or test{\ifstrequal{#2}{Задачі}}}%
+      {\nopagebreak}{}}{}%
+    \ConspectContentsline{#1}{#2}}}
 
 \titleclass{\part}{top}          % частина завжди починається "з верху" нової сторінки
 \newcommand\partbreak{\clearpage} % ручний розрив перед частиною (за потреби у тексті)
