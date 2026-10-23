@@ -599,6 +599,8 @@ nav.toc .sidetoc-appendix-title{
   margin: 0 0 1.2rem; font: .85rem/1.4 var(--sans); opacity: .8; }
 .book-meta a { text-decoration: none; }
 .book-meta a:hover { text-decoration: underline; }
+/* головна сторінка книги з тією ж бічною панеллю, що й розділи (її додає publish_html.py) */
+.homepagegrid.pagegrid { display: grid; }
 
 /* ── Мобільна адаптація пошуку ──────────────────────────────── */
 @media (max-width: 980px) {
@@ -615,7 +617,7 @@ nav.toc .sidetoc-appendix-title{
   .titlepage{margin-left:-5.5rem!important;margin-right:-5.5rem!important;padding-left:5.5rem;padding-right:5.5rem}
 }
 @media (max-width:980px){
-  .pagegrid{display:block}
+  .pagegrid,.homepagegrid.pagegrid{display:block}
   .topnavigation{
     display:flex;align-items:center;justify-content:space-between;gap:.8rem;
     position:sticky;top:0;z-index:40;padding:.55rem 1rem;
@@ -645,7 +647,7 @@ nav.toc .sidetoc-appendix-title{
 @media print{
   body{background:#fff;color:#000;font-size:11pt}
   .sidetoccontainer,.topnavigation,.botnavigation{display:none!important}
-  .pagegrid{display:block}
+  .pagegrid,.homepagegrid.pagegrid{display:block}
   .textbody{box-shadow:none;margin:0;padding:0;max-width:none}
   h3{color:#000;background:none;border-bottom:2px solid #000;min-height:0;padding:0 0 .5rem}
   h3::after{display:none}

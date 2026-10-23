@@ -55,8 +55,15 @@
       }
     });
 
+    /* На головній сторінці книги «Передмова» теж веде на цей файл — але поточним розділом вона не є:
+       підсвічуємо лише посилання «Головна» */
+    var homeLink = box.querySelector('a.linkhome');
+    var homeFile = homeLink ? (homeLink.getAttribute('href') || '').split('#')[0].toLowerCase() : '';
+    var onHome = !!homeFile && homeFile === here;
+    if (onHome) { homeLink.classList.add('is-current'); }
+
     var openAll = false;
-    var current = groups.filter(function (g) { return g.file === here; })[0];
+    var current = onHome ? undefined : groups.filter(function (g) { return g.file === here; })[0];
     function render() {
       groups.forEach(function (g) {
         var show = openAll || g === current;
