@@ -196,6 +196,20 @@ def mark_for_search(name, text):
                         'data-pagefind-meta="title[data-title]" data-title="%s">' % title, 1)
     return text.replace('<h1>', '<h1 data-pagefind-ignore>', 1)
 
+SITE_LINKS = '<a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a>'
+
+def add_site_links(name, text):
+    """From the book back to the landing page index.html (and the PDF): in the side panel 'Contents' becomes these
+    links; the book home page (main-html.html) has no side panel, so it gets them as a line above the title."""
+    text = re.sub(r'(class="linkhome"\s*>\s*)Home(\s*</a>)', r'\1Головна\2', text)
+    if 'sidetoc-meta' in text or 'class="book-meta"' in text: return text
+    new = re.sub(r'(<div class="sidetoctitle">(?:(?!</div>).)*?)<p>\s*Contents\s*</p>',
+                 lambda m: m.group(1) + '<p class="sidetoc-meta">%s</p>' % SITE_LINKS, text, count=1, flags=re.S)
+    if new == text and 'class="homepagegrid"' in text:
+        new = text.replace('<section class="textbody">', '<section class="textbody">\n<nav class="book-meta">'
+                           '<span aria-hidden="true">←</span>%s</nav>' % SITE_LINKS, 1)
+    return new
+
 n_pages = n_script = 0
 for name in sorted(os.listdir(OUT)):
     if not name.endswith('.html') or is_site_own(name): continue
@@ -204,6 +218,7 @@ for name in sorted(os.listdir(OUT)):
     new = LINK_CSS.sub(r'\1%s/conspect.css\2' % ASSET_DIR, text)
     new = LINK_JS.sub(r'\1%s/book.js\2' % ASSET_DIR, new)
     new = mark_for_search(name, new)
+    new = add_site_links(name, new)
     if 'book.js' not in new and '</body>' in new:
         new = new.replace('</body>', '<script src="%s/book.js" defer></script>\n</body>' % ASSET_DIR, 1); n_script += 1
     if new != text:
