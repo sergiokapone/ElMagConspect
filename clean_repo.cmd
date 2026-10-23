@@ -5,6 +5,7 @@ cd /d "%~dp0"
 
 set "TARGET_FILE=ElMagConspect.pdf"
 set "LIST=purge-paths.txt"
+set "BLOBS=purge-blobs.txt"
 set "REMOTE=https://github.com/sergiokapone/ElMagConspect.git"
 set "BRANCH=main"
 
@@ -23,9 +24,20 @@ set "DIRTY="
 for /f "delims=" %%i in ('git status --porcelain --untracked-files=no') do set "DIRTY=1"
 if defined DIRTY goto :dirty
 
+:: Старі версії файлів docs/ (сайт перезбирається й комітиться щоразу); поточні файли й картинки-оригінали не чіпаються
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0purge-docs-blobs.ps1" -Out "%BLOBS%"
+if errorlevel 1 goto :fail
+:: Дерево файлів поточного коміту: після очищення воно має лишитися тим самим (перевірка перед push)
+set "TREE="
+for /f %%t in ('git rev-parse "HEAD^{tree}"') do set "TREE=%%t"
+if not defined TREE goto :fail
+
+echo.
 echo Зі ВСІЄЇ історії та з поточного коміту буде видалено такі шляхи з %LIST%:
 echo.
 type "%LIST%"
+echo.
+echo А також старі версії файлів у docs/ (список вище: %BLOBS%). Поточний docs/ лишається як є.
 echo.
 echo Потім гілку %BRANCH% і теги буде примусово перезаписано на GitHub.
 echo Для всіх, хто вже склонував репозиторій, історія зміниться незворотно.
@@ -50,9 +62,14 @@ if exist "%TARGET_FILE%" copy /y "%TARGET_FILE%" "%KEEP%" >nul
 
 echo.
 echo [3/5] Видалення шляхів зі списку з усієї історії...
-git filter-repo --invert-paths --paths-from-file "%LIST%" --force
+git filter-repo --invert-paths --paths-from-file "%LIST%" --strip-blobs-with-ids "%BLOBS%" --force
 if errorlevel 1 goto :fail_filter
 if exist "%KEEP%" move /y "%KEEP%" "%TARGET_FILE%" >nul
+del "%BLOBS%" >nul 2>&1
+set "TREE2="
+for /f %%t in ('git rev-parse "HEAD^{tree}"') do set "TREE2=%%t"
+if not "%TREE%"=="%TREE2%" goto :tree_changed
+echo       Поточний стан не змінився (те саме дерево файлів %TREE%).
 
 echo.
 echo [4/5] Відновлення прив'язки до GitHub (remote origin)...
@@ -93,6 +110,10 @@ exit /b 1
 :fail_filter
 echo [ПОМИЛКА] git filter-repo не виконався. Резервна копія: %BUNDLE%
 if exist "%KEEP%" copy /y "%KEEP%" "%TARGET_FILE%" >nul
+goto :fail
+:tree_changed
+echo [ПОМИЛКА] Після очищення змінилися файли поточного коміту: %TREE% -^> %TREE2%.
+echo На GitHub нічого не відправлено. Відновлення: git clone "%BUNDLE%" (або порівняйте: git diff %TREE% %TREE2% --stat)
 goto :fail
 :fail_push
 echo [ПОМИЛКА] Не вдалося відправити зміни на GitHub. Історію локально вже переписано.
