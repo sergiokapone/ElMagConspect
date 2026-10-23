@@ -363,6 +363,16 @@ if ($Keep -or -not $imagesDone) {
         $raw = @(Get-ChildItem -LiteralPath . -File -Filter "${main}_html.html" -ErrorAction SilentlyContinue)
         $r2 = Remove-Files $raw; $removed += $r2[0]; $bytes += $r2[1]
     }
+    # lwarp's helper files (written again by the next print pass)
+    $r2 = Remove-Files @(Get-ChildItem -LiteralPath . -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.Name -in "${main}_html.tex", "${main}_html.sidetoc" })
+    $removed += $r2[0]; $bytes += $r2[1]
+    # SVG made from */Pictures/*.pdf that publish_html.py did not move (pictures no page uses): the TeX folders keep
+    # only the sources (as in clwarp-clean.ps1); the next build makes them again or takes them back from $OutDir
+    $svg = @(Get-ChildItem -Path '*/Pictures/*.pdf' -File -ErrorAction SilentlyContinue | ForEach-Object {
+        $s = [IO.Path]::ChangeExtension($_.FullName, '.svg')
+        if (Test-Path -LiteralPath $s) { Get-Item -LiteralPath $s } })
+    $r2 = Remove-Files $svg; $removed += $r2[0]; $bytes += $r2[1]
     Write-Host ("  removed {0} files ({1:N1} MB)" -f $removed, ($bytes / 1MB)) -ForegroundColor Green
 }
 
