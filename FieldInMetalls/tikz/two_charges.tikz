@@ -1,0 +1,54 @@
+\begin{tikzpicture}[
+    >=latex,
+    charge+/.style={very thin,top color=red!50,bottom color=red!90!black,shading angle=20},
+    charge-/.style={very thin,top color=blue!50,bottom color=blue!80,shading angle=20},
+    FieldArrow/.style={orange!80!black,
+      decoration={markings,mark=at position 0.5 with {\arrow[rotate=#1]{latex}}},
+      postaction={decorate}}]
+
+  % параметри
+  \def\xmax{3}
+  \def\ymax{2.5}
+  \def\a{1.25}   % заряди в точках y=-a і y=+a
+  \def\q{-1}     % від'ємний заряд
+  \def\Q{1}      % додатний заряд
+  \def\R{1.0}    % масштаб еліпса для стрілок
+  \def\range{-0.1,-0.4,-0.7,-1.0,-1.3,-1.6,-1.9}
+
+  % лінії поля (gnuplot) + стрілки
+  \begin{scope}
+    \clip (-\xmax,-\ymax) rectangle (\xmax,\ymax);
+    \draw[orange!80!black,name path=Elines] plot[id=plot,raw gnuplot,smooth] function{
+      f(x,y) = \q*(y+\a)/sqrt((y+\a)**2+x**2) + \Q*(y-\a)/sqrt((y-\a)**2+x**2);
+      set xrange [-\xmax:\xmax];
+      set yrange [-\ymax:\ymax];
+      set view 0,0;
+      set isosample 400,400;
+      set cont base;
+      set cntrparam levels discrete \range;
+      unset surface;
+      splot f(x,y)
+    };
+
+    % по одній стрілці на кожну лінію: навколо додатного заряду
+    \path[name path=ellipse1] (0,\a) ellipse ({1.6*\R} and {0.85*\R});
+    \path[name intersections={of=Elines and ellipse1,total=\t}]
+      \pgfextra{\xdef\Nb{\t}};
+    \foreach \i in {1,...,\Nb}{
+      \path let \p1=(intersection-\i) in \pgfextra{\xdef\ptx{\x1}\xdef\pty{\y1}};
+      \pgfkeys{/pgf/fpu,/pgf/fpu/output format=fixed}
+      \pgfmathsetmacro{\px}{\ptx/28.45pt}
+      \pgfmathsetmacro{\py}{\pty/28.45pt}
+      \pgfmathsetmacro{\Fa}{\Q*((\py+\a)^2+(\px)^2)^(3/2)}
+      \pgfmathsetmacro{\Fb}{\q*((\py-\a)^2+(\px)^2)^(3/2)}
+      \pgfmathparse{atan2((\py+\a)*(\Fb)+(\py-\a)*(\Fa),(\px)*(\Fb)+(\px)*(\Fa))}
+      \edef\ang{\pgfmathresult}
+      \pgfkeys{/pgf/fpu=false}
+      \draw[FieldArrow=\ang] (\ptx,\pty);
+    }
+  \end{scope}
+
+  % заряди
+  \draw[charge+] (0, \a) circle (0.2) node[black] {$+$};
+  \draw[charge-] (0,-\a) circle (0.2) node[black] {$-$};
+\end{tikzpicture}
