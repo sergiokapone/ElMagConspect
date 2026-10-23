@@ -255,7 +255,7 @@ def parse_selector(sel, n):
             out |= set(range(a, b + 1))
     return out
 
-MEASURE = re.compile(r'^\d*\.?\d+(cm|mm|pt|em|ex|in)$')
+MEASURE = re.compile(r'^\d*\.?\d+(cm|mm|pt|em|ex|in|\\linewidth|\\textwidth|\\hsize)$')
 def parse_keys(val, allow_width=False):
     """'c, m, fg=white, bg=x, font=\\bfseries' -> dict(align, bg, fg, font, mode, width)."""
     st = {}
@@ -290,7 +290,7 @@ def tblr_to_tabularx(opts, body):
         key, sels, val = m.group(1), re.findall(r'\{([^{}]*)\}', m.group(2)), m.group(3)
         if key == 'colspec':
             cols = []
-            cs = strip_braces(val).replace('|', '')
+            cs = re.sub(r'\|\s*\[[^\]]*\]', '', strip_braces(val)).replace('|', '')   # |[1pt, white]: a styled rule
             for cm in re.finditer(r'([XQ])\s*\[((?:[^\[\]{}]|\{[^{}]*\})*)\]|([lcrXQ])', cs):
                 if cm.group(3): cols.append({'kind': cm.group(3)}); continue
                 d = parse_keys(cm.group(2), allow_width=True); d['kind'] = cm.group(1); cols.append(d)
@@ -301,8 +301,14 @@ def tblr_to_tabularx(opts, body):
         elif key == 'cell' and len(sels) == 2: cellstyles.append((sels[0], sels[1], parse_keys(val)))
         else: raise Unsupported(key)
     if not cols: raise Unsupported('no colspec')
-    rows = [r for r in split_top(strip_comments(body), '\\\\')]
-    rows = [r for r in rows if r.strip()]
+    # \hline in the body (tables without 'hlines'): taken off the start of a row and drawn before it
+    rows, before, pending = [], [], 0
+    for r in split_top(strip_comments(body), '\\\\'):
+        m = re.match(r'(?:\s*\\hline\b)+', r)
+        k = m.group(0).count('\\hline') if m else 0
+        if m: r = r[m.end():]
+        if not r.strip(): pending += k; continue
+        rows.append(r); before.append(pending + k); pending = 0
     cells = [[c.strip() for c in split_top(r, '&')] for r in rows]
     width = max(len(c) for c in cells)
     cols += [{'kind': 'l'}] * (width - len(cols))       # tabularray adds missing columns (default l)
@@ -338,7 +344,9 @@ def tblr_to_tabularx(opts, body):
                 spec = ('|' if (vl and ci == 1) else '') + st['align'] + ('|' if vl else '')   # plain c/l/r: lwarp does not parse >{\centering}
                 t = '\\multicolumn{1}{%s}{%s}' % (spec, t)
             parts.append(t)
+        if before[ri - 1] and not hl: out.append('\\hline' * before[ri - 1])     # with 'hlines' every row has one already
         out.append(''.join(line) + ' & '.join(parts) + ' \\\\' + (' \\hline' if hl else ''))
+    if pending and not hl: out.append('\\hline' * pending)
     out.append('\\end{tabularx}')
     return '\n'.join(out)
 
@@ -350,7 +358,9 @@ def convert_tables(t):
         ls = t.rfind('\n', 0, m.start()) + 1
         if re.search(r'(?<!\\)%', t[ls:m.start()]): continue                 # commented-out table
         i = m.end()
-        while i < len(t) and t[i] in ' \t\n': i += 1
+        while i < len(t) and (t[i] in ' \t\n' or t[i] == '%'):                 # spaces and comments: \begin{tblr}%
+            if t[i] == '%': i = t.find('\n', i) if '\n' in t[i:] else len(t)
+            else: i += 1
         if t[i:i+1] == '[':                                                  # [outer, inner] spec of tblr
             skipped.append(('outer specification [..]', t[:m.start()].count('\n') + 1)); continue
         if t[i:i+1] != '{': continue

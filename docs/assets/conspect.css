@@ -237,6 +237,18 @@ figure .center{
   border-radius:4px;padding:1.2rem 1rem .9rem;text-align:center;overflow-x:auto;
 }
 figure .center>p{margin:0}
+/* Кілька minipage в одному рисунку (портрети, підрисунки) — поруч, як у друкованій книзі; на вузькому екрані
+   переносяться. lwarp задає їм лише ширину (style="width:219pt"), розкладку дає його власний CSS, якого тут немає. */
+figure .center:has(>div.minipage){
+  display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:.6rem .8rem;
+  font-size:0;                          /* \hfill / em-пробіли lwarp між minipage — без ширини, щоб ті вміщалися в ряд */
+}
+figure div.minipage{
+  display:flex;flex-direction:column;align-items:center;flex:0 1 auto;
+  min-width:0;max-width:100%;text-align:center;font-size:1.125rem;
+}
+figure div.minipage>p{margin:.2rem 0;line-height:1.35}
+figure .center:has(>div.minipage)>.figurecaption{flex:0 0 100%}
 img{max-width:100%;height:auto}
 img.lateximage,img.inlineimage{max-width:100%!important;height:auto!important;vertical-align:middle}
 .figurecaption{
