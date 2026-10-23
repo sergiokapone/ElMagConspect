@@ -202,6 +202,19 @@ if (-not $NoClean) {
     $r = Remove-Files ($old + $html + $misc)
     Write-Host ("  - cleaned previous build: {0} files ({1:N1} MB), of them {2} html pages" -f $r[0], ($r[1] / 1MB), $html.Count) -ForegroundColor Green
 }
+# publish_html.py moves the SVG made from */Pictures/*.pdf into the publish folder; the next build needs them back
+# (-SkipPrepare would not make them; prepare_html.py does not convert them again). One older than its PDF is left there.
+$restored = 0
+foreach ($pdf in @(Get-ChildItem -Path '*/Pictures/*.pdf' -File -ErrorAction SilentlyContinue)) {
+    $svg = [IO.Path]::ChangeExtension($pdf.FullName, '.svg')
+    if (Test-Path -LiteralPath $svg) { continue }
+    $rel = Resolve-Path -LiteralPath $pdf.FullName -Relative
+    $pub = Join-Path $OutDir ([IO.Path]::ChangeExtension($rel, '.svg'))
+    if ((Test-Path -LiteralPath $pub) -and (Get-Item -LiteralPath $pub).LastWriteTime -ge $pdf.LastWriteTime) {
+        Copy-Item -LiteralPath $pub -Destination $svg; $restored++
+    }
+}
+if ($restored -gt 0) { Write-Host "  - $restored SVG pictures taken back from $OutDir/" -ForegroundColor Green }
 if (-not $SkipPrepare) {
     Step 'MathJax macros -> lwarp-mathjax.tex' { & $py mathjax2lwarp.py mathjax-macros.tex lwarp-mathjax.tex }
     $prepArgs = @('prepare_html.py')
@@ -224,6 +237,9 @@ Write-Host "      (the print PDF is thrown away: its 'rerun' and undefined refer
 # \tag{\theequation ..} cannot be expanded by MathJax: its number is taken from the aux file of the pass above.
 Step 'equation numbers for \tag{\theequation ..}' { & $py prepare_html.py --tags }
 Step "biber $main" { biber $main }
+# the HTML pass is the job ${main}_html and reads ${main}_html.bbl: without it every citation is undefined and the
+# bibliography is empty. Both jobs are the same document, so the bbl of the print pass fits.
+Copy-Item -LiteralPath "$main.bbl" -Destination "${main}_html.bbl" -Force
 
 # --- 3. HTML ---------------------------------------------------------------------
 Stage 3 'HTML build (lwarpmk, several passes - this is the long step)'
