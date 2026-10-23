@@ -55,3 +55,6 @@ test_main.pdf
 Documents/Висновок_редактора.pdf
 Documents/VytiagVR.pdf
 test_main.pdf
+
+# local web server for the HTML book (python docs/serve.py): kept in docs/ by publish_html.py, not published
+/docs/serve.py
