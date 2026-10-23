@@ -1,0 +1,5345 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Постійний електричний струм</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-477"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span>&#x2003;Електричні заряди та їх взаємодія</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span>&#x2003;Сили (взаємодії) в природі</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span>&#x2003;Електричний заряд</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-12" class="tocsection" >
+<span class="sectionnumber">1.3</span>&#x2003;Як заряджають тіла?</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-17" class="tocsection" >
+<span class="sectionnumber">1.4</span>&#x2003;Закон Кулона</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-25" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-32" class="tocchapter" >
+<span class="sectionnumber">2</span>&#x2003;Постійне електричне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocsection" >
+<span class="sectionnumber">2.1</span>&#x2003;Електромагнітне поле</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.2</span>&#x2003;Напруженість поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-46" class="tocsection" >
+<span class="sectionnumber">2.3</span>&#x2003;Силові лінії та математичне поняття поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-62" class="tocsection" >
+<span class="sectionnumber">2.4</span>&#x2003;Теорема Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-88" class="tocsection" >
+<span class="sectionnumber">2.5</span>&#x2003;Зауваження щодо інтегральної та диференціальної форми теореми Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-90" class="tocsection" >
+<span class="sectionnumber">2.6</span>&#x2003;Потенціальність електростатичного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-102" class="tocsection" >
+<span class="sectionnumber">2.7</span>&#x2003;Циркуляція вектора \(\symbf {E}\)</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-121" class="tocsection" >
+<span class="sectionnumber">2.8</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-128" class="tocsection" >
+<span class="sectionnumber">2.9</span>&#x2003;Рівняння Пуассона та Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-129" class="tocsection" >
+<span class="sectionnumber">2.10</span>&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-134" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-153" class="tocchapter" >
+<span class="sectionnumber">3</span>&#x2003;Електричне поле статичної системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-154" class="tocsection" >
+<span class="sectionnumber">3.1</span>&#x2003;Дипольний момент системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-158" class="tocsection" >
+<span class="sectionnumber">3.2</span>&#x2003;Поле точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-162" class="tocsection" >
+<span class="sectionnumber">3.3</span>&#x2003;Потенціал поля точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-163" class="tocsection" >
+<span class="sectionnumber">3.4</span>&#x2003;Потенціал системи зарядів на далеких відстанях</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-178" class="tocsection" >
+<span class="sectionnumber">3.5</span>&#x2003;Диполь в електричному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-196" class="tocsection" >
+<span class="sectionnumber">3.6</span>&#x2003;Енергія довільної системи зарядів у зовнішньому полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-197" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-200" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-214" class="tocchapter" >
+<span class="sectionnumber">4</span>&#x2003;Електричне поле у провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-215" class="tocsection" >
+<span class="sectionnumber">4.1</span>&#x2003;Структура провідників</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-221" class="tocsection" >
+<span class="sectionnumber">4.2</span>&#x2003;Провідник у полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-244" class="tocsection" >
+<span class="sectionnumber">4.3</span>&#x2003;Електричне поле біля вістря</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-253" class="tocsection" >
+<span class="sectionnumber">4.4</span>&#x2003;Єдиність розв’язку електростатичної задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-263" class="tocsection" >
+<span class="sectionnumber">4.5</span>&#x2003;Металева куля в однорідному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-275" class="tocsection" >
+<span class="sectionnumber">4.6</span>&#x2003;Сили, що діють на поверхню провідника в полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-279" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-280" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-291" class="tocchapter" >
+<span class="sectionnumber">5</span>&#x2003;Основи електростатики діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-292" class="tocsection" >
+<span class="sectionnumber">5.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-294" class="tocsection" >
+<span class="sectionnumber">5.2</span>&#x2003;Структура діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-331" class="tocsection" >
+<span class="sectionnumber">5.3</span>&#x2003;Поляризація діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-358" class="tocsection" >
+<span class="sectionnumber">5.4</span>&#x2003;Вектор поляризації</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-363" class="tocsection" >
+<span class="sectionnumber">5.5</span>&#x2003;Вектор електричної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-370" class="tocsection" >
+<span class="sectionnumber">5.6</span>&#x2003;Граничні умови в&nbsp;присутності діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-383" class="tocsection" >
+<span class="sectionnumber">5.7</span>&#x2003;Мікроскопічна теорія діелектричної проникності</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-390" class="tocsection" >
+<span class="sectionnumber">5.8</span>&#x2003;Типи діелектриків та їх застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-413" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-414" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-423" class="tocchapter" >
+<span class="sectionnumber">6</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-424" class="tocsection" >
+<span class="sectionnumber">6.1</span>&#x2003;Електрична ємність</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-445" class="tocsection" >
+<span class="sectionnumber">6.2</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-458" class="tocsection" >
+<span class="sectionnumber">6.3</span>&#x2003;Пондеромоторні сили</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-468" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-469" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-479" class="tocchapter" >
+<span class="sectionnumber">7</span>&#x2003;Постійний електричний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-480" class="tocsection" >
+<span class="sectionnumber">7.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-487" class="tocsection" >
+<span class="sectionnumber">7.2</span>&#x2003;Природа носіїв заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-489" class="tocsection" >
+<span class="sectionnumber">7.3</span>&#x2003;Закон збереження заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-496" class="tocsection" >
+<span class="sectionnumber">7.4</span>&#x2003;Закон Ома</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-527" class="tocsection" >
+<span class="sectionnumber">7.5</span>&#x2003;Закон Джоуля-Ленца</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-528" class="tocsection" >
+<span class="sectionnumber">7.6</span>&#x2003;Струми в необмежених середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-535" class="tocsection" >
+<span class="sectionnumber">7.7</span>&#x2003;Перехідні процеси в колі з конденсатором</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-548" class="tocsection" >
+<span class="sectionnumber">7.8</span>&#x2003;Максвеллівський час релаксації заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-550" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-562" class="tocchapter" >
+<span class="sectionnumber">8</span>&#x2003;Електричний струм у&nbsp;різних середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-564" class="tocsection" >
+<span class="sectionnumber">8.1</span>&#x2003;Електричний струм у&nbsp;металах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-584" class="tocsection" >
+<span class="sectionnumber">8.2</span>&#x2003;Електричний струм в&nbsp;електролітах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-590" class="tocsection" >
+<span class="sectionnumber">8.3</span>&#x2003;Електричний струм у&nbsp;газах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-601" class="tocsection" >
+<span class="sectionnumber">8.4</span>&#x2003;Електричний струм у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-615" class="tocsection" >
+<span class="sectionnumber">8.5</span>&#x2003;Електричний струм у&nbsp;напівпровідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-636" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-638" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-674" class="tocchapter" >
+<span class="sectionnumber">9</span>&#x2003;Магнітне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-675" class="tocsection" >
+<span class="sectionnumber">9.1</span>&#x2003;Означення</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-679" class="tocsection" >
+<span class="sectionnumber">9.2</span>&#x2003;Характеристика магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-680" class="tocsection" >
+<span class="sectionnumber">9.3</span>&#x2003;Дія магнітного поля на заряджені частинки та струми</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-701" class="tocsection" >
+<span class="sectionnumber">9.4</span>&#x2003;Закон Біо-Савара-Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-714" class="tocsection" >
+<span class="sectionnumber">9.5</span>&#x2003;Вектор-потенціал магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-719" class="tocsection" >
+<span class="sectionnumber">9.6</span>&#x2003;Теореми магнітостатики</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-740" class="tocsection" >
+<span class="sectionnumber">9.7</span>&#x2003;Магнітний момент</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-756" class="tocsection" >
+<span class="sectionnumber">9.8</span>&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-766" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-767" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-775" class="tocchapter" >
+<span class="sectionnumber">10</span>&#x2003;Магнітне поле в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-780" class="tocsection" >
+<span class="sectionnumber">10.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-783" class="tocsection" >
+<span class="sectionnumber">10.2</span>&#x2003;Намагнічування</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-795" class="tocsection" >
+<span class="sectionnumber">10.3</span>&#x2003;Теорема про циркуляцію в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-801" class="tocsection" >
+<span class="sectionnumber">10.4</span>&#x2003;Магнітна сприйнятливість речовини</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-832" class="tocsection" >
+<span class="sectionnumber">10.5</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-847" class="tocsection" >
+<span class="sectionnumber">10.6</span>&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-864" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-865" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-872" class="tocchapter" >
+<span class="sectionnumber">11</span>&#x2003;Рух заряджених частинок</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-873" class="tocsection" >
+<span class="sectionnumber">11.1</span>&#x2003;Рух частинок в&nbsp;однорідних полях</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-891" class="tocsection" >
+<span class="sectionnumber">11.2</span>&#x2003;Застосування схрещених полів</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-899" class="tocsection" >
+<span class="sectionnumber">11.3</span>&#x2003;Методи вимірювання питомого заряду електрона</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-909" class="tocsection" >
+<span class="sectionnumber">11.4</span>&#x2003;Досліди Міллікена</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-911" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-912" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-923" class="tocchapter" >
+<span class="sectionnumber">12</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-924" class="tocsection" >
+<span class="sectionnumber">12.1</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-929" class="tocsection" >
+<span class="sectionnumber">12.2</span>&#x2003;Закон електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-930" class="tocsection" >
+<span class="sectionnumber">12.3</span>&#x2003;Робота, що виконується при переміщенні провідника зі струмом у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-933" class="tocsection" >
+<span class="sectionnumber">12.4</span>&#x2003;Електромагнітна індукція в&nbsp;рухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-940" class="tocsection" >
+<span class="sectionnumber">12.5</span>&#x2003;Електромагнітна індукція в&nbsp;нерухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-959" class="tocsection" >
+<span class="sectionnumber">12.6</span>&#x2003;Явище самоіндукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-979" class="tocsection" >
+<span class="sectionnumber">12.7</span>&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-996" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-997" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1015" class="tocchapter" >
+<span class="sectionnumber">13</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1016" class="tocsection" >
+<span class="sectionnumber">13.1</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1022" class="tocsection" >
+<span class="sectionnumber">13.2</span>&#x2003;Взаємна індукція</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1038" class="tocsection" >
+<span class="sectionnumber">13.3</span>&#x2003;Енергія системи зв’язаних контурів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1041" class="tocsection" >
+<span class="sectionnumber">13.4</span>&#x2003;Потенціальна енергія струмів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1043" class="tocsection" >
+<span class="sectionnumber">13.5</span>&#x2003;Принцип роботи трансформаторів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1047" class="tocsection" >
+<span class="sectionnumber">13.6</span>&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1053" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1054" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1059" class="tocchapter" >
+<span class="sectionnumber">14</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1064" class="tocsection" >
+<span class="sectionnumber">14.1</span>&#x2003;Струм зміщення</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1085" class="tocsection" >
+<span class="sectionnumber">14.2</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1102" class="tocsection" >
+<span class="sectionnumber">14.3</span>&#x2003;Про рівняння Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1104" class="tocsection" >
+<span class="sectionnumber">14.4</span>&#x2003;Енергія електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1118" class="tocsection" >
+<span class="sectionnumber">14.5</span>&#x2003;Скін-ефект</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1140" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1141" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1148" class="tocchapter" >
+<span class="sectionnumber">15</span>&#x2003;Відносність електричного і&nbsp;магнітного полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1150" class="tocsection" >
+<span class="sectionnumber">15.1</span>&#x2003;Нерелятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1153" class="tocsection" >
+<span class="sectionnumber">15.2</span>&#x2003;Релятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1159" class="tocsection" >
+<span class="sectionnumber">15.3</span>&#x2003;Тензор електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1161" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1162" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1171" class="tocchapter" >
+<span class="sectionnumber">16</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1172" class="tocsection" >
+<span class="sectionnumber">16.1</span>&#x2003;Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1188" class="tocsection" >
+<span class="sectionnumber">16.2</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1193" class="tocsection" >
+<span class="sectionnumber">16.3</span>&#x2003;Енергія та вектор Пойнтінга для хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1204" class="tocsection" >
+<span class="sectionnumber">16.4</span>&#x2003;Імпульс і момент імпульсу електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1210" class="tocsection" >
+<span class="sectionnumber">16.5</span>&#x2003;Відбивання хвиль від поверхні двох діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1230" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1231" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1242" class="tocchapter" >
+<span class="sectionnumber">17</span>&#x2003;Випромінювання електромагнітних хвиль</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1243" class="tocsection" >
+<span class="sectionnumber">17.1</span>&#x2003;Історична довідка: досліди Герца</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1246" class="tocsection" >
+<span class="sectionnumber">17.2</span>&#x2003;Елементарна модель випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1259" class="tocsection" >
+<span class="sectionnumber">17.3</span>&#x2003;Дипольне випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1275" class="tocsection" >
+<span class="sectionnumber">17.4</span>&#x2003;Потужність випромінювання осцилятора</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1280" class="tocsection" >
+<span class="sectionnumber">17.5</span>&#x2003;Випромінювання рухомого заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1285" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1286" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1292" class="tocchapter" >
+<span class="sectionnumber">18</span>&#x2003;Коливальні процеси в електричних колах</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1293" class="tocsection" >
+<span class="sectionnumber">18.1</span>&#x2003;Квазістаціонарне наближення</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1294" class="tocsection" >
+<span class="sectionnumber">18.2</span>&#x2003;Вільні коливання в коливальному контурі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1319" class="tocsection" >
+<span class="sectionnumber">18.3</span>&#x2003;Вимушені коливання під дією гармонічної ЕРС</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1333" class="tocsection" >
+<span class="sectionnumber">18.4</span>&#x2003;Змінний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">18.5</span>&#x2003;Трансформатор</a>
+</p>
+<p>
+<a href="ch18.html#autosec-1374" class="tocsection" >
+<span class="sectionnumber">18.6</span>&#x2003;Частотні фільтри</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1390" class="tocsection" >
+<span class="sectionnumber">18.7</span>&#x2003;Трифазний струм: фізичні засади, топології кіл та застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1433" class="tocchapter" >
+<span class="sectionnumber">19</span>&#x2003;Довгі лінії. Телеграфні рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1434" class="tocsection" >
+<span class="sectionnumber">19.1</span>&#x2003;Від зосереджених елементів до розподілених</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1435" class="tocsection" >
+<span class="sectionnumber">19.2</span>&#x2003;Виведення телеграфних рівнянь</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1439" class="tocsection" >
+<span class="sectionnumber">19.3</span>&#x2003;Гармонічний режим. Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1440" class="tocsection" >
+<span class="sectionnumber">19.4</span>&#x2003;Лінія без втрат</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1447" class="tocsection" >
+<span class="sectionnumber">19.5</span>&#x2003;Польова картина. Зв’язок з рівняннями Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1454" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1455" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1461" class="tocchapter" >
+<span class="sectionnumber">20</span>&#x2003;Хвилеводи</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1462" class="tocsection" >
+<span class="sectionnumber">20.1</span>&#x2003;Від довгої лінії до хвилеводу</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1463" class="tocsection" >
+<span class="sectionnumber">20.2</span>&#x2003;Прямокутний хвилевід</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1476" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1479" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1480" class="tocsection" >
+<span class="sectionnumber">А</span>&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1485" class="tocsection" >
+<span class="sectionnumber">Б</span>&#x2003;Основні формули векторного аналізу</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1503" class="tocchapter" >
+Література</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Постійний електричний струм">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Постійний електричний струм ......
+-->
+<h3 id="autosec-479">Розділ&nbsp;<span class="sectionnumber">7&#x2003;</span>Постійний електричний струм</h3>
+<a id="main-html-autopage-479"></a>
+<a id="main-html-autofile-7"></a>
+
+<a id="SteadyCurrent"></a>
+
+<p>
+<a id="LWR-ht-SteadyCurrent"></a>
+</p>
+<div class="epigraph" role="note">
+
+
+<div class="qitem">
+
+<p>
+Струм — це не заряд і не поле, а їхня спільна робота: впорядкований рух зарядів, підтримуваний полем, і поле, яке саме підтримується перерозподілом зарядів на поверхні провідника.
+</p>
+
+
+<div class="epigraphsource">
+
+<p>
+Переосмислення ідей сучасної фізики
+</p>
+</div>
+
+</div>
+
+</div>
+
+<p>
+Досі ми вивчали провідники в <em><span
+    class="textcolor"
+    style="color:#990000"
+>електростатичній рівновазі</span></em>: заряди на них розподілялися так, щоб поле всередині провідника зникло, а сама поверхня стала еквіпотенціальною. Тепер розглянемо принципово інший, хоч і споріднений, стан провідника — коли
+поле всередині <em>не</em> зникає, а, навпаки, підтримує неперервний, впорядкований рух зарядів. Такий рух і називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>електричним струмом</span></em>. Побачимо, що майже вся математична техніка, розвинена для електростатики (потік вектора поля, теорема Гаусса-Остроградського, граничні умови на межі середовищ), переноситься сюди практично без
+змін — тільки роль потенціалу частково переймає сила струму, а роль ємності, як ми переконаємось у розділі про струми в необмежених середовищах, — електричний опір.
+</p>
+<!--
+...... section Основні поняття ......
+-->
+<h4 id="autosec-480"><span class="sectionnumber">7.1&#x2003;</span>Основні поняття</h4>
+<a id="main-html-autopage-480"></a>
+
+
+<p>
+<a id="LWR-ht-current-basic-concepts"></a>
+</p>
+<!--
+...... subsection Сила струму та вектор густини струму ......
+-->
+<h5 id="autosec-481">Сила струму та вектор густини струму</h5>
+<a id="main-html-autopage-481"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Електричним струмом</span></em> називають будь-який упорядкований (спрямований) рух електричних зарядів. <em><span
+    class="textcolor"
+    style="color:#990000"
+>Силою струму</span></em> \(I\) називають заряд, що переноситься через переріз провідника за одиницю часу:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{0}\)</span>
+
+<!--
+
+
+                                                                                                                          𝑑𝑞
+                                                                                                                   𝐼=        .                                                              (7.1)         --><a id="eq:CurrentDef"></a><!--
+                                                                                                                          𝑑𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CurrentDef} \tcbhighmath { I = \frac {dq}{dt}. }
+\end{equation}
+
+</p>
+
+<p>
+Струм може бути нерівномірно розподілений по поверхні, крізь яку він протікає (рис.&nbsp;<a href="ch7.html#pic:IjS">7.1</a>). Щоб описати цей розподіл <em>локально</em>, у кожній точці простору вводять <em><span
+    class="textcolor"
+    style="color:#990000"
+>вектор густини струму</span></em> \(\vect j\): за напрямом він збігається з напрямом руху носіїв <em>позитивного</em> заряду в даній точці, а за модулем чисельно дорівнює відношенню сили струму через елементарну площадку,
+розташовану перпендикулярно до руху носіїв, до площі цієї площадки:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{1}\)</span>
+
+<!--
+
+
+                                                                                           𝑑𝐼
+                                                                                     𝑗=       .                                                                                    (7.2)            --><a id="eq:CurrentDensityDef"></a><!--
+                                                                                          𝑑𝑆⟂
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CurrentDensityDef} j = \frac {dI}{dS_\perp }.
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Напрям вектора \(\vect j\) за означенням — це напрям руху <em>позитивних</em> носіїв заряду. Якщо реальними носіями струму є від’ємно заряджені частинки (наприклад, електрони в металі), то вони рухаються <em>проти</em> напряму
+\(\vect j\). Це не є якоюсь фізичною неоднозначністю: напрям \(\vect j\) — узгоджена історична домовленість (той самий напрям, що й у «класичного» напряму струму, введеного задовго до відкриття електрона), а не твердження про природу
+носіїв.
+</p>
+</div>
+
+<p>
+Знаючи вектор густини струму в кожній точці довільної (не обов’язково перпендикулярної до \(\vect j\)) поверхні \(S\), силу струму через цю поверхню знаходять як потік вектора \(\vect j\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{2}\)</span>
+
+<!--
+
+                                                                                                                      ˆ
+                                                                                                                 𝐼=       𝐣 ⋅ 𝑑𝐒.                                                          (7.3)         --><a id="eq:CurrentFlux"></a><!--
+                                                                                                                      𝑆
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CurrentFlux} \tcbhighmath { I = \iint \limits _S \vect j \cdot d\vect S. }
+\end{equation}
+
+</p>
+
+<figure id="autoid-149" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-97"
+    class="lateximagesource"
+><!--
+    𝐣
+
+
+
+
+𝐧
+--><img
+   src="main-html-images\image-97.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.1. Вектор густини струму \(\vect j\) у різних точках поверхні \(S\)<a id="pic:IjS"></a>
+
+</div>
+
+</div>
+
+</figure>
+<!--
+...... subsection Густина струму, густина заряду і дрейфова швидкість ......
+-->
+<h5 id="autosec-485">Густина струму, густина заряду і дрейфова швидкість</h5>
+<a id="main-html-autopage-485"></a>
+
+
+<p>
+Під дією електричного поля вільні носії заряду в провіднику здійснюють впорядкований рух, який накладається на їхній хаотичний тепловий рух. Середню швидкість цього впорядкованого руху називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>дрейфовою швидкістю</span></em> \(\vect u\).
+</p>
+
+<p>
+Нехай концентрація носіїв заряду дорівнює \(n\), а заряд кожного носія — \(e\). Візьмемо площадку \(dS\), перпендикулярну до дрейфової швидкості (рис.&nbsp;<a href="ch7.html#pic:ElectronCylinder">7.2</a>). За час \(dt\) цю площадку
+перетнуть усі носії, що на початку проміжку часу перебували в циліндрі об’ємом \(dV = u\,dt\, dS\): таких носіїв \(dN = n\,dV\), і разом вони перенесуть заряд \(dq = e\,dN = enu\,dt\,dS\). Отже, густина струму
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{3}\)</span>
+
+<!--
+
+
+                                                                                                               𝑑𝑞 1
+                                                                                                          𝑗=         = 𝑒𝑛ᵆ = 𝜌ᵆ,
+                                                                                                               𝑑𝑡 𝑑𝑆
+
+-->
+
+<p>
+
+\begin{equation*}
+j = \frac {dq}{dt}\frac 1{dS} = enu = \rho u,
+\end{equation*}
+
+</p>
+
+<p>
+де \(\rho = en\) — об’ємна густина заряду носіїв. У векторному вигляді
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{3}\)</span>
+
+<!--
+
+
+                                                                                                                  𝐣 = 𝜌𝐮.                                                                   (7.4)        --><a id="eq:JRhoU"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:JRhoU} \tcbhighmath { \vect j = \rho \vect u. }
+\end{equation}
+
+</p>
+
+<figure id="autoid-150" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="_html/ext/pic-8e82829088.svg" target="_blank" ><img
+   src="_html/ext/pic-8e82829088.svg"
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.2. До виведення зв’язку густини струму з дрейфовою швидкістю носіїв<a id="pic:ElectronCylinder"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+
+<div class="cb-attention">
+
+<p>
+Якщо в провіднику одночасно є носії кількох сортів (наприклад, позитивні й негативні йони в електроліті, або електрони і дірки в напівпровіднику), кожен сорт носіїв дає свій внесок у струм, і повна густина струму дорівнює векторній сумі
+\(\vect j = \sum _k \rho _k \vect u_k\), причому доданки від носіїв протилежних знаків, які рухаються в протилежних напрямках, <em>додаються</em>, а не віднімаються (адже \(\rho _k \vect u_k\) не змінює знака при одночасній зміні
+знаків \(\rho _k\) і \(\vect u_k\)).
+</p>
+</div>
+<!--
+...... section Природа носіїв заряду ......
+-->
+<h4 id="autosec-487"><span class="sectionnumber">7.2&#x2003;</span>Природа носіїв заряду</h4>
+<a id="main-html-autopage-487"></a>
+
+
+<p>
+<a id="LWR-ht-charge-carriers-nature"></a>
+</p>
+<!--
+...... subsection Досліди Толмена і Стюарта ......
+-->
+<h5 id="autosec-488">Досліди Толмена і Стюарта</h5>
+<a id="main-html-autopage-488"></a>
+
+
+<p>
+Той факт, що струм у металах зумовлений рухом <em><span
+    class="textcolor"
+    style="color:#990000"
+>вільних електронів</span></em>, а не, скажімо, йонів кристалічної ґратки, не є очевидним апріорі і потребував експериментального доведення. У 1916&nbsp;р. американський фізик Р.&nbsp;Толмен і шотландський фізик Т.&nbsp;Стюарт
+виконали дослід, який неспростовно це довів.
+</p>
+
+<p>
+Котушку з великою кількістю витків тонкого дроту приєднували до гальванометра і приводили в швидке обертання навколо власної осі, а потім різко гальмували. Під час гальмування вільні носії заряду, за інерцією, продовжували свій рух
+відносно ґратки провідника ще якийсь час, тобто в колі виникав короткочасний струм. За напрямом відхилення стрілки гальванометра було встановлено, що цей струм створюють <em>негативно заряджені</em> частинки, а виміряний питомий
+заряд носіїв \(e/m\) виявився близьким до питомого заряду електрона, відомого з інших дослідів (зокрема, з дослідів Дж. Дж. Томсона з катодними променями). Так було експериментально доведено, що носіями струму в металах є електрони.
+</p>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> Ідея досліду Толмена і Стюарта загалом однакова з ідеєю досліду з маятником Фуко чи гіроскопом: інерція носіїв заряду — це прояв того самого другого закону Ньютона, застосованого не до макроскопічного тіла, а до
+<em>мікроскопічних</em> носіїв заряду всередині нього. Такий підхід, коли макроскопічно вимірювана величина (тут — імпульсний струм) дає інформацію про мікроскопічну характеристику речовини (тут — питомий заряд носіїв), типовий для
+фізики початку XX&nbsp;століття.
+</p>
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Дрейфова та теплова швидкість електронів.</b> Порівняємо на конкретному прикладі дрейфову швидкість електронів (швидкість їхнього впорядкованого руху під дією поля) з їхньою тепловою швидкістю (швидкістю хаотичного теплового
+руху) — порівняння, яке добре ілюструє, наскільки «повільним» насправді є струм на мікроскопічному рівні.
+</p>
+
+<p>
+Нехай срібним дротом перерізом \(S=1\)&nbsp;мм\(^2\) тече струм силою \(I=1\)&nbsp;А; вважатимемо, що кожен атом срібла віддає один вільний електрон. Струм \(I = jS = enuS\), а концентрацію електронів знаходимо через густину срібла
+\(\rho _m\), його молярну масу \(\mu \) і сталу Авогадро \(N_A\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{4}\)</span>
+
+<!--
+
+                                                                                                                      𝜌𝑚      𝑁
+                                                                                                               𝑛=         = 𝜌𝑚 𝐴 .
+                                                                                                                      𝑚Ag      𝜇
+
+-->
+
+<p>
+
+\begin{equation*}
+n = \frac {\rho _m}{m_{\ce {Ag}}} = \rho _m\frac {N_A}{\mu }.
+\end{equation*}
+
+</p>
+
+<p>
+Звідси дрейфова швидкість
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{4}\)</span>
+
+<!--
+
+                                                                                                             𝐼      𝐼𝜇
+                                                                                                       ᵆ=       =          ≈ 0.065 мм/с.
+                                                                                                            𝑒𝑛𝑆   𝑒𝜌𝑚 𝑁𝐴 𝑆
+
+-->
+
+<p>
+
+\begin{equation*}
+u = \frac {I}{enS} = \frac {I\mu }{e\rho _m N_A S} \approx 0.065\ \text {мм/с}.
+\end{equation*}
+
+</p>
+
+<p>
+Теплову ж швидкість електронів оцінимо як середню квадратичну швидкість молекул ідеального газу при кімнатній температурі \(T=300\)&nbsp;K:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{4}\)</span>
+
+<!--
+
+
+                                                                                                                    3𝑘𝑇
+                                                                                                            𝑣𝑇 =        ≈ 1.2 ⋅ 105 м/с.
+                                                                                                                   √ 𝑚𝑒
+
+-->
+
+<p>
+
+\begin{equation*}
+v_T = \sqrt {\frac {3kT}{m_e}} \approx 1.2\cdot 10^5\ \text {м/с}.
+\end{equation*}
+
+</p>
+
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+Дрейфова швидкість електронів у типовому провіднику — частки міліметра за секунду, тобто на <em>дев’ять порядків</em> менша за теплову швидкість електронів! Струм у колі «вмикається» практично миттєво (з електромагнітною хвилею, зі
+швидкістю порядку швидкості світла) не тому, що електрони «біжать» зі старту до навантаження, а тому, що електричне поле, яке приводить в рух <em>усі</em> вільні електрони провідника <em>одночасно</em> (а не послідовно, один за одним),
+встановлюється в колі майже миттєво.
+</p>
+</div>
+<!--
+...... section Закон збереження заряду ......
+-->
+<h4 id="autosec-489"><span class="sectionnumber">7.3&#x2003;</span>Закон збереження заряду</h4>
+<a id="main-html-autopage-489"></a>
+
+
+<p>
+<a id="LWR-ht-charge-conservation-law"></a>
+</p>
+
+<p>
+Ми з’ясували, <em>що</em> саме рухається (вільні електрони) і <em>наскільки повільно</em> відбувається це впорядковане перенесення заряду. Постає природне запитання: чи може заряд у довільному об’ємі змінюватися довільним чином, чи
+існує тут якийсь закон, що обмежує можливі струми? Такий закон — це закон збереження електричного заряду, записаний мовою вектора густини струму.
+</p>
+
+<p>
+Нехай у деякому провідному середовищі виділено об’єм \(V\), обмежений замкненою поверхнею \(S\). Повний струм, що витікає крізь цю поверхню, \(I = \oiint _S \vect j\cdot d\vect S\); оскільки струм — це рух заряду, то заряд, який
+лишається всередині об’єму \(V\), з часом <em>зменшується</em> рівно на ту величину заряду, яка витекла (рис.&nbsp;<a href="ch7.html#pic:ChargeConservation">7.3</a>):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{4}\)</span>
+
+<!--
+
+                                                                                                           ˛                     ˆ
+                                                                                                                            𝑑
+                                                                                                               𝐣 ⋅ 𝑑𝐒 = −            𝜌 𝑑𝑉 .                                          (7.5)        --><a id="eq:ContinuityInt"></a><!--
+                                                                                                                            𝑑𝑡
+                                                                                                           𝑆                     𝑉
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ContinuityInt} \oiint \limits _S \vect j\cdot d\vect S = -\frac {d}{dt}\iiint \limits _V \rho \, dV.
+\end{equation}
+
+</p>
+
+<p>
+Це співвідношення називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>рівнянням неперервності</span></em>: воно є математичним виразом закону збереження електричного заряду (заряд не з’являється й не зникає — він лише переноситься з місця на місце). У диференціальній формі (за теоремою
+Остроградського-Гаусса)
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{5}\)</span>
+
+<!--
+
+
+                                                                                                                             𝜕𝜌
+                                                                                                                  𝛁⋅𝐣=−         .                                                   (7.6)        --><a id="eq:ContinuityDiff"></a><!--
+                                                                                                                             𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ContinuityDiff} \tcbhighmath { \divg \vect j = -\frac {\partial \rho }{\partial t}. }
+\end{equation}
+
+</p>
+
+<figure id="autoid-151" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-98"
+    class="lateximagesource"
+><!--
+𝑆
+
+    𝑉
+--><img
+   src="main-html-images\image-98.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.3. Струм, що витікає крізь замкнену поверхню \(S\), зменшує заряд в об’ємі \(V\)<a id="pic:ChargeConservation"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+У <em><span
+    class="textcolor"
+    style="color:#990000"
+>стаціонарному</span></em> випадку, тобто коли розподіл заряду в просторі не змінюється з часом (\(\partial \rho /\partial t = 0\)), рівняння неперервності спрощується:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{6}\)</span>
+
+<!--
+
+                                                                          ˛
+                                                                              𝐣 ⋅ 𝑑𝐒 = 0,   або   𝛁 ⋅ 𝐣 = 0.                                                                     (7.7)        --><a id="eq:ContinuitySteady"></a><!--
+                                                                          𝑆
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ContinuitySteady} \oiint \limits _S \vect j\cdot d\vect S = 0, \qquad \text {або}\qquad \divg \vect j = 0.
+\end{equation}
+
+</p>
+
+<p>
+Це означає, що з будь-якого об’єму, обмеженого замкненою поверхнею, витікає рівно стільки ж заряду, скільки в нього і втікає (рис.&nbsp;<a href="ch7.html#pic:stationaryn">7.4</a>)&nbsp;— лінії струму в стаціонарному випадку не мають
+ні витоків, ні стоків (окрім хіба що точок, де є зовнішні джерела чи стоки заряду).
+</p>
+
+<figure id="autoid-152" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-99"
+    class="lateximagesource"
+><!--
+𝑆
+
+    𝑉
+--><img
+   src="main-html-images\image-99.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.4. З будь-якого об’єму, обмеженого замкненою поверхнею, витікає рівно стільки ж заряду, скільки в нього і втікає — лінії струму в стаціонарному випадку не мають ні витоків, ні стоків.
+
+</div>
+
+<a id="pic:stationaryn"></a>
+
+</div>
+
+</figure>
+
+
+<div class="cb-attention">
+
+<p>
+Саме умова \(\divg \vect j = 0\) — це те, що математично означає слова «<em><span
+    class="textcolor"
+    style="color:#990000"
+>постійний</span></em> (стаціонарний) струм»: лінії струму в такому режимі замкнені (або йдуть з нескінченності в нескінченність), і сила струму однакова в будь-якому перерізі <em>послідовно</em> з’єднаного провідника — саме тому має сенс
+говорити про «силу струму в колі», не уточнюючи, в якому саме місці кола вона виміряна.
+</p>
+</div>
+<!--
+...... section Закон Ома ......
+-->
+<h4 id="autosec-496"><span class="sectionnumber">7.4&#x2003;</span>Закон Ома</h4>
+<a id="main-html-autopage-496"></a>
+
+
+<a id="sec:ohms-law"></a>
+
+<p>
+<a id="LWR-ht-ohms-law"></a>
+</p>
+
+<p>
+Рівняння неперервності&nbsp;<span class="textup">(<a href="ch7.html#eq:ContinuityDiff">7.6</a>)</span>–<span class="textup">(<a href="ch7.html#eq:ContinuitySteady">7.7</a>)</span> — умова суто <em>кінематична</em>:
+вона обмежує можливі конфігурації \(\vect j\), але нічого не каже про те, який саме струм насправді виникне в даному провіднику під дією даного поля \(\Efield \). Щоб замкнути опис, потрібне ще одне, <em>матеріальне</em> рівняння, яке
+пов’язує \(\vect j\) з \(\Efield \) і залежить від конкретних властивостей середовища (так само як у діелектриках матеріальне рівняння \(\vect D = \epsilon \Efield \) доповнює рівняння електростатики). Таким матеріальним рівнянням
+для провідників і є закон Ома.
+</p>
+<!--
+...... subsection Інтегральна форма ......
+-->
+<h5 id="autosec-497">Інтегральна форма</h5>
+<a id="main-html-autopage-497"></a>
+
+
+<p>
+Г.&nbsp;Ом 1827&nbsp;року експериментально встановив, що сила струму \(I\), який тече однорідним металевим провідником, за відсутності в ньому сторонніх сил, пропорційна різниці потенціалів (напрузі) \(U\) на його кінцях:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{7}\)</span>
+
+<!--
+
+
+                                                                                                                        𝑈
+                                                                                                                   𝐼=     .                                                              (7.8)         --><a id="eq:OhmIntegral"></a><!--
+                                                                                                                        𝑅
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:OhmIntegral} \tcbhighmath { I = \frac {U}{R}. }
+\end{equation}
+
+</p>
+
+<p>
+Коефіцієнт пропорційності \(R\) називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>електричним опором</span></em> провідника; він залежить від форми й розмірів провідника, від матеріалу, з якого він виготовлений, від температури, а також, узагалі кажучи, від розподілу струму по провіднику. У найпростішому випадку
+однорідного циліндричного провідника довжиною \(\ell \) і перерізом \(S\)
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{8}\)</span>
+
+<!--
+
+                                                                                           ℓ
+                                                                                     𝑅=𝜌     ,                                                                                   (7.9)           --><a id="eq:ResistanceCylinder"></a><!--
+                                                                                           𝑆
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ResistanceCylinder} R = \rho \, \frac {\ell }{S},
+\end{equation}
+
+</p>
+
+<p>
+де \(\rho \) — <em><span
+    class="textcolor"
+    style="color:#990000"
+>питомий опір</span></em> матеріалу (величина, обернена до питомої електропровідності \(\lambda = 1/\rho \), яку ми означимо нижче).
+</p>
+<!--
+...... subsection Про одиниці вимірювання ......
+-->
+<h5 id="autosec-498">Про одиниці вимірювання</h5>
+<a id="main-html-autopage-498"></a>
+
+
+<p>
+У гауссовій системі одиниць \([I] = \text {Фр}/\text {с}\), а \([U] = \text {Фр}/\text {см}\), тому
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{9}\)</span>
+
+<!--
+
+
+                                                                                                                        [𝑈]     с
+                                                                                                                [𝑅] =        =    ,
+                                                                                                                         [𝐼]   см
+
+-->
+
+<p>
+
+\begin{equation*}
+[R] = \frac {[U]}{[I]} = \frac {\text {с}}{\text {см}},
+\end{equation*}
+
+</p>
+
+<p>
+тобто опір у СГС має розмірність <em>оберненої швидкості</em>. Відповідно, для питомого опору
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{9}\)</span>
+
+<!--
+
+
+                                                                                                                      [𝑆]    с см2
+                                                                                                          [𝜌] = [𝑅]       =    ⋅    = с,
+                                                                                                                      [ℓ]   см   см
+
+-->
+
+<p>
+
+\begin{equation*}
+[\rho ] = [R]\frac {[S]}{[\ell ]} = \frac {\text {с}}{\text {см}}\cdot \frac {\text {см}^2}{\text {см}} = \text {с},
+\end{equation*}
+
+</p>
+
+<p>
+тобто в гауссовій системі питомий опір вимірюється просто в <em>секундах</em>, а питома провідність \(\lambda \) — в обернених секундах.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Незвична на перший погляд розмірність опору й питомого опору в гауссовій системі одиниць — не якийсь дефект цієї системи, а наслідок того, що в СГС немає окремої «електричної» основної одиниці (на відміну від Ампера в СІ): усі електричні
+величини виражаються через звичні механічні одиниці — сантиметри, грами, секунди. У Міжнародній системі одиниць (СІ) опір, звісно, вимірюють в Омах, а питомий опір — в Ом\(\cdot \)м.
+</p>
+</div>
+<!--
+...... subsection Диференціальна форма ......
+-->
+<h5 id="autosec-499">Диференціальна форма</h5>
+<a id="main-html-autopage-499"></a>
+
+
+<p>
+Виведемо <em>локальний</em> (диференціальний) варіант закону Ома, який пов’язує густину струму \(\vect j\) з напруженістю поля \(\Efield \) <em>в кожній точці</em> провідника, а не інтегрально — на його кінцях. Виділимо в околі
+довільної точки провідного середовища нескінченно малий циліндричний об’єм із твірними, паралельними вектору \(\vect j\) (рис.&nbsp;<a href="ch7.html#pic:DiffOhmLaw">7.5</a>).
+</p>
+
+<figure id="autoid-153" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-100"
+    class="lateximagesource"
+><!--
+𝑑𝑆
+𝑑𝑆
+
+
+     𝑑𝑙
+--><img
+   src="main-html-images\image-100.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.5. Елементарний циліндр струму до виведення диференціальної форми закону Ома<a id="pic:DiffOhmLaw"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Якщо переріз циліндра дорівнює \(dS\), а довжина — \(dl\), то, застосовуючи до нього закон Ома&nbsp;<span class="textup">(<a href="ch7.html#eq:OhmIntegral">7.8</a>)</span>–<span class="textup">(<a
+href="ch7.html#eq:ResistanceCylinder">7.9</a>)</span> (\(I \to j\, dS\), \(U \to E\, dl\), \(R \to \rho \, dl/dS\)), маємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{9}\)</span>
+
+<!--
+
+
+                                                                                                                𝐸 𝑑𝑙   1
+                                                                                                     𝑗 𝑑𝑆 =           = 𝐸 𝑑𝑆,
+                                                                                                              𝜌 𝑑𝑙/𝑑𝑆  𝜌
+
+-->
+
+<p>
+
+\begin{equation*}
+j\, dS = \frac {E\, dl}{\rho \, dl/dS} = \frac 1\rho E\, dS,
+\end{equation*}
+
+</p>
+
+<p>
+звідки, після скорочень, у векторному вигляді:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{9}\)</span>
+
+<!--
+
+
+                                                                                                                1
+                                                                                                          𝐣=      𝐄 = 𝜆𝐄,                                                          (7.10)       --><a id="eq:OhmDiff"></a><!--
+                                                                                                                𝜌
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:OhmDiff} \tcbhighmath { \vect j = \frac 1\rho \Efield = \lambda \Efield , }
+\end{equation}
+
+</p>
+
+<p>
+де \(\lambda = 1/\rho \) — питома електропровідність середовища.
+</p>
+<!--
+...... subsection Розподіл зарядів у провіднику, яким тече струм ......
+-->
+<h5 id="autosec-503">Розподіл зарядів у провіднику, яким тече струм</h5>
+<a id="main-html-autopage-503"></a>
+
+
+<p>
+З’ясуємо, де саме розташовані заряди, які створюють електричне поле всередині провідника зі струмом. Якщо провідник <em>однорідний</em> (\(\lambda = \const \)) і по ньому тече стаціонарний струм, то \(\divg \vect j = 0\) за
+формулою&nbsp;<span class="textup">(<a href="ch7.html#eq:ContinuitySteady">7.7</a>)</span>. Але, за диференціальним законом Ома&nbsp;<span class="textup">(<a href="ch7.html#eq:OhmDiff">7.10</a>)</span> і теоремою
+Гаусса,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{10}\)</span>
+
+<!--
+
+
+                                                                       𝛁 ⋅ 𝐣 = 𝜆 𝛁 ⋅ 𝐄 = 𝜆 ⋅ 4𝜋𝜌 = 0       ⇒   𝜌 = 0.                                                              (7.11)          --><a id="eq:VolumeChargeZero"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:VolumeChargeZero} \divg \vect j = \lambda \,\divg \Efield = \lambda \cdot 4\pi \rho = 0 \quad \Rightarrow \quad \rho = 0.
+\end{equation}
+
+</p>
+
+<p>
+Отже, в однорідному провіднику зі стаціонарним струмом <em>об’ємна</em> густина заряду в усіх внутрішніх точках дорівнює нулю.
+</p>
+
+<p>
+Водночас, на <em>поверхні</em> провідника зі струмом заряди, взагалі кажучи, є (рис.&nbsp;<a href="ch7.html#pic:SurfCharges">7.6</a>). Саме ці поверхневі заряди і є джерелами поля \(\Efield \), яке існує всередині провідника і
+забезпечує протікання постійного струму. Порівняймо два стани провідника, які легко сплутати:
+</p>
+
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> <em>провідник без струму</em> (електростатична рівновага): поле всередині дорівнює нулю, поверхня еквіпотенціальна, поверхневі заряди розташовані так, щоб <em>повністю</em> скомпенсувати поле
+всередині;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> <em>провідник зі струмом</em>: поле всередині <em>не</em> дорівнює нулю, але дорівнює \(\Efield = \vect j/\lambda \) у кожній точці; поверхневі заряди перерозподіляються так, щоб
+<em>підтримувати</em> саме таке поле, а не знищувати його.
+</p>
+</li>
+</ul>
+
+<p>
+Зв’язок поверхневих зарядів із полем дають граничні умови для електростатичного поля. Тангенціальна складова напруженості електричного поля \(\mathbf {E}_\tau \) є неперервною при переході через поверхню розділу середовищ. Оскільки
+всередині провідника існує поле \(\mathbf {E}&apos;\), яке забезпечує протікання струму, його тангенціальна складова дорівнює тангенціальній складовій поля зовні:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{11}\)</span>
+
+<!--
+
+
+                                                                                                                        𝐸𝜏 = 𝐸𝜏′ .                                                                                                    (7.12)
+
+-->
+
+<p>
+
+\begin{equation}
+E_\tau = E&apos;_\tau .
+\end{equation}
+
+</p>
+
+<p>
+Нормальна ж складова зазнає стрибка, який визначається поверхневою густиною заряду \(\sigma \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{12}\)</span>
+
+<!--
+
+                                                                                              внутр
+                                                                                  зовн
+                                                                                 𝐸𝑛    − 𝐸𝑛           = 4𝜋𝜍.                                                                           (7.13)       --><a id="eq:NormalFieldJump"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:NormalFieldJump} E_n^{\text {зовн}} - E_n^{\text {внутр}} = 4\pi \sigma .
+\end{equation}
+
+</p>
+
+<p>
+Саме ця умова і пов’язує <em>кількісно</em> розподіл поверхневих зарядів із конфігурацією поля на поверхні провідника.
+</p>
+
+<p>
+Із неперервності \(\mathbf {E}_\tau \) випливає, що в провіднику зі струмом тангенціальна складова поля на поверхні відмінна від нуля. А це означає, що вздовж поверхні є спад напруги:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{13}\)</span>
+
+<!--
+
+
+                                                                                         ˆ2
+                                                                             𝜑1 − 𝜑2 =        𝐸𝜏 𝑑𝑙 ≠ 0.                                                                      (7.14)            --><a id="eq:SurfacePotentialDrop"></a><!--
+                                                                                         1
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SurfacePotentialDrop} \phi _1 - \phi _2 = \int \limits _{1}^{2} E_\tau \, dl \neq 0.
+\end{equation}
+
+</p>
+
+<p>
+Тому поверхня провідника зі струмом, на відміну від провідника в електростатичній рівновазі, <em>не</em> є еквіпотенціальною. Практичний наслідок: вольтметр, приєднаний до двох точок на поверхні одного й того самого однорідного
+провідника зі струмом, реєструє ненульову напругу — результат, неможливий для провідника в електростатичній рівновазі. Саме умова неперервності \(\Efield _\tau \) і зумовлює ту конфігурацію силових ліній, яка зображена на рисунку, де
+вектор поля зовні \(\Efield \) має як нормальну, так і тангенціальну складові (рис.&nbsp;<a href="ch7.html#pic:SurfCharges">7.6</a>).
+</p>
+
+<figure id="autoid-154" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-101"
+    class="lateximagesource"
+><!--
+         +                  –
+             𝐄𝜏
+    𝐄′             𝐄        –
+         +
+                                −𝐣
+         +                  –
+
+         +                  –        𝐄𝑛
+                  𝐄𝑛
+𝐣
+         +                  –
+                       𝐄𝜏
+         +                  –
+                                     𝐄
+
+         +                  –
+--><img
+   src="main-html-images\image-101.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.6. Поверхневі заряди на провіднику зі струмом створюють як тангенціальну, так і нормальну складову поля<a id="pic:SurfCharges"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<figure id="autoid-155" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="SteadyCurrent/Pictures/SurfCharges.jpg" target="_blank" ><img
+   src="SteadyCurrent/Pictures/SurfCharges.jpg"
+   style="
+   width:434pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.7. Дослід із дрібнодисперсним порошком (фотографія з <a id="main-html-autopage-507"></a><em>Jefimenko</em> <em>O. D.</em>. Demonstration of the Electric Fields of Current-Carrying Conductors // American Journal of Physics.
+1962. Vol. 30, no. 1. P. 19–21).<a id="pic:SurfChargesOil"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Пряме спостереження поверхневих зарядів <em>ускладнене</em>, проте створюване ними поле надійно реєструється експериментально (рис.&nbsp;<a href="ch7.html#pic:SurfChargesOil">7.7</a>). Один із класичних методів —
+<em>візуалізація силових ліній за допомогою дрібнодисперсного порошку</em> (або завислих частинок у в’язкому середовищі). Частинки, потрапляючи в електричне поле, поляризуються: їхній дипольний момент орієнтується вздовж поля, а в
+неоднорідному полі на них діє сила, що втягує їх у ділянки сильнішого поля. У результаті частинки шикуються вздовж силових ліній. Якщо провідник зі струмом занурити в таку суспензію або нанести порошок на його поверхню, картина ліній
+поля стає безпосередньо видимою. Ключове спостереження: силові лінії виходять із поверхні провідника <em>під кутом</em>, відмінним від прямого, а не перпендикулярно до неї, як було б у випадку електростатичної рівноваги. Саме цей нахил і
+є прямим візуальним свідченням наявності тангенціальної складової поля \(\Efield _\tau \), створеної поверхневими зарядами. (Зауважимо: порошок реєструє саме <em>поле</em>, а не самі заряди — поверхневі заряди є лише його джерелом.)
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Часто виникає спокуса уявити, що струм у дроті «жене» поле самого джерела: мовляв, джерело створило поле, і воно штовхає електрони вздовж усього дроту. Насправді це не так. Поле джерела — дипольне за своєю природою (надлишковий плюс
+на одній клемі, мінус на іншій), а дипольне поле спадає з відстанню дуже швидко, як \(1/r^3\). Уже на відстані кількох розмірів джерела воно практично не відчутне — тож безпосередньо «дотягнутися» до далекої ділянки дроту воно не може.
+</p>
+
+<p>
+Поле на далекій ділянці створюють <em>поверхневі заряди на самій цій ділянці</em>. Механізм такий: поле джерела поляризує прилеглу ділянку дроту, на ній з’являються поверхневі заряди; їхнє поле поляризує наступну ділянку — і так уздовж
+усього провідника. Поле ніби <em>передається естафетою</em> від ділянки до ділянки, а джерело лише запускає цей ланцюжок. Саме тому поверхневі заряди — не другорядна деталь, а необхідна умова існування струму: без них поле джерела
+зосередилося б лише поблизу клем, і струм не текти б уздовж усього дроту.
+</p>
+
+<p>
+У стаціонарному стані цей розподіл самоузгоджений: поверхневі заряди розташовуються так, щоб у кожній внутрішній точці провідника сумарне поле дорівнювало \(\Efield = \vect j/\lambda \). Але <em>встановлюється</em> він саме через
+послідовну поляризацію ділянок — від клем джерела до найдальших кінців кола.
+</p>
+</div>
+<!--
+...... subsection Сторонні сили. Електрорушійна сила ......
+-->
+<h5 id="autosec-508">Сторонні сили. Електрорушійна сила</h5>
+<a id="main-html-autopage-508"></a>
+
+
+<p>
+У замкненому колі позитивні носії заряду рухаються під дією електричного поля від вищого потенціалу до нижчого — тобто в бік <em>спадання</em> потенціалу. Якби це був єдиний механізм, коло дуже швидко прийшло б до рівноваги: усі точки
+провідників набули б однакового потенціалу, поле всередині зникло б, і струм припинився б. Щоб струм <em>не</em> припинявся, потрібно повертати носіїв назад — на ділянки з вищим потенціалом, тобто <em>проти</em> сил електростатичного
+поля (рис.&nbsp;<a href="ch7.html#pic:CurrentSpheres">7.8</a>). Перенесення носіїв на таких ділянках можливе лише за допомогою сил <em>неелектростатичного</em> походження, які називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>сторонніми силами</span></em>.
+</p>
+
+<figure id="autoid-156" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-102"
+    class="lateximagesource"
+><!--
++
+        +
+
+
+
+
+    +
+
+            −
+--><img
+   src="main-html-images\image-102.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.8. У замкненому колі частина носіїв мусить рухатися проти сил електростатичного поля — це можливо лише завдяки стороннім силам<a id="pic:CurrentSpheres"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Фізична природа сторонніх сил може бути дуже різною. У <em>гальванічному елементі</em> (батарейці, акумуляторі) хімічна реакція розділяє заряди на електродах: на одному накопичується надлишок позитивного заряду, на іншому —
+негативного; виникає поле сторонніх сил, яке «заганяє» іони всередину джерела проти поля. У <em>термоелементі</em> різниця температур на спаях двох різних металів викликає дифузію носіїв, що створює сторонню ЕРС. У
+<em>фотоелементі</em> енергія світла вивільняє носії, розділяючи їх по різні боки переходу. У <em>електрогенераторі</em> механічне обертання рамки в магнітному полі породжує силу Лоренца, яка відіграє роль сторонньої сили. Попри різну
+природу, всі ці механізми можна описати єдиним чином — через поле сторонніх сил.
+</p>
+
+<p>
+Незалежно від конкретної природи, для кількісного опису вводять <em><span
+    class="textcolor"
+    style="color:#990000"
+>поле сторонніх сил</span></em> \(\vect E^*\) — сторонню силу, що діє на одиничний позитивний заряд:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{14}\)</span>
+
+<!--
+
+
+                                                                                           𝐅∗
+                                                                                    𝐄∗ =      .                                                                                  (7.15)             --><a id="eq:ExtraneousForceField"></a><!--
+                                                                                           𝑞
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ExtraneousForceField} \vect E^* = \frac {\vect F^*}{q}.
+\end{equation}
+
+</p>
+
+<p>
+Роботу сторонніх сил з переміщення одиничного позитивного заряду з точки \(1\) у точку \(2\) (в межах ділянки, де діють сторонні сили) називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>електрорушійною силою</span></em> (ЕРС):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{15}\)</span>
+
+<!--
+
+
+                                                                                                                           ˆ(2)
+                                                                                                                    𝐴∗
+                                                                                                               E=      =       𝐄∗ ⋅ 𝑑𝐫.                                                              (7.16)           --><a id="eq:EMFDef"></a><!--
+                                                                                                                    𝑞
+                                                                                                                           (1)
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:EMFDef} \emf = \frac {A^*}{q} = \int \limits _{(1)}^{(2)} \vect E^* \cdot d\vect r.
+\end{equation}
+
+</p>
+
+<p>
+Для <em>замкненого</em> кола цей інтеграл перетворюється на циркуляцію поля сторонніх сил по всьому контуру:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{16}\)</span>
+
+<!--
+
+                                                                                                                      ˛
+                                                                                                                 E=        𝐄∗ ⋅ 𝑑𝐫.                                                        (7.17)             --><a id="eq:EMFClosedLoop"></a><!--
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:EMFClosedLoop} \tcbhighmath { \emf = \oint \vect E^* \cdot d\vect r. }
+\end{equation}
+
+</p>
+
+<p>
+Саме ця циркуляція і відрізняє поле сторонніх сил від електростатичного: електростатичне поле <em><span
+    class="textcolor"
+    style="color:#990000"
+>потенціальне</span></em>, його циркуляція по будь-якому замкненому контуру дорівнює нулю, тоді як циркуляція поля сторонніх сил по замкненому контуру <em>не</em> дорівнює нулю — і саме вона дорівнює ЕРС.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Попри назву, ЕРС — це не сила, а робота (точніше, робота на одиницю заряду), тобто величина з розмірністю потенціалу (напруги), а не сили. Історична назва — данина часів, коли поняття енергії й роботи в електриці ще не було чітко
+відокремлено від поняття сили.
+</p>
+</div>
+
+<p>
+Якщо на провідник одночасно діють і електростатичне поле \(\Efield \), і поле сторонніх сил \(\vect E^*\), то на кожен носій заряду діє сумарна сила \(\vect F = q(\Efield + \vect E^*)\), і диференціальний закон Ома&nbsp;<span
+class="textup">(<a href="ch7.html#eq:OhmDiff">7.10</a>)</span> узагальнюється:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{17}\)</span>
+
+<!--
+
+
+                                                                                     𝐣 = 𝜆 (𝐄 + 𝐄∗ ) .                                                                                    (7.18)              --><a id="eq:GeneralizedOhm"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:GeneralizedOhm} \tcbhighmath { \vect j = \lambda \left (\Efield + \vect E^*\right ). }
+\end{equation}
+
+</p>
+<!--
+...... subsection Закон Ома в інтегральній формі для неоднорідної ділянки та замкненого кола ......
+-->
+<h5 id="autosec-512">Закон Ома в інтегральній формі для неоднорідної ділянки та замкненого кола</h5>
+<a id="main-html-autopage-512"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Неоднорідною</span></em> називають ділянку кола, на якій, окрім електростатичного поля, діють ще й сторонні сили (рис.&nbsp;<a href="ch7.html#pic:OhmLaw">7.9</a>). Розглянемо таку ділянку між точками \(1\) і \(2\) і проінтегруємо
+узагальнений закон Ома&nbsp;<span class="textup">(<a href="ch7.html#eq:GeneralizedOhm">7.18</a>)</span>, скалярно помножений на елемент довжини \(d\vect r\) уздовж ділянки, від точки \(1\) до точки \(2\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{18}\)</span>
+
+<!--
+
+
+                                                                                                       ˆ(2)              ˆ(2)        ˆ(2)
+                                                                                                              𝐣 ⋅ 𝑑𝐫
+                                                                                                                     =       𝐄 ⋅ 𝑑𝐫 + 𝐄∗ ⋅ 𝑑𝐫.
+                                                                                                                 𝜆
+                                                                                                       (1)               (1)       (1)
+
+-->
+
+<p>
+
+\begin{equation*}
+\int \limits _{(1)}^{(2)} \frac {\vect j\cdot d\vect r}{\lambda } = \int \limits _{(1)}^{(2)} \Efield \cdot d\vect r + \int \limits _{(1)}^{(2)} \vect E^*\cdot d\vect r.
+\end{equation*}
+
+</p>
+
+<figure id="autoid-157" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-103"
+    class="lateximagesource"
+><!--
+         E
+                 𝑅
+𝜑1                       𝜑1
+1                        2
+
+
+             +
+
+                     +
+                         2
+         +
+
+
+1    +
+--><img
+   src="main-html-images\image-103.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.9. Неоднорідна ділянка кола (згори — електрична схема; знизу — та сама ділянка у вигляді «потенціальних гірок», що показує зміну потенціалу вздовж шляху заряду) між точками \(1\) (потенціал \(\phi _1\)) і \(2\) (потенціал \(\phi
+_2\)), де на заряд діють і опір, і сторонні сили<a id="pic:OhmLaw"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Ліва частина рівняння, з огляду на сталість сили струму \(I\) уздовж послідовно з’єднаної ділянки (стаціонарність!) і означення опору, дорівнює \(IR\), де \(R = \int \rho \, dl/S\) — опір усієї ділянки; перший доданок справа, за означенням
+потенціалу, дорівнює \(\phi _1 - \phi _2\); другий, за означенням&nbsp;<span class="textup">(<a href="ch7.html#eq:EMFDef">7.16</a>)</span>, — це ЕРС \(\emf \), що діє на ділянці. Отримуємо <em><span
+    class="textcolor"
+    style="color:#990000"
+>закон Ома для неоднорідної ділянки кола</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{18}\)</span>
+
+<!--
+
+
+                                                                                                                 𝐼𝑅 = 𝜑1 − 𝜑2 + E .                                                      (7.19)         --><a id="eq:OhmNonUniform"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:OhmNonUniform} \tcbhighmath { IR = \phi _1 - \phi _2 + \emf . }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Знак ЕРС у формулі&nbsp;<span class="textup">(<a href="ch7.html#eq:OhmNonUniform">7.19</a>)</span> — <em>алгебраїчний</em>: якщо джерело ЕРС на цій ділянці сприяє руху позитивних носіїв в обраному напрямку (від \(1\) до \(2\)),
+то \(\emf &gt; 0\); якщо перешкоджає — \(\emf &lt; 0\). Практичне правило: обходячи ділянку від \(1\) до \(2\), ЕРС беруть зі знаком «плюс», якщо цей обхід усередині джерела відбувається від мінуса до плюса (тобто в напрямку дії сторонніх
+сил), і зі знаком «мінус» — у протилежному випадку.
+</p>
+</div>
+
+<p>
+Для <em>замкненого</em> кола точки \(1\) і \(2\) збігаються, тому \(\phi _1 = \phi _2\), і закон&nbsp;<span class="textup">(<a href="ch7.html#eq:OhmNonUniform">7.19</a>)</span> набуває найпростішого вигляду:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{19}\)</span>
+
+<!--
+
+
+                                                                                                                       𝐼𝑅 = E ,                                                          (7.20)         --><a id="eq:OhmClosedLoop"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:OhmClosedLoop} \tcbhighmath { IR = \emf , }
+\end{equation}
+
+</p>
+
+<p>
+де тепер \(R\) — повний опір усього замкненого кола, а \(\emf \) — алгебраїчна сума всіх ЕРС, що діють у цьому колі.
+</p>
+<!--
+...... subsection Внутрішній опір джерела. ККД джерела ......
+-->
+<h5 id="autosec-516">Внутрішній опір джерела. ККД джерела</h5>
+<a id="main-html-autopage-516"></a>
+
+
+<p>
+Реальне джерело ЕРС (гальванічний елемент, акумулятор, генератор) завжди має власний, <em><span
+    class="textcolor"
+    style="color:#990000"
+>внутрішній</span></em> опір \(r\) — адже сторонні сили діють не в математичній точці, а в певному матеріальному об’ємі джерела, який чинить такий самий опір проходженню струму, як і решта кола. Якщо джерело з ЕРС \(\emf \) і
+внутрішнім опором \(r\) замкнене на зовнішнє навантаження опором \(R\), закон Ома для замкненого кола&nbsp;<span class="textup">(<a href="ch7.html#eq:OhmClosedLoop">7.20</a>)</span> набуває вигляду
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{20}\)</span>
+
+<!--
+
+
+                                                                                      E
+                                                                                 𝐼=         .                                                                             (7.21)            --><a id="eq:OhmInternalResistance"></a><!--
+                                                                                      𝑅+𝑟
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:OhmInternalResistance} \tcbhighmath { I = \frac {\emf }{R+r}. }
+\end{equation}
+
+</p>
+
+<p>
+Звідси видно два граничні випадки: при розімкненому колі (\(R\to \infty \)) струм відсутній, а напруга на затискачах джерела дорівнює якраз ЕРС \(\emf \) (це і є практичний спосіб виміряти ЕРС — вольтметром з дуже великим внутрішнім
+опором, коли струм у колі нехтовно малий); при <em><span
+    class="textcolor"
+    style="color:#990000"
+>короткому замиканні</span></em> (\(R=0\)) струм досягає максимального значення \(I_{\text {к.з.}} = \emf /r\), обмеженого вже тільки внутрішнім опором самого джерела.
+</p>
+
+<p>
+Потужність, яку джерело віддає у зовнішнє коло, дорівнює \(\mathcal P_{\text {зовн}} = I^2R\), тоді як повна потужність, яку розвивають сторонні сили, — \(\mathcal P_{\text {повн}} = \emf I = I^2(R+r)\); різниця \(I^2 r\)
+виділяється у вигляді тепла всередині самого джерела. Відношення цих потужностей називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>коефіцієнтом корисної дії</span></em> джерела:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{21}\)</span>
+
+<!--
+
+                                                                                    𝒫зовн    𝑅
+                                                                               𝜂=         =     .                                                                                  (7.22)        --><a id="eq:SourceEfficiency"></a><!--
+                                                                                    𝒫повн   𝑅+𝑟
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SourceEfficiency} \eta = \frac {\mathcal P_{\text {зовн}}}{\mathcal P_{\text {повн}}} = \frac {R}{R+r}.
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+ККД джерела зростає з \(R\) монотонно, прямуючи до одиниці при \(R\to \infty \) — але саме тоді струм, а отже й <em><span
+    class="textcolor"
+    style="color:#990000"
+>корисна потужність</span></em> \(\mathcal P_{\text {зовн}}=I^2R = \emf ^2 R/(R+r)^2\), прямує до нуля. Максимум корисної потужності (а не ККД!) досягається при <em><span
+    class="textcolor"
+    style="color:#990000"
+>узгодженому навантаженні</span></em> \(R=r\), і дорівнює \(\mathcal P_{\max } = \emf ^2/(4r)\); при цьому ККД становить лише \(50\%\).
+</p>
+</div>
+<!--
+...... subsection Розгалужені кола. Правила Кірхгофа ......
+-->
+<h5 id="autosec-517">Розгалужені кола. Правила Кірхгофа</h5>
+<a id="main-html-autopage-517"></a>
+
+
+<p>
+Закони&nbsp;<span class="textup">(<a href="ch7.html#eq:OhmNonUniform">7.19</a>)</span>–<span class="textup">(<a href="ch7.html#eq:OhmClosedLoop">7.20</a>)</span> безпосередньо дозволяють розрахувати нерозгалужене коло,
+де по всьому колу тече той самий струм. У розгалуженому колі (тобто в колі з кількома контурами, що мають спільні ділянки) струми на різних ділянках різні, і їх усі треба знайти. Для цього закон Ома для неоднорідної ділянки&nbsp;<span
+class="textup">(<a href="ch7.html#eq:OhmNonUniform">7.19</a>)</span> доповнюють умовою стаціонарності&nbsp;<span class="textup">(<a href="ch7.html#eq:ContinuitySteady">7.7</a>)</span>; разом вони записуються у формі
+двох правил Кірхгофа.
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Перше правило Кірхгофа</span></em> стосується <em><span
+    class="textcolor"
+    style="color:#990000"
+>вузлів</span></em> кола — точок, де сходяться три й більше провідники (рис.&nbsp;<a href="ch7.html#pic:Nodes">7.10</a>). Його фізична причина — збереження електричного заряду разом зі стаціонарністю струму. Вузол не може
+накопичувати заряд: якби сумарний струм, що втікає у вузол, перевищував сумарний струм, що витікає з нього, то заряд поблизу вузла зростав би зі швидкістю \(dq/dt = \sum I_{\text {вх}} - \sum I_{\text {вих}} \ne 0\), разом із ним
+змінювалися б потенціал вузла й створене ним поле, а отже, і струми в провідниках — усе це суперечить стаціонарності. Насправді навіть мізерний надлишок заряду створює поле, яке відразу перерозподіляє струми так, що баланс відновлюється;
+тому в стаціонарному режимі заряд вузла не змінюється.
+</p>
+
+<figure id="autoid-158" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-104"
+    class="lateximagesource"
+><!--
+ 𝐼2
+       𝐼1
+
+𝐼3
+      𝐼4
+--><img
+   src="main-html-images\image-104.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.10. Вузол розгалуженого кола: \(I_1 + I_4 = I_2 + I_3\)<a id="pic:Nodes"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Кількісно це наслідок рівняння&nbsp;<span class="textup">(<a href="ch7.html#eq:ContinuitySteady">7.7</a>)</span>, застосованого до замкненої поверхні \(S\), що охоплює вузол і перетинає лише підвідні провідники. Поза провідниками
+\(\vect j = 0\), а потік вектора \(\vect j\) крізь переріз \(k\)-го провідника дорівнює \(\pm I_k\) (знак «плюс», якщо струм витікає з об’єму, «мінус» — якщо втікає). Тому \(\oiint _S \vect j\cdot d\vect S = 0\) перетворюється на
+твердження: алгебраїчна сума струмів, що сходяться у вузлі, дорівнює нулю:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{22}\)</span>
+
+<!--
+
+
+                                                                                                                    𝐾
+                                                                                                                    ∑ 𝐼𝑘 = 0.                                                               (7.23)        --><a id="eq:Kirchhoff1"></a><!--
+                                                                                                                   𝑘=1
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Kirchhoff1} \tcbhighmath { \sum \limits _{k=1}^K I_k = 0. }
+\end{equation}
+
+</p>
+
+<p>
+Струми, що втікають у вузол, і струми, що витікають з нього, при цьому слід вважати величинами <em>різних знаків</em> (наприклад, «втікає» — зі знаком «плюс», «витікає» — зі знаком «мінус», або навпаки, аби послідовно дотримуватись однієї
+домовленості).
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Друге правило Кірхгофа</span></em> стосується довільного <em>контуру</em> (замкненої частини розгалуженого кола, рис.&nbsp;<a href="ch7.html#pic:Loop">7.11</a>). Закон Ома для замкненого кола&nbsp;<span class="textup">(<a
+href="ch7.html#eq:OhmClosedLoop">7.20</a>)</span> тут безпосередньо застосувати не можна: він записаний для єдиного струму \(I\), тоді як на різних ділянках контуру розгалуженого кола струми різні. Тому виходимо із закону Ома для
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>неоднорідної ділянки</span></em>&nbsp;<span class="textup">(<a href="ch7.html#eq:OhmNonUniform">7.19</a>)</span>, який справедливий для кожної ділянки окремо.
+</p>
+
+<figure id="autoid-159" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-105"
+    class="lateximagesource"
+><!--
+     ℰ1
+𝜑1
+               𝐼1   𝑅1
+                              𝜑2
+
+
+𝑅3
+
+
+
+
+                                   2
+                              ℰ
+                         𝐼2
+     𝐼3
+
+
+
+
+                     2
+                    𝑅
+     ℰ3
+          𝜑3
+--><img
+   src="main-html-images\image-105.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.11. Контур розгалуженого кола з трьома ЕРС і трьома резисторами<a id="pic:Loop"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Оберемо напрям обходу контуру (рис.&nbsp;<a href="ch7.html#pic:Loop">7.11</a>) й розіб’ємо контур на \(M\) послідовних ділянок так, щоб на кожній ділянці струм був сталим (за першим правилом він може змінитися лише у вузлах). Точки,
+що розділяють ділянки, пронумеруємо за ходом обходу: ділянка \(m\) іде від точки \(m\) до точки \(m+1\), а після останньої ділянки повертаємося в точку&nbsp;\(1\) (тобто \(M+1\equiv 1\)). Нехай \(I_m\) — сила струму на ділянці \(m\) (додатна,
+якщо струм іде за напрямом обходу), \(R_m\) — її опір, \(\emf _m\) — ЕРС на ній (додатна, якщо сторонні сили діють за напрямом обходу; якщо джерела на ділянці немає, \(\emf _m = 0\)). Закон&nbsp;<span class="textup">(<a
+href="ch7.html#eq:OhmNonUniform">7.19</a>)</span> для ділянки \(m\) дає
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{23}\)</span>
+
+<!--
+
+
+                                                                                                     𝐼𝑚 𝑅𝑚 = 𝜑𝑚 − 𝜑𝑚+1 + E𝑚 ,     𝑚 = 1, … , 𝑀.
+
+-->
+
+<p>
+
+\begin{equation*}
+I_m R_m = \phi _m - \phi _{m+1} + \emf _m, \qquad m = 1,\dots ,M.
+\end{equation*}
+
+</p>
+
+<p>
+Додамо ці \(M\) рівностей:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{23}\)</span>
+
+<!--
+
+                                                                                                       𝑀             𝑀                𝑀
+                                                                                                       ∑ 𝐼𝑚 𝑅𝑚 = ∑ (𝜑𝑚 − 𝜑𝑚+1 ) + ∑ E𝑚 .
+                                                                                                       𝑚=1        𝑚=1                𝑚=1
+
+-->
+
+<p>
+
+\begin{equation*}
+\sum \limits _{m=1}^M I_m R_m = \sum \limits _{m=1}^M \left (\phi _m - \phi _{m+1}\right ) + \sum \limits _{m=1}^M \emf _m.
+\end{equation*}
+
+</p>
+
+<p>
+Перша сума справа — «телескопічна»: \((\phi _1-\phi _2)+(\phi _2-\phi _3)+\dots +(\phi _M-\phi _1)=0\), бо потенціали проміжних точок скорочуються, а потенціал у початковій точці входить двічі з протилежними знаками. Фізично це
+означає, що електростатичне поле потенціальне: циркуляція \(\oint \Efield \cdot d\vect r\) по замкненому контуру дорівнює нулю, і в кожній точці потенціал має єдине значення. Отже, електростатичні потенціали з рівняння зникають, і
+лишається <em><span
+    class="textcolor"
+    style="color:#990000"
+>друге правило Кірхгофа</span></em>: алгебраїчна сума добутків сил струмів на опори ділянок контуру дорівнює алгебраїчній сумі ЕРС, що діють у цьому контурі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{23}\)</span>
+
+<!--
+
+
+                                                                                                                 𝑀           𝑁
+                                                                                                                 ∑ 𝐼𝑚 𝑅𝑚 = ∑ E𝑛 .                                                             (7.24)        --><a id="eq:Kirchhoff2"></a><!--
+                                                                                                                𝑚=1         𝑛=1
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Kirchhoff2} \tcbhighmath { \sum \limits _{m=1}^M I_m R_m = \sum \limits _{n=1}^N \emf _n. }
+\end{equation}
+
+</p>
+
+<p>
+Тут \(N\) — кількість джерел у контурі (ЕРС відмінні від нуля лише на ділянках із джерелами). Отже, друге правило — це закон Ома для неоднорідної ділянки, записаний для всіх ділянок контуру й підсумований так, що потенціали скоротилися.
+Якщо коло нерозгалужене, усі \(I_m\) однакові, і&nbsp;<span class="textup">(<a href="ch7.html#eq:Kirchhoff2">7.24</a>)</span> зводиться до закону Ома для замкненого кола&nbsp;<span class="textup">(<a
+href="ch7.html#eq:OhmClosedLoop">7.20</a>)</span>.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Щоб послідовно застосувати друге правило Кірхгофа, потрібно: (1)&nbsp;довільно обрати напрям обходу контуру (за годинниковою стрілкою чи проти); (2)&nbsp;довільно обрати (і позначити на схемі) напрями невідомих струмів \(I_m\) на кожній
+ділянці; (3)&nbsp;доданок \(I_mR_m\) брати зі знаком «плюс», якщо обраний напрям струму на цій ділянці збігається з напрямом обходу, і зі знаком «мінус» — якщо ні; (4)&nbsp;ЕРС \(\emf _n\) брати зі знаком «плюс», якщо напрям обходу контуру
+всередині джерела йде від мінуса до плюса, і зі знаком «мінус» — у протилежному випадку. Якщо в результаті розв’язання системи рівнянь якийсь зі струмів \(I_m\) виявиться від’ємним, це означає лише, що його реальний напрям — протилежний
+до обраного на кроці (2), а не помилку в розрахунку.
+</p>
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Приклад: розрахунок розгалуженого кола.</b> Розглянемо коло з двома вузлами й трьома паралельними гілками: у першій діють ЕРС \(\emf _1=6\)&nbsp;В і опір \(R_1=1\)&nbsp;Ом, у другій — \(\emf _2=3\)&nbsp;В і опір
+\(R_2=2\)&nbsp;Ом, третя гілка містить лише опір \(R_3=3\)&nbsp;Ом (без ЕРС). Позначимо струми у гілках \(I_1\), \(I_2\), \(I_3\), спрямувавши всі три до одного й того самого («верхнього») вузла.
+</p>
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-106"
+    class="lateximagesource"
+><!--
+     𝐼1        𝐼2
+                     𝐼3
+ 𝑅1        𝑅2
+                    𝑅3
+
+
+
+E1        E2
+--><img
+   src="main-html-images\image-106.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+</div>
+
+<p>
+За першим правилом Кірхгофа&nbsp;<span class="textup">(<a href="ch7.html#eq:Kirchhoff1">7.23</a>)</span> для цього вузла:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{24}\)</span>
+
+<!--
+
+
+                                                                                                                    𝐼1 + 𝐼 2 − 𝐼 3 = 0
+
+-->
+
+<p>
+
+\begin{equation*}
+I_1 + I_2 - I_3 = 0
+\end{equation*}
+
+</p>
+
+<p>
+(струм \(I_3\) узято зі знаком «мінус», оскільки, на відміну від \(I_1\) та \(I_2\), він насправді витікає з вузла, якщо коло замкнене третьою гілкою). За другим правилом&nbsp;<span class="textup">(<a
+href="ch7.html#eq:Kirchhoff2">7.24</a>)</span>, обходячи почергово контур «гілка 1 — гілка 3» і контур «гілка 2 — гілка 3» за годинниковою стрілкою:
+</p>
+<span class="hidden"> \(\seteqnumber{0}{7.}{24}\)</span>
+
+
+<!--
+
+
+
+                                                                                                                   𝐼1 𝑅1 + 𝐼3 𝑅3 = E1 ,
+                                                                                                                   𝐼2 𝑅2 + 𝐼3 𝑅3 = E2 .
+
+
+
+-->
+
+
+<p>
+
+\begin{align*}
+I_1 R_1 + I_3 R_3 &amp;= \emf _1, \\ I_2 R_2 + I_3 R_3 &amp;= \emf _2.
+\end{align*}
+Підставляючи числові значення й розв’язуючи систему трьох рівнянь відносно \(I_1\), \(I_2\), \(I_3\), знаходимо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{24}\)</span>
+
+<!--
+
+
+                                                                                                    𝐼1 ≈ 1.91 А,     𝐼2 ≈ −0.55 А,        𝐼3 ≈ 1.36 А.
+
+-->
+
+<p>
+
+\begin{equation*}
+I_1 \approx 1.91\ \text {А}, \qquad I_2 \approx -0.55\ \text {А}, \qquad I_3 \approx 1.36\ \text {А}.
+\end{equation*}
+
+</p>
+
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+Від’ємне значення \(I_2\approx -0.55\)&nbsp;А не є помилкою: воно означає, що реальний напрям струму в другій гілці протилежний до довільно обраного на початку розрахунку — тобто джерело \(\emf _2\) насправді не віддає струм у коло, а,
+навпаки, підзаряджається струмом, що тече від потужнішого джерела \(\emf _1\). Такий результат типовий для кіл із кількома джерелами різної ЕРС, увімкненими паралельно.
+</p>
+</div>
+<!--
+...... section Закон Джоуля-Ленца ......
+-->
+<h4 id="autosec-527"><span class="sectionnumber">7.5&#x2003;</span>Закон Джоуля-Ленца</h4>
+<a id="main-html-autopage-527"></a>
+
+
+<p>
+<a id="LWR-ht-joule-lenz-law"></a>
+</p>
+
+<p>
+Оскільки провідник зі струмом чинить опір рухові носіїв заряду (розсіюючи їхню впорядковану кінетичну енергію на теплові коливання ґратки при зіткненнях), проходження струму неминуче супроводжується виділенням тепла.
+</p>
+
+<p>
+Робота поля з перенесення заряду \(dq\) через різницю потенціалів \(U\) дорівнює \(dA = U\, dq = UI\, dt\); уся ця робота, за відсутності інших змін в системі (наприклад, накопичення енергії в конденсаторі), переходить у теплоту, тому
+потужність тепловиділення на ділянці кола \(\mathcal P = dA/dt = UI\), а за законом Ома \(U=IR\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{24}\)</span>
+
+<!--
+
+
+                                                                                                                                            𝑈2
+                                                                                                                                𝒫 = 𝐼2𝑅 =      .
+                                                                                                                                            𝑅
+
+-->
+
+<p>
+
+\begin{equation*}
+\mathcal P = I^2 R = \frac {U^2}{R}.
+\end{equation*}
+
+</p>
+
+<p>
+Записуючи це для нескінченно малого циліндричного елемента провідника (\(U \to E\, dl\), \(I \to j\, dS\)) і ділячи на його об’єм \(dV = dl\, dS\), отримуємо формулу для <em><span
+    class="textcolor"
+    style="color:#990000"
+>об’ємної густини потужності тепловиділення</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{24}\)</span>
+
+<!--
+
+
+                                                                                         𝑤 = 𝜆𝐸 2 = 𝐣 ⋅ 𝐄.                                                                         (7.25)              --><a id="eq:JouleLenzDiff"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:JouleLenzDiff} \tcbhighmath { w = \lambda E^2 = \vect j\cdot \Efield . }
+\end{equation}
+
+</p>
+
+<p>
+Інтегруючи по всьому об’єму провідника, знаходимо <em><span
+    class="textcolor"
+    style="color:#990000"
+>закон Джоуля-Ленца в інтегральній формі</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{25}\)</span>
+
+<!--
+
+                                                                        ˆ            ˆ                    ˆ
+                                                                                                                  𝑑𝑙
+                                                                   𝒫=       𝑤 𝑑𝑉 =        𝜌𝑗 2 𝑑𝑉 = 𝐼 2       𝜌      = 𝐼 2 𝑅.                                                 (7.26)               --><a id="eq:JouleLenzIntegral"></a><!--
+                                                                                                                  𝑆
+                                                                        𝑉            𝑉                    𝑉
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:JouleLenzIntegral} \tcbhighmath { \mathcal P = \int \limits _V w\, dV = \int \limits _V \rho j^2\, dV = I^2\int \limits _V \rho \,\frac {dl}{S} = I^2 R. }
+\end{equation}
+
+</p>
+<!--
+...... section Струми в необмежених середовищах ......
+-->
+<h4 id="autosec-528"><span class="sectionnumber">7.6&#x2003;</span>Струми в необмежених середовищах</h4>
+<a id="main-html-autopage-528"></a>
+
+
+<a id="sec:CurrentsInUnboundedMedia"></a>
+
+<p>
+<a id="LWR-ht-currents-in-unbounded-media"></a>
+</p>
+
+<p>
+Досі опір провідника обчислювався за готовою формулою&nbsp;<span class="textup">(<a href="ch7.html#eq:ResistanceCylinder">7.9</a>)</span> для найпростішої, циліндричної геометрії, у якій струм тече строго вздовж однієї осі. Але як
+бути, коли струм <em>розтікається</em> в просторі довільної форми — наприклад, від електрода чи заземлювача в необмежене провідне середовище? Виявляється, для цього не потрібна принципово нова теорія: досить згадати вже відому з
+електростатики аналогію між рівнянням Лапласа для потенціалу й тим самим рівнянням, що керує розподілом струму.
+</p>
+
+<p>
+Розглянемо задачу, яка, на перший погляд, не стосується «кіл» у звичному розумінні: у провідне середовище з питомою провідністю \(\lambda \) і діелектричною проникністю \(\epsilon \) занурено два електроди, і потрібно знайти повний опір
+середовища між ними (рис.&nbsp;<a href="ch7.html#pic:MediaCurrent">7.12</a>). Ця задача важлива, наприклад, для розрахунку опору заземлення.
+</p>
+
+<figure id="autoid-160" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-107"
+    class="lateximagesource"
+><!--
++   𝜆, 𝜀   −
+--><img
+   src="main-html-images\image-107.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.12. Два електроди в необмеженому провідному середовищі з провідністю \(\lambda \) і проникністю \(\epsilon \)<a id="pic:MediaCurrent"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Нехай на електроди нанесено заряди \(+q\) і \(-q\). З теореми Гаусса для електростатичного поля в діелектрику, застосованої до поверхні, що охоплює позитивний електрод,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{26}\)</span>
+
+<!--
+
+                                                                                                        ˛
+                                                                                                                         4𝜋    4𝜋
+                                                                                                            𝐄 ⋅ 𝑑𝐒 =        𝑞=    𝐶(𝜑+ − 𝜑− ),
+                                                                                                                          𝜀     𝜀
+                                                                                                        𝑆
+
+-->
+
+<p>
+
+\begin{equation*}
+\oiint \limits _S \Efield \cdot d\vect S = \frac {4\pi }{\epsilon }\, q = \frac {4\pi }{\epsilon }\, C(\phi _+ - \phi _-),
+\end{equation*}
+
+</p>
+
+<p>
+де \(C\) — взаємна ємність електродів (у середовищі з проникністю \(\epsilon \)), а \(q = C(\phi _+ - \phi _-)\). Але та сама поверхня охоплює й струм, що стікає з електрода: за диференціальним законом Ома, \(\vect j = \lambda \Efield
+\) поблизу поверхні електрода, тому повний струм, що стікає з нього,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{26}\)</span>
+
+<!--
+
+                                                                                                        ˛                ˛
+                                                                                                                                        4𝜋𝜆
+                                                                                                   𝐼=       𝐣 ⋅ 𝑑𝐒 = 𝜆       𝐄 ⋅ 𝑑𝐒 =       𝐶(𝜑+ − 𝜑− ).
+                                                                                                                                         𝜀
+                                                                                                        𝑆                𝑆
+
+-->
+
+<p>
+
+\begin{equation*}
+I = \oiint \limits _S \vect j\cdot d\vect S = \lambda \oiint \limits _S \Efield \cdot d\vect S = \frac {4\pi \lambda }{\epsilon }\, C(\phi _+ - \phi _-).
+\end{equation*}
+
+</p>
+
+<p>
+Звідси опір середовища між електродами:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{26}\)</span>
+
+<!--
+
+
+                                                                             𝜑+ − 𝜑 −     𝜀
+                                                                        𝑅=            =      .                                                                          (7.27)          --><a id="eq:GroundResistanceGeneral"></a><!--
+                                                                                𝐼       4𝜋𝜆𝐶
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:GroundResistanceGeneral} \tcbhighmath { R = \frac {\phi _+ - \phi _-}{I} = \frac {\epsilon }{4\pi \lambda C}. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch7.html#eq:GroundResistanceGeneral">7.27</a>)</span> виражає чудову й зовсім не очевидну <em>аналогію</em> між електростатичною задачею про ємність і задачею про опір провідного
+середовища: обидві задачі зводяться до розв’язання <em>однакового</em> рівняння (рівняння Лапласа для потенціалу) з однаковими граничними умовами на поверхнях електродів — відрізняється лише те, яку саме величину ми обчислюємо через
+потенціал (\(q\) чи \(I\)). Тому <em>щойно відома ємність</em> якоїсь конфігурації електродів, опір середовища між ними отримують одразу, без жодних додаткових обчислень, за формулою&nbsp;<span class="textup">(<a
+href="ch7.html#eq:GroundResistanceGeneral">7.27</a>)</span>.
+</p>
+</div>
+
+<p>
+Скориставшись цією аналогією, відразу випишемо два важливі окремі випадки.
+</p>
+
+<p>
+<em>Дві далекі кулі-електроди.</em> Якщо електроди — провідні кулі з власними ємностями \(C_1 = \epsilon r_1\) і \(C_2 = \epsilon r_2\), віддалені одна від одної на велику відстань, то, за формулою для взаємної ємності далеких
+провідників (гл.&nbsp;<a href="ch6.html#ElEnergy">6</a>), \(1/C = 1/C_1 + 1/C_2 = (1/\epsilon )(1/r_1+1/r_2)\), тому
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{27}\)</span>
+
+<!--
+
+                                                                            1  1  1
+                                                                      𝑅=      ( + ),                                                                           (7.28)             --><a id="eq:GroundResistanceTwoElectrodes"></a><!--
+                                                                           4𝜋𝜆 𝑟1 𝑟2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:GroundResistanceTwoElectrodes} R = \frac 1{4\pi \lambda }\left (\frac 1{r_1}+\frac 1{r_2}\right ),
+\end{equation}
+
+</p>
+
+<p>
+— тобто опір заземлення практично <em>не залежить</em> від відстані між кулями (вона взагалі не входить у формулу), а визначається лише розмірами самих електродів.
+</p>
+
+<p>
+<em>Плоскі електроди.</em> Якщо електроди — обкладки плоского конденсатора площею \(S\) на відстані \(d\) одна від одної, то \(C = \epsilon S/(4\pi d)\), та
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{28}\)</span>
+
+<!--
+
+
+                                                                                     𝑑
+                                                                                𝑅=      ,                                                                                (7.29)          --><a id="eq:GroundResistancePlates"></a><!--
+                                                                                     𝜆𝑆
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:GroundResistancePlates} R = \frac {d}{\lambda S},
+\end{equation}
+
+</p>
+
+<p>
+що просто збігається з відомою формулою&nbsp;<span class="textup">(<a href="ch7.html#eq:ResistanceCylinder">7.9</a>)</span> для опору однорідного провідника довжиною \(d\), перерізом \(S\) і питомим опором \(1/\lambda \) — як,
+зрештою, і мало бути.
+</p>
+
+
+<div class="cb-example">
+
+<p>
+<b>Приклад: опір заземлення і крокова напруга.</b> Нехай фундамент металевої опори лінії електропередач має вигляд півсфери діаметром \(D=2\)&nbsp;м, а ґрунт навколо неї має провідність \(\lambda = 2\cdot 10^{-4}\)&nbsp;См/см і
+слугує заземленням (рис.&nbsp;<a href="ch7.html#pic:StepVoltage">7.13</a>). Знайдемо опір заземлення та <em><span
+    class="textcolor"
+    style="color:#990000"
+>крокову напругу</span></em> на відстані \(r=5\)&nbsp;м від центру опори в разі замикання проводу високої напруги \(\phi _0=10\)&nbsp;кВ на опору, якщо довжина кроку людини \(\ell =0.7\)&nbsp;м.
+</p>
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-108"
+    class="lateximagesource"
+><!--
+                          𝜑
+
+
+
+
+𝑈крокова = 𝜑1 − 𝜑2
+
+                     𝜑1
+                     𝜑2
+
+
+
+
+                      𝐷
+                                  𝑟
+                      2
+
+
+
+
+                              ℓ
+--><img
+   src="main-html-images\image-108.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+<a id="autoid-161" ></a >
+Рис.&nbsp;7.13. Розтікання струму від напівсферичного заземлювача та крокова напруга<a id="pic:StepVoltage"></a>
+</div>
+</div>
+
+<p>
+Ємність напівсфери радіуса \(D/2\), що межує із землею, вдвічі <em>менша</em> за ємність повної кулі того самого радіуса \(C_{\text {кулі}}=\epsilon D/2\) в необмеженому середовищі (поле існує лише в півпросторі, тож при тому самому
+потенціалі заряд на електроді вдвічі менший), тому \(C = \epsilon D/4\) (у гауссовій системі, для землі \(\epsilon \approx 1\)), і за формулою&nbsp;<span class="textup">(<a
+href="ch7.html#eq:GroundResistanceGeneral">7.27</a>)</span> з одним електродом на нескінченності (\(C_2\to \infty \), тобто \(1/C \to 1/C_1\))
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{29}\)</span>
+
+<!--
+
+                                                                                                                       1
+                                                                                                                 𝑅=       ≈ 8 Ом.
+                                                                                                                      𝜋𝜆𝐷
+
+-->
+
+<p>
+
+\begin{equation*}
+R = \frac {1}{\pi \lambda D} \approx 8\ \text {Ом}.
+\end{equation*}
+
+</p>
+
+<p>
+Потенціал напівсферичного заземлювача спадає обернено пропорційно відстані від його центру (як у точкового заряду):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{29}\)</span>
+
+<!--
+
+                                                                                                                           𝜑0 𝐷 1
+                                                                                                                  𝜑(𝑟) =       ⋅ .
+                                                                                                                            2   𝑟
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi (r) = \frac {\phi _0 D}{2}\cdot \frac 1r.
+\end{equation*}
+
+</p>
+
+<p>
+Крокова напруга — це різниця потенціалів між точками, де стоять дві ноги людини, на відстанях \(r\) і \(r+\ell \) від центру:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{29}\)</span>
+
+<!--
+
+                                                                                                                               𝜑0 𝐷       ℓ
+                                                                                                𝑈крокова = 𝜑(𝑟) − 𝜑(𝑟 + ℓ) =        ⋅           ≈ 246 В.
+                                                                                                                                2     𝑟 (𝑟 + ℓ)
+
+-->
+
+<p>
+
+\begin{equation*}
+U_\text {крокова} = \phi (r) - \phi (r+\ell ) = \frac {\phi _0 D}{2}\cdot \frac {\ell }{r\,(r+\ell )} \approx 246\ \text {В}.
+\end{equation*}
+
+</p>
+
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Крокова напруга</span></em> — важливе поняття техніки безпеки: людина, яка опинилась поблизу місця замикання проводу високої напруги на землю, не торкаючись самого проводу, все одно може отримати небезпечний удар струмом просто
+через різницю потенціалів між ступнями під час ходьби. Оскільки \(U_\text {крокова}\propto 1/r^2\) спадає значно швидше, ніж сам потенціал \(\phi \propto 1/r\), найнебезпечніша зона — це ділянка <em>біля самого заземлювача</em>, а
+рекомендована поведінка — віддалятися від місця замикання дрібними кроками (або стрибками, тримаючи ноги разом), щоб звести різницю потенціалів між ступнями до мінімуму.
+</p>
+</div>
+<!--
+...... section Перехідні процеси в колі з конденсатором ......
+-->
+<h4 id="autosec-535"><span class="sectionnumber">7.7&#x2003;</span>Перехідні процеси в колі з конденсатором</h4>
+<a id="main-html-autopage-535"></a>
+
+
+<p>
+<a id="LWR-ht-capacitor-transient-process"></a>
+</p>
+
+<p>
+Усе, що обговорювалося дотепер, стосувалося <em><span
+    class="textcolor"
+    style="color:#990000"
+>стаціонарних</span></em> струмів, які не змінюються з часом, а отже задовольняють спрощену умову \(\divg \vect j=0\)&nbsp;<span class="textup">(<a href="ch7.html#eq:ContinuitySteady">7.7</a>)</span>. Тепер розглянемо
+найважливіший для кіл випадок нестаціонарного процесу: коли заряд накопичується або вивільняється в деякому об’ємі (наприклад, на обкладинці конденсатора), тобто \(\partial \rho /\partial t\neq 0\), і працює повне рівняння
+неперервності&nbsp;<span class="textup">(<a href="ch7.html#eq:ContinuityDiff">7.6</a>)</span>. <em><span
+    class="textcolor"
+    style="color:#990000"
+>Перехідними процесами</span></em> називають процеси переходу від одного стаціонарного (чи взагалі відсутнього) режиму до іншого; найважливіший приклад у колах — заряджання та розряджання конденсатора.
+</p>
+<!--
+...... subsection Розрядка конденсатора ......
+-->
+<h5 id="autosec-536">Розрядка конденсатора</h5>
+<a id="main-html-autopage-536"></a>
+
+
+<p>
+Розглянемо коло з конденсатора \(C\), попередньо зарядженого до заряду \(q_0\), резистора \(R\) і ключа \(S\), з’єднаних послідовно (рис.&nbsp;<a href="ch7.html#pic:RCDischarge">7.14</a>). Після замикання ключа, за законом Ома для кола,
+\(RI = U\), де \(U = q/C\) — напруга на конденсаторі, а \(I = -dq/dt\) (струм тече в напрямку <em>зменшення</em> заряду конденсатора). Отримуємо диференціальне рівняння
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{29}\)</span>
+
+<!--
+
+
+                                                                                    𝑑𝑞    𝑞
+                                                                                       +    = 0,                                                                                 (7.30)              --><a id="eq:RCDischarge"></a><!--
+                                                                                    𝑑𝑡   𝑅𝐶
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RCDischarge} \frac {dq}{dt} + \frac {q}{RC} = 0,
+\end{equation}
+
+</p>
+
+<p>
+розв’язком якого (з початковою умовою \(q(0)=q_0\)) є експоненційне спадання заряду:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{30}\)</span>
+
+<!--
+
+
+                                                                         𝑞 = 𝑞0 𝑒−𝑡/𝑅𝐶 = 𝑞0 𝑒−𝑡/𝜏 ,                                                                     (7.31)              --><a id="eq:RCDischargeSolution"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RCDischargeSolution} \tcbhighmath { q = q_0\, e^{-t/RC} = q_0\, e^{-t/\tau }, }
+\end{equation}
+
+</p>
+
+<p>
+де величину \(\tau = RC\) називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>часом релаксації</span></em> — часом, за який заряд (а разом з ним струм і напруга) зменшується в \(e\approx 2.72\) раза.
+</p>
+
+<figure id="autoid-162" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-109"
+    class="lateximagesource"
+><!--
+𝐶       𝑅
+
+
+
+
+    𝑆
+--><img
+   src="main-html-images\image-109.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span> <span
+   id="lateximage-main-html-110"
+   class="lateximagesource"
+><!--
+𝑞
+𝑞0
+
+
+
+
+     𝑡
+--><img
+   src="main-html-images\image-110.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.14. Розрядка конденсатора через резистор: коло та графік \(q(t)\)<a id="pic:RCDischarge"></a>
+
+</div>
+
+</div>
+
+</figure>
+<!--
+...... subsection Зарядка конденсатора ......
+-->
+<h5 id="autosec-542">Зарядка конденсатора</h5>
+<a id="main-html-autopage-542"></a>
+
+
+<p>
+Аналогічно розглянемо зарядку конденсатора від джерела з ЕРС \(\emf \) через резистор \(R\) (рис.&nbsp;<a href="ch7.html#pic:RCCharge">7.15</a>). Закон Ома для кола тепер \(RI + U = \emf \), причому \(I = +dq/dt\) (струм тече в
+напрямку <em>зростання</em> заряду), звідки
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{31}\)</span>
+
+<!--
+
+
+                                                                                                              𝑑𝑞    𝑞  E
+                                                                                                                 +    = .                                                          (7.32)              --><a id="eq:RCCharge"></a><!--
+                                                                                                              𝑑𝑡   𝑅𝐶  𝑅
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RCCharge} \frac {dq}{dt} + \frac {q}{RC} = \frac {\emf }{R}.
+\end{equation}
+
+</p>
+
+<p>
+З початковою умовою \(q(0) = 0\) розв’язок цього рівняння — заряд, що монотонно й асимптотично наближається до граничного значення:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{32}\)</span>
+
+<!--
+
+
+                                                                     𝑞 = 𝑞max (1 − 𝑒−𝑡/𝜏 ) ,   𝑞max = E 𝐶,                                                                (7.33)              --><a id="eq:RCChargeSolution"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RCChargeSolution} \tcbhighmath { q = q_{\max }\left (1 - e^{-t/\tau }\right ), \qquad q_{\max } = \emf C, }
+\end{equation}
+
+</p>
+
+<p>
+причому \(q_{\max } = \emf C\) — це якраз рівноважний заряд конденсатора при \(t\to \infty \) (коли струм у колі припиняється, а вся ЕРС падає на конденсаторі), а стала часу \(\tau = RC\) — та сама, що й при розрядці.
+</p>
+
+<figure id="autoid-163" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-111"
+    class="lateximagesource"
+><!--
+    𝑅
+
+
+
+
+ℰ       𝐶
+
+
+
+
+    𝑆
+--><img
+   src="main-html-images\image-111.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span> <span
+   id="lateximage-main-html-112"
+   class="lateximagesource"
+><!--
+  𝑞
+𝑞max
+
+
+
+
+       𝑡
+--><img
+   src="main-html-images\image-112.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;7.15. Зарядка конденсатора від джерела ЕРС через резистор: коло та графік \(q(t)\)<a id="pic:RCCharge"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Порівняймо енергетичний баланс зарядки. Повна робота джерела ЕРС дорівнює \(A = \emf q_{\max } = \emf ^2 C\); енергія, що врешті-решт запасається в конденсаторі, — \(W_C = q_{\max }^2/2C = \emf ^2 C/2\). Отже, <em>рівно
+половина</em> роботи джерела перетворюється в тепло на резисторі, а друга половина — в енергію поля конденсатора, причому це співвідношення <em>не залежить</em> від значення \(R\): збільшуючи \(R\), ми лише сповільнюємо процес
+(зростає \(\tau \)), але не змінюємо частку втраченої енергії. Це неочевидний і дещо парадоксальний результат: здавалося б, при малому опорі струм швидший і більший, отже й втрати мали б бути іншими — але вони компенсуються коротшим
+часом протікання, і в результаті втрачається завжди рівно половина.
+</p>
+<!--
+...... section Максвеллівський час релаксації заряду ......
+-->
+<h4 id="autosec-548"><span class="sectionnumber">7.8&#x2003;</span>Максвеллівський час релаксації заряду</h4>
+<a id="main-html-autopage-548"></a>
+
+
+<p>
+Вивчаючи перехідні процеси у зосереджених колах, ми бачили, що заряджений конденсатор ємністю \(C\) розряджається через зовнішній резистор \(R\) за характерний час \(\tau = RC\). Виникає природне запитання: а що станеться, якщо
+розрядка відбуватиметься не через зовнішній елемент, а безпосередньо через слабко провідне середовище між обкладками? Або якщо в товщу суцільного провідного середовища якимось чином внести надлишковий об’ємний заряд?
+</p>
+
+<p>
+Відповідь дає фундаментальний локальний аналіз. Нехай в однорідному середовищі з діелектричною проникністю \(\epsilon \) та питомою провідністю \(\lambda \) існує деяка початкова об’ємна густина заряду \(\rho (\vect r, t)\). Під
+дією власного електричного поля цього заряду в середовищі виникає струм провідності, який прагне винести заряд на периферію. Об’єднаємо диференціальне рівняння неперервності&nbsp;<span class="textup">(<a
+href="ch7.html#eq:ContinuityDiff">7.6</a>)</span>, диференціальний закон Ома \(\vect j = \lambda \Efield \) та теорему Гаусса \(\divg \Efield = 4\pi \rho /\epsilon \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{33}\)</span>
+
+<!--
+
+                                                                                                             𝜕𝜌                        4𝜋𝜆
+                                                                                                                = −𝛁 ⋅ 𝐣 = −𝜆𝛁 ⋅ 𝐄 = −     𝜌.
+                                                                                                             𝜕𝑡                         𝜀
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {\partial \rho }{\partial t} = -\divg \vect j = -\lambda \divg \Efield = -\frac {4\pi \lambda }{\epsilon }\rho .
+\end{equation*}
+
+</p>
+
+<p>
+Це просте диференціальне рівняння першого порядку, розв’язком якого є універсальний закон експоненційного згасання об’ємного заряду:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{7.}{33}\)</span>
+
+<!--
+
+                                                                                                     𝜀
+                                                                      𝜌(𝑡) = 𝜌(0) 𝑒−𝑡/𝜏𝑀 ,   𝜏𝑀 =       .                                                                  (7.34)              --><a id="eq:MaxwellRelaxation"></a><!--
+                                                                                                    4𝜋𝜆
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:MaxwellRelaxation} \rho (t) = \rho (0)\,e^{-t/\tau _M}, \qquad \tau _M = \frac {\epsilon }{4\pi \lambda }.
+\end{equation}
+
+</p>
+
+<p>
+Характерну сталу \(\tau _M\) називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>максвеллівським часом релаксації заряду</span></em>.
+</p>
+
+<p>
+Отриманий результат розкриває дві важливі фізичні закономірності:
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> <em>Перерозподіл заряду замість його знищення.</em> Звичайно, закон збереження заряду виконується строго: об’ємний заряд не анігілює, а виноситься струмом на зовнішні межі середовища або межі
+поділу з діелектриком. Саме тому в будь-якому однорідному провіднику в стаціонарному режимі об’ємна густина заряду строго дорівнює нулю (\(\rho = 0\), див.&nbsp;<span class="textup">(<a
+href="ch7.html#eq:VolumeChargeZero">7.11</a>)</span>), а весь надлишковий заряд завжди зосереджений на поверхні.
+</p>
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> <em>Синтез мікроскопічного та макроскопічного підходів.</em> Згадаймо виведену в розділі&nbsp;<a href="ch7.html#sec:CurrentsInUnboundedMedia">7.6</a> формулу&nbsp;<span class="textup">(<a
+href="ch7.html#eq:GroundResistanceGeneral">7.27</a>)</span>. для опору середовища \(R = \epsilon / (4\pi \lambda C)\) Якщо обчислити час розрядки такого «конденсатора з витоком» через формулу \(RC\)-кола, дістанемо:
+</p>
+<span class="hidden"> \(\seteqnumber{0}{7.}{34}\)</span>
+<!--
+                                                                                                                           𝜀         𝜀
+                                                                                                            𝜏 = 𝑅𝐶 = (        )⋅𝐶 =     = 𝜏𝑀 .
+                                                                                                                         4𝜋𝜆𝐶       4𝜋𝜆
+-->
+<p>
+
+\begin{equation*}
+\tau = R C = \left (\frac {\epsilon }{4\pi \lambda C}\right ) \cdot C = \frac {\epsilon }{4\pi \lambda } = \tau _M.
+\end{equation*}
+
+</p>
+<p>
+Геометричні чинники (розміри, форма електродів, ємність \(C\)) повністю скоротилися! Це доводить, що максвеллівський час релаксації є <em>чистою характеристикою речовини</em>, яка пов’язує її електростатичні (\(\epsilon \)) та кінетичні
+(\(\lambda \)) властивості незалежно від конфігурації поля.
+</p>
+</li>
+</ul>
+
+<figure id="autoid-164" class="table ">
+
+
+<div class="figurecaption">
+Таблиця&nbsp;7.1. Максвеллівський час релаксації заряду \(\tau _M\) для різних середовищ. \(\lambda \) — у См/м (СІ); \(\tau _M = \epsilon \epsilon _0/\lambda \). Перерахунок у СГС: \(\lambda _{\text {СГС}} = \lambda _{\text
+{СІ}}/(4\pi \epsilon _0) \approx 8.99\cdot 10^{9}\,\lambda _{\text {СІ}}\) (у \(\text {с}^{-1}\))
+
+</div>
+
+<a id="tab:MaxwellTimes"></a>
+<table>
+
+<tr style="display:none"><th>.</th></tr>
+
+<tr class="hline">
+<td colspan="1" class="tdc tvertbarl tvertbarr" style="background:#0064AA; border-left: 1px solid black; border-right: 1px solid black"><span
+   class="textcolor"
+   style="color:#FFFFFF"
+><b>Середовище</b></span></td>
+<td class="tdp tvertbarr tdcenter" style="background:#0064AA; border-right: 1px solid black">
+
+<p>
+<span
+    class="textcolor"
+    style="color:#FFFFFF"
+><b>\(\lambda \), См/м</b></span>
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#0064AA; border-right: 1px solid black">
+
+<p>
+<span
+    class="textcolor"
+    style="color:#FFFFFF"
+><b>\(\epsilon \)</b></span>
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#0064AA; border-right: 1px solid black">
+
+<p>
+<span
+    class="textcolor"
+    style="color:#FFFFFF"
+><b>\(\tau _M\), с</b></span>
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Мідь
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(6\cdot 10^{7}\)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(\approx 1\)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(10^{-19}\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="background:#F2F2F2; border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Кремній власний
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+\(4\cdot 10^{-4}\)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+11.7
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+\(3\cdot 10^{-7}\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Скло
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(\sim 10^{-12}\)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(\sim 7\)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(\sim 10^{2}\)
+</p>
+</td>
+</tr>
+
+<tr class="hline" aria-hidden="true">
+<td class="tdp tdleft">
+
+</td>
+<td class="tdp tdcenter">
+
+</td>
+<td class="tdp tdcenter">
+
+</td>
+<td class="tdp tdcenter">
+
+</td>
+</tr>
+</table>
+
+</figure>
+
+<p>
+Чисельні значення \(\tau _M\) для різних матеріалів охоплюють величезний діапазон (табл.&nbsp;<a href="ch7.html#tab:MaxwellTimes">7.1</a>).
+</p>
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> У <em>металах</em> через гігантську провідність (\(\lambda \sim 10^7 \text { См/м}\)) час релаксації є мізерним: \(\tau _M \sim 10^{-19}\text { с}\). Будь-який об’ємний заряд зникає практично
+миттєво, що й робить електростатичне наближення для провідників ідеально точним на практиці.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> У <em>напівпровідниках</em> \(\tau _M\) лежить у діапазоні від пікосекунд до мікросекунд, що визначає швидкість спрацьовування напівпровідникових приладів.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> У <em>діелектриках</em> (скло, янтар, фторопласт) провідність \(\lambda \) прямує до нуля, тому \(\tau _M\) може сягати годин, днів і більше. Заряд, внесений у товщу діелектрика, залишається там
+«законсервованим» на тривалий час (явище електретного стану).
+</p>
+</li>
+</ul>
+<!--
+...... section Задачі ......
+-->
+<h4 id="autosec-550">Задачі</h4>
+<a id="main-html-autopage-550"></a>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-165"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 7.1.</span></span> <a id="autoid-166" ></a ><a id="prb:DriftVelocityCopper"></a> <em>Повільний дрейф.</em> Мідним дротом перерізом \(S=1\)&nbsp;мм\(^2\) тече
+струм \(I=1\)&nbsp;А. Концентрація вільних електронів у міді \(n\approx 8{,}5\cdot 10^{28}\)&nbsp;м\(^{-3}\). Знайдіть дрейфову швидкість електронів і час, за який електрон проходить \(1\)&nbsp;м дроту. <em>Відповідь:</em> \(u=\dfrac
+{I}{enS}\approx 7\cdot 10^{-5}\)&nbsp;м/с \(\approx 0{,}07\)&nbsp;мм/с; \(t\approx 1{,}4\cdot 10^{4}\)&nbsp;с \(\approx 4\)&nbsp;год.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-167"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 7.2.</span></span> <a id="autoid-168" ></a ><a id="prb:CurrentDensityVector"></a> <em>Густина струму в неоднорідному перерізі.</em> По циліндричному провіднику
+радіуса \(R\) тече струм \(I\), розподілений по перерізу нерівномірно: густина струму залежить від відстані до осі як \(j(r)=j_0\left (1-r/R\right )\) (такий розподіл відповідає концентрації струму біля осі провідника). Знайдіть \(j_0\) через
+повний струм \(I\) і середню густину струму \(\langle j\rangle =I/(\pi R^2)\). <em>Відповідь:</em> \(j_0=\dfrac {3I}{\pi R^2}=3\langle j\rangle \).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-169"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 7.3.</span></span> <a id="autoid-170" ></a ><a id="prb:SourceMaxPower"></a> <em>Узгоджене навантаження.</em> Джерело з ЕРС \(\emf =12\)&nbsp;В і внутрішнім
+опором \(r=0{,}5\)&nbsp;Ом замкнули на резистор \(R\). Знайдіть струм короткого замикання, а також значення \(R\), за якого корисна потужність максимальна, саму цю потужність і ККД джерела в цьому режимі.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-171"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 7.4.</span></span> <a id="autoid-172" ></a ><a id="prb:NonUniformSection"></a> <em>Неоднорідна ділянка.</em> На ділянці кола між точками \(1\) і \(2\) з
+потенціалами \(\phi _1=10\)&nbsp;В і \(\phi _2=4\)&nbsp;В послідовно ввімкнено резистор \(R=2\)&nbsp;Ом і джерело з ЕРС \(\emf =3\)&nbsp;В, що діє в напрямку від \(1\) до \(2\). Знайдіть струм на ділянці.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-173"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 7.5.</span></span> <a id="autoid-174" ></a ><a id="prb:TwoSourcesOpposite"></a> <em>Два джерела назустріч.</em> Коло складається з двох послідовно з’єднаних
+джерел \(\emf _1=10\)&nbsp;В, \(\emf _2=4\)&nbsp;В (увімкнених назустріч, тобто їхні ЕРС віднімаються) і резисторів \(R_1=2\)&nbsp;Ом, \(R_2=3\)&nbsp;Ом. Знайдіть струм у колі та спад напруги на кожному резисторі. <em>Відповідь:</em>
+\(I= 1{,}2\)&nbsp;А; \(U_1=2{,}4\)&nbsp;В, \(U_2=3{,}6\)&nbsp;В.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-175"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 7.6.</span></span> <a id="autoid-176" ></a ><a id="prb:JouleLenz"></a> <em>Тепло в провіднику.</em> По ніхромовому дроту опором \(R=20\)&nbsp;Ом тече струм
+\(I=2\)&nbsp;А протягом \(t=5\)&nbsp;хв. Яка кількість теплоти виділиться? Якою буде об’ємна густина потужності тепловиділення, якщо дріт має переріз \(S=0{,}5\)&nbsp;мм\(^2\) і питомий опір \(\rho =1{,}1\cdot
+10^{-6}\)&nbsp;Ом\(\cdot \)м? <em>Відповідь:</em> \(Q=I^2Rt=24\)&nbsp;кДж; \(j=I/S=4\cdot 10^{6}\)&nbsp;А/м\(^2\); \(w=\rho j^2\approx 1{,}8\cdot 10^{7}\)&nbsp;Вт/м\(^3\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-177"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 7.7.</span></span> <a id="autoid-178" ></a ><a id="prb:GroundResistanceSphere"></a> <em>Опір заземлення.</em> Металева куля радіуса \(r_0=0{,}5\)&nbsp;м
+занурена в ґрунт з провідністю \(\lambda =10^{-2}\)&nbsp;См/м так, що над поверхнею землі залишається лише її півсфера. Знайдіть опір розтікання струму від кулі (другий електрод — на нескінченності). Як зміниться опір, якщо радіус кулі
+збільшити вдвічі? <em>Вказівка:</em> оскільки струм розтікається лише в півпростір (у тілесний кут \(2\pi \) замість \(4\pi \)), опір розтікання такої півкулі вдвічі більший за опір кулі в безмежному середовищі, тож за формулою&nbsp;<span
+class="textup">(<a href="ch7.html#eq:GroundResistanceGeneral">7.27</a>)</span> маємо \(R=\dfrac {1}{2\pi \lambda r_0}\). <em>Відповідь:</em> \(R\approx 32\)&nbsp;Ом; при \(r_0&apos;=2r_0\) опір зменшиться вдвічі.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-179"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 7.8.</span></span> <a id="autoid-180" ></a ><a id="prb:RCChargeHeat"></a> <em>Скільки тепла?</em> Конденсатор ємністю \(C=10\)&nbsp;мкФ заряджають від
+джерела з ЕРС \(\emf =100\)&nbsp;В через резистор \(R=100\)&nbsp;кОм. Через який час заряд досягне \(90\%\) від максимального? Яка кількість теплоти виділиться на резисторі за весь процес? Як зміняться відповіді, якщо \(R=1\)&nbsp;кОм?
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-181"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 7.9.</span></span> <a id="autoid-182" ></a ><a id="prb:RCDischargeHalf"></a> <em>Розрядка навпіл.</em> Конденсатор ємністю \(C=100\)&nbsp;мкФ, заряджений до
+\(U_0=200\)&nbsp;В, розряджається через резистор \(R=50\)&nbsp;кОм. За який час напруга на конденсаторі зменшиться вдвічі? Якою буде напруга через час \(t=2\tau \)? <em>Відповідь:</em> \(\tau =5\)&nbsp;с; \(t\approx 3{,}5\)&nbsp;с;
+\(U(2\tau )\approx 27\)&nbsp;В.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Дайте означення сили струму \(I=dq/dt\) і вектора густини струму \(\vect j\). Чому напрям \(\vect j\) визначають за рухом позитивних носіїв, навіть коли реальні носії заряду — від’ємні?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Виведіть формулу для сили струму через потік вектора густини струму, \(I = \iint _S\vect j\cdot d\vect S\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Виведіть зв’язок густини струму з концентрацією носіїв та дрейфовою швидкістю, \(\vect j = \rho \vect u\). Чому внески носіїв протилежних знаків, що рухаються в протилежних напрямках,
+додаються, а не віднімаються?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> У чому полягав дослід Толмена і Стюарта? Як за напрямком відхилення гальванометра та виміряним питомим зарядом довели, що носіями струму в металах є електрони?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Порівняйте дрейфову й теплову швидкості електронів у типовому металевому провіднику. Чому струм у колі «вмикається» практично миттєво, попри мізерно малу дрейфову швидкість?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> Виведіть рівняння неперервності \(\divg \vect j = -\partial \rho /\partial t\) як математичний вираз закону збереження заряду. Що означає умова \(\divg \vect j=0\) для стаціонарного струму?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> Сформулюйте закон Ома в інтегральній формі \(I=U/R\) та вираз опору однорідного циліндричного провідника через питомий опір.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Виведіть диференціальну форму закону Ома \(\vect j = \lambda \Efield \), розглядаючи елементарний циліндр струму.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> Доведіть, що в однорідному провіднику зі стаціонарним струмом об’ємна густина заряду всередині дорівнює нулю, а заряди, що створюють поле, розташовані лише на поверхні.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Чому поверхня провідника зі струмом, на відміну від провідника в електростатичній рівновазі, не є еквіпотенціальною? Як це проявляється в неперервності тангенціальної складової поля на межі?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> Що таке сторонні сили і чим вони принципово відрізняються від електростатичних? Дайте означення ЕРС через роботу сторонніх сил.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Виведіть узагальнений закон Ома \(\vect j = \lambda (\Efield +\vect E^*)\) та закон Ома для неоднорідної ділянки кола \(IR = \phi _1-\phi _2+\emf \).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">13.</span> Сформулюйте перше й друге правила Кірхгофа. Як перше випливає зі стаціонарності струму, а друге — із закону Ома для замкненого контуру?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">14.</span> Виведіть закон Джоуля-Ленца.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">15.</span> Виведіть формулу опору необмеженого провідного середовища між двома електродами через їхню взаємну ємність, \(R = \epsilon /(4\pi \lambda C)\). У чому полягає ця аналогія між задачами про
+ємність і про опір?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">16.</span> Розгляньте приклад опору заземлення й крокової напруги для напівсферичного заземлювача. Чому крокова напруга найнебезпечніша поблизу самого заземлювача, і яка рекомендована поведінка при
+віддаленні від нього?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">17.</span> Що таке квазістаціонарні струми і за якої умови до них можна застосовувати всі співвідношення для постійного струму?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">18.</span> Виведіть диференціальне рівняння й розв’язок для розрядки конденсатора через резистор, \(q=q_0e^{-t/\tau }\). Що таке стала часу \(\tau =RC\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">19.</span> Виведіть розв’язок для зарядки конденсатора від джерела ЕРС через резистор, \(q=q_{\max }(1-e^{-t/\tau })\). Чому стала часу однакова для зарядки й розрядки?
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,5290 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Система рівнянь Максвелла</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-1057"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span>&#x2003;Електричні заряди та їх взаємодія</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span>&#x2003;Сили (взаємодії) в природі</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span>&#x2003;Електричний заряд</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-12" class="tocsection" >
+<span class="sectionnumber">1.3</span>&#x2003;Як заряджають тіла?</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-17" class="tocsection" >
+<span class="sectionnumber">1.4</span>&#x2003;Закон Кулона</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-25" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-32" class="tocchapter" >
+<span class="sectionnumber">2</span>&#x2003;Постійне електричне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocsection" >
+<span class="sectionnumber">2.1</span>&#x2003;Електромагнітне поле</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.2</span>&#x2003;Напруженість поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-46" class="tocsection" >
+<span class="sectionnumber">2.3</span>&#x2003;Силові лінії та математичне поняття поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-62" class="tocsection" >
+<span class="sectionnumber">2.4</span>&#x2003;Теорема Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-88" class="tocsection" >
+<span class="sectionnumber">2.5</span>&#x2003;Зауваження щодо інтегральної та диференціальної форми теореми Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-90" class="tocsection" >
+<span class="sectionnumber">2.6</span>&#x2003;Потенціальність електростатичного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-102" class="tocsection" >
+<span class="sectionnumber">2.7</span>&#x2003;Циркуляція вектора \(\symbf {E}\)</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-121" class="tocsection" >
+<span class="sectionnumber">2.8</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-128" class="tocsection" >
+<span class="sectionnumber">2.9</span>&#x2003;Рівняння Пуассона та Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-129" class="tocsection" >
+<span class="sectionnumber">2.10</span>&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-134" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-153" class="tocchapter" >
+<span class="sectionnumber">3</span>&#x2003;Електричне поле статичної системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-154" class="tocsection" >
+<span class="sectionnumber">3.1</span>&#x2003;Дипольний момент системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-158" class="tocsection" >
+<span class="sectionnumber">3.2</span>&#x2003;Поле точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-162" class="tocsection" >
+<span class="sectionnumber">3.3</span>&#x2003;Потенціал поля точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-163" class="tocsection" >
+<span class="sectionnumber">3.4</span>&#x2003;Потенціал системи зарядів на далеких відстанях</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-178" class="tocsection" >
+<span class="sectionnumber">3.5</span>&#x2003;Диполь в електричному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-196" class="tocsection" >
+<span class="sectionnumber">3.6</span>&#x2003;Енергія довільної системи зарядів у зовнішньому полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-197" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-200" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-214" class="tocchapter" >
+<span class="sectionnumber">4</span>&#x2003;Електричне поле у провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-215" class="tocsection" >
+<span class="sectionnumber">4.1</span>&#x2003;Структура провідників</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-221" class="tocsection" >
+<span class="sectionnumber">4.2</span>&#x2003;Провідник у полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-244" class="tocsection" >
+<span class="sectionnumber">4.3</span>&#x2003;Електричне поле біля вістря</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-253" class="tocsection" >
+<span class="sectionnumber">4.4</span>&#x2003;Єдиність розв’язку електростатичної задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-263" class="tocsection" >
+<span class="sectionnumber">4.5</span>&#x2003;Металева куля в однорідному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-275" class="tocsection" >
+<span class="sectionnumber">4.6</span>&#x2003;Сили, що діють на поверхню провідника в полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-279" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-280" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-291" class="tocchapter" >
+<span class="sectionnumber">5</span>&#x2003;Основи електростатики діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-292" class="tocsection" >
+<span class="sectionnumber">5.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-294" class="tocsection" >
+<span class="sectionnumber">5.2</span>&#x2003;Структура діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-331" class="tocsection" >
+<span class="sectionnumber">5.3</span>&#x2003;Поляризація діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-358" class="tocsection" >
+<span class="sectionnumber">5.4</span>&#x2003;Вектор поляризації</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-363" class="tocsection" >
+<span class="sectionnumber">5.5</span>&#x2003;Вектор електричної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-370" class="tocsection" >
+<span class="sectionnumber">5.6</span>&#x2003;Граничні умови в&nbsp;присутності діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-383" class="tocsection" >
+<span class="sectionnumber">5.7</span>&#x2003;Мікроскопічна теорія діелектричної проникності</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-390" class="tocsection" >
+<span class="sectionnumber">5.8</span>&#x2003;Типи діелектриків та їх застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-413" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-414" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-423" class="tocchapter" >
+<span class="sectionnumber">6</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-424" class="tocsection" >
+<span class="sectionnumber">6.1</span>&#x2003;Електрична ємність</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-445" class="tocsection" >
+<span class="sectionnumber">6.2</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-458" class="tocsection" >
+<span class="sectionnumber">6.3</span>&#x2003;Пондеромоторні сили</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-468" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-469" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-479" class="tocchapter" >
+<span class="sectionnumber">7</span>&#x2003;Постійний електричний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-480" class="tocsection" >
+<span class="sectionnumber">7.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-487" class="tocsection" >
+<span class="sectionnumber">7.2</span>&#x2003;Природа носіїв заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-489" class="tocsection" >
+<span class="sectionnumber">7.3</span>&#x2003;Закон збереження заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-496" class="tocsection" >
+<span class="sectionnumber">7.4</span>&#x2003;Закон Ома</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-527" class="tocsection" >
+<span class="sectionnumber">7.5</span>&#x2003;Закон Джоуля-Ленца</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-528" class="tocsection" >
+<span class="sectionnumber">7.6</span>&#x2003;Струми в необмежених середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-535" class="tocsection" >
+<span class="sectionnumber">7.7</span>&#x2003;Перехідні процеси в колі з конденсатором</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-548" class="tocsection" >
+<span class="sectionnumber">7.8</span>&#x2003;Максвеллівський час релаксації заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-550" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-562" class="tocchapter" >
+<span class="sectionnumber">8</span>&#x2003;Електричний струм у&nbsp;різних середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-564" class="tocsection" >
+<span class="sectionnumber">8.1</span>&#x2003;Електричний струм у&nbsp;металах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-584" class="tocsection" >
+<span class="sectionnumber">8.2</span>&#x2003;Електричний струм в&nbsp;електролітах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-590" class="tocsection" >
+<span class="sectionnumber">8.3</span>&#x2003;Електричний струм у&nbsp;газах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-601" class="tocsection" >
+<span class="sectionnumber">8.4</span>&#x2003;Електричний струм у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-615" class="tocsection" >
+<span class="sectionnumber">8.5</span>&#x2003;Електричний струм у&nbsp;напівпровідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-636" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-638" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-674" class="tocchapter" >
+<span class="sectionnumber">9</span>&#x2003;Магнітне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-675" class="tocsection" >
+<span class="sectionnumber">9.1</span>&#x2003;Означення</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-679" class="tocsection" >
+<span class="sectionnumber">9.2</span>&#x2003;Характеристика магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-680" class="tocsection" >
+<span class="sectionnumber">9.3</span>&#x2003;Дія магнітного поля на заряджені частинки та струми</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-701" class="tocsection" >
+<span class="sectionnumber">9.4</span>&#x2003;Закон Біо-Савара-Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-714" class="tocsection" >
+<span class="sectionnumber">9.5</span>&#x2003;Вектор-потенціал магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-719" class="tocsection" >
+<span class="sectionnumber">9.6</span>&#x2003;Теореми магнітостатики</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-740" class="tocsection" >
+<span class="sectionnumber">9.7</span>&#x2003;Магнітний момент</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-756" class="tocsection" >
+<span class="sectionnumber">9.8</span>&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-766" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-767" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-775" class="tocchapter" >
+<span class="sectionnumber">10</span>&#x2003;Магнітне поле в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-780" class="tocsection" >
+<span class="sectionnumber">10.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-783" class="tocsection" >
+<span class="sectionnumber">10.2</span>&#x2003;Намагнічування</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-795" class="tocsection" >
+<span class="sectionnumber">10.3</span>&#x2003;Теорема про циркуляцію в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-801" class="tocsection" >
+<span class="sectionnumber">10.4</span>&#x2003;Магнітна сприйнятливість речовини</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-832" class="tocsection" >
+<span class="sectionnumber">10.5</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-847" class="tocsection" >
+<span class="sectionnumber">10.6</span>&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-864" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-865" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-872" class="tocchapter" >
+<span class="sectionnumber">11</span>&#x2003;Рух заряджених частинок</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-873" class="tocsection" >
+<span class="sectionnumber">11.1</span>&#x2003;Рух частинок в&nbsp;однорідних полях</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-891" class="tocsection" >
+<span class="sectionnumber">11.2</span>&#x2003;Застосування схрещених полів</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-899" class="tocsection" >
+<span class="sectionnumber">11.3</span>&#x2003;Методи вимірювання питомого заряду електрона</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-909" class="tocsection" >
+<span class="sectionnumber">11.4</span>&#x2003;Досліди Міллікена</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-911" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-912" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-923" class="tocchapter" >
+<span class="sectionnumber">12</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-924" class="tocsection" >
+<span class="sectionnumber">12.1</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-929" class="tocsection" >
+<span class="sectionnumber">12.2</span>&#x2003;Закон електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-930" class="tocsection" >
+<span class="sectionnumber">12.3</span>&#x2003;Робота, що виконується при переміщенні провідника зі струмом у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-933" class="tocsection" >
+<span class="sectionnumber">12.4</span>&#x2003;Електромагнітна індукція в&nbsp;рухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-940" class="tocsection" >
+<span class="sectionnumber">12.5</span>&#x2003;Електромагнітна індукція в&nbsp;нерухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-959" class="tocsection" >
+<span class="sectionnumber">12.6</span>&#x2003;Явище самоіндукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-979" class="tocsection" >
+<span class="sectionnumber">12.7</span>&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-996" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-997" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1015" class="tocchapter" >
+<span class="sectionnumber">13</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1016" class="tocsection" >
+<span class="sectionnumber">13.1</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1022" class="tocsection" >
+<span class="sectionnumber">13.2</span>&#x2003;Взаємна індукція</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1038" class="tocsection" >
+<span class="sectionnumber">13.3</span>&#x2003;Енергія системи зв’язаних контурів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1041" class="tocsection" >
+<span class="sectionnumber">13.4</span>&#x2003;Потенціальна енергія струмів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1043" class="tocsection" >
+<span class="sectionnumber">13.5</span>&#x2003;Принцип роботи трансформаторів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1047" class="tocsection" >
+<span class="sectionnumber">13.6</span>&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1053" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1054" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1059" class="tocchapter" >
+<span class="sectionnumber">14</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1064" class="tocsection" >
+<span class="sectionnumber">14.1</span>&#x2003;Струм зміщення</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1085" class="tocsection" >
+<span class="sectionnumber">14.2</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1102" class="tocsection" >
+<span class="sectionnumber">14.3</span>&#x2003;Про рівняння Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1104" class="tocsection" >
+<span class="sectionnumber">14.4</span>&#x2003;Енергія електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1118" class="tocsection" >
+<span class="sectionnumber">14.5</span>&#x2003;Скін-ефект</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1140" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1141" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1148" class="tocchapter" >
+<span class="sectionnumber">15</span>&#x2003;Відносність електричного і&nbsp;магнітного полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1150" class="tocsection" >
+<span class="sectionnumber">15.1</span>&#x2003;Нерелятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1153" class="tocsection" >
+<span class="sectionnumber">15.2</span>&#x2003;Релятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1159" class="tocsection" >
+<span class="sectionnumber">15.3</span>&#x2003;Тензор електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1161" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1162" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1171" class="tocchapter" >
+<span class="sectionnumber">16</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1172" class="tocsection" >
+<span class="sectionnumber">16.1</span>&#x2003;Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1188" class="tocsection" >
+<span class="sectionnumber">16.2</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1193" class="tocsection" >
+<span class="sectionnumber">16.3</span>&#x2003;Енергія та вектор Пойнтінга для хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1204" class="tocsection" >
+<span class="sectionnumber">16.4</span>&#x2003;Імпульс і момент імпульсу електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1210" class="tocsection" >
+<span class="sectionnumber">16.5</span>&#x2003;Відбивання хвиль від поверхні двох діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1230" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1231" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1242" class="tocchapter" >
+<span class="sectionnumber">17</span>&#x2003;Випромінювання електромагнітних хвиль</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1243" class="tocsection" >
+<span class="sectionnumber">17.1</span>&#x2003;Історична довідка: досліди Герца</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1246" class="tocsection" >
+<span class="sectionnumber">17.2</span>&#x2003;Елементарна модель випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1259" class="tocsection" >
+<span class="sectionnumber">17.3</span>&#x2003;Дипольне випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1275" class="tocsection" >
+<span class="sectionnumber">17.4</span>&#x2003;Потужність випромінювання осцилятора</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1280" class="tocsection" >
+<span class="sectionnumber">17.5</span>&#x2003;Випромінювання рухомого заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1285" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1286" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1292" class="tocchapter" >
+<span class="sectionnumber">18</span>&#x2003;Коливальні процеси в електричних колах</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1293" class="tocsection" >
+<span class="sectionnumber">18.1</span>&#x2003;Квазістаціонарне наближення</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1294" class="tocsection" >
+<span class="sectionnumber">18.2</span>&#x2003;Вільні коливання в коливальному контурі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1319" class="tocsection" >
+<span class="sectionnumber">18.3</span>&#x2003;Вимушені коливання під дією гармонічної ЕРС</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1333" class="tocsection" >
+<span class="sectionnumber">18.4</span>&#x2003;Змінний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">18.5</span>&#x2003;Трансформатор</a>
+</p>
+<p>
+<a href="ch18.html#autosec-1374" class="tocsection" >
+<span class="sectionnumber">18.6</span>&#x2003;Частотні фільтри</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1390" class="tocsection" >
+<span class="sectionnumber">18.7</span>&#x2003;Трифазний струм: фізичні засади, топології кіл та застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1433" class="tocchapter" >
+<span class="sectionnumber">19</span>&#x2003;Довгі лінії. Телеграфні рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1434" class="tocsection" >
+<span class="sectionnumber">19.1</span>&#x2003;Від зосереджених елементів до розподілених</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1435" class="tocsection" >
+<span class="sectionnumber">19.2</span>&#x2003;Виведення телеграфних рівнянь</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1439" class="tocsection" >
+<span class="sectionnumber">19.3</span>&#x2003;Гармонічний режим. Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1440" class="tocsection" >
+<span class="sectionnumber">19.4</span>&#x2003;Лінія без втрат</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1447" class="tocsection" >
+<span class="sectionnumber">19.5</span>&#x2003;Польова картина. Зв’язок з рівняннями Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1454" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1455" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1461" class="tocchapter" >
+<span class="sectionnumber">20</span>&#x2003;Хвилеводи</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1462" class="tocsection" >
+<span class="sectionnumber">20.1</span>&#x2003;Від довгої лінії до хвилеводу</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1463" class="tocsection" >
+<span class="sectionnumber">20.2</span>&#x2003;Прямокутний хвилевід</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1476" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1479" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1480" class="tocsection" >
+<span class="sectionnumber">А</span>&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1485" class="tocsection" >
+<span class="sectionnumber">Б</span>&#x2003;Основні формули векторного аналізу</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1503" class="tocchapter" >
+Література</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Система рівнянь Максвелла">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Система рівнянь Максвелла ......
+-->
+<h3 id="autosec-1059">Розділ&nbsp;<span class="sectionnumber">14&#x2003;</span>Система рівнянь Максвелла</h3>
+<a id="main-html-autopage-1059"></a>
+<a id="main-html-autofile-14"></a>
+
+<a id="MaxwellEqns"></a>
+
+<p>
+<a id="LWR-ht-MaxwellEqns"></a>
+</p>
+
+<div class="epigraph" role="note">
+
+
+<div class="qitem">
+
+<p>
+Кількісне, математичне формулювання законів поля дано в&nbsp;так званих рівняннях Максвелла. Експериментальні факти призвели до формулювання цих рівнянь, але зміст їх значно багатший [&#x2026;]. Їхня проста форма приховує
+глибину, що виявляється тільки при ретельному вивченні.
+</p>
+
+
+<div class="epigraphsource">
+
+<p>
+А. Ейнштейн, Л. Інфельд, «Еволюція фізики»
+</p>
+</div>
+
+</div>
+
+</div>
+<!--
+...... section Основоположники теорії електромагнітного поля ......
+-->
+<h4 id="autosec-1060">Основоположники теорії електромагнітного поля</h4>
+<a id="main-html-autopage-1060"></a>
+
+
+<p>
+Теорію електромагнітного поля, початки якої заклав <em>Фарадей</em>, математично завершив <em>Максвелл</em> (рис.&nbsp;<a href="ch14.html#pic:FaradayMaxwell">14.1</a>). Однією з&nbsp;найважливіших нових ідей, висунутих
+Максвеллом, була думка про <em>симетрію</em> у&nbsp;взаємозалежності електричного й&nbsp;магнітного полів: якщо змінне магнітне поле породжує електричне (закон Фарадея, гл.&nbsp;<a href="ch12.html#ElMagInduction">12</a>), то, за
+красивою симетрією, змінне електричне поле мусить породжувати магнітне. Ця ідея, як ми зараз побачимо, узгоджується із законом збереження заряду й&nbsp;веде до відкриття <em><span
+    class="textcolor"
+    style="color:#990000"
+>струму зміщення</span></em>&nbsp;— останньої відсутньої ланки повної системи рівнянь електродинаміки.
+</p>
+
+<figure id="autoid-367" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:219pt ; ">
+
+<a id="main-html-autopage-1062"></a>
+
+<p>
+
+<a href="MaxwellEqns/Pictures/Faraday.png" target="_blank" ><img
+    src="MaxwellEqns/Pictures/Faraday.png"
+    style="
+    height:134pt ;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+<p>
+Майкл Фарадей
+</p>
+<p>
+(1791–1867)
+</p>
+
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:219pt ; ">
+
+<a id="main-html-autopage-1063"></a>
+
+<p>
+
+<a href="MaxwellEqns/Pictures/james-clerk-maxwell.png" target="_blank" ><img
+    src="MaxwellEqns/Pictures/james-clerk-maxwell.png"
+    style="
+    height:134pt ;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+<p>
+Джеймс Клерк Максвелл
+</p>
+<p>
+(1831–1879)
+</p>
+
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;14.1. Основоположники класичної теорії електромагнітного поля<a id="pic:FaradayMaxwell"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Формулювання рівнянь Максвелла А.&nbsp;Ейнштейн і&nbsp;Л.&nbsp;Інфельд у&nbsp;книзі «Еволюція фізики» назвали «найважливішою подією з&nbsp;часу Ньютона» — не лише через цінність їхнього змісту, а&nbsp;й&nbsp;тому, що вони
+дають зразок <em>нового типу законів</em>: <em><span
+    class="textcolor"
+    style="color:#990000"
+>рівняння Максвелла&nbsp;— це закони, що виражають структуру поля</span></em>, а&nbsp;не закони руху окремих частинок.
+</p>
+<!--
+...... section Струм зміщення ......
+-->
+<h4 id="autosec-1064"><span class="sectionnumber">14.1&#x2003;</span>Струм зміщення</h4>
+<a id="main-html-autopage-1064"></a>
+
+
+<p>
+<a id="LWR-ht-displacement-current"></a>
+</p>
+<!--
+...... subsection Суперечність у-законах магнетизму ......
+-->
+<h5 id="autosec-1065">Суперечність у&nbsp;законах магнетизму</h5>
+<a id="main-html-autopage-1065"></a>
+
+
+<p>
+Теорема про циркуляцію для постійного магнітного поля, яку ми встановили в&nbsp;гл.&nbsp;<a href="ch10.html#MagFieldMedia">10</a>,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{0}\)</span>
+
+<!--
+
+                                                  ˛                   ˆ
+                                                                 4𝜋                              4𝜋
+                                                      𝐇 ⋅ 𝑑𝐫 =            𝐣 ⋅ 𝑑𝐒,      𝛁×𝐇=         𝐣,                               (14.1)                                        --><a id="eq:CirculationHVacuumOld"></a><!--
+                                                                  𝑐                               𝑐
+                                                  𝐿                   𝑆
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CirculationHVacuumOld} \oint \limits _L \Hfield \cdot d\vect r = \frac {4\pi }{c}\iint \limits _S \vect j\cdot d\vect S, \qquad \rot \Hfield = \frac {4\pi }{c}\vect j,
+\end{equation}
+
+</p>
+
+<p>
+виявляється <em>неправильною</em> у&nbsp;випадку <em>змінного</em> електричного поля (рис.&nbsp;<a href="ch14.html#pic:CircThm">14.2</a>). Застосуємо операцію \(\divg \) до диференціальної форми цього рівняння: оскільки
+дивергенція будь-якого ротора тотожно дорівнює нулю, \(\divg \rot \Hfield \equiv 0\), отримуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{1}\)</span>
+
+<!--
+
+
+                                                                                    𝛁 ⋅ 𝐣 = 0.                                                     (14.2)                                        --><a id="eq:DivJZero"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:DivJZero} \divg \vect j = 0.
+\end{equation}
+
+</p>
+
+<figure id="autoid-368" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-210"
+    class="lateximagesource"
+><!--
+𝑆
+
+
+
+
+    𝐿
+--><img
+   src="main-html-images\image-210.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;14.2. Контур \(L\), натягнута на нього поверхня \(S\) та провідник зі струмом, що її пронизує<a id="pic:CircThm"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Але, з&nbsp;іншого боку, за законом збереження заряду (рівняння неперервності, гл.&nbsp;<a href="ch7.html#SteadyCurrent">7</a>), якщо густина заряду змінюється з&nbsp;часом, \(\partial \rho /\partial t \neq 0\), то
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{2}\)</span>
+
+<!--
+
+                                                                       𝜕𝜌
+                                                               𝛁⋅𝐣=−      ≠ 0.                                                          (14.3)                                         --><a id="eq:ContinuityViolation"></a><!--
+                                                                       𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ContinuityViolation} \divg \vect j = -\frac {\partial \rho }{\partial t} \neq 0.
+\end{equation}
+
+</p>
+
+<p>
+Рівняння&nbsp;<span class="textup">(<a href="ch14.html#eq:DivJZero">14.2</a>)</span> і&nbsp;<span class="textup">(<a href="ch14.html#eq:ContinuityViolation">14.3</a>)</span> відверто <em>суперечать</em> одне одному
+щоразу, коли \(\partial \rho /\partial t\neq 0\) — а&nbsp;отже, теорему про циркуляцію&nbsp;<span class="textup">(<a href="ch14.html#eq:CirculationHVacuumOld">14.1</a>)</span> необхідно <em>видозмінити</em>.
+</p>
+<!--
+...... subsection Гіпотеза Максвелла ......
+-->
+<h5 id="autosec-1069">Гіпотеза Максвелла</h5>
+<a id="main-html-autopage-1069"></a>
+
+
+<p>
+Щоб усунути цю суперечність, Дж.&nbsp;Максвелл увів поняття <em><span
+    class="textcolor"
+    style="color:#990000"
+>струму зміщення</span></em> \(\vect j_\text {зм}\), доповнивши теорему про циркуляцію так, щоб закон збереження заряду виконувався за будь-яких обставин:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{3}\)</span>
+
+<!--
+
+                                                                     4𝜋
+                                                           𝛁×𝐇=         (𝐣 + 𝐣зм ) .                                                              (14.4)                                --><a id="eq:DisplacementCurrentDef"></a><!--
+                                                                      𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:DisplacementCurrentDef} \rot \Hfield = \frac {4\pi }{c}\left (\vect j+\vect j_\text {зм}\right ).
+\end{equation}
+
+</p>
+
+<p>
+Застосовуючи операцію \(\divg \) до цього рівняння:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{4}\)</span>
+
+<!--
+
+                                                                                                                                           𝜕𝜌
+                                                                                                      𝛁 ⋅ (𝐣 + 𝐣зм ) = 0   ⇒   𝛁 ⋅ 𝐣зм =
+                                                                                                                                           𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation*}
+\divg \left (\vect j+\vect j_\text {зм}\right ) = 0 \quad \Rightarrow \quad \divg \vect j_\text {зм} = \frac {\partial \rho }{\partial t}
+\end{equation*}
+
+</p>
+
+<p>
+(тут ми скористались рівнянням&nbsp;<span class="textup">(<a href="ch14.html#eq:ContinuityViolation">14.3</a>)</span>). За теоремою Гаусса для електричного поля, \(\rho = \dfrac 1{4\pi }\divg \Dfield \) (гл.&nbsp;<a
+href="ch5.html#FieldInDielectrics">5</a>), тому
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{4}\)</span>
+
+<!--
+
+                                                                                                                𝜕   1                 1 𝜕𝐃
+                                                                                                    𝛁 ⋅ 𝐣зм =     (   𝛁 ⋅ 𝐃) = 𝛁 ⋅ (       ).
+                                                                                                                𝜕𝑡 4𝜋                4𝜋 𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation*}
+\divg \vect j_\text {зм} = \frac {\partial }{\partial t}\left (\frac 1{4\pi }\divg \Dfield \right ) = \divg \left (\frac 1{4\pi }\frac {\partial \Dfield }{\partial t}\right ).
+\end{equation*}
+
+</p>
+
+<p>
+Найпростіше (і, як показує подальша перевірка експериментом, єдино правильне) розв’язання цього рівняння&nbsp;— покласти
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{4}\)</span>
+
+<!--
+
+
+                                                                      1 𝜕𝐃
+                                                             𝐣зм =         .                                                                    (14.5)                               --><a id="eq:DisplacementCurrentDeriv"></a><!--
+                                                                     4𝜋 𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:DisplacementCurrentDeriv} \tcbhighmath { \vect j_\text {зм} = \frac 1{4\pi }\frac {\partial \Dfield }{\partial t}. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Рівняння&nbsp;\(\divg \vect j_\text {зм} = \divg \left (\tfrac 1{4\pi }\partial \Dfield /\partial t\right )\) саме собою <em>не доводить</em>, що \(\vect j_\text {зм}\) дорівнює точно \(\tfrac 1{4\pi }\partial \Dfield
+/\partial t\): до цього виразу можна було б, узагалі кажучи, додати довільне бездивергентне поле (\(\divg \vect f=0\)). Максвелл обрав <em>найпростіший</em> можливий варіант&nbsp;— без жодного додаткового доданка; те, що саме цей
+вибір відповідає дійсності (а&nbsp;не просто математичній зручності),&nbsp;— це вже суто <em>експериментальний</em> факт, підтверджений, зокрема, дослідами Г.&nbsp;Герца з&nbsp;випромінювання електромагнітних хвиль (див.
+гл.&nbsp;<a href="ch16.html#ElMagWaves">16</a>).
+</p>
+</div>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> Викладене вище виведення формули для струму зміщення&nbsp;<span class="textup">(<a href="ch14.html#eq:DisplacementCurrentDeriv">14.5</a>)</span> через закон збереження заряду та усунення
+суперечності в&nbsp;теоремі про циркуляцію&nbsp;— це <em>логічна реконструкція</em>, зручна для навчального курсу, а&nbsp;не той шлях, яким ішов сам Максвелл. Він прийшов до цієї ідеї через складну механічну модель ефіру («молекулярні
+вихори» з&nbsp;«холостими коліщатками» між ними), у&nbsp;якій електричне поле спричиняло пружну деформацію середовища.
+</p>
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+Саме ця механічна картина й&nbsp;дала назву новому явищу. Математично вектор електричного зміщення дорівнює:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{5}\)</span>
+
+<!--
+
+
+                                                                                                                   𝐃 = 𝐄 + 4𝜋𝐏,
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect D = \vect E + 4\pi \vect P,
+\end{equation*}
+
+</p>
+
+<p>
+через що густина струму зміщення природно розпадається на два доданки:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{5}\)</span>
+
+<!--
+
+                                                                                                                  1 𝜕𝐃    1 𝜕𝐄   𝜕𝐏
+                                                                                                         𝐣зм =         =       +    .
+                                                                                                                 4𝜋 𝜕𝑡   4𝜋 𝜕𝑡   𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect j_\text {зм} = \frac {1}{4\pi }\parttime {\vect D} = \frac {1}{4\pi }\parttime {\vect E} + \parttime {\vect P}.
+\end{equation*}
+
+</p>
+
+<p>
+Другий доданок, \(\vect j_\text {пол} = \parttime {\vect P}\), має прямий наочний зміст: це <em><span
+    class="textcolor"
+    style="color:#990000"
+>струм поляризації</span></em>, який описує реальний рух (зміщення) зв’язаних зарядів у&nbsp;речовині. Перший же доданок, \(\dfrac {1}{4\pi }\parttime {\vect E}\), Максвелл вважав аналогічним зміщенням частинок самого ефіру.
+</p>
+
+<p>
+Згодом від концепції ефіру відмовилися, і&nbsp;сьогодні вакуумний доданок описує лише швидкість зміни самого електричного поля, проте узагальнена назва «струм зміщення» назавжди збереглася за всією величиною \(\vect j_\text {зм}\).
+Те, що фундаментальне рівняння можна отримати й&nbsp;без механічних гіпотез, свідчить, що рівняння Максвелла відображають об’єктивну структуру поля, а&nbsp;не залежать від моделі, яка привела до їх відкриття.
+</p>
+</div>
+<!--
+...... subsection Теорема про циркуляцію магнітного поля з-урахуванням струму зміщення ......
+-->
+<h5 id="autosec-1070">Теорема про циркуляцію магнітного поля з&nbsp;урахуванням струму зміщення</h5>
+<a id="main-html-autopage-1070"></a>
+
+
+<p>
+Отже, теорема про циркуляцію для магнітного поля, узгоджена із законом збереження заряду, набуває остаточного вигляду:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{5}\)</span>
+
+<!--
+
+
+                                                                                   4𝜋    1 𝜕𝐃
+                                                                   𝛁×𝐇=               𝐣+      .                                                 (14.6)                                          --><a id="eq:CirculationHFull"></a><!--
+                                                                                    𝑐    𝑐 𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CirculationHFull} \tcbhighmath { \rot \Hfield = \frac {4\pi }{c}\vect j + \frac 1c\frac {\partial \Dfield }{\partial t}. }
+\end{equation}
+
+</p>
+
+<p>
+В&nbsp;інтегральній формі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{6}\)</span>
+
+<!--
+
+                                                     ˛                      ˆ                   ˆ
+                                                                    4𝜋                      1       𝜕𝐃
+                                                         𝐇 ⋅ 𝑑𝐫 =                𝐣 ⋅ 𝑑𝐒 +              ⋅ 𝑑𝐒,                                (14.7)                                          --><a id="eq:CirculationHFullInt"></a><!--
+                                                                     𝑐                      𝑐       𝜕𝑡
+                                                     𝐿                      𝑆                   𝑆
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CirculationHFullInt} \tcbhighmath { \oint \limits _L \Hfield \cdot d\vect r = \frac {4\pi }{c}\iint \limits _S \vect j\cdot d\vect S + \frac 1c\iint \limits _S \frac {\partial \Dfield }{\partial
+t}\cdot d\vect S, }
+\end{equation}
+
+</p>
+
+<p>
+де
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{7}\)</span>
+
+<!--
+
+                                                                        ˆ
+                                                                    1           𝜕𝐃
+                                                           𝐼зм =                   ⋅ 𝑑𝐒                                            (14.8)                                          --><a id="eq:DisplacementCurrentIntegral"></a><!--
+                                                                   4𝜋           𝜕𝑡
+                                                                        𝑆
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:DisplacementCurrentIntegral} I_\text {зм} = \frac 1{4\pi }\iint \limits _S \frac {\partial \Dfield }{\partial t}\cdot d\vect S
+\end{equation}
+
+</p>
+
+<p>
+— струм зміщення, що пронизує поверхню \(S\), натягнуту на контур \(L\). Тут \(\vect j\)&nbsp;— густина струму провідності (і&nbsp;конвекційного струму, тобто руху заряджених тіл). Отже, згідно з&nbsp;гіпотезою Максвелла, <em>змінне
+електричне поле поряд зі звичайними струмами провідності також створює магнітне поле</em>.
+</p>
+<!--
+...... subsection Порівняння закону Фарадея та гіпотези Максвелла ......
+-->
+<h5 id="autosec-1071">Порівняння закону Фарадея та гіпотези Максвелла</h5>
+<a id="main-html-autopage-1071"></a>
+
+
+<p>
+Порівняємо закон електромагнітної індукції Фарадея (гл.&nbsp;<a href="ch12.html#ElMagInduction">12</a>) і&nbsp;«оновлену» теорему про циркуляцію за відсутності струмів провідності (\(\vect j=0\)) у&nbsp;вакуумі (\(\epsilon =\mu =1\),
+тобто \(\Efield =\Dfield \), \(\Hfield =\Bfield \)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{8}\)</span>
+
+<!--
+
+                                                     1 𝜕𝐁                                1 𝜕𝐄
+                                             𝛁×𝐄=−                               𝛁×𝐁=+                         .                       (14.9)                                          --><a id="eq:FaradayVsMagnetoelectric"></a><!--
+                                                     𝑐 𝜕𝑡
+                                             ⏟⎵⎵⎵⎵⏟⎵⎵⎵⎵⏟                                 𝑐 𝜕𝑡
+                                                                                 ⏟⎵⎵⎵⎵⏟⎵⎵⎵⎵⏟
+                                       закон електромагнітної індукції   «закон магнітоелектричної індукції»
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:FaradayVsMagnetoelectric} \underbrace {\rot \Efield = -\frac 1c\frac {\partial \Bfield }{\partial t}}_\text {закон електромагнітної індукції} \qquad \qquad \underbrace {\rot \Bfield = +\frac 1c\frac
+{\partial \Efield }{\partial t}}_\text {\enquote {закон магнітоелектричної індукції}}.
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Ця пара рівнянь&nbsp;— вершина ідеї Максвелла про <em>симетрію</em> електрики й&nbsp;магнетизму: <em>змінне в&nbsp;часі магнітне поле породжує вихрове електричне поле, а&nbsp;змінне в&nbsp;часі електричне поле породжує
+магнітне поле</em>. Єдина відмінність&nbsp;— знак: у&nbsp;законі Фарадея «мінус» (правило Ленца), у&nbsp;гіпотезі Максвелла&nbsp;— «плюс». Ця відносно невелика асиметрія знаків, утім, має глибокі наслідки: саме вона (разом з рівняннями
+\(\divg \Efield =0\), \(\divg \Bfield =0\) у&nbsp;вакуумі) приводить, як буде показано в&nbsp;наступних розділах курсу, до існування <em><span
+    class="textcolor"
+    style="color:#990000"
+>електромагнітних хвиль</span></em>, що біжать зі швидкістю світла \(c\), а&nbsp;не до експоненційно загасаючих чи зростаючих розв’язків.
+</p>
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Радіальне стікання заряду з&nbsp;кулі.</b> Нехай куля несе заряд \(Q(t)\), що стікає в&nbsp;зовнішнє (слабко провідне) середовище рівномірно в&nbsp;усіх напрямках. Чи виникає при цьому магнітне поле?
+</p>
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-211"
+    class="lateximagesource"
+><!--
+          𝐼зм   𝐼   𝐼зм
+      𝐼                   𝐼
+𝐼зм                           𝐼зм
+
+ 𝐼                            𝐼
+
+𝐼зм                           𝐼зм
+      𝐼                   𝐼
+          𝐼зм   𝐼   𝐼зм
+--><img
+   src="main-html-images\image-211.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+Радіальне стікання заряду з&nbsp;кулі:<br />
+струм провідності \(I\) і&nbsp;струм зміщення \(I_\text {зм}\)
+</div>
+</div>
+
+<p>
+Стікання заряду створює радіальний струм провідності \(I = -\dfrac {\partial Q}{\partial t}\). Поле кулі на відстані \(r\), за теоремою Гаусса, \(\Efield (r) = \dfrac {Q(t)}{r^3}\vect r\) (і&nbsp;теж спадає з&nbsp;часом), тому крізь
+будь-яку сферу радіуса \(r&gt;R\) додатково тече струм зміщення:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{9}\)</span>
+
+<!--
+
+                                                                        ˛
+                                                                    1       𝜕𝐄        𝜕𝑄
+                                                           𝐼зм =               ⋅ 𝑑𝐒 =    = −𝐼.                                               (14.10)                                          --><a id="eq:RadialLeakCurrent"></a><!--
+                                                                   4𝜋       𝜕𝑡        𝜕𝑡
+                                                                        𝑆
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RadialLeakCurrent} I_\text {зм} = \frac 1{4\pi }\oiint \limits _S \frac {\partial \Efield }{\partial t}\cdot d\vect S = \frac {\partial Q}{\partial t} = -I.
+\end{equation}
+
+</p>
+
+<p>
+За теоремою про циркуляцію, застосованою до довільного кола \(L\), що лежить на сфері радіуса \(r&gt;R\) (натягнемо на нього частину цієї ж сфери&nbsp;— поверхню \(S\), яку перетинають і&nbsp;струм провідності, і&nbsp;струм зміщення):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{10}\)</span>
+
+<!--
+
+                                                   ˛
+                                                                   4𝜋
+                                                       𝐇 ⋅ 𝑑𝐫 =       (𝐼 + 𝐼зм ) = 0   ⇒   𝐇 = 𝐁 = 0.                                          (14.11)                                          --><a id="eq:RadialLeakZeroB"></a><!--
+                                                                    𝑐
+                                                   𝐿
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RadialLeakZeroB} \oint \limits _L \Hfield \cdot d\vect r = \frac {4\pi }c\left (I+I_\text {зм}\right ) = 0 \quad \Rightarrow \quad \Hfield =\Bfield =0.
+\end{equation}
+
+</p>
+
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+У&nbsp;цій задачі, попри те, що заряд явно <em>рухається</em> (тече струм!), магнітне поле <em>не виникає взагалі</em>: струм зміщення в&nbsp;кожній точці простору точно компенсує струм провідності. Це наочно ілюструє, що струм
+зміщення&nbsp;— не якась математична поправка «про око», а&nbsp;реальний фізичний внесок у&nbsp;джерела магнітного поля, необхідний для узгодженості всієї теорії. Без нього теорема про циркуляцію давала б для кола \(L\) результат, що
+залежить від вибору натягнутої на нього поверхні (крізь різні «шапки» сфери тече різний струм провідності), а&nbsp;це неможливо.
+</p>
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Струм зміщення в&nbsp;конденсаторі.</b> Розглянемо коло з&nbsp;плоским конденсатором, яке заряджається від джерела струмом \(I\) (див. рис.). Візьмемо контур \(L\), що охоплює дріт поблизу конденсатора, і&nbsp;натягнемо на
+нього <em>дві різні</em> поверхні: одну (ліворуч)&nbsp;— що перетинає сам провід, і&nbsp;другу (праворуч) — що проходить між обкладками конденсатора, не перетинаючи жодного проводу.
+</p>
+
+<p>
+Для лівої поверхні циркуляція визначається звичайним струмом провідності: \(\oint _L\Hfield \cdot d\vect r = \tfrac {4\pi }{c}I\). Для правої поверхні провідного струму немає взагалі (вона проходить у&nbsp;проміжку між
+обкладками, де є лише електричне поле, що змінюється в&nbsp;часі), тому циркуляція визначається <em>лише</em> струмом зміщення: \(\oint _L\Hfield \cdot d\vect r = \tfrac {4\pi }c I_\text {зм}\).
+</p>
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:232pt ; ">
+
+<a id="main-html-autopage-1076"></a>
+
+<p>
+<span
+    id="lateximage-main-html-212"
+    class="lateximagesource"
+><!--
+--><img
+    src="main-html-images\image-212.svg"
+    alt="(-tikz-&nbsp;diagram)"
+    style=""
+    class="lateximage"
+></span>
+</p>
+<p>
+Площа \(S\) пронизується лише струмом провідності
+</p>
+
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:232pt ; ">
+
+<a id="main-html-autopage-1079"></a>
+
+<p>
+<span
+    id="lateximage-main-html-213"
+    class="lateximagesource"
+><!--
+--><img
+    src="main-html-images\image-213.svg"
+    alt="(-tikz-&nbsp;diagram)"
+    style=""
+    class="lateximage"
+></span>
+</p>
+<p>
+Площа \(S\) пронизується лише струмом зміщення
+</p>
+
+
+</div>
+
+<div class="figurecaption">
+Дві різні поверхні, натягнуті на один і&nbsp;той самий контур \(L\)
+</div>
+</div>
+
+<p>
+Але циркуляція по одному й&nbsp;тому самому контуру не може залежати від вибору поверхні, натягнутої на нього (це властивість теореми Стокса), тому
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{11}\)</span>
+
+<!--
+
+
+                                                                      𝐼 = 𝐼зм ,                                                           (14.12)     --><a id="eq:CapacitorTwoSurfaces"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CapacitorTwoSurfaces} I = I_\text {зм},
+\end{equation}
+
+</p>
+
+<p>
+тобто між обкладками «протікає» струм зміщення, який замикає коло.
+</p>
+
+<p>
+Розглянемо докладніше, яке магнітне поле створює струм зміщення в&nbsp;конденсаторі (див. рис. нижче).
+</p>
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-214"
+    class="lateximagesource"
+><!--
++                −
+
+
+
+
+    𝐼   𝜕𝐃   𝐼
+        𝜕𝑡
+--><img
+   src="main-html-images\image-214.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+<a id="autoid-369" ></a >
+Рис.&nbsp;14.3. Магнітне поле, створене струмом зміщення всередині конденсатора під час його зарядки<a id="pic:CapacitorChargingField"></a>
+</div>
+</div>
+
+<p>
+Нехай плоский конденсатор із пластинами радіуса \(R\) заряджається струмом \(I\) (зазор між пластинами малий, крайовими ефектами нехтуємо). Густина струму зміщення між обкладками дорівнює
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{12}\)</span>
+
+<!--
+
+                                                                                                                              𝐼
+                                                                                                                    𝑗зм =        ,
+                                                                                                                             𝜋𝑅2
+
+-->
+
+<p>
+
+\begin{equation*}
+j_\text {зм} = \frac {I}{\pi R^2},
+\end{equation*}
+
+</p>
+
+<p>
+і&nbsp;він спрямований так само як струм провідності в&nbsp;підвідних дротах. Магнітне поле всередині конденсатора знаходимо за теоремою про циркуляцію, взявши контур радіуса \(r\) із центром на осі конденсатора:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{12}\)</span>
+
+<!--
+
+                                                                                                             ˛
+                                                                                                                             4𝜋
+                                                                                                                  𝐇 ⋅ 𝑑𝐫 =      𝐼 (𝑟),
+                                                                                                              𝐿               𝑐 зм
+
+-->
+
+<p>
+
+\begin{equation*}
+\oint _L \Hfield \cdot d\vect r = \frac {4\pi }{c}I_\text {зм}(r),
+\end{equation*}
+
+</p>
+
+<p>
+де \(I_\text {зм}(r) = j_\text {зм}\pi r^2 = I r^2/R^2\). Звідси
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{12}\)</span>
+
+<!--
+
+
+                                                                                                                  4𝜋 𝑟2                       2𝐼𝑟
+                                                                                                     2𝜋𝑟𝐻(𝑟) =      𝐼         ⇒      𝐻(𝑟) =       .
+                                                                                                                   𝑐 𝑅2                       𝑐𝑅2
+
+-->
+
+<p>
+
+\begin{equation*}
+2\pi r H(r) = \frac {4\pi }{c}I\frac {r^2}{R^2} \quad \Rightarrow \quad H(r) = \frac {2Ir}{cR^2}.
+\end{equation*}
+
+</p>
+
+<p>
+Отже, всередині конденсатора виникає вихрове магнітне поле, силові лінії якого охоплюють вісь конденсатора за правилом правого гвинта. Це поле точнісінько таке саме, як у&nbsp;провіднику того самого радіуса зі струмом \(I\): у&nbsp;цьому
+й&nbsp;полягає фізичний зміст твердження, що струм зміщення <em>замикає</em> коло й&nbsp;створює магнітне поле нарівні зі струмом провідності.
+</p>
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Струми зміщення замикають струми провідності і&nbsp;створюють магнітне поле точнісінько так само, як і&nbsp;звичайні струми провідності</span></em> (рис.&nbsp;<a href="ch14.html#pic:CapacitorChargingField">14.3</a>).
+Проте вони мають і&nbsp;принципову відмінність: струм зміщення (у&nbsp;вакуумі) <em>не</em> пов’язаний з&nbsp;тепловиділенням&nbsp;— до нього незастосовні ні закон Ома, ні закон Джоуля-Ленца (гл.&nbsp;<a
+href="ch7.html#SteadyCurrent">7</a>), адже він не пов’язаний з&nbsp;переміщенням реальних носіїв заряду проти сил опору, а&nbsp;лише зі зміною електричного поля в&nbsp;просторі. (У&nbsp;реальному діелектрику змінна поляризація
+супроводжується діелектричними втратами, але це властивість речовини, а&nbsp;не струму зміщення як такого.)
+</p>
+</div>
+<!--
+...... section Система рівнянь Максвелла ......
+-->
+<h4 id="autosec-1085"><span class="sectionnumber">14.2&#x2003;</span>Система рівнянь Максвелла</h4>
+<a id="main-html-autopage-1085"></a>
+
+
+<p>
+<a id="LWR-ht-maxwell-equations-system"></a>
+</p>
+
+<p>
+Доповнивши основні закони електромагнетизму, встановлені в&nbsp;попередніх розділах, гіпотезою про струм зміщення, Максвелл отримав повну систему фундаментальних рівнянь електродинаміки. Таких рівнянь&nbsp;— чотири
+(табл.&nbsp;<a href="ch14.html#tab:MaxwellSystem">14.1</a>).
+</p>
+
+<figure id="autoid-370" class="table ">
+
+
+<div class="figurecaption">
+Таблиця&nbsp;14.1. Система рівнянь Максвелла
+
+</div>
+
+<a id="tab:MaxwellSystem"></a>
+<table>
+
+<tr style="display:none"><th>.</th></tr>
+
+<tr class="hline">
+<td colspan="1" class="tdc tvertbarl tvertbarr" style="background:#0064AA; border-left: 1px solid black; border-right: 1px solid black"><span
+   class="textcolor"
+   style="color:#FFFFFF"
+><b>Рівняння</b></span></td>
+<td colspan="1" class="tdc tvertbarr" style="background:#0064AA; border-right: 1px solid black"><span
+   class="textcolor"
+   style="color:#FFFFFF"
+><b>Інтегральна форма</b></span></td>
+<td colspan="1" class="tdc tvertbarr" style="background:#0064AA; border-right: 1px solid black"><span
+   class="textcolor"
+   style="color:#FFFFFF"
+><b>Диференціальна форма</b></span></td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Теорема Гаусса для магнітного поля
+</p>
+</td>
+<td class="tdp tvertbarr tdleft" style="border-right: 1px solid black">
+
+<p>
+\(\displaystyle \oiint \limits _S \Bfield \cdot d\vect {S} = 0\)
+</p>
+</td>
+<td class="tdp tvertbarr tdleft" style="border-right: 1px solid black">
+
+<p>
+\(\displaystyle \divg \Bfield = 0\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Теорема про циркуляцію для електричного поля
+</p>
+</td>
+<td class="tdp tvertbarr tdleft" style="border-right: 1px solid black">
+
+<p>
+\(\displaystyle \oint \limits _L \Efield \cdot d\vect {r} = - \frac 1c\iint \limits _S\frac {\partial \Bfield }{\partial {t}} \cdot d\vect {S}\)
+</p>
+</td>
+<td class="tdp tvertbarr tdleft" style="border-right: 1px solid black">
+
+<p>
+\(\displaystyle \rot \Efield = - \frac 1c\frac {\partial \Bfield }{\partial {t}}\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Теорема Гаусса для електричного поля
+</p>
+</td>
+<td class="tdp tvertbarr tdleft" style="border-right: 1px solid black">
+
+<p>
+\(\displaystyle \oiint \limits _S \Dfield \cdot d\vect {S} = 4\pi \iiint \limits _{V} \rho dV\)
+</p>
+</td>
+<td class="tdp tvertbarr tdleft" style="border-right: 1px solid black">
+
+<p>
+\(\displaystyle \divg \Dfield = 4\pi \rho \)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Теорема про циркуляцію для магнітного поля
+</p>
+</td>
+<td class="tdp tvertbarr tdleft" style="border-right: 1px solid black">
+
+<p>
+\(\displaystyle \oint \limits _L \Hfield \cdot d\vect {r} = \frac {4\pi }{c} \iint \limits _S \left ( \vect {j} + \frac 1{4\pi }\frac {\partial \Dfield }{\partial t}\right ) \cdot d\vect {S}\)
+</p>
+</td>
+<td class="tdp tvertbarr tdleft" style="border-right: 1px solid black">
+
+<p>
+\(\displaystyle \rot \Hfield = \frac {4\pi }{c}\vect {j} + \frac 1c\frac {\partial \Dfield }{\partial t}\)
+</p>
+</td>
+</tr>
+
+<tr class="hline" aria-hidden="true">
+<td class="tdp tdleft">
+
+</td>
+<td class="tdp tdleft">
+
+</td>
+<td class="tdp tdleft">
+
+</td>
+</tr>
+</table>
+
+</figure>
+
+<p>
+Тут \(\rho \) і&nbsp;\(\vect j\)&nbsp;— густини вільних зарядів і&nbsp;струмів (зв’язані заряди й&nbsp;струми враховано через \(\Dfield \) і&nbsp;\(\Hfield \)). Закон збереження заряду не є окремим рівнянням, а&nbsp;випливає
+з&nbsp;двох останніх: застосувавши \(\divg \) до четвертого рівняння й&nbsp;підставивши третє, отримуємо \(\divg \vect j + \partial \rho /\partial t = 0\).
+</p>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> У&nbsp;такому компактному вигляді рівняння Максвелла <em>самому Максвеллу невідомі</em>. У&nbsp;його «Трактаті про електрику й&nbsp;магнетизм» (1873) теорія викладена приблизно двадцятьма рівняннями
+для двадцяти змінних, записаними покомпонентно (а&nbsp;частково&nbsp;— в&nbsp;кватерніонній нотації). Чотири векторні рівняння вигляду, наведеного в&nbsp;табл.&nbsp;<a href="ch14.html#tab:MaxwellSystem">14.1</a>, виокремили
+близько 1884&nbsp;р. Олівер Хевісайд і Генріх Герц, а&nbsp;векторний апарат \(\Grad \), \(\Div \), \(\Rot \) розвивали водночас із ними Дж.&nbsp;В.&nbsp;Гіббс і&nbsp;сам Хевісайд. Тому їх іноді називають «рівняннями Герца-Хевісайда».
+</p>
+</div>
+<!--
+...... subsection Вираз електричного поля через потенціали ......
+-->
+<h5 id="autosec-1087">Вираз електричного поля через потенціали</h5>
+<a id="main-html-autopage-1087"></a>
+
+
+<p>
+Рівняння Максвелла природно групуються парами: <em>перша</em> пара (теорема Гаусса для \(\Bfield \) і&nbsp;циркуляція \(\Efield \))&nbsp;— рівняння <em>без</em> явних джерел (зарядів і&nbsp;струмів), <em>друга</em> пара&nbsp;—
+рівняння <em>з</em> джерелами.
+</p>
+
+<p>
+Теорема Гаусса для \(\Bfield \) дає змогу, як і&nbsp;в&nbsp;магнітостатиці (гл.&nbsp;<a href="ch9.html#MagFieldVacuum">9</a>), ввести вектор-потенціал:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{12}\)</span>
+
+<!--
+
+
+                                                                                                                𝐁 = 𝛁 × 𝐀.
+
+-->
+
+<p>
+
+\begin{equation*}
+\Bfield = \rot \vect A.
+\end{equation*}
+
+</p>
+
+<p>
+Підставляючи це в&nbsp;закон індукції, \(\rot \Efield = -\dfrac 1c\parttime {\Bfield } = -\dfrac 1c\parttime {}(\rot \vect A) = -\rot \left (\dfrac 1c \parttime {\vect A}\right )\), отримуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{12}\)</span>
+
+<!--
+
+                                                                                                                       1 𝜕𝐀
+                                                                                                            𝛁 × (𝐄 +        ) = 0.
+                                                                                                                       𝑐 𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation*}
+\rot \left (\Efield +\frac 1c\parttime {\vect A}\right ) = 0.
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки ротор цього виразу тотожно дорівнює нулю, сам вираз можна подати як градієнт деякої скалярної функції \(-\phi \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{12}\)</span>
+
+<!--
+
+
+                                                                            1 𝜕𝐀
+                                                                𝐄 = −𝛁𝜑 −        .                                                           (14.13)                                         --><a id="eq:EFromPotentials"></a><!--
+                                                                            𝑐 𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:EFromPotentials} \tcbhighmath { \Efield = -\grad \phi - \frac 1c\frac {\partial \vect A}{\partial t}. }
+\end{equation}
+
+</p>
+
+<p>
+У&nbsp;випадку сталих у&nbsp;часі полів \(\parttime {\vect A}=0\), і&nbsp;\(\Efield =-\grad \phi \)&nbsp;— введена тут функція \(\phi \) природно збігається зі звичним скалярним потенціалом електростатики. Зауважимо, що
+потенціали визначені неоднозначно: заміна \(\vect A\to \vect A+\grad f\), \(\phi \to \phi -\frac 1c\parttime {f}\) не змінює ні \(\Bfield \), ні \(\Efield \) (калібрувальна свобода, гл.&nbsp;<a
+href="ch9.html#MagFieldVacuum">9</a>).
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch14.html#eq:EFromPotentials">14.13</a>)</span> показує, що в&nbsp;загальному, нестаціонарному випадку електричне поле визначається <em>не тільки</em> скалярним потенціалом
+\(\phi \) (як в&nbsp;електростатиці), а&nbsp;й&nbsp;швидкістю зміни вектор-потенціала \(\vect A\): частина \(\Efield \) породжується не зарядами напряму, а&nbsp;через посередництво змінного магнітного поля&nbsp;— це і&nbsp;є, по
+суті, вихрова, «індукційна» частина електричного поля (у&nbsp;кулонівському калібруванні \(\divg \vect A = 0\)), з&nbsp;якою ми вже зустрічались у&nbsp;гл.&nbsp;<a href="ch12.html#ElMagInduction">12</a>.
+</p>
+</div>
+<!--
+...... subsection Стаціонарні поля ......
+-->
+<h5 id="autosec-1088">Стаціонарні поля</h5>
+<a id="main-html-autopage-1088"></a>
+
+
+<p>
+У&nbsp;стаціонарному випадку всі часткові похідні за часом дорівнюють нулю, \(\parttime {}=0\), і&nbsp;повна система рівнянь Максвелла розпадається на дві <em>незалежні</em> системи&nbsp;— для електростатики й&nbsp;магнітостатики
+(рис.&nbsp;<a href="ch14.html#pic:StaticsComparison">14.4</a>):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{13}\)</span>
+
+<!--
+
+
+                                                     𝛁 ⋅ 𝐃 = 4𝜋𝜌,        𝛁 ⋅ 𝐁 = 0,
+                                                   {                    {          4𝜋                                                     (14.14)                                         --><a id="eq:StaticDecoupling"></a><!--
+                                                     𝛁 × 𝐄 = 0.
+                                                   ⏟⎵⎵⎵⎵⏟⎵⎵⎵⎵⏟           𝛁×𝐇=         𝐣.
+                                                                                    𝑐
+                                                                        ⏟⎵⎵⎵⎵⎵⏟⎵⎵⎵⎵⎵⏟
+                                                     електростатика       магнітостатика
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:StaticDecoupling} \underbrace {\begin{cases} \divg \Dfield = 4\pi \rho , \\ \rot \Efield = 0. \end {cases}}_\text {електростатика} \qquad \qquad \underbrace {\begin{cases} \divg \Bfield = 0, \\ \rot
+\Hfield = \dfrac {4\pi }c\vect j. \end {cases}}_\text {магнітостатика}
+\end{equation}
+
+</p>
+
+<figure id="autoid-371" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-1090"></a>
+
+<p>
+<span
+    id="lateximage-main-html-215"
+    class="lateximagesource"
+><!--
++
+--><img
+   src="main-html-images\image-215.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+(а) Електростатика: поле точкового заряду
+
+</div>
+
+<a id="tikz:elstat"></a>
+
+<a id="sub@tikz:elstat"></a>
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-1093"></a>
+
+<p>
+<span
+    id="lateximage-main-html-216"
+    class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-216.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+(б) Магнітостатика: поле провідника зі струмом
+
+</div>
+
+<a id="tikz:magstat"></a>
+
+<a id="sub@tikz:magstat"></a>
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;14.4. У&nbsp;стаціонарному випадку електричне (<a href="ch14.html#tikz:elstat">а</a>) й&nbsp;магнітне (<a href="ch14.html#tikz:magstat">б</a>) поля «не знають» одне про одного<a id="pic:StaticsComparison"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+
+<div class="cb-attention">
+
+<p>
+Це&nbsp;— глибокий концептуальний висновок: усі розділи курсу, які передували цьому (електростатика, магнітостатика),&nbsp;— не окремі теорії, а лише <em>частинні випадки</em> єдиної теорії електромагнітного поля Максвелла, що
+виникають у&nbsp;граничному випадку, коли поля не залежать від часу. <em>Зв’язок</em> електрики й&nbsp;магнетизму (взаємне породження одне одного)&nbsp;— принципово <em>нестаціонарне</em> явище, яке зникає, щойно всі процеси
+застигають у&nbsp;часі.
+</p>
+</div>
+<!--
+...... subsection Матеріальні рівняння ......
+-->
+<h5 id="autosec-1096">Матеріальні рівняння</h5>
+<a id="main-html-autopage-1096"></a>
+
+
+<p>
+Рівняння Максвелла&nbsp;— це рівняння <em>загальної</em> структури поля; щоб розв’язати конкретну задачу, їх необхідно доповнити <em><span
+    class="textcolor"
+    style="color:#990000"
+>матеріальними рівняннями</span></em>, що пов’язують поля \(\Dfield \) та \(\Efield \), з&nbsp;одного боку, і&nbsp;\(\Hfield \) та \(\Bfield \)&nbsp;— з&nbsp;іншого, і&nbsp;залежать від властивостей конкретного середовища
+(табл.&nbsp;<a href="ch14.html#tab:ConstitutiveRelations">14.2</a>).
+</p>
+
+<figure id="autoid-372" class="table ">
+
+
+<div class="figurecaption">
+Таблиця&nbsp;14.2. Матеріальні рівняння<a id="tab:ConstitutiveRelations"></a>
+
+</div>
+
+<p>
+<span
+    id="lateximage-main-html-217"
+    class="lateximagesource"
+><!--
+                                                                      Вираз
+Вектор індукції електричного поля                            𝐃 = 𝐄 + 4𝜋𝐏
+
+Вектор поляризації (для лінійних ізотропних речовин)         𝐏 = 𝜒𝑒 𝐄
+
+Діелектрична проникність (для лінійних ізотропних речовин)   𝜀 = 1 + 4𝜋𝜒𝑒
+
+Зв’язок 𝐃 та 𝐄 (для лінійних ізотропних речовин)             𝐃 = 𝜀𝐄
+
+Вектор напруженості магнітного поля                          𝐇 = 𝐁 − 4𝜋𝐉
+
+Вектор намагнічування (для лінійних ізотропних речовин)      𝐉 = 𝜒𝑚 𝐇
+
+Магнітна проникність (для лінійних ізотропних речовин)       𝜇 = 1 + 4𝜋𝜒𝑚
+
+Зв’язок 𝐇 та 𝐁 (для лінійних ізотропних речовин)             𝐁 = 𝜇𝐇
+
+У разі струму, спричиненого електричним полем у провідному
+                                                             𝐣 = 𝜆𝐄
+середовищі, виконується закон Ома
+--><img
+   src="main-html-images\image-217.svg"
+   alt="(table)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+</figure>
+<!--
+...... subsection Граничні умови ......
+-->
+<h5 id="autosec-1099">Граничні умови</h5>
+<a id="main-html-autopage-1099"></a>
+
+
+<p>
+Диференціальні рівняння Максвелла необхідно доповнити граничними умовами на межі розділу двох середовищ; ці умови неявно містяться в <em>інтегральній</em> формі рівнянь Максвелла і&nbsp;виводяться з&nbsp;них тим самим способом
+(циліндр Гаусса, контур циркуляції), що й&nbsp;у&nbsp;попередніх розділах курсу. Граничні умови для змінних полів мають <em>той самий вигляд</em>, що й&nbsp;для стаціонарних (табл.&nbsp;<a
+href="ch14.html#tab:BoundaryConditionsFull">14.3</a>).
+</p>
+
+<figure id="autoid-373" class="table ">
+
+
+<div class="figurecaption">
+Таблиця&nbsp;14.3. Граничні умови для електромагнітного поля<a id="tab:BoundaryConditionsFull"></a>
+
+</div>
+
+<p>
+<span
+    id="lateximage-main-html-218"
+    class="lateximagesource"
+><!--
+Умови для електричних векторів   Умови для магнітних векторів
+         𝐷2𝑛 − 𝐷1𝑛 = 4𝜋𝜎                     𝐵1𝑛 = 𝐵2𝑛
+                                                               4𝜋
+            𝐸1𝜏 = 𝐸2𝜏                [𝐧 × 𝐇2 ] − [𝐧 × 𝐇1 ] =      𝐢
+                                                                𝑐
+--><img
+   src="main-html-images\image-218.svg"
+   alt="(table)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+</figure>
+
+<p>
+Тут \(\sigma \)&nbsp;— поверхнева густина <em><span
+    class="textcolor"
+    style="color:#990000"
+>вільних</span></em> електричних зарядів, а&nbsp;\(\vect i\)&nbsp;— поверхнева густина струму провідності на межі розділу. Якщо поверхневих струмів немає, гранична умова для тангенціальної компоненти \(\Hfield \) спрощується:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{14}\)</span>
+
+<!--
+
+
+                                                                                                              𝐻1𝜏 = 𝐻2𝜏 .
+
+-->
+
+<p>
+
+\begin{equation*}
+H_{1\tau } = H_{2\tau }.
+\end{equation*}
+
+</p>
+<!--
+...... section Про рівняння Максвелла ......
+-->
+<h4 id="autosec-1102"><span class="sectionnumber">14.3&#x2003;</span>Про рівняння Максвелла</h4>
+<a id="main-html-autopage-1102"></a>
+
+
+<p>
+<a id="LWR-ht-about-maxwell-equations"></a>
+</p>
+
+<p>
+<em>Теорія Максвелла&nbsp;— це вершина класичної науки про електромагнітне поле</em>. До цієї висоти ми піднімалися крок за кроком, уточнюючи поняття й&nbsp;розкриваючи глибинні принципи цієї науки: кожен пройдений
+розділ&nbsp;— електростатика, закони постійного струму, магнітостатика, явище електромагнітної індукції&nbsp;— був немов базовий табір на шляху до вершини (рис.&nbsp;<a href="ch14.html#pic:Mountain">14.5</a>).
+</p>
+
+<figure id="autoid-374" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="MaxwellEqns/Pictures/Mountain.jpg" target="_blank" ><img
+   src="MaxwellEqns/Pictures/Mountain.jpg"
+   style="
+   width:434pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;14.5. Теорія Максвелла&nbsp;— це вершина класичної науки про електромагнітне поле
+
+</div>
+
+<a id="pic:Mountain"></a>
+
+</div>
+
+</figure>
+
+<p>
+На вершині перед нами постають рівняння Максвелла&nbsp;— велична симфонія електричного й&nbsp;магнітного полів, ключ до розуміння електромагнітної взаємодії. Уся споруда класичної електродинаміки, зведена нами розділ за
+розділом&nbsp;— від закону Кулона до струму зміщення,&nbsp;— вміщується тепер у&nbsp;чотирьох компактних рівняннях Максвелла, доповнених трьома матеріальними рівняннями середовища. Ці чотири рівняння містять <em>усе</em>:
+електростатику й&nbsp;магнітостатику як окремі стаціонарні випадки, електромагнітну індукцію й&nbsp;струм зміщення як дві половини єдиної симетрії,&nbsp;— і, як буде показано далі, <em><span
+    class="textcolor"
+    style="color:#990000"
+>електромагнітні хвилі</span></em> й&nbsp;саме <em><span
+    class="textcolor"
+    style="color:#990000"
+>світло</span></em> як прямий наслідок цих же рівнянь у&nbsp;вакуумі. Генріх Герц сказав про ці рівняння так:
+</p>
+
+
+<div class="cb-quote">
+
+<p>
+Неможливо позбутися відчуття, що математичні формули живуть власним життям і&nbsp;володіють власним розумом, що вони розумніші за нас, розумніші навіть за тих, хто їх відкрив, що ми отримуємо з&nbsp;цих формул більше, ніж
+у&nbsp;них було спочатку закладено&#x2026;
+</p>
+
+<p>
+&#x2003;&#x2003;Г. Герц.
+</p>
+</div>
+
+<p>
+Ці слова&nbsp;— не поетичне перебільшення, а&nbsp;точний опис того, що сталося з&nbsp;рівняннями вже за життя їхнього автора. Максвелл записав систему рівнянь, спираючись на закони Кулона, Ампера, Фарадея&nbsp;— і&nbsp;жодне
+з&nbsp;цих окремих досягнень електростатики та магнітостатики не містило натяку на те, що об’єднана система виявиться незрівнянно багатшою за суму своїх частин. Наслідки рівнянь подібні (за словами Фейнмана) до спуску з&nbsp;вершини,
+у&nbsp;простір застосувань. Перші кроки цього спуску ми зробимо вже в&nbsp;межах цього розділу: закон збереження енергії електромагнітного поля (теорема Пойнтінга) і&nbsp;скін-ефект у&nbsp;провідниках&nbsp;— найближчі до вершини
+застосування щойно записаної системи. Далі, у&nbsp;наступних розділах курсу, цей спуск продовжиться&nbsp;— до поширення електромагнітних хвиль, принципів їх випромінювання і, зрештою, до основ оптики, радіо- та електротехніки.
+</p>
+<!--
+...... section Енергія електромагнітного поля ......
+-->
+<h4 id="autosec-1104"><span class="sectionnumber">14.4&#x2003;</span>Енергія електромагнітного поля</h4>
+<a id="main-html-autopage-1104"></a>
+
+
+<a id="sec:PintingTheoreme"></a>
+
+<p>
+<a id="LWR-ht-em-field-energy"></a>
+</p>
+<!--
+...... subsection Закон збереження енергії електромагнітного поля ......
+-->
+<h5 id="autosec-1105">Закон збереження енергії електромагнітного поля</h5>
+<a id="main-html-autopage-1105"></a>
+
+
+<p>
+Нехай у&nbsp;деякій області простору присутнє електромагнітне поле й&nbsp;заряджені частинки, що з&nbsp;ним взаємодіють (рис.&nbsp;<a href="ch14.html#pic:EnergyFlowRegion">14.6</a>). Якщо ця система <em>замкнена</em>, її
+енергія зберігається; якщо ж <em>незамкнена</em>, енергія може як <em>втікати</em> в&nbsp;цю область, так і <em>витікати</em> з&nbsp;неї. Якісно закон збереження енергії для такої області можна записати так:
+</p>
+<span class="hidden"> \(\seteqnumber{0}{14.}{14}\)</span>
+
+
+<!--
+
+
+
+  (зменшення енергії поля в об’ємі) =
+                                                                                                                                                                                  (робота над частинками) + (потік енергії назовні),
+
+
+
+-->
+
+
+<p>
+
+\begin{multline*}
+(\text {зменшення енергії поля в об&apos;ємі}) = \\ (\text {робота над частинками}) + (\text {потік енергії назовні}),
+\end{multline*}
+або, виражаючи цікаву для нас величину&nbsp;— роботу поля над зарядженими частинками:
+</p>
+<span class="hidden"> \(\seteqnumber{0}{14.}{14}\)</span>
+
+
+<!--
+
+
+
+  (робота над частинками) =
+                                                                                                                                                                          (зменшення енергії поля в об’ємі) − (потік енергії назовні).
+
+
+
+-->
+
+
+<p>
+
+\begin{multline*}
+(\text {робота над частинками}) = \\(\text {зменшення енергії поля в об&apos;ємі}) - (\text {потік енергії назовні}).
+\end{multline*}
+
+</p>
+
+<figure id="autoid-375" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-219"
+    class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-219.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;14.6. Заряджені частинки в&nbsp;області, обмеженій замкненою поверхнею: енергія електромагнітного поля може втікати й&nbsp;витікати крізь цю поверхню<a id="pic:EnergyFlowRegion"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Рухати заряджені частинки, як ми твердо встановили ще в&nbsp;гл.&nbsp;<a href="ch9.html#MagFieldVacuum">9</a>, може <em>лише електричне</em> поле (магнітне поле роботи не виконує). Енергія, яку електричне поле витрачає на розгін
+частинок в&nbsp;одиниці об’єму за одиницю часу,&nbsp;— це потужність \(\vect j\cdot \Efield \) (у&nbsp;провіднику вона перетворюється на джоулеве тепло, гл.&nbsp;<a href="ch7.html#SteadyCurrent">7</a>).
+</p>
+<!--
+...... subsection Виведення закону збереження ......
+-->
+<h5 id="autosec-1109">Виведення закону збереження</h5>
+<a id="main-html-autopage-1109"></a>
+
+
+<p>
+Запишемо закон Максвелла для \(\rot \Hfield \)&nbsp;<span class="textup">(<a href="ch14.html#eq:CirculationHFull">14.6</a>)</span>, розв’язавши його відносно \(\vect j\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{14}\)</span>
+
+<!--
+
+                                                                                                                  𝑐       1 𝜕𝐃
+                                                                                                            𝐣=      𝛁×𝐇−       .
+                                                                                                                 4𝜋      4𝜋 𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect j = \frac {c}{4\pi }\rot \Hfield - \frac 1{4\pi }\parttime {\Dfield }.
+\end{equation*}
+
+</p>
+
+<p>
+Помножимо скалярно обидві частини на \(\Efield \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{14}\)</span>
+
+<!--
+
+                                                                                                                𝑐         1    𝜕𝐃
+                                                                                                     𝐣⋅𝐄=         𝐄⋅𝛁×𝐇−    𝐄⋅    .
+                                                                                                               4𝜋        4𝜋    𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect j\cdot \Efield = \frac {c}{4\pi }\Efield \cdot \rot \Hfield - \frac 1{4\pi }\Efield \cdot \parttime {\Dfield }.
+\end{equation*}
+
+</p>
+
+<p>
+Скористаємось тотожністю векторного аналізу \(\Efield \cdot \rot \Hfield = -\divg \left [\Efield \times \Hfield \right ] + \Hfield \cdot \rot \Efield \) та матеріальним рівнянням \(\Dfield =\epsilon \Efield \)
+(середовище лінійне, без дисперсії, \(\epsilon \) і&nbsp;\(\mu \) сталі; тому \(\Efield \cdot \parttime {\Dfield } = \epsilon \Efield \cdot \parttime {\Efield } = \parttime {}\left (\tfrac 12\epsilon E^2\right )\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{14}\)</span>
+
+<!--
+
+                                                                                                           𝑐             𝑐        𝜕   1
+                                                                                         𝐣 ⋅ 𝐄 = −𝛁 ⋅ (      [𝐄 × 𝐇]) +    𝐇⋅𝛁×𝐄−   (   𝜀𝐸 2 ) .
+                                                                                                          4𝜋            4𝜋        𝜕𝑡 8𝜋
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect j\cdot \Efield = -\divg \left (\frac {c}{4\pi }\left [\Efield \times \Hfield \right ]\right ) + \frac {c}{4\pi }\Hfield \cdot \rot \Efield - \parttime {}\left (\frac 1{8\pi }\epsilon E^2\right ).
+\end{equation*}
+
+</p>
+
+<p>
+Тепер підставимо закон електромагнітної індукції, \(\rot \Efield = -\dfrac 1c\parttime {\Bfield }\), і&nbsp;матеріальне рівняння \(\Bfield =\mu \Hfield \) (так що \(\Hfield \cdot \parttime {\Bfield } = \parttime {}\left
+(\tfrac 12\mu H^2\right )\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{14}\)</span>
+
+<!--
+
+
+                                                                                                                𝑐            𝜕 𝜀𝐸2   𝜇𝐻 2
+                                                                                              𝐣 ⋅ 𝐄 = −𝛁 ⋅ (      [𝐄 × 𝐇]) −   (   +      ).
+                                                                                                               4𝜋            𝜕𝑡 8𝜋    8𝜋
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect j\cdot \Efield = -\divg \left (\frac {c}{4\pi }\left [\Efield \times \Hfield \right ]\right ) - \parttime {}\left (\frac {\epsilon E^2}{8\pi } + \frac {\mu H^2}{8\pi }\right ).
+\end{equation*}
+
+</p>
+<!--
+...... subsection Теорема Пойнтінга ......
+-->
+<h5 id="autosec-1110">Теорема Пойнтінга</h5>
+<a id="main-html-autopage-1110"></a>
+
+
+<p>
+Проаналізуємо отриманий вираз. Позначимо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{14}\)</span>
+
+<!--
+
+
+                                                                    𝑐
+                                                            𝚷=        [𝐄 × 𝐇]                                                   (14.15)                                                      --><a id="eq:PoyntingVectorDef"></a><!--
+                                                                   4𝜋
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PoyntingVectorDef} \tcbhighmath { \vect \Pi = \frac {c}{4\pi }\left [\Efield \times \Hfield \right ] }
+\end{equation}
+
+</p>
+
+<p>
+— <em><span
+    class="textcolor"
+    style="color:#990000"
+>вектор Пойнтінга</span></em>, і
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{15}\)</span>
+
+<!--
+
+
+                                                           𝜀𝐸2   𝜇𝐻 2   𝐄⋅𝐃   𝐁⋅𝐇
+                                                   𝑤=          +      =     +                                                      (14.16)                                                      --><a id="eq:energy_density"></a><!--
+                                                           8𝜋     8𝜋     8𝜋    8𝜋
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:energy_density} \tcbhighmath { w = \dfrac {\epsilon E^2}{8\pi }+\dfrac {\mu H^2}{8\pi } = \dfrac {\Efield \cdot \Dfield }{8\pi }+\dfrac {\Bfield \cdot \Hfield }{8\pi } }
+\end{equation}
+
+</p>
+
+<p>
+— об’ємну густину енергії електромагнітного поля (сума вже відомих нам електричної й&nbsp;магнітної частин, гл.&nbsp;<a href="ch6.html#ElEnergy">6</a>, гл.&nbsp;<a href="ch12.html#ElMagInduction">12</a>). Тоді
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{16}\)</span>
+
+<!--
+
+
+                                                           𝜕𝑤
+                                                       −      = 𝛁 ⋅ 𝚷 + 𝐣 ⋅ 𝐄.                                               (14.17)                                                       --><a id="eq:PoyntingTheoremDiff"></a><!--
+                                                           𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PoyntingTheoremDiff} \tcbhighmath { -\parttime {w} = \divg \vect \Pi + \vect j\cdot \Efield . }
+\end{equation}
+
+</p>
+
+<p>
+Інтегруючи по довільному об’єму \(V\), обмеженому поверхнею \(S\), і&nbsp;застосовуючи теорему Остроградського-Гаусса, отримуємо <em>інтегральну</em> форму&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>теорему Пойнтінга</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{17}\)</span>
+
+<!--
+
+                                                              ˛              ˆ
+                                                      𝑑𝑊
+                                                  −       =       𝚷 ⋅ 𝑑𝐒 +       𝐣 ⋅ 𝐄 𝑑𝑉 .                                   (14.18)                                                       --><a id="eq:PoyntingTheoremInt"></a><!--
+                                                       𝑑𝑡
+                                                              𝑆              𝑉
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PoyntingTheoremInt} \tcbhighmath { -\frac {dW}{dt} = \oiint \limits _S \vect \Pi \cdot d\vect S + \iiint \limits _V \vect j\cdot \Efield \, dV. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Теорема Пойнтінга:</span></em> зменшення енергії електромагнітного поля за одиницю часу в&nbsp;даному об’ємі дорівнює сумі потоку енергії крізь поверхню, що обмежує цей об’єм, і&nbsp;потужності, яку сили поля виконують над зарядами
+речовини всередині об’єму. <em><span
+    class="textcolor"
+    style="color:#990000"
+>Вектор Пойнтінга</span></em> \(\vect \Pi \) визначає кількість енергії поля, що протікає крізь одиничну площадку за одиницю часу, і&nbsp;вказує <em>напрям</em> руху енергії електромагнітного поля в&nbsp;просторі&nbsp;— поняття,
+яке в&nbsp;статичних задачах електростатики й&nbsp;магнітостатики не було потрібне (енергія в&nbsp;них нікуди не тече). Зауважимо, що сам вектор \(\vect \Pi \) визначений з&nbsp;точністю до ротора довільного векторного поля, але потік
+крізь замкнену поверхню однозначний.
+</p>
+</div>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> Теорему й&nbsp;вектор, що носять його ім’я, Джон Генрі Пойнтінг (1852–1914), учень Максвелла, а&nbsp;згодом перший професор фізики в&nbsp;Бірмінгемі, опублікував 1884&nbsp;р. у&nbsp;статті «Про передачу
+енергії в&nbsp;електромагнітному полі». Головна нова думка&nbsp;— енергія передається <em>не вздовж провідника</em>, а&nbsp;<em>через простір навколо нього</em>: саме до цього висновку ми прийдемо нижче в&nbsp;прикладах
+з&nbsp;провідником і&nbsp;конденсатором. Приблизно в&nbsp;той самий час до такого ж результату незалежно дійшов Олівер Хевісайд, тож у&nbsp;літературі трапляється й&nbsp;назва «вектор Умова-Пойнтінга» (М.&nbsp;О.&nbsp;Умов ще
+1874&nbsp;р. запровадив поняття потоку енергії для пружних середовищ).
+</p>
+</div>
+<!--
+...... subsection Про одиниці вимірювання ......
+-->
+<h5 id="autosec-1111">Про одиниці вимірювання</h5>
+<a id="main-html-autopage-1111"></a>
+
+
+<p>
+У&nbsp;гауссовій системі одиниць
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{18}\)</span>
+
+<!--
+
+                                                                                                                ерг                  ерг
+                                                                                                       [Π] =           ,     [𝑤] =       ;
+                                                                                                               см2 ⋅ с               см3
+
+-->
+
+<p>
+
+\begin{equation*}
+\left [\Pi \right ] = \frac {\text {ерг}}{\text {см}^2\cdot \text {с}}, \qquad \left [w\right ] = \frac {\text {ерг}}{\text {см}^3};
+\end{equation*}
+
+</p>
+
+<p>
+для порівняння, у&nbsp;СІ вектор Пойнтінга вимірюється у&nbsp;Вт/м\(^2\), а&nbsp;густина енергії&nbsp;— у&nbsp;Дж/м\(^3\).
+</p>
+
+
+<div class="cb-example">
+
+<p>
+<b>Зарядка конденсатора.</b> Плоский конденсатор з&nbsp;пластинами радіуса \(R\) заряджається струмом \(I\) від зовнішнього джерела (рис.&nbsp;<a href="ch14.html#pic:CapacitorPoynting">14.4</a>). Якщо в&nbsp;деякий момент
+заряд на нижній пластині дорівнює \(q\), то вектор індукції всередині конденсатора
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{18}\)</span>
+
+<!--
+
+                                                                        4𝜋𝑞
+                                                            𝐷 = 4𝜋𝜍 =       ,                                                                     (14.19)                                            --><a id="eq:CapacitorD"></a><!--
+                                                                        𝜋𝑅2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CapacitorD} D = 4\pi \sigma = \frac {4\pi q}{\pi R^2},
+\end{equation}
+
+</p>
+
+<p>
+напрямлений від нижньої пластини до верхньої. Густина струму зміщення в&nbsp;конденсаторі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{19}\)</span>
+
+<!--
+
+
+                                                                                                                       𝐷̇    𝑞̇
+                                                                                                               𝑗зм =      =     .
+                                                                                                                       4𝜋   𝜋𝑅2
+
+-->
+
+<p>
+
+\begin{equation*}
+j_\text {зм} = \frac {\dot D}{4\pi } = \frac {\dot q}{\pi R^2}.
+\end{equation*}
+
+</p>
+
+<p>
+Цей струм породжує в&nbsp;конденсаторі магнітне поле, яке (як і&nbsp;в&nbsp;попередньому прикладі) знаходимо за теоремою про циркуляцію, взявши за контур \(L\) коло радіуса \(r\) з&nbsp;центром на осі конденсатора:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{19}\)</span>
+
+<!--
+
+                                                                                                             4𝜋 2                             2𝑟
+                                                                                                 2𝜋𝑟𝐻(𝑟) =      𝜋𝑟 𝑗зм (𝑟)   ⇒      𝐻(𝑟) =       𝑞.̇
+                                                                                                              𝑐                              𝑐𝑅2
+
+-->
+
+<p>
+
+\begin{equation*}
+2\pi r H(r) = \frac {4\pi }{c}\pi r^2 j_\text {зм}(r) \quad \Rightarrow \quad H(r) = \frac {2r}{cR^2}\dot q.
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки конденсатор заряджається (\(\dot q&gt;0\)), струм зміщення напрямлений від нижньої обкладки до верхньої, а&nbsp;силові лінії \(\Hfield \) охоплюють вісь конденсатора за правилом правого гвинта.
+</p>
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-220"
+    class="lateximagesource"
+><!--
+          𝐼
+
+
+              𝑅
+
+    −𝑞
+ℎ
+
+                      𝐇
+                  𝚷
+         𝐄𝐼
+    +𝑞
+--><img
+   src="main-html-images\image-220.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+Поля \(\Efield \), \(\Hfield \) і&nbsp;вектор Пойнтінга \(\vect \Pi \) при зарядці плоского конденсатора<a id="pic:CapacitorPoynting"></a>
+</div>
+</div>
+
+<p>
+Вектор Пойнтінга \(\vect \Pi =\dfrac {c}{4\pi }\left [\Efield \times \Hfield \right ]\) спрямований <em>до осі</em> конденсатора (перпендикулярно до бічної поверхні, всередину) і&nbsp;дорівнює за величиною на межі (\(r=R\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{19}\)</span>
+
+<!--
+
+                                                                                                         𝑐       𝑐   4𝜋𝑞    2𝑞̇     2𝑞𝑞̇
+                                                                                                   Π=      𝐸𝐻 =    (     )(     )=       .
+                                                                                                        4𝜋      4𝜋 𝜀𝜋𝑅2 𝑐𝑅         𝜀𝜋𝑅3
+
+-->
+
+<p>
+
+\begin{equation*}
+\Pi = \frac {c}{4\pi }EH = \frac {c}{4\pi }\left (\frac {4\pi q}{\epsilon \pi R^2}\right )\left (\frac {2\dot q}{cR}\right ) = \frac {2q\dot q}{\epsilon \pi R^3}.
+\end{equation*}
+
+</p>
+
+<p>
+Зарядку вважаємо повільною, а&nbsp;зазор малим (\(h\ll R\)), тому магнітною енергією між обкладками й&nbsp;крайовими ефектами нехтуємо. Якщо відстань між пластинами дорівнює \(h\), енергія, що втікає в&nbsp;конденсатор за одиницю
+часу (крізь бічну поверхню площею \(2\pi Rh\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{19}\)</span>
+
+<!--
+
+
+                                                                                                 𝑑𝑊                2𝑞𝑞̇          4ℎ𝑞𝑞̇   𝑞𝑞̇
+                                                                                                     = Π ⋅ 2𝜋𝑅ℎ =       ⋅ 2𝜋𝑅ℎ =       =     ,
+                                                                                                  𝑑𝑡              𝜀𝜋𝑅3            𝜀𝑅2    𝐶
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {dW}{dt} = \Pi \cdot 2\pi Rh = \frac {2q\dot q}{\epsilon \pi R^3}\cdot 2\pi Rh = \frac {4hq\dot q}{\epsilon R^2} = \frac {q\dot q}{C},
+\end{equation*}
+
+</p>
+
+<p>
+де \(C=\epsilon \pi R^2/(4\pi h)\)&nbsp;— ємність конденсатора (гл.&nbsp;<a href="ch6.html#ElEnergy">6</a>). За кінцевий час, коли заряд на пластині досягає значення \(q\), енергія, що втекла в&nbsp;конденсатор ззовні, становить
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{19}\)</span>
+
+<!--
+
+
+                                                                 𝑞2
+                                                            𝑊=                                                                (14.20)                                                     --><a id="eq:CapacitorEnergyResult"></a><!--
+                                                                 2𝐶
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CapacitorEnergyResult} W = \frac {q^2}{2C}
+\end{equation}
+
+</p>
+
+<p>
+— ми прийшли, зовсім іншим шляхом, до вже відомої формули для енергії зарядженого конденсатора&nbsp;<span class="textup">(<a href="ch6.html#eq:CapacitorEnergy">6.20</a>)</span>!
+</p>
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+Цей результат надзвичайно повчальний: вся енергія, що зрештою запасається в&nbsp;електричному полі <em>всередині</em> конденсатора, насправді <em>втекла туди ззовні</em>&nbsp;— крізь бічну поверхню, а&nbsp;не <em>вздовж</em>
+проводів чи вздовж силових ліній \(\Efield \)! Теорема Пойнтінга дає абсолютно <em>однакову</em> відповідь на запитання про енергію конденсатора, що й&nbsp;«наївний» підхід через роботу джерела (гл.&nbsp;<a
+href="ch6.html#ElEnergy">6</a>),&nbsp;— але картина <em>шляху</em>, яким ця енергія потрапляє в&nbsp;конденсатор, виявляється зовсім іншою й&nbsp;набагато глибшою.
+</p>
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Довгий провідник.</b> Розглянемо довгий прямий дріт радіуса \(R\) і&nbsp;довжини \(\ell \), яким тече струм \(I\). На зовнішній поверхні проводу присутнє магнітне поле \(H = 2I/(cR)\) (гл.&nbsp;<a
+href="ch9.html#MagFieldVacuum">9</a>). Струм у&nbsp;проводі виникає завдяки напрузі \(U\) на його кінцях, що створює всередині (і, за неперервністю тангенціальної складової, на поверхні) поле \(E = U/\ell \).
+</p>
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-221"
+    class="lateximagesource"
+><!--
+𝐄
+
+    𝚷
+
+
+𝐇
+--><img
+   src="main-html-images\image-221.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+Поля \(\Efield \), \(\Hfield \) і&nbsp;вектор Пойнтінга \(\vect \Pi \) на поверхні довгого провідника зі струмом
+</div>
+</div>
+
+<p>
+Вектор Пойнтінга виявляється спрямованим <em>до осі</em> провідника й&nbsp;дорівнює за величиною
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{20}\)</span>
+
+<!--
+
+                                                                                                          𝑐       𝑐   𝑈 2𝐼     1
+                                                                                                    Π=      𝐸𝐻 =    ⋅  ⋅   =      𝑈𝐼.
+                                                                                                         4𝜋      4𝜋 ℓ 𝑐𝑅     2𝜋ℓ𝑅
+
+-->
+
+<p>
+
+\begin{equation*}
+\Pi = \frac {c}{4\pi }EH = \frac {c}{4\pi }\cdot \frac {U}{\ell }\cdot \frac {2I}{cR} = \frac 1{2\pi \ell R}\,UI.
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки площа бічної поверхні провідника дорівнює \(S=2\pi \ell R\), повний потік енергії, що втікає в&nbsp;провідник, становить \(\Pi S = UI\)&nbsp;— це в точності та сама потужність, що йде на джоулеві втрати в&nbsp;проводі: \(\Pi S
+= \mathcal P = UI\) (гл.&nbsp;<a href="ch7.html#SteadyCurrent">7</a>).
+</p>
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+Цей результат&nbsp;— один із найбільш контрінтуїтивних, але при цьому й&nbsp;найглибших висновків класичної електродинаміки: <em>у&nbsp;картині Пойнтінга електрони отримують енергію, потрібну для подолання опору
+й&nbsp;виділення тепла, не «вздовж» проводу від джерела, а&nbsp;ззовні, з&nbsp;поля, що оточує провід</em>! Енергія, віддана далеким джерелом (батареєю), якимось чином «розтікається» через навколишній простір і&nbsp;<em>втікає</em>
+всередину провідника крізь його бічну поверхню, а&nbsp;сам дріт відіграє роль лише напрямної труби для цього потоку енергії, а&nbsp;не «кабелю», яким енергія тече вздовж. Це разюче суперечить наївному (але дуже поширеному) уявленню, ніби
+енергія «тече по дротах» так само, як вода тече по трубі.
+</p>
+</div>
+<!--
+...... section Скін-ефект ......
+-->
+<h4 id="autosec-1118"><span class="sectionnumber">14.5&#x2003;</span>Скін-ефект</h4>
+<a id="main-html-autopage-1118"></a>
+
+
+<p>
+<a id="LWR-ht-skin-effect"></a>
+</p>
+
+<p>
+До цього моменту рівняння Максвелла поставали перед нами або як <em>підсумок</em> уже відомого (стаціонарні випадки&nbsp;— електро- і&nbsp;магнітостатика), або як <em>джерело</em> якісних висновків (струм зміщення, симетрія,
+теорема Пойнтінга). Тепер подивимося на них як на <em>робочий інструмент</em>, узявши конкретну фізичну задачу: поведінку електромагнітного поля у&nbsp;провіднику за швидкозмінних процесів, на прикладі скін-ефекту.
+</p>
+<!--
+...... subsection Означення та наслідки ......
+-->
+<h5 id="autosec-1119">Означення та наслідки</h5>
+<a id="main-html-autopage-1119"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Скін-ефектом</span></em> (від англ. <em>skin</em>&nbsp;— шкіра) називають протікання струмів високої частоти переважно в&nbsp;тонкому поверхневому шарі провідника (рис.&nbsp;<a
+href="ch14.html#pic:SkinIllustration">14.7</a>).
+</p>
+
+<figure id="autoid-376" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-222"
+    class="lateximagesource"
+><!--
+50 Гц         50 кГц       1 МГц          50 МГц
+
+
+
+
+        Для провідника діаметром 0.5 мм
+--><img
+   src="main-html-images\image-222.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;14.7. Зменшення ефективної товщини струмонесучого шару зі зростанням частоти<a id="pic:SkinIllustration"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Скін-ефект має кілька важливих практичних наслідків:
+</p>
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> зменшується <em>діюча</em> площа перерізу провідника, а&nbsp;отже, <em>зростає</em> його опір на змінному струмі;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> <em>зменшується</em> індуктивність провідника: оскільки за сильного скін-ефекту струму (а&nbsp;отже, і&nbsp;магнітного поля) всередині провідника практично немає, магнітна енергія стає меншою на
+величину енергії поля, яка раніше запасалась усередині провідника;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> електромагнітна хвиля, що потрапляє на поверхню провідника (металу, електроліту, плазми), швидко загасає вглиб нього, проникаючи лише на невелику глибину&nbsp;— це тісно пов’язано з&nbsp;тим, що
+<em>провідники добре відбивають світло</em>.
+</p>
+</li>
+</ul>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> Скін-ефект першим теоретично описав Горацій Ламб (1883)&nbsp;— для провідних куль; Олівер Хевісайд, який ще з&nbsp;початку 1880-х років вивчав поширення сигналів у&nbsp;телеграфних лініях, розглянув його
+для проводів (1885&nbsp;р.). Отже, явище теоретично описали ще до масового поширення змінного струму в&nbsp;енергетиці&nbsp;— у&nbsp;зв’язку з&nbsp;передаванням сигналів телеграфними лініями.
+</p>
+</div>
+<!--
+...... subsection Якісне пояснення ......
+-->
+<h5 id="autosec-1123">Якісне пояснення</h5>
+<a id="main-html-autopage-1123"></a>
+
+
+<p>
+Змінний струм у&nbsp;провіднику породжує змінне вихрове магнітне поле, силові лінії якого перпендикулярні до осі провідника (рис.&nbsp;<a href="ch14.html#pic:SkinEffectQualitative">14.8</a>). Це змінне магнітне поле, своєю чергою,
+породжує вихрове електричне поле (гл.&nbsp;<a href="ch12.html#ElMagInduction">12</a>), що спричиняє в&nbsp;товщі провідника струми Фуко: на <em>поверхні</em> провідника вихровий струм напрямлений <em>у&nbsp;той самий
+бік</em>, що й&nbsp;основний струм провідності (і&nbsp;<em>підсилює</em> його там), а&nbsp;<em>всередині</em> провідника&nbsp;— у&nbsp;<em>протилежний</em> бік (і&nbsp;<em>послаблює</em> струм у&nbsp;серцевині).
+У&nbsp;результаті струм <em>витісняється</em> з&nbsp;осі провідника до його поверхні.
+</p>
+
+<figure id="autoid-377" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-223"
+    class="lateximagesource"
+><!--
+𝐼
+--><img
+   src="main-html-images\image-223.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;14.8. Якісний механізм скін-ефекту: вихрові струми Фуко підсилюють струм на поверхні й послаблюють у&nbsp;центрі провідника<a id="pic:SkinEffectQualitative"></a>
+
+</div>
+
+</div>
+
+</figure>
+<!--
+...... subsection Чому в-металах нехтують струмами зміщення ......
+-->
+<h5 id="autosec-1127">Чому в&nbsp;металах нехтують струмами зміщення</h5>
+<a id="main-html-autopage-1127"></a>
+
+
+<p>
+У&nbsp;провіднику густина струму провідності й&nbsp;напруженість поля пов’язані законом Ома, \(\vect j = \lambda \Efield \). Якщо поле в&nbsp;провіднику змінюється гармонічно, \(\Efield =\Efield _0\cos (\omega t)\), то поряд зі
+струмом провідності виникає й&nbsp;струм зміщення:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{20}\)</span>
+
+<!--
+
+                                                                                                               𝜀 𝜕𝐄   𝜀𝜔            𝜋
+                                                                                                      𝐣зм =         =    𝐸 cos (𝜔𝑡 + ) .
+                                                                                                              4𝜋 𝜕𝑡   4𝜋 0          2
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect j_\text {зм} = \frac {\epsilon }{4\pi }\parttime {\Efield } = \frac {\epsilon \omega }{4\pi }E_0\cos \left (\omega t+\frac \pi 2\right ).
+\end{equation*}
+
+</p>
+
+<p>
+Оцінимо відношення амплітуд густини струму зміщення та струму провідності:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{20}\)</span>
+
+<!--
+
+                                                 𝑗зм     𝜀𝜔
+                                                      =     = 𝜔𝜏М ≪ 1,                                                   (14.21)                                                     --><a id="eq:SkinDisplacementNegligible"></a><!--
+                                                𝑗пров   4𝜋𝜆
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SkinDisplacementNegligible} \frac {j_\text {зм}}{j_\text {пров}} = \frac {\epsilon \omega }{4\pi \lambda } = \omega \tau _\text {М} \ll 1,
+\end{equation}
+
+</p>
+
+<p>
+де \(\tau _M = \dfrac {\epsilon }{4\pi \lambda }\)&nbsp;— максвелівський час релаксації <span class="textup">(<a href="ch7.html#eq:MaxwellRelaxation">7.34</a>)</span>. Умова означає, що \(\tau _\text {М} \ll T\), де \(T
+\sim 1/\omega \)&nbsp;— період зміни електромагнітного поля.
+</p>
+
+<p>
+Для типових металів провідність \(\lambda = 10^{15}\)–\(10^{17}\)&nbsp;с\(^{-1}\) (гауссова система), а&nbsp;типова діелектрична проникність остова&nbsp;— порядку \(10\)–\(100\), що відповідає вкрай малому максвелівському часу \(\tau
+_\text {М} \sim 10^{-19}\)–\(10^{-18}\)&nbsp;с. Тому аж до частот порядку \(10^{13}\)&nbsp;Гц виконується нерівність&nbsp;<span class="textup">(<a href="ch14.html#eq:SkinDisplacementNegligible">14.21</a>)</span>, тобто
+у&nbsp;широкому діапазоні частот струми зміщення <em>не відіграють істотної ролі</em> у&nbsp;металах порівняно зі струмами провідності&nbsp;— саме тому надалі, аналізуючи скін-ефект у&nbsp;металах, ми зможемо ними знехтувати.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Варто уточнити фізичний зміст діелектричної проникності \(\epsilon \) у&nbsp;цій оцінці: у&nbsp;металі вона описує <em>не</em> відгук вільних електронів провідності (їхній внесок уже повністю врахований окремо, через закон Ома
+і&nbsp;струм провідності), а&nbsp;значно слабшу поляризацію <em>зв’язаних</em> електронів іонного остова. Крім того, сама провідність \(\lambda \) у&nbsp;реальності не є сталою величиною&nbsp;— вона починає спадати з&nbsp;частотою,
+щойно період поля стає порівнянним із часом релаксації електронів провідності (\(\tau \sim 10^{-14}\)&nbsp;с). Слід розрізняти макроскопічний час \(\tau _\text {М}\) та мікроскопічний час вільного пробігу електронів \(\tau \): оскільки
+формально розрахований \(\tau _\text {М} \ll \tau \), реальна швидкість релаксації в&nbsp;металі обмежується інерцією самих носіїв (моделлю Друде). Тому нерівність&nbsp;<span class="textup">(<a
+href="ch14.html#eq:SkinDisplacementNegligible">14.21</a>)</span> і&nbsp;одержана з&nbsp;неї межа \(\omega \sim 10^{13}\)&nbsp;Гц&nbsp;— лише орієнтовна, за порядком величини оцінка, а&nbsp;не різка межа. Формули цього
+підрозділу (<em>нормальний</em> скін-ефект) застосовні, поки \(\omega \tau \ll 1\); на вищих частотах доводиться враховувати частотну залежність \(\lambda (\omega )\).
+</p>
+</div>
+<!--
+...... subsection Строге виведення глибини проникнення ......
+-->
+<h5 id="autosec-1128">Строге виведення глибини проникнення</h5>
+<a id="main-html-autopage-1128"></a>
+
+
+<p>
+Виведемо глибину проникнення поля в&nbsp;провідник, спираючись безпосередньо на рівняння Максвелла (а&nbsp;не на якісні міркування). Нехай \(\epsilon =\const \), \(\mu =\const \); у&nbsp;провіднику немає некомпенсованого
+об’ємного заряду, тому теорема Гаусса дає \(\divg \Efield =0\). З&nbsp;урахуванням закону Ома, а&nbsp;також знехтувавши, за щойно встановленою нерівністю&nbsp;<span class="textup">(<a
+href="ch14.html#eq:SkinDisplacementNegligible">14.21</a>)</span>, струмом зміщення, рівняння Максвелла в&nbsp;металі набувають вигляду
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{21}\)</span>
+
+<!--
+
+                                                                                                𝜇 𝜕𝐇            4𝜋𝜆
+                                                                                       𝛁×𝐄=−         ,   𝛁×𝐇=       𝐄,    𝛁 ⋅ 𝐄 = 0,    𝛁 ⋅ 𝐇 = 0.
+                                                                                                𝑐 𝜕𝑡             𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+\rot \Efield = -\frac {\mu }c\parttime {\Hfield }, \qquad \rot \Hfield = \frac {4\pi \lambda }{c}\Efield , \qquad \divg \Efield =0, \quad \divg \Hfield =0.
+\end{equation*}
+
+</p>
+
+<p>
+Виключимо \(\Hfield \): застосуємо операцію \(\rot \) до першого рівняння й&nbsp;підставимо друге:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{21}\)</span>
+
+<!--
+
+
+                                                                                                            𝜇 𝜕             4𝜋𝜇𝜆 𝜕𝐄
+                                                                                                𝛁×𝛁×𝐄=−          (𝛁 × 𝐇) = − 2      .
+                                                                                                            𝑐 𝜕𝑡             𝑐   𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation*}
+\rot \rot \Efield = -\frac {\mu }c\parttime {}\left (\rot \Hfield \right ) = -\frac {4\pi \mu \lambda }{c^2}\parttime {\Efield }.
+\end{equation*}
+
+</p>
+
+<p>
+З&nbsp;іншого боку, за тотожністю векторного аналізу і&nbsp;з&nbsp;урахуванням \(\divg \Efield =0\): \(\rot \rot \Efield = \grad (\divg \Efield )-\nabla ^2\Efield = -\nabla ^2\Efield \). Прирівнюючи, отримуємо <em><span
+    class="textcolor"
+    style="color:#990000"
+>рівняння скін-ефекту</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{21}\)</span>
+
+<!--
+
+
+                                                                 4𝜋𝜇𝜆 𝜕𝐄
+                                                        ∇2 𝐄 =           .                                                    (14.22)                                                    --><a id="eq:SkinWaveEquation"></a><!--
+                                                                  𝑐2 𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SkinWaveEquation} \tcbhighmath { \nabla ^2\Efield = \frac {4\pi \mu \lambda }{c^2}\parttime {\Efield }. }
+\end{equation}
+
+</p>
+<!--
+...... subsection Оцінка глибини проникнення ......
+-->
+<h5 id="autosec-1129">Оцінка глибини проникнення</h5>
+<a id="main-html-autopage-1129"></a>
+
+
+<p>
+Рівняння&nbsp;<span class="textup">(<a href="ch14.html#eq:SkinWaveEquation">14.22</a>)</span> за математичною формою збігається з&nbsp;рівнянням <em><span
+    class="textcolor"
+    style="color:#990000"
+>дифузії</span></em>, \(\nabla ^2 F = D\parttime {F}\), з&nbsp;коефіцієнтом дифузії \(D = c^2/(4\pi \mu \lambda )\). Якщо на поверхні речовини діє джерело, то за час \(\tau \) «хвиля дифузії» проникає на глибину \(\delta =\sqrt
+{D\tau }\); якщо джерело діє періодично з&nbsp;періодом \(T=2\pi /\omega \), слід узяти \(\tau \sim 1/\omega \) (з&nbsp;точністю до множника \(2\pi \) це період \(T=2\pi /\omega \)), звідки отримуємо <em>оцінку</em> для глибини
+проникнення:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{22}\)</span>
+
+<!--
+
+                                                                   𝑐
+                                                            𝛿∼            .                                                    (14.23)                                                      --><a id="eq:SkinDepthEstimate"></a><!--
+                                                                 √4𝜋𝜆𝜇𝜔
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SkinDepthEstimate} \delta \sim \frac {c}{\sqrt {4\pi \lambda \mu \omega }}.
+\end{equation}
+
+</p>
+
+<p>
+Переконаємось, що ця оцінка, з&nbsp;точністю до числового множника, дійсно правильна, застосувавши безпосередньо рівняння Максвелла в&nbsp;інтегральній формі до тонкого приповерхневого шару завтовшки \(\delta \).
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Циркуляція \(\Efield \).</span></em> Розглянемо прямокутний контур \(L\) зі сторонами \(h\) (уздовж осі провідника, на його поверхні) і&nbsp;\(\delta \) (углиб) (рис.&nbsp;<a href="ch14.html#pic:SkinEstimate1">14.9</a>). За законом
+електромагнітної індукції, \(Eh = -\dfrac 1c\dfrac {\Delta \Phi }{\Delta t}\), де магнітний потік крізь цей контур \(\Phi = -BS = -\mu H h\delta \) (поле \(H\) спадає до нуля на глибині \(\delta \)), а&nbsp;швидкість його зміни за
+порядком величини \(\Delta \Phi /\Delta t \approx \omega \Phi \) (\(\omega \sim 1/T\)&nbsp;— частота зміни струму). Тому
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{23}\)</span>
+
+<!--
+
+
+                                                        1                     𝜇𝐻𝜔𝛿
+                                                 𝐸ℎ ∼     𝜇𝐻𝜔ℎ𝛿    ⇒   𝐸∼          .                                            (14.24)                                                      --><a id="eq:SkinCirculationE"></a><!--
+                                                        𝑐                       𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SkinCirculationE} Eh \sim \frac 1c\mu H\omega h\delta \quad \Rightarrow \quad E \sim \frac {\mu H\omega \delta }{c}.
+\end{equation}
+
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Циркуляція \(\Hfield \).</span></em> Тепер розглянемо контур \(L\) на поперечному перерізі провідника, завдовжки \(\ell \) уздовж поверхні й&nbsp;завширшки \(\delta \) углиб (рис.&nbsp;<a
+href="ch14.html#pic:SkinEstimate2">14.10</a>). За теоремою про циркуляцію, \(H\ell = \dfrac {4\pi }{c}j\ell \delta \), а&nbsp;з&nbsp;огляду на закон Ома, \(j=\lambda E\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{24}\)</span>
+
+<!--
+
+
+                                                                  4𝜋𝜆
+                                                            𝐻∼        𝐸𝛿.                                                       (14.25)                                                      --><a id="eq:SkinCirculationH"></a><!--
+                                                                   𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SkinCirculationH} H \sim \frac {4\pi \lambda }{c}E\delta .
+\end{equation}
+
+</p>
+
+<figure id="autoid-378" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:top ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-1131"></a>
+
+<p>
+<span
+    id="lateximage-main-html-224"
+    class="lateximagesource"
+><!--
+𝐄
+
+
+ℎ
+
+
+    𝛿
+--><img
+   src="main-html-images\image-224.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;14.9. Контур для оцінки циркуляції \(\Efield \) поблизу поверхні циліндричного провідника (вигляд збоку)<a id="pic:SkinEstimate1"></a>
+
+</div>
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:top ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-1134"></a>
+
+<p>
+<span
+    id="lateximage-main-html-225"
+    class="lateximagesource"
+><!--
+        𝐣
+
+
+
+
+ℓ
+
+    𝛿
+
+𝐇
+--><img
+   src="main-html-images\image-225.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;14.10. Контур для оцінки циркуляції \(\Hfield \) поблизу циліндричного поверхні провідника (вигляд зверху)<a id="pic:SkinEstimate2"></a>
+
+</div>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Підставляючи&nbsp;<span class="textup">(<a href="ch14.html#eq:SkinCirculationH">14.25</a>)</span> в&nbsp;<span class="textup">(<a href="ch14.html#eq:SkinCirculationE">14.24</a>)</span>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{25}\)</span>
+
+<!--
+
+
+                                                                                                                4𝜋𝜇𝜆𝜔𝛿2
+                                                                                                           𝐸∼           𝐸,
+                                                                                                                   𝑐2
+-->
+
+<p>
+
+\begin{equation*}
+E \sim \frac {4\pi \mu \lambda \omega \delta ^2}{c^2}\, E,
+\end{equation*}
+
+</p>
+
+<p>
+звідки, скорочуючи на \(E\), отримуємо оцінку глибини скін-шару:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{25}\)</span>
+
+<!--
+
+                                                                   𝑐
+                                                            𝛿∼            ,                                                      (14.26)                                               --><a id="eq:SkinDepthFinal"></a><!--
+                                                                 √4𝜋𝜆𝜇𝜔
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SkinDepthFinal} \delta \sim \frac {c}{\sqrt {4\pi \lambda \mu \omega }},
+\end{equation}
+
+</p>
+
+<p>
+що збігається з&nbsp;дифузійною оцінкою&nbsp;<span class="textup">(<a href="ch14.html#eq:SkinDepthEstimate">14.23</a>)</span>. Точне значення числового коефіцієнта дає розв’язок рівняння&nbsp;<span class="textup">(<a
+href="ch14.html#eq:SkinWaveEquation">14.22</a>)</span> для однорідного провідника, що займає півпростір \(x&gt;0\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{14.}{26}\)</span>
+<!--
+
+
+                                                                𝑐
+                                                         𝛿=            .                                                       (14.27)                                                    --><a id="eq:SkinDepthExact"></a><!--
+                                                              √2𝜋𝜆𝜇𝜔
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SkinDepthExact} \tcbhighmath { \delta = \frac {c}{\sqrt {2\pi \lambda \mu \omega }}. }
+\end{equation}
+
+</p>
+
+<p>
+Оцінка&nbsp;<span class="textup">(<a href="ch14.html#eq:SkinDepthFinal">14.26</a>)</span> відрізняється від точної формули лише множником \(\sqrt 2\). Значення \(\delta \) для деяких металів на частоті \(10\)&nbsp;ГГц,
+обчислені за точною формулою, наведено в&nbsp;табл.&nbsp;<a href="ch14.html#tab:SkinDepth">14.4</a>.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Оцінка&nbsp;<span class="textup">(<a href="ch14.html#eq:SkinDepthFinal">14.26</a>)</span> побудована на спрощених контурних міркуваннях і&nbsp;дає лише порядок величини та правильну залежність \(\delta \propto 1/\sqrt
+{\lambda \mu \omega }\); точний числовий коефіцієнт дає розв’язок хвильового рівняння&nbsp;<span class="textup">(<a href="ch14.html#eq:SkinDepthExact">14.27</a>)</span>. Формула&nbsp;<span class="textup">(<a
+href="ch14.html#eq:SkinDepthExact">14.27</a>)</span> описує <em>нормальний</em> скін-ефект: вона застосовна, коли \(\delta \) значно менша за розміри й&nbsp;радіус кривини провідника, частота така, що \(\omega \tau \ll 1\),
+і&nbsp;довжина вільного пробігу електрона менша за \(\delta \) (тоді справджується локальний закон Ома \(\vect j=\lambda \Efield \)). Інакше (наприклад, у&nbsp;чистих металах при низьких температурах) спостерігають
+<em>аномальний</em> скін-ефект.
+</p>
+</div>
+
+<figure id="autoid-379" class="table ">
+
+
+<div class="figurecaption">
+Таблиця&nbsp;14.4. Глибина скін-шару для деяких металів на частоті \(10\)&nbsp;ГГц (за точною формулою)<a id="tab:SkinDepth"></a>
+
+</div>
+<table>
+
+<tr style="display:none"><th>.</th></tr>
+
+<tr class="hline">
+<td colspan="1" class="tdc tvertbarl tvertbarr" style="background:#0064AA; border-left: 1px solid black; border-right: 1px solid black"><span
+   class="textcolor"
+   style="color:#FFFFFF"
+><b>Метал</b></span></td>
+<td class="tdp tvertbarr tdcenter" style="background:#0064AA; border-right: 1px solid black">
+
+<p>
+<span
+    class="textcolor"
+    style="color:#FFFFFF"
+><b>Глибина скін-шару, мкм</b></span>
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Мідь (\(\ce {Cu}\))
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+0,652
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="background:#F2F2F2; border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Срібло (\(\ce {Ag}\))
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+0,634
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Золото (\(\ce {Au}\))
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+0,753
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="background:#F2F2F2; border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Алюміній (\(\ce {Al}\))
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+0,820
+</p>
+</td>
+</tr>
+
+<tr class="hline" aria-hidden="true">
+<td class="tdp tdleft">
+
+</td>
+<td class="tdp tdcenter">
+
+</td>
+</tr>
+</table>
+
+</figure>
+<!--
+...... subsection Застосування скін-ефекту в-техніці ......
+-->
+<h5 id="autosec-1139">Застосування скін-ефекту в&nbsp;техніці</h5>
+<a id="main-html-autopage-1139"></a>
+
+
+<p>
+Існування скін-ефекту завжди враховують у&nbsp;техніці швидкозмінних струмів. Оскільки такі струми практично не йдуть у&nbsp;глибині провідника, проводи й&nbsp;шини для них <em>виготовляють із порожнистих труб</em>&nbsp;—
+економлячи метал без істотної втрати в&nbsp;опорі. У&nbsp;радіотехніці надвисоких частот багато деталей (хвилеводи, коаксіальні лінії) покривають тонким, добре провідним шаром срібла, оскільки їхній опір практично повністю визначається
+лише поверхневим шаром. Скін-ефект у&nbsp;поєднанні з&nbsp;нагріванням вихровими струмами (гл.&nbsp;<a href="ch12.html#ElMagInduction">12</a>) використовують і&nbsp;для <em>поверхневого загартування сталі</em>: деталі
+піддають дії змінних струмів і&nbsp;потім швидко охолоджують, унаслідок чого розігрів і&nbsp;загартування відбуваються лише в&nbsp;поверхневому шарі, а&nbsp;основна маса деталі лишається незагартованою&nbsp;— це дає вироби
+з&nbsp;високою стійкістю до стирання поверхні, але без крихкості, властивої звичайному наскрізному загартуванню.
+</p>
+<!--
+...... section Підсумки ......
+-->
+<h4 id="autosec-1140">Підсумки</h4>
+<a id="main-html-autopage-1140"></a>
+
+
+<p>
+У&nbsp;цьому розділі ідея Максвелла про струм зміщення замкнула систему рівнянь електродинаміки в&nbsp;остаточному вигляді й&nbsp;дала нам два перші, найближчі до вершини, наслідки цієї системи: закон збереження енергії
+електромагнітного поля у&nbsp;формі теореми Пойнтінга та кількісний опис скін-ефекту у&nbsp;провідниках. В&nbsp;обох випадках рівняння Максвелла виступили вже не підсумком відомого, а&nbsp;робочим інструментом, що дає нові,
+нетривіальні результати&nbsp;— аж до контрінтуїтивного висновку про те, що енергія до провідника надходить не вздовж нього, а&nbsp;ззовні, крізь бічну поверхню.
+</p>
+
+<p>
+Наступний крок&nbsp;— спуститися з&nbsp;вершини далі, у&nbsp;простір хвильових явищ: розглянути, як із рівнянь Максвелла у&nbsp;вакуумі випливає саме існування електромагнітних хвиль, що біжать зі швидкістю світла,
+а&nbsp;тоді&nbsp;— дослідити, як саме заряджені частинки, що рухаються з&nbsp;прискоренням, ці хвилі випромінюють.
+</p>
+<!--
+...... section Задачі ......
+-->
+<h4 id="autosec-1141">Задачі</h4>
+<a id="main-html-autopage-1141"></a>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-380"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 14.1.</span></span> <a id="autoid-381" ></a ><a id="prb:CapacitorDisplacementAC"></a> <em>Струм зміщення в&nbsp;конденсаторі змінної напруги.</em> Плоский
+конденсатор із круглими пластинами радіуса \(R\), відстанню між ними \(d\) і діелектриком проникності \(\epsilon \) приєднано до джерела напруги \(U(t)=U_m\sin \omega t\). Знайдіть густину й&nbsp;повний струм зміщення між
+пластинами та напруженість магнітного поля \(H\) на краю пластин (\(r=R\)). Порівняйте струм зміщення зі струмом \(C\,dU/dt\) у&nbsp;підвідних дротах (\(C=\epsilon R^2/4d\)&nbsp;— ємність конденсатора). <em>Вказівка:</em> \(E=U/d\);
+далі скористайтесь означенням \(j_\text {зм}\) та теоремою про циркуляцію.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-382"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 14.2.</span></span> <a id="autoid-383" ></a ><a id="prb:MetalDisplacementFreq"></a> <em>Коли струм зміщення в&nbsp;металі стає помітним?</em> Оцініть
+частоту \(\nu \), на якій амплітуди густин струму зміщення й&nbsp;струму провідності в металі зрівнюються, узявши значення з&nbsp;діапазонів, наведених у&nbsp;тексті: \(\lambda =10^{15}~\text {с}^{-1}\), \(\epsilon =50\). Порівняйте
+з&nbsp;частотою
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-384"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 14.3.</span></span> <a id="autoid-385" ></a ><a id="prb:SolenoidPoynting"></a> <em>Енергія втікає в&nbsp;соленоїд.</em> По довгому соленоїду радіуса \(R\)
+з&nbsp;\(n\) витками на одиницю довжини тече струм \(I(t)\), що повільно зростає. Знайдіть вектор Пойнтінга на бічній поверхні соленоїда й&nbsp;покажіть, що потік енергії крізь цю поверхню дорівнює швидкості зростання магнітної енергії
+всередині&nbsp;— так само як у&nbsp;прикладі з&nbsp;конденсатором. <em>Вказівка:</em> \(H=4\pi nI/c\) усередині; електричне поле на поверхні знайдіть із закону індукції Фарадея (циркуляція \(\Efield \) по колу радіуса \(R\)).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-386"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 14.4.</span></span> <a id="autoid-387" ></a ><a id="prb:SkinDepthCopper50Hz"></a> <em>Скін-шар на промисловій частоті.</em> Знаючи з&nbsp;табл.&nbsp;<a
+href="ch14.html#tab:SkinDepth">14.4</a> глибину скін-шару міді на частоті \(10\)&nbsp;ГГц (\(0{,}652\)&nbsp;мкм), знайдіть її на частоті <em>Відповідь:</em> \(\delta _{50}\approx 9\)&nbsp;мм; отже, струм майже не йде глибше ніж на
+\(\sim 1\)&nbsp;см, і&nbsp;суцільні мідні (чи алюмінієві) дроти діаметром понад \(\sim 2\)&nbsp;см малоефективні&nbsp;— тому їх роблять порожнистими або складеними з&nbsp;тонших жил.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> У&nbsp;чому полягала ідея Максвелла про симетрію електричного й&nbsp;магнітного полів? Як ця ідея привела його до поняття струму зміщення?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Покажіть, що теорема про циркуляцію \(\Hfield \) для постійних полів, застосована до випадку змінного в&nbsp;часі заряду, суперечить закону збереження заряду (рівнянню неперервності).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Виведіть вираз для густини струму зміщення \(\vect j_\text {зм} = \dfrac 1{4\pi }\parttime {\Dfield }\) з&nbsp;вимоги узгодженості теореми про циркуляцію із законом збереження заряду. Чому
+цей вибір не єдиний математично можливий, і&nbsp;що зрештою підтверджує саме його правильність?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> Запишіть остаточну теорему про циркуляцію магнітного поля з&nbsp;урахуванням струму зміщення в&nbsp;інтегральній та диференціальній формах.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Розгляньте задачу про радіальне стікання заряду з&nbsp;кулі: чому магнітне поле в&nbsp;цій задачі не виникає взагалі, попри те що заряд явно рухається? Яку роль тут відіграє точна компенсація струму
+провідності струмом зміщення?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> Розгляньте задачу про зарядку плоского конденсатора: чому циркуляція \(\Hfield \) по одному й&nbsp;тому самому контуру дає однаковий результат для двох різних поверхонь&nbsp;— тієї, що перетинає
+провід, і&nbsp;тієї, що проходить між обкладками? Що це означає для ролі струму зміщення в&nbsp;конденсаторі?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> Чим струм зміщення принципово відрізняється від струму провідності&nbsp;— чому до нього незастосовні закон Ома і&nbsp;закон Джоуля-Ленца?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Порівняйте закон електромагнітної індукції Фарадея та гіпотезу Максвелла про магнітоелектричну індукцію. У&nbsp;чому полягає асиметрія знаків між ними та до яких глибоких наслідків вона приводить?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> Запишіть повну систему чотирьох рівнянь Максвелла в&nbsp;інтегральній та диференціальній формах. За яким принципом ці рівняння групуються в&nbsp;дві пари?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Покажіть, що закон збереження заряду випливає з&nbsp;рівнянь Максвелла (з&nbsp;третього й&nbsp;четвертого).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> Виведіть вираз електричного поля через потенціали, \(\Efield = -\grad \phi - \dfrac 1c\parttime {\vect A}\), з&nbsp;теореми Гаусса для \(\Bfield \) і&nbsp;закону індукції Фарадея. Чому
+в&nbsp;нестаціонарному випадку \(\Efield \) визначається не лише скалярним потенціалом?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Покажіть, що в&nbsp;стаціонарному випадку повна система рівнянь Максвелла розпадається на незалежні системи електростатики й&nbsp;магнітостатики. Чому зв’язок електрики
+й&nbsp;магнетизму&nbsp;— принципово нестаціонарне явище?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">13.</span> Чому потенціали \(\phi \) і&nbsp;\(\vect A\) визначено неоднозначно? Як перетворюються вони при зміні калібрування, щоб поля \(\Efield \) і&nbsp;\(\Bfield \) не змінилися?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">14.</span> Перелічіть матеріальні рівняння, що доповнюють рівняння Максвелла (\(\Dfield =\epsilon \Efield \), \(\Bfield =\mu \Hfield \), закон Ома). Навіщо вони потрібні для розв’язання конкретних задач?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">15.</span> Запишіть граничні умови для електричних і&nbsp;магнітних векторів на межі розділу двох середовищ у&nbsp;загальному (нестаціонарному) випадку. Чим вони відрізняються від умов для стаціонарних
+полів?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">16.</span> Виведіть теорему Пойнтінга \(-\parttime {w} = \divg \vect \Pi + \vect j\cdot \Efield \) з&nbsp;рівнянь Максвелла для \(\rot \Hfield \) і&nbsp;\(\rot \Efield \), використовуючи тотожність
+для дивергенції векторного добутку.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">17.</span> Що таке вектор Пойнтінга і&nbsp;густина енергії електромагнітного поля? Сформулюйте теорему Пойнтінга в&nbsp;інтегральній формі та поясніть фізичний зміст кожного доданка.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">18.</span> Розгляньте приклад зарядки конденсатора через теорему Пойнтінга: чому вся енергія, що запасається в&nbsp;полі всередині конденсатора, насправді втікає туди ззовні, крізь бічну поверхню, а&nbsp;не
+вздовж проводів?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">19.</span> Розгляньте приклад довгого провідника зі струмом: чому енергія, що йде на джоулеві втрати, надходить у&nbsp;провідник не вздовж нього від джерела, а&nbsp;ззовні, крізь бічну поверхню?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">20.</span> Що таке скін-ефект і&nbsp;які його основні практичні наслідки (зміна опору, індуктивності, відбивання світла провідниками)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">21.</span> Дайте якісне пояснення скін-ефекту через вихрові струми Фуко: чому вони підсилюють струм на поверхні провідника й&nbsp;послаблюють у&nbsp;його серцевині?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">22.</span> Чому в&nbsp;металах аж до дуже високих частот (\(\sim 10^{13}\) Гц) можна нехтувати струмом зміщення порівняно зі струмом провідності? Виведіть умову \(\epsilon \omega /(4\pi ) \ll \lambda
+\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">23.</span> Виведіть рівняння скін-ефекту \(\nabla ^2\Efield = (4\pi \mu \lambda /c^2)\,\parttime {\Efield }\) з&nbsp;рівнянь Максвелла для провідника, знехтувавши струмом зміщення.
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>

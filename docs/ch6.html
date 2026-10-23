@@ -1,0 +1,5148 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Енергія електричного поля</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-421"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span>&#x2003;Електричні заряди та їх взаємодія</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span>&#x2003;Сили (взаємодії) в природі</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span>&#x2003;Електричний заряд</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-12" class="tocsection" >
+<span class="sectionnumber">1.3</span>&#x2003;Як заряджають тіла?</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-17" class="tocsection" >
+<span class="sectionnumber">1.4</span>&#x2003;Закон Кулона</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-25" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-32" class="tocchapter" >
+<span class="sectionnumber">2</span>&#x2003;Постійне електричне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocsection" >
+<span class="sectionnumber">2.1</span>&#x2003;Електромагнітне поле</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.2</span>&#x2003;Напруженість поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-46" class="tocsection" >
+<span class="sectionnumber">2.3</span>&#x2003;Силові лінії та математичне поняття поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-62" class="tocsection" >
+<span class="sectionnumber">2.4</span>&#x2003;Теорема Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-88" class="tocsection" >
+<span class="sectionnumber">2.5</span>&#x2003;Зауваження щодо інтегральної та диференціальної форми теореми Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-90" class="tocsection" >
+<span class="sectionnumber">2.6</span>&#x2003;Потенціальність електростатичного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-102" class="tocsection" >
+<span class="sectionnumber">2.7</span>&#x2003;Циркуляція вектора \(\symbf {E}\)</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-121" class="tocsection" >
+<span class="sectionnumber">2.8</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-128" class="tocsection" >
+<span class="sectionnumber">2.9</span>&#x2003;Рівняння Пуассона та Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-129" class="tocsection" >
+<span class="sectionnumber">2.10</span>&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-134" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-153" class="tocchapter" >
+<span class="sectionnumber">3</span>&#x2003;Електричне поле статичної системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-154" class="tocsection" >
+<span class="sectionnumber">3.1</span>&#x2003;Дипольний момент системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-158" class="tocsection" >
+<span class="sectionnumber">3.2</span>&#x2003;Поле точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-162" class="tocsection" >
+<span class="sectionnumber">3.3</span>&#x2003;Потенціал поля точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-163" class="tocsection" >
+<span class="sectionnumber">3.4</span>&#x2003;Потенціал системи зарядів на далеких відстанях</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-178" class="tocsection" >
+<span class="sectionnumber">3.5</span>&#x2003;Диполь в електричному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-196" class="tocsection" >
+<span class="sectionnumber">3.6</span>&#x2003;Енергія довільної системи зарядів у зовнішньому полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-197" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-200" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-214" class="tocchapter" >
+<span class="sectionnumber">4</span>&#x2003;Електричне поле у провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-215" class="tocsection" >
+<span class="sectionnumber">4.1</span>&#x2003;Структура провідників</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-221" class="tocsection" >
+<span class="sectionnumber">4.2</span>&#x2003;Провідник у полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-244" class="tocsection" >
+<span class="sectionnumber">4.3</span>&#x2003;Електричне поле біля вістря</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-253" class="tocsection" >
+<span class="sectionnumber">4.4</span>&#x2003;Єдиність розв’язку електростатичної задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-263" class="tocsection" >
+<span class="sectionnumber">4.5</span>&#x2003;Металева куля в однорідному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-275" class="tocsection" >
+<span class="sectionnumber">4.6</span>&#x2003;Сили, що діють на поверхню провідника в полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-279" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-280" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-291" class="tocchapter" >
+<span class="sectionnumber">5</span>&#x2003;Основи електростатики діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-292" class="tocsection" >
+<span class="sectionnumber">5.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-294" class="tocsection" >
+<span class="sectionnumber">5.2</span>&#x2003;Структура діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-331" class="tocsection" >
+<span class="sectionnumber">5.3</span>&#x2003;Поляризація діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-358" class="tocsection" >
+<span class="sectionnumber">5.4</span>&#x2003;Вектор поляризації</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-363" class="tocsection" >
+<span class="sectionnumber">5.5</span>&#x2003;Вектор електричної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-370" class="tocsection" >
+<span class="sectionnumber">5.6</span>&#x2003;Граничні умови в&nbsp;присутності діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-383" class="tocsection" >
+<span class="sectionnumber">5.7</span>&#x2003;Мікроскопічна теорія діелектричної проникності</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-390" class="tocsection" >
+<span class="sectionnumber">5.8</span>&#x2003;Типи діелектриків та їх застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-413" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-414" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-423" class="tocchapter" >
+<span class="sectionnumber">6</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-424" class="tocsection" >
+<span class="sectionnumber">6.1</span>&#x2003;Електрична ємність</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-445" class="tocsection" >
+<span class="sectionnumber">6.2</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-458" class="tocsection" >
+<span class="sectionnumber">6.3</span>&#x2003;Пондеромоторні сили</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-468" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-469" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-479" class="tocchapter" >
+<span class="sectionnumber">7</span>&#x2003;Постійний електричний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-480" class="tocsection" >
+<span class="sectionnumber">7.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-487" class="tocsection" >
+<span class="sectionnumber">7.2</span>&#x2003;Природа носіїв заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-489" class="tocsection" >
+<span class="sectionnumber">7.3</span>&#x2003;Закон збереження заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-496" class="tocsection" >
+<span class="sectionnumber">7.4</span>&#x2003;Закон Ома</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-527" class="tocsection" >
+<span class="sectionnumber">7.5</span>&#x2003;Закон Джоуля-Ленца</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-528" class="tocsection" >
+<span class="sectionnumber">7.6</span>&#x2003;Струми в необмежених середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-535" class="tocsection" >
+<span class="sectionnumber">7.7</span>&#x2003;Перехідні процеси в колі з конденсатором</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-548" class="tocsection" >
+<span class="sectionnumber">7.8</span>&#x2003;Максвеллівський час релаксації заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-550" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-562" class="tocchapter" >
+<span class="sectionnumber">8</span>&#x2003;Електричний струм у&nbsp;різних середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-564" class="tocsection" >
+<span class="sectionnumber">8.1</span>&#x2003;Електричний струм у&nbsp;металах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-584" class="tocsection" >
+<span class="sectionnumber">8.2</span>&#x2003;Електричний струм в&nbsp;електролітах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-590" class="tocsection" >
+<span class="sectionnumber">8.3</span>&#x2003;Електричний струм у&nbsp;газах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-601" class="tocsection" >
+<span class="sectionnumber">8.4</span>&#x2003;Електричний струм у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-615" class="tocsection" >
+<span class="sectionnumber">8.5</span>&#x2003;Електричний струм у&nbsp;напівпровідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-636" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-638" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-674" class="tocchapter" >
+<span class="sectionnumber">9</span>&#x2003;Магнітне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-675" class="tocsection" >
+<span class="sectionnumber">9.1</span>&#x2003;Означення</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-679" class="tocsection" >
+<span class="sectionnumber">9.2</span>&#x2003;Характеристика магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-680" class="tocsection" >
+<span class="sectionnumber">9.3</span>&#x2003;Дія магнітного поля на заряджені частинки та струми</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-701" class="tocsection" >
+<span class="sectionnumber">9.4</span>&#x2003;Закон Біо-Савара-Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-714" class="tocsection" >
+<span class="sectionnumber">9.5</span>&#x2003;Вектор-потенціал магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-719" class="tocsection" >
+<span class="sectionnumber">9.6</span>&#x2003;Теореми магнітостатики</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-740" class="tocsection" >
+<span class="sectionnumber">9.7</span>&#x2003;Магнітний момент</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-756" class="tocsection" >
+<span class="sectionnumber">9.8</span>&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-766" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-767" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-775" class="tocchapter" >
+<span class="sectionnumber">10</span>&#x2003;Магнітне поле в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-780" class="tocsection" >
+<span class="sectionnumber">10.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-783" class="tocsection" >
+<span class="sectionnumber">10.2</span>&#x2003;Намагнічування</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-795" class="tocsection" >
+<span class="sectionnumber">10.3</span>&#x2003;Теорема про циркуляцію в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-801" class="tocsection" >
+<span class="sectionnumber">10.4</span>&#x2003;Магнітна сприйнятливість речовини</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-832" class="tocsection" >
+<span class="sectionnumber">10.5</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-847" class="tocsection" >
+<span class="sectionnumber">10.6</span>&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-864" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-865" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-872" class="tocchapter" >
+<span class="sectionnumber">11</span>&#x2003;Рух заряджених частинок</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-873" class="tocsection" >
+<span class="sectionnumber">11.1</span>&#x2003;Рух частинок в&nbsp;однорідних полях</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-891" class="tocsection" >
+<span class="sectionnumber">11.2</span>&#x2003;Застосування схрещених полів</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-899" class="tocsection" >
+<span class="sectionnumber">11.3</span>&#x2003;Методи вимірювання питомого заряду електрона</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-909" class="tocsection" >
+<span class="sectionnumber">11.4</span>&#x2003;Досліди Міллікена</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-911" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-912" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-923" class="tocchapter" >
+<span class="sectionnumber">12</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-924" class="tocsection" >
+<span class="sectionnumber">12.1</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-929" class="tocsection" >
+<span class="sectionnumber">12.2</span>&#x2003;Закон електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-930" class="tocsection" >
+<span class="sectionnumber">12.3</span>&#x2003;Робота, що виконується при переміщенні провідника зі струмом у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-933" class="tocsection" >
+<span class="sectionnumber">12.4</span>&#x2003;Електромагнітна індукція в&nbsp;рухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-940" class="tocsection" >
+<span class="sectionnumber">12.5</span>&#x2003;Електромагнітна індукція в&nbsp;нерухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-959" class="tocsection" >
+<span class="sectionnumber">12.6</span>&#x2003;Явище самоіндукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-979" class="tocsection" >
+<span class="sectionnumber">12.7</span>&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-996" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-997" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1015" class="tocchapter" >
+<span class="sectionnumber">13</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1016" class="tocsection" >
+<span class="sectionnumber">13.1</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1022" class="tocsection" >
+<span class="sectionnumber">13.2</span>&#x2003;Взаємна індукція</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1038" class="tocsection" >
+<span class="sectionnumber">13.3</span>&#x2003;Енергія системи зв’язаних контурів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1041" class="tocsection" >
+<span class="sectionnumber">13.4</span>&#x2003;Потенціальна енергія струмів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1043" class="tocsection" >
+<span class="sectionnumber">13.5</span>&#x2003;Принцип роботи трансформаторів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1047" class="tocsection" >
+<span class="sectionnumber">13.6</span>&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1053" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1054" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1059" class="tocchapter" >
+<span class="sectionnumber">14</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1064" class="tocsection" >
+<span class="sectionnumber">14.1</span>&#x2003;Струм зміщення</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1085" class="tocsection" >
+<span class="sectionnumber">14.2</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1102" class="tocsection" >
+<span class="sectionnumber">14.3</span>&#x2003;Про рівняння Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1104" class="tocsection" >
+<span class="sectionnumber">14.4</span>&#x2003;Енергія електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1118" class="tocsection" >
+<span class="sectionnumber">14.5</span>&#x2003;Скін-ефект</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1140" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1141" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1148" class="tocchapter" >
+<span class="sectionnumber">15</span>&#x2003;Відносність електричного і&nbsp;магнітного полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1150" class="tocsection" >
+<span class="sectionnumber">15.1</span>&#x2003;Нерелятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1153" class="tocsection" >
+<span class="sectionnumber">15.2</span>&#x2003;Релятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1159" class="tocsection" >
+<span class="sectionnumber">15.3</span>&#x2003;Тензор електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1161" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1162" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1171" class="tocchapter" >
+<span class="sectionnumber">16</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1172" class="tocsection" >
+<span class="sectionnumber">16.1</span>&#x2003;Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1188" class="tocsection" >
+<span class="sectionnumber">16.2</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1193" class="tocsection" >
+<span class="sectionnumber">16.3</span>&#x2003;Енергія та вектор Пойнтінга для хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1204" class="tocsection" >
+<span class="sectionnumber">16.4</span>&#x2003;Імпульс і момент імпульсу електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1210" class="tocsection" >
+<span class="sectionnumber">16.5</span>&#x2003;Відбивання хвиль від поверхні двох діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1230" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1231" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1242" class="tocchapter" >
+<span class="sectionnumber">17</span>&#x2003;Випромінювання електромагнітних хвиль</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1243" class="tocsection" >
+<span class="sectionnumber">17.1</span>&#x2003;Історична довідка: досліди Герца</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1246" class="tocsection" >
+<span class="sectionnumber">17.2</span>&#x2003;Елементарна модель випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1259" class="tocsection" >
+<span class="sectionnumber">17.3</span>&#x2003;Дипольне випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1275" class="tocsection" >
+<span class="sectionnumber">17.4</span>&#x2003;Потужність випромінювання осцилятора</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1280" class="tocsection" >
+<span class="sectionnumber">17.5</span>&#x2003;Випромінювання рухомого заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1285" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1286" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1292" class="tocchapter" >
+<span class="sectionnumber">18</span>&#x2003;Коливальні процеси в електричних колах</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1293" class="tocsection" >
+<span class="sectionnumber">18.1</span>&#x2003;Квазістаціонарне наближення</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1294" class="tocsection" >
+<span class="sectionnumber">18.2</span>&#x2003;Вільні коливання в коливальному контурі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1319" class="tocsection" >
+<span class="sectionnumber">18.3</span>&#x2003;Вимушені коливання під дією гармонічної ЕРС</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1333" class="tocsection" >
+<span class="sectionnumber">18.4</span>&#x2003;Змінний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">18.5</span>&#x2003;Трансформатор</a>
+</p>
+<p>
+<a href="ch18.html#autosec-1374" class="tocsection" >
+<span class="sectionnumber">18.6</span>&#x2003;Частотні фільтри</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1390" class="tocsection" >
+<span class="sectionnumber">18.7</span>&#x2003;Трифазний струм: фізичні засади, топології кіл та застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1433" class="tocchapter" >
+<span class="sectionnumber">19</span>&#x2003;Довгі лінії. Телеграфні рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1434" class="tocsection" >
+<span class="sectionnumber">19.1</span>&#x2003;Від зосереджених елементів до розподілених</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1435" class="tocsection" >
+<span class="sectionnumber">19.2</span>&#x2003;Виведення телеграфних рівнянь</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1439" class="tocsection" >
+<span class="sectionnumber">19.3</span>&#x2003;Гармонічний режим. Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1440" class="tocsection" >
+<span class="sectionnumber">19.4</span>&#x2003;Лінія без втрат</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1447" class="tocsection" >
+<span class="sectionnumber">19.5</span>&#x2003;Польова картина. Зв’язок з рівняннями Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1454" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1455" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1461" class="tocchapter" >
+<span class="sectionnumber">20</span>&#x2003;Хвилеводи</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1462" class="tocsection" >
+<span class="sectionnumber">20.1</span>&#x2003;Від довгої лінії до хвилеводу</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1463" class="tocsection" >
+<span class="sectionnumber">20.2</span>&#x2003;Прямокутний хвилевід</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1476" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1479" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1480" class="tocsection" >
+<span class="sectionnumber">А</span>&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1485" class="tocsection" >
+<span class="sectionnumber">Б</span>&#x2003;Основні формули векторного аналізу</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1503" class="tocchapter" >
+Література</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Енергія електричного поля">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Енергія електричного поля ......
+-->
+<h3 id="autosec-423">Розділ&nbsp;<span class="sectionnumber">6&#x2003;</span>Енергія електричного поля</h3>
+<a id="main-html-autopage-423"></a>
+<a id="main-html-autofile-6"></a>
+
+<a id="ElEnergy"></a>
+
+<p>
+<a id="LWR-ht-ElEnergy"></a>
+</p>
+<div class="epigraph" role="note">
+
+
+<div class="qitem">
+
+<p>
+Енергія електричного поля&nbsp;— це не властивість зарядів, а&nbsp;властивість простору навколо них: поле не лише переносить взаємодію між зарядами, а&nbsp;й&nbsp;саме є носієм і&nbsp;сховищем енергії.
+</p>
+
+
+<div class="epigraphsource">
+
+<p>
+Переосмислення ідей сучасної фізики
+</p>
+</div>
+
+</div>
+
+</div>
+
+<p>
+У&nbsp;попередніх розділах ми розібрали, як поводиться електричне поле у&nbsp;вакуумі, у&nbsp;провідниках і&nbsp;в&nbsp;діелектриках. Ми знаємо, як обчислити поле за заданим розподілом зарядів (теорема Гаусса, принцип суперпозиції),
+і&nbsp;як поводиться поле на межі розділу середовищ. Тепер настав час поставити наступне природне запитання: <em>скільки енергії зберігає електричне поле</em> і&nbsp;<em>як цю енергію використати для обчислення сил</em>, що діють на
+заряджені тіла?
+</p>
+
+<p>
+Цей розділ складається з&nbsp;трьох частин. Спершу ми введемо <em><span
+    class="textcolor"
+    style="color:#990000"
+>електричну ємність</span></em>&nbsp;— величину, яка описує, скільки заряду (а&nbsp;отже, і&nbsp;поля) здатна накопичити система провідників при заданій різниці потенціалів. Далі ми покажемо, що енергія заряджених тіл&nbsp;— це
+насправді енергія <em>поля</em>, розподілена в&nbsp;просторі з&nbsp;густиною \(w = \Efield \cdot \Dfield /8\pi \). Нарешті, ми навчимось обчислювати <em><span
+    class="textcolor"
+    style="color:#990000"
+>пондеромоторні сили</span></em> — сили, що діють на заряджені провідники й&nbsp;діелектрики в&nbsp;електричному полі,&nbsp;— за допомогою методу віртуальних переміщень.
+</p>
+<!--
+...... section Електрична ємність ......
+-->
+<h4 id="autosec-424"><span class="sectionnumber">6.1&#x2003;</span>Електрична ємність</h4>
+<a id="main-html-autopage-424"></a>
+
+
+<p>
+<a id="LWR-ht-electric-capacitance"></a>
+</p>
+<!--
+...... subsection Ємність відокремленого провідника ......
+-->
+<h5 id="autosec-425">Ємність відокремленого провідника</h5>
+<a id="main-html-autopage-425"></a>
+
+
+<p>
+Нехай усамітнений (далекий від інших тіл) провідник несе заряд \(q\); тоді, як ми знаємо, весь цей заряд розподіляється по його поверхні, а&nbsp;сам провідник&nbsp;— еквіпотенціальне тіло з&nbsp;деяким потенціалом \(\phi \). Якщо заряд
+збільшити в&nbsp;\(n\) разів, то, за принципом суперпозиції, поле в&nbsp;кожній точці простору також зросте в&nbsp;\(n\) разів, а&nbsp;отже, в&nbsp;\(n\) разів зросте й&nbsp;робота з&nbsp;переміщення пробного заряду з&nbsp;поверхні
+провідника на нескінченність, тобто й сам потенціал \(\phi \). Це означає, що відношення
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{0}\)</span>
+
+<!--
+
+
+                                                                                                                        𝑞
+                                                                                                                   𝐶=                                                                   (6.1)        --><a id="eq:CapacitorDef"></a><!--
+                                                                                                                        𝜑
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CapacitorDef} \tcbhighmath { C = \frac {q}{\phi } }
+\end{equation}
+
+</p>
+
+<p>
+не залежить від заряду провідника і&nbsp;визначається лише його формою, розмірами та властивостями середовища, що його оточує. Цю величину називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>електричною ємністю провідника</span></em>.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Ємність провідника&nbsp;— суто геометрична характеристика: вона залежить від форми й&nbsp;розмірів тіла, а&nbsp;також від діелектричної проникності середовища, але <em>не залежить</em> ні від заряду, ні від матеріалу самого
+провідника. Означення&nbsp;<span class="textup">(<a href="ch6.html#eq:CapacitorDef">6.1</a>)</span> коректне лише для <em>усамітненого</em> провідника, тобто коли поблизу немає інших заряджених тіл, здатних істотно змінити
+його потенціал.
+</p>
+</div>
+<!--
+...... subsection Коефіцієнти ємності ......
+-->
+<h5 id="autosec-426">Коефіцієнти ємності</h5>
+<a id="main-html-autopage-426"></a>
+
+
+<p>
+Для усамітненого провідника заряд і&nbsp;потенціал пропорційні: \(q = C\phi \). Якщо провідників кілька, потенціал кожного залежить від зарядів усіх сусідів (принцип суперпозиції), тому
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{1}\)</span>
+
+<!--
+
+
+                                                                                                                 𝑞𝑖 = ∑ 𝐶𝑖𝑗 𝜑𝑗 .                                                              (6.2)        --><a id="eq:Cij"></a><!--
+                                                                                                                      𝑗
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Cij} q_i = \sum _j C_{ij}\,\phi _j.
+\end{equation}
+
+</p>
+
+<p>
+Коефіцієнти \(C_{ij}\) залежать лише від форми, розмірів і&nbsp;взаємного розташування провідників (і&nbsp;від проникності середовища), але не від самих зарядів чи потенціалів.
+</p>
+
+<p>
+Діагональні \(C_{ii}\)&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>власні ємності</span></em>: заряд провідника \(i\) при одиничному власному потенціалі й&nbsp;заземлених сусідах. Недіагональні \(C_{ij}\) (\(i\neq j\))&nbsp;— <em>коефіцієнти взаємного впливу</em>: заряд, наведений на заземленому
+провіднику \(i\), коли сусід \(j\) піднято до одиничного потенціалу.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+<em>Знаки.</em> \(C_{ii}&gt;0\), а&nbsp;\(C_{ij}\le 0\) при \(i\neq j\): піднімаючи потенціал одного провідника, ми завжди наводимо на сусідніх заряд <em>протилежного</em> знака.
+</p>
+
+<p>
+<em>Симетрія.</em> \(C_{ij}=C_{ji}\)&nbsp;— наслідок глибшого факту електростатики, теореми взаємності; її доведення виходить за межі цього курсу. Фізично симетрія означає, що байдуже, <em>який</em> із двох провідників підняти до
+потенціалу, а&nbsp;який заземлити,&nbsp;— наведений на сусідові заряд буде той самий. Переконатися в&nbsp;цьому можна на прикладі нижче: там \(C_{12}\approx -C_1C_2/b\) виходить <em>однаковим</em> незалежно від того,
+кулю&nbsp;1 чи кулю&nbsp;2 обрати «джерелом» потенціалу,&nbsp;— ця незалежність від вибору і&nbsp;є симетрією \(C_{ij}=C_{ji}\).
+</p>
+</div>
+
+<p>
+<em>Оцінка зверху для \(C_{12}\).</em> Розглянемо пару провідників з&nbsp;однаковою власною ємністю \(C_{11}=C_{22}\equiv C_0\) (наприклад, дві однакові кулі). Піднімемо потенціал провідника&nbsp;1 до одиниці,
+а&nbsp;провідник&nbsp;2 заземлимо (\(\phi _2=0\)). Тоді, згідно з&nbsp;<span class="textup">(<a href="ch6.html#eq:Cij">6.2</a>)</span>, заряд першого провідника дорівнює \(q_1=C_{11}=C_0\), а&nbsp;на другому наводиться заряд
+\(q_2=C_{12}\) (від’ємний, за щойно сформульованим правилом знаків).
+</p>
+
+<figure id="autoid-128" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-89"
+    class="lateximagesource"
+><!--
+         𝜑1 = 1, 𝑞1 = 𝐶0
+йдуть на ∞
+
+                                            𝜑2 = 0, 𝑞2 = 𝐶12
+
+
+               1                                   2
+
+
+
+
+                           перехоплені лінії
+                             → |𝑞2 | = |𝐶12 |
+--><img
+   src="main-html-images\image-89.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;6.1. Частина силових ліній провідника&nbsp;1 замикається на заземленому провіднику&nbsp;2, решта йде на нескінченність<a id="pic:FieldLinesBound"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Фізично \(q_2\)&nbsp;— це заряд, «перехоплений» тими силовими лініями поля провідника&nbsp;1, що замикаються саме на заземленому сусідові (рис.&nbsp;<a href="ch6.html#pic:FieldLinesBound">6.1</a>); решта ліній іде на
+нескінченність (або на інші тіла). Оскільки сусід не може перехопити більше силових ліній, ніж їх випустив сам провідник&nbsp;1, наведений заряд не може за модулем перевищити початковий:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{2}\)</span>
+
+<!--
+
+
+                                                                                   |𝐶12 | ≤ 𝐶0 .                                                                                 (6.3)        --><a id="eq:OffDiagonalBound"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:OffDiagonalBound} \tcbhighmath { |C_{12}| \le C_0. }
+\end{equation}
+
+</p>
+
+<p>
+Рівність \(C_{12}\to -C_0\) означає, що <em>всі</em> силові лінії від провідника&nbsp;1 замикаються на провіднику&nbsp;2&nbsp;— жодна не йде на нескінченність, тобто екранування повне. Саме до цієї межі прямує тісно зближена пара
+провідників&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>конденсатор</span></em>, з&nbsp;яким ми детальніше познайомимось нижче.
+</p>
+<!--
+...... subsection Два провідники: взаємна ємність ......
+-->
+<h5 id="autosec-430">Два провідники: взаємна ємність</h5>
+<a id="main-html-autopage-430"></a>
+
+
+<p>
+Найпоширеніший спосіб зарядити провідник&nbsp;— перенести частину заряду з&nbsp;другого: тоді на одному з’являється заряд \(+q\), на іншому \(-q\). Для такого&nbsp;— дуже поширеного на практиці&nbsp;— стану зручно ввести окрему
+характеристику пари замість громіздкої матриці \(C_{ij}\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{3}\)</span>
+
+<!--
+
+
+                                                                                          𝑞
+                                                                                  𝐶=                                                                                               (6.4)               --><a id="eq:MutualCapacitanceDef"></a><!--
+                                                                                       𝜑+ − 𝜑−
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:MutualCapacitanceDef} \tcbhighmath { C = \frac {q}{\phi _+ - \phi _-} }
+\end{equation}
+
+</p>
+
+<p>
+де \(\phi _\pm \)&nbsp;— потенціали провідників із зарядами \(\pm q\). Величину&nbsp;<span class="textup">(<a href="ch6.html#eq:MutualCapacitanceDef">6.4</a>)</span> називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>взаємною ємністю</span></em> пари.
+</p>
+
+<p>
+Щоб виразити \(C\) через коефіцієнти \(C_{ij}\), підставимо \(q_1=+q\), \(q_2=-q\) у&nbsp;систему&nbsp;<span class="textup">(<a href="ch6.html#eq:Cij">6.2</a>)</span> (з&nbsp;урахуванням симетрії \(C_{21}=C_{12}\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{4}\)</span>
+
+<!--
+
+
+                                                                                                      𝑞 = 𝐶11 𝜑1 + 𝐶12 𝜑2 ,      −𝑞 = 𝐶12 𝜑1 + 𝐶22 𝜑2 .
+
+-->
+
+<p>
+
+\begin{equation*}
+q = C_{11}\phi _1 + C_{12}\phi _2, \qquad -q = C_{12}\phi _1 + C_{22}\phi _2.
+\end{equation*}
+
+</p>
+
+<p>
+Розв’язавши цю лінійну систему відносно \(\phi _1\), \(\phi _2\) (звичайним оберненням \(2\times 2\)-матриці), знаходимо, що різниця потенціалів пропорційна заряду:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{4}\)</span>
+
+<!--
+
+
+                                                                                                                          𝑞 (𝐶11 + 𝐶22 + 2𝐶12 )
+                                                                                                             𝜑1 − 𝜑 2 =                  2
+                                                                                                                                                ,
+                                                                                                                              𝐶11 𝐶22 − 𝐶12
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi _1 - \phi _2 = \frac {q\,(C_{11}+C_{22}+2C_{12})}{C_{11}C_{22}-C_{12}^2},
+\end{equation*}
+
+</p>
+
+<p>
+звідки за означенням&nbsp;<span class="textup">(<a href="ch6.html#eq:MutualCapacitanceDef">6.4</a>)</span>
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{4}\)</span>
+
+<!--
+
+
+                                                                                             2
+                                                                                 𝐶11 𝐶22 − 𝐶12
+                                                                           𝐶=                    .                                                                         (6.5)                   --><a id="eq:MutualCapacitanceGeneral"></a><!--
+                                                                                𝐶11 + 𝐶22 + 2𝐶12
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:MutualCapacitanceGeneral} \tcbhighmath { C = \frac {C_{11}C_{22}-C_{12}^2}{C_{11}+C_{22}+2C_{12}}. }
+\end{equation}
+
+</p>
+
+<p>
+Для <em>симетричної пари</em> \(C_{11}=C_{22}\equiv C_0\) чисельник розкладається як різниця квадратів, \(C_0^2-C_{12}^2=(C_0-C_{12})(C_0+C_{12})\), а&nbsp;знаменник дорівнює \(2(C_0+C_{12})\); після скорочення спільного
+множника \((C_0+C_{12})\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{5}\)</span>
+
+<!--
+
+
+                                                                                         𝐶0 − 𝐶12
+                                                                                    𝐶=            .                                                                                        (6.6)           --><a id="eq:SymmetricPairCap"></a><!--
+                                                                                            2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SymmetricPairCap} \tcbhighmath { C = \frac {C_0 - C_{12}}{2}. }
+\end{equation}
+
+</p>
+
+<p>
+Ця формула добре узгоджується з&nbsp;оцінкою&nbsp;<span class="textup">(<a href="ch6.html#eq:OffDiagonalBound">6.3</a>)</span> і&nbsp;показує, як взаємна ємність зростає в&nbsp;міру екранування: якщо взаємний вплив зникає
+(\(C_{12}\to 0\), провідники далеко один від одного), то \(C\to C_0/2\)&nbsp;— це просто послідовне з’єднання двох однакових ємностей \(C_0\); якщо ж екранування майже повне (\(C_{12}\to -C_0\), гранично допустиме за&nbsp;<span
+class="textup">(<a href="ch6.html#eq:OffDiagonalBound">6.3</a>)</span>), то \(C\to C_0\)&nbsp;— поле майже все замкнене між обкладками. Саме другий режим реалізується в&nbsp;конденсаторі.
+</p>
+
+<p>
+<em>Приклад: дві далекі кулі.</em> Дві кулі на відстані \(b\), значно більшій за їхні розміри (рис.&nbsp;<a href="ch6.html#pic:TwoSpheres">6.2</a>). Нехай \(C_1\), \(C_2\)&nbsp;— ємності куль поодинці (\(C_{11}\to C_1\), \(C_{22}\to C_2\)
+при \(b\to \infty \)).
+</p>
+
+<figure id="autoid-129" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-90"
+    class="lateximagesource"
+><!--
+     𝑏
++𝑞       −𝑞
+--><img
+   src="main-html-images\image-90.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;6.2. Дві далекі одна від одної заряджені кулі<a id="pic:TwoSpheres"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Зарядимо кулі \(\pm q\) і&nbsp;врахуємо вплив сусідньої кулі як точкового заряду на відстані \(b\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{6}\)</span>
+
+<!--
+
+                                                                                                                     𝑞   𝑞                   𝑞   𝑞
+                                                                                                              𝜑+ =      − ,         𝜑− = −      + .
+                                                                                                                     𝐶1  𝑏                   𝐶2  𝑏
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi _+ = \frac {q}{C_1} - \frac {q}{b}, \qquad \phi _- = -\frac {q}{C_2} + \frac {q}{b}.
+\end{equation*}
+
+</p>
+
+<p>
+Звідси \(\phi _+-\phi _- = q\left (\dfrac 1{C_1}+\dfrac 1{C_2}-\dfrac 2b\right )\), тому в&nbsp;цьому наближенні (вплив сусідньої кулі враховано як поле точкового заряду, а&nbsp;її поляризацією, яка дає поправки порядку
+\(1/b^2\), знехтувано) взаємна ємність
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{6}\)</span>
+
+<!--
+
+                                                                                                                                𝐶1 𝐶2
+                                                                                                                     𝐶=                     .
+                                                                                                                                     2𝐶1 𝐶2
+                                                                                                                          𝐶1 + 𝐶 2 −
+                                                                                                                                       𝑏
+
+-->
+
+<p>
+
+\begin{equation*}
+C = \frac {C_1 C_2}{C_1 + C_2 - \dfrac {2C_1C_2}{b}}.
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки \(b\) набагато перевищує розміри куль (а&nbsp;отже, і&nbsp;\(C_1,C_2\)), параметр \(\eta = \dfrac {2C_1C_2}{(C_1+C_2)b}\) малий, \(\eta \ll 1\) (тут \(\eta \)&nbsp;— допоміжне позначення малого параметра, не діелектрична
+проникність, якої в&nbsp;цьому прикладі немає). Винісши \(C_1+C_2\) у&nbsp;знаменнику й&nbsp;скориставшись \((1-\eta )^{-1}\approx 1+\eta \), отримуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{6}\)</span>
+
+<!--
+
+
+                                                                                      𝐶1 𝐶2         𝐶1 𝐶2 2
+                                                                                𝐶≈            (1 +            ).                                                                  (6.7)        --><a id="eq:TwoSpheresCap"></a><!--
+                                                                                     𝐶1 + 𝐶 2      𝐶1 + 𝐶 2 𝑏
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:TwoSpheresCap} \tcbhighmath { C \approx \frac {C_1C_2}{C_1+C_2}\left (1 + \frac {C_1C_2}{C_1+C_2}\frac {2}{b}\right ). }
+\end{equation}
+
+</p>
+
+<p>
+У&nbsp;головному наближенні (\(b\to \infty \)) взаємна ємність дорівнює ємності послідовного з’єднання; поправка описує слабкий взаємний вплив куль.
+</p>
+
+<p>
+Той самий результат випливає й&nbsp;з&nbsp;коефіцієнтів \(C_{ij}\): якщо провідник&nbsp;2 заземлити, для утримання \(\phi _2=0\) на ньому має навестись заряд \(q_2\approx -C_2q_1/b\) (компенсація поля точкового заряду \(q_1\) на
+відстані \(b\)), звідки \(C_{12}\approx -C_1C_2/b\)&nbsp;— від’ємний, як і&nbsp;належить за загальним правилом знаків. Підставляючи \(C_{11}\approx C_1\), \(C_{22}\approx C_2\), \(C_{12}\approx -C_1C_2/b\) у&nbsp;загальну
+формулу&nbsp;<span class="textup">(<a href="ch6.html#eq:MutualCapacitanceGeneral">6.5</a>)</span>, маємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{7}\)</span>
+
+<!--
+
+
+                                                                                                                           𝐶1 𝐶2 − 𝐶12 𝐶22 /𝑏2
+                                                                                                                   𝐶≈                          .
+                                                                                                                          𝐶1 + 𝐶2 − 2𝐶1 𝐶2 /𝑏
+
+-->
+
+<p>
+
+\begin{equation*}
+C \approx \frac {C_1C_2 - C_1^2C_2^2/b^2}{C_1+C_2-2C_1C_2/b}.
+\end{equation*}
+
+</p>
+
+<p>
+У&nbsp;чисельнику поправка&nbsp;— порядку \(1/b^2\), тому в&nbsp;головному наближенні чисельник \(\approx C_1C_2\); знаменник же дає саме ту поправку порядку \(1/b\), яку ми вже врахували вище. Отже, розклад
+відтворює&nbsp;<span class="textup">(<a href="ch6.html#eq:TwoSpheresCap">6.7</a>)</span>: обидва підходи узгоджені, і&nbsp;саме знак \(C_{12}\) тут принциповий&nbsp;— зворотний знак дав би суперечливу відповідь.
+</p>
+<!--
+...... subsection Конденсатор ......
+-->
+<h5 id="autosec-434">Конденсатор</h5>
+<a id="main-html-autopage-434"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Конденсатор</span></em>&nbsp;— система з&nbsp;двох провідників (<em>обкладок</em>), розташованих так близько (зазвичай через тонкий шар діелектрика), що майже все поле зосереджене у&nbsp;проміжку між ними. Завдяки такому
+<em>екрануванню</em> взаємна ємність конденсатора, на відміну від ємності одинокого провідника чи пари віддалених провідників, практично не залежить від інших тіл поблизу&nbsp;— саме тому вона є зручною й&nbsp;відтворюваною
+характеристикою. Формула&nbsp;<span class="textup">(<a href="ch6.html#eq:MutualCapacitanceDef">6.4</a>)</span> лишається тією самою; конденсатор&nbsp;— окремий випадок пари провідників з&nbsp;екранованим полем.
+</p>
+
+<p>
+Наскільки повним може бути це екранування, видно з&nbsp;<span class="textup">(<a href="ch6.html#eq:SymmetricPairCap">6.6</a>)</span>: коли обкладки зближуються, коефіцієнт взаємного впливу прямує до своєї межі \(C_{12}\to
+-C_0\) (оцінка&nbsp;<span class="textup">(<a href="ch6.html#eq:OffDiagonalBound">6.3</a>)</span>), а&nbsp;отже,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{7}\)</span>
+
+<!--
+
+
+                                                                                                                                𝐶 → 𝐶0 ,
+
+-->
+
+<p>
+
+\begin{equation*}
+C \to C_0,
+\end{equation*}
+
+</p>
+
+<p>
+тобто взаємна ємність прямує до власної. У&nbsp;цій границі поле майже все замкнене між обкладками, і&nbsp;\(C\) перестає залежати від того, що відбувається далеко.
+</p>
+
+
+<div class="cb-example">
+
+<p>
+<b>Обкладки з&nbsp;різними зарядами.</b> Нехай на обкладках плоского конденсатора (площею \(S\) кожна)&nbsp;— не протилежні, а&nbsp;<em>довільні</em> заряди \(q_1\) і&nbsp;\(q_2\) (наприклад, конденсатор зарядили окремо двома
+джерелами, а&nbsp;потім лише з’єднали пластини разом).
+</p>
+
+<p>
+Розкладемо їх на <em>антисиметричну</em> і&nbsp;<em>симетричну</em> частини:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{7}\)</span>
+
+<!--
+
+                                                                                                     𝑞1 − 𝑞2              𝑞1 + 𝑞2
+                                                                                              𝑞𝑎 =           ,    𝑞𝑠 =            ,    𝑞 1 = 𝑞 𝑎 + 𝑞𝑠 ,   𝑞2 = −𝑞𝑎 + 𝑞𝑠 .
+                                                                                                        2                    2
+
+-->
+
+<p>
+
+\begin{equation*}
+q_a = \frac {q_1-q_2}{2}, \qquad q_s = \frac {q_1+q_2}{2}, \qquad q_1 = q_a+q_s,\quad q_2=-q_a+q_s.
+\end{equation*}
+
+</p>
+
+<p>
+Заряд \(q_a\) поводиться як звичайний заряд конденсатора&nbsp;— сідає на <em>внутрішні</em> (обернені одна до одної) поверхні обкладок і&nbsp;створює однорідне поле лише в&nbsp;проміжку між ними, \(E_\text {між}=4\pi q_a/S\).
+Заряд \(q_s\), навпаки, розподіляється порівну на <em>зовнішніх</em> поверхнях: поле від двох однаково заряджених паралельних площин між ними взаємно компенсується (теорема Гаусса), тому в&nbsp;проміжку \(q_s\) поля не дає,
+а&nbsp;весь цей заряд виявляється <em>назовні</em>, створюючи там поле \(E_\text {зовні}=4\pi q_s/S\)&nbsp;— так само, як біля поверхні звичайного зарядженого провідника. Підставляючи означення \(q_a,q_s\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{7}\)</span>
+
+<!--
+
+
+                                                                             2𝜋(𝑞1 − 𝑞2 )                2𝜋(𝑞1 + 𝑞2 )
+                                                                    𝐸між =                ,   𝐸зовні =                .                                                        (6.8)        --><a id="eq:UnequalPlatesField"></a><!--
+                                                                                 𝑆                           𝑆
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:UnequalPlatesField} E_\text {між} = \frac {2\pi (q_1-q_2)}{S}, \qquad E_\text {зовні} = \frac {2\pi (q_1+q_2)}{S}.
+\end{equation}
+
+</p>
+
+<p>
+Якщо \(q_1=-q_2=q\) (звичайний конденсатор), то \(E_\text {зовні}=0\)&nbsp;— поле повністю екрановане, як і&nbsp;слід з&nbsp;означення конденсатора. Якщо ж, навпаки, \(q_1=q_2\) (обкладки заряджені однаково), то \(E_\text
+{між}=0\), а&nbsp;весь заряд «виходить» назовні&nbsp;— пара обкладок при цьому поводиться просто як два майже злиті окремі провідники.
+</p>
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Складний конденсатор.</span></em> Описане вище екранування&nbsp;— ідеалізація: реальні обкладки ніколи не ізольовані від решти світу повністю, і&nbsp;частина ліній зміщення завжди йде на треті тіла поблизу (землю, корпус приладу,
+сусідні провідники). Тоді заряд обкладки залежить не лише від різниці потенціалів між обкладками, а&nbsp;й&nbsp;від потенціалів усіх сусідів&nbsp;— це якраз загальний випадок&nbsp;<span class="textup">(<a
+href="ch6.html#eq:Cij">6.2</a>)</span>, а&nbsp;не окрема нова формула.
+</p>
+</div>
+<!--
+...... subsection З'єднання конденсаторів ......
+-->
+<h5 id="autosec-435">З’єднання конденсаторів</h5>
+<a id="main-html-autopage-435"></a>
+
+
+<p>
+На практиці конденсатори часто з’єднують у&nbsp;батареї&nbsp;— послідовно або паралельно,&nbsp;— щоб отримати потрібну сумарну ємність.
+</p>
+
+<figure id="autoid-130" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-437"></a>
+
+<p>
+<span
+    id="lateximage-main-html-91"
+    class="lateximagesource"
+><!--
+     𝐶1             𝐶2             𝐶3                 𝐶𝑛
++𝑞        −𝑞   +𝑞        −𝑞   +𝑞        −𝑞       +𝑞        −𝑞
+                                             …
+
+
+
+                𝑈 = 𝑈 1 + 𝑈 2 + 𝑈3 + … + 𝑈 𝑛
+--><img
+   src="main-html-images\image-91.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+(а) Послідовне з’єднання
+
+</div>
+
+<a id="pic:CapacitorsSeries"></a>
+
+<a id="sub@pic:CapacitorsSeries"></a>
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-440"></a>
+
+<p>
+<span
+    id="lateximage-main-html-92"
+    class="lateximagesource"
+><!--
+𝐶𝑛       𝐶3   𝐶2   𝐶1
+
+
+
+
+     …
+                        𝑈
+--><img
+   src="main-html-images\image-92.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+(б) Паралельне з’єднання
+
+</div>
+
+<a id="pic:CapacitorsParallel"></a>
+
+<a id="sub@pic:CapacitorsParallel"></a>
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;6.3. З’єднання конденсаторів: (а) послідовне&nbsp;— заряд на всіх обкладках однаковий, напруги додаються; (б) паралельне&nbsp;— напруга на всіх конденсаторах однакова, заряди додаються
+
+</div>
+
+<a id="pic:CapacitorsConnection"></a>
+
+</div>
+
+</figure>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Послідовне з’єднання.</span></em> Нехай \(n\) конденсаторів з’єднано послідовно (рис.&nbsp;<a href="ch6.html#pic:CapacitorsSeries">6.3а</a>). Оскільки обкладки сусідніх конденсаторів, з’єднані між собою провідником, електрично
+ізольовані від решти кола, повний заряд кожної внутрішньої пари обкладок мусить залишатися нульовим: якщо на крайню ліву обкладку батареї нанести заряд \(+q\), то шляхом електростатичної індукції той самий за модулем заряд \(q\)
+з’явиться на <em>кожному</em> конденсаторі батареї. Загальна різниця потенціалів (напруга) на батареї дорівнює сумі напруг на окремих конденсаторах:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{8}\)</span>
+
+<!--
+
+
+
+                                                                                                                           𝑞    𝑞      𝑞
+                                                                                                𝑈 = 𝑈 1 + 𝑈2 + … + 𝑈 𝑛 =      +    +…+    .
+                                                                                                                           𝐶1   𝐶2     𝐶𝑛
+
+
+
+-->
+
+<p>
+
+\begin{equation*}
+U = U_1 + U_2 + \ldots + U_n = \frac {q}{C_1} + \frac {q}{C_2} + \ldots + \frac {q}{C_n}.
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки ємність батареї за означенням \(C = q/U\), маємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{8}\)</span>
+
+<!--
+                                                                                                                     𝑛
+                                                                                                               1      1
+                                                                                                                 =∑     .                                                              (6.9)        --><a id="eq:SeriesCap"></a><!--
+                                                                                                               𝐶     𝐶
+                                                                                                                  𝑖=1 𝑖
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SeriesCap} \tcbhighmath { \frac 1C = \sum \limits _{i=1}^n \frac 1{C_i}. }
+\end{equation}
+
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Паралельне з’єднання.</span></em> Нехай тепер \(n\) конденсаторів з’єднано паралельно (рис.&nbsp;<a href="ch6.html#pic:CapacitorsParallel">6.3б</a>): усі ліві обкладки з’єднані між собою і&nbsp;мають спільний потенціал, так само як
+і&nbsp;всі праві. Тому напруга на кожному конденсаторі однакова і&nbsp;дорівнює загальній напрузі батареї \(U\), а заряди на окремих конденсаторах додаються:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{9}\)</span>
+
+<!--
+
+
+                                                                                              𝑞 = 𝑞1 + 𝑞2 + … + 𝑞𝑛 = 𝐶1 𝑈 + 𝐶2 𝑈 + … + 𝐶𝑛 𝑈.
+
+-->
+
+<p>
+
+\begin{equation*}
+q = q_1 + q_2 + \ldots + q_n = C_1 U + C_2 U + \ldots + C_n U.
+\end{equation*}
+
+</p>
+
+<p>
+Звідси
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{9}\)</span>
+
+<!--
+
+
+                                                                                                                     𝑛
+                                                                                                                𝐶 = ∑ 𝐶𝑖 .                                                          (6.10)        --><a id="eq:ParallelCap"></a><!--
+                                                                                                                    𝑖=1
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ParallelCap} \tcbhighmath { C = \sum \limits _{i=1}^n C_i. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Послідовне з’єднання завжди <em>зменшує</em> сумарну ємність порівняно з&nbsp;найменшою з&nbsp;ємностей \(C_i\) (аналогія з&nbsp;опорами резисторів у паралельному з’єднанні), тоді як паралельне з’єднання завжди <em>збільшує</em>
+сумарну ємність. Це протилежно до того, як поводяться опори при послідовному й&nbsp;паралельному з’єднанні резисторів, і&nbsp;пов’язано з&nbsp;тим, що ємність&nbsp;— це «здатність накопичувати заряд», а&nbsp;не «перешкода струму».
+</p>
+</div>
+<!--
+...... subsection Обчислення ємності найпростіших конденсаторів ......
+-->
+<h5 id="autosec-444">Обчислення ємності найпростіших конденсаторів</h5>
+<a id="main-html-autopage-444"></a>
+
+
+<p>
+Усі задачі на обчислення ємності розв’язуються за <em>єдиним алгоритмом</em>:
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Задати заряд \(q\) на обкладках і&nbsp;знайти розподіл поля \(\Efield \) між ними (за теоремою Гаусса, з&nbsp;урахуванням діелектрика, якщо він є).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Обчислити різницю потенціалів \(\Delta \phi = \phi _+ - \phi _- = \int \Efield \cdot d\symbfscr {l}\) уздовж силової лінії.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> За означенням&nbsp;<span class="textup">(<a href="ch6.html#eq:MutualCapacitanceDef">6.4</a>)</span> знайти \(C = q/\Delta \phi \).
+</p>
+</li>
+</ul>
+
+<p>
+Продемонструємо цей алгоритм на кількох типових прикладах. Скрізь вважатимемо, що простір між обкладками заповнений однорідним діелектриком із проникністю \(\epsilon \) (результати про поле в&nbsp;діелектрику&nbsp;—
+з&nbsp;розділу&nbsp;<a href="ch5.html#FieldInDielectrics">5</a>).
+</p>
+
+<p>
+<em>Ємність усамітненої кулі.</em> Провідна куля радіусом \(R\), що несе заряд \(Q\), створює поза собою поле точкового заряду, а&nbsp;її власний потенціал дорівнює потенціалу на поверхні, \(\phi = Q/(\epsilon R)\). Звідси відразу
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{10}\)</span>
+
+<!--
+
+
+                                                                                                                                   𝐶 = 𝜀𝑅.                                                    (6.11)         --><a id="eq:SphereCap"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SphereCap} \tcbhighmath { C = \epsilon R. }
+\end{equation}
+
+</p>
+
+<p>
+Цей простий результат корисно пам’ятати як орієнтир: ємність провідного тіла має порядок величини його лінійних розмірів (помножених на \(\epsilon \)).
+</p>
+
+<p>
+<em>Плоский конденсатор.</em> Нехай обкладки&nbsp;— дві паралельні пластини площею \(S\) кожна, розташовані на відстані \(d \ll \sqrt {S}\) одна від одної (щоб знехтувати крайовими ефектами), а&nbsp;простір між ними заповнений
+діелектриком з&nbsp;проникністю \(\epsilon \). Поле між обкладками однорідне, \(E = 4\pi \sigma /\epsilon = 4\pi q /(\epsilon S)\), тому різниця потенціалів \(\Delta \phi = Ed = 4\pi qd/(\epsilon S)\), і
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{11}\)</span>
+
+<!--
+
+
+                                                                                                                                         𝜀𝑆
+                                                                                                                                   𝐶=       .                                                   (6.12)         --><a id="eq:FlatCap"></a><!--
+                                                                                                                                        4𝜋𝑑
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:FlatCap} \tcbhighmath { C = \frac {\epsilon S}{4\pi d}. }
+\end{equation}
+
+</p>
+
+<p>
+<em>Сферичний конденсатор.</em> Обкладки&nbsp;— дві концентричні сфери радіусів \(R_1 &lt; R_2\), простір між якими заповнений діелектриком з&nbsp;проникністю \(\epsilon \). За теоремою Гаусса поле між обкладками таке саме, як
+і&nbsp;поле точкового заряду \(q\) у&nbsp;діелектрику, \(E = q/(\epsilon r^2)\). Різниця потенціалів
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{12}\)</span>
+
+<!--
+
+
+                                                                                                                  ˆ𝑅2
+                                                                                                                           𝑞 1    1     𝑞 𝑅2 − 𝑅 1
+                                                                                                           Δ𝜑 =      𝐸 𝑑𝑟 = (   −    )=            ,
+                                                                                                                           𝜀 𝑅1   𝑅2    𝜀 𝑅1 𝑅2
+                                                                                                                  𝑅1
+
+-->
+
+<p>
+
+\begin{equation*}
+\Delta \phi = \int \limits _{R_1}^{R_2} E\, dr = \frac {q}{\epsilon }\left (\frac 1{R_1} - \frac 1{R_2}\right ) = \frac {q}{\epsilon }\frac {R_2 - R_1}{R_1 R_2},
+\end{equation*}
+
+</p>
+
+<p>
+звідки
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{12}\)</span>
+
+<!--
+
+
+                                                                                                                                     𝜀𝑅1 𝑅2
+                                                                                                                              𝐶=             .                                         (6.13)             --><a id="eq:SphericalCap"></a><!--
+                                                                                                                                    𝑅2 − 𝑅 1
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SphericalCap} \tcbhighmath { C = \frac {\epsilon R_1 R_2}{R_2 - R_1}. }
+\end{equation}
+
+</p>
+
+<p>
+Легко переконатись, що при \(R_2 \to \infty \) (друга обкладка йде на нескінченність) формула&nbsp;<span class="textup">(<a href="ch6.html#eq:SphericalCap">6.13</a>)</span> переходить у формулу&nbsp;<span class="textup">(<a
+href="ch6.html#eq:SphereCap">6.11</a>)</span> для усамітненої кулі, як і&nbsp;повинно бути.
+</p>
+
+<p>
+<em>Циліндричний конденсатор.</em> Обкладки&nbsp;— дві коаксіальні циліндричні поверхні радіусів \(R_1 &lt; R_2\) і&nbsp;довжини \(\ell \gg R_2\) (щоб знехтувати крайовими ефектами), простір між ними заповнений діелектриком
+з&nbsp;проникністю \(\epsilon \). За теоремою Гаусса поле між обкладками \(E = \dfrac {2q}{\epsilon \ell r}\) (поле нескінченної зарядженої нитки в&nbsp;діелектрику), тому
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{13}\)</span>
+
+<!--
+
+
+                                                                                                                              ˆ𝑅2
+                                                                                                                                        2𝑞   𝑅
+                                                                                                                       Δ𝜑 =      𝐸 𝑑𝑟 =    ln 2 ,
+                                                                                                                                        𝜀ℓ   𝑅1
+                                                                                                                              𝑅1
+
+-->
+
+<p>
+
+\begin{equation*}
+\Delta \phi = \int \limits _{R_1}^{R_2} E\, dr = \frac {2q}{\epsilon \ell }\ln \frac {R_2}{R_1},
+\end{equation*}
+
+</p>
+
+<p>
+звідки
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{13}\)</span>
+
+<!--
+
+
+                                                                                              𝜀ℓ
+                                                                                   𝐶=                  .                                                                             (6.14)              --><a id="eq:CylindricalCap"></a><!--
+                                                                                        2 ln (𝑅2 /𝑅1 )
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CylindricalCap} \tcbhighmath { C = \frac {\epsilon \ell }{2\ln \left (R_2/R_1\right )}. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Зверніть увагу, як <em>однаково</em> влаштовані всі чотири формули: кожна має вигляд \(C=\epsilon \,\Lambda \), де \(\Lambda \)&nbsp;— величина розмірності <em>довжини</em>, що залежить лише від геометрії провідників (\(R\); \(S/4\pi
+d\); \(R_1R_2/(R_2-R_1)\); \(\ell /2\ln (R_2/R_1)\)). Саме тому в&nbsp;гауссовій системі ємність вимірюється в&nbsp;сантиметрах. Запам’ятовувати окремо кожну формулу не потрібно&nbsp;— достатньо вміти вивести її за алгоритмом вище.
+</p>
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+<em>Суперконденсатори</em> (ультраконденсатори) мають ємність у&nbsp;тисячі фарад&nbsp;— у&nbsp;мільйони разів більшу за ємність Землі (\(\approx 710\ \text {мкФ}\) як усамітненого провідника). Такої ємності досягають завдяки двом
+факторам:
+</p>
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> <em>надрозвинена поверхня</em> пористих вуглецевих електродів (\(1000\)–\(2600\ \text {м}^2/\text {г}\));
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> <em>подвійний електричний шар</em>&nbsp;— іони електроліту розділені відстанню менше \(1\ \text {нм}\).
+</p>
+</li>
+</ul>
+
+<p>
+Але навіть така ємність не робить їх універсальним накопичувачем. Порівняймо питому енергію:
+</p>
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> <em>звичайний конденсатор</em>: \(\sim 0{,}01\)–\(0{,}1\ \text {Вт·год/кг}\);
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> <em>суперконденсатор</em>: \(\sim 5\)–\(10\ \text {Вт·год/кг}\) (до \(30\) у&nbsp;лабораторних зразках);
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> <em>літій-іонний акумулятор</em>: \(\sim 100\)–\(250\ \text {Вт·год/кг}\)&nbsp;— енергія запасається в&nbsp;хімічних зв’язках, а&nbsp;не в&nbsp;полі;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> <em>бензин</em>: \(\approx 12\,000\ \text {Вт·год/кг}\).
+</p>
+</li>
+</ul>
+
+<p>
+Тому суперконденсатори не <em>витісняють</em> акумулятори, а&nbsp;доповнюють їх там, де важлива питома <em>потужність</em>, а&nbsp;не сумарна запасена енергія: регенеративне гальмування, стабілізація напруги, пікові навантаження.
+</p>
+</div>
+<!--
+...... section Енергія електричного поля ......
+-->
+<h4 id="autosec-445"><span class="sectionnumber">6.2&#x2003;</span>Енергія електричного поля</h4>
+<a id="main-html-autopage-445"></a>
+
+
+<p>
+<a id="LWR-ht-field-energy"></a>
+</p>
+<!--
+...... subsection Взаємна енергія системи точкових зарядів ......
+-->
+<h5 id="autosec-446">Взаємна енергія системи точкових зарядів</h5>
+<a id="main-html-autopage-446"></a>
+
+
+<p>
+Щоб зблизити два точкових заряди \(q_1\) і&nbsp;\(q_2\) з&nbsp;нескінченності до відстані \(r_{12}\) один від одного, потрібно виконати проти сил поля роботу \(A = q_1q_2/r_{12}\). Цю роботу і&nbsp;ототожнюють з&nbsp;<em><span
+    class="textcolor"
+    style="color:#990000"
+>взаємною енергією</span></em> пари зарядів: \(U_{12} = q_1q_2/r_{12}\). Для системи з&nbsp;\(n\) точкових зарядів (рис.&nbsp;<a href="ch6.html#pic:ChargesTriangle">6.4</a>) сумарна взаємна енергія набирається з&nbsp;енергій усіх
+можливих пар:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{14}\)</span>
+
+<!--
+
+
+                                                                                                                   𝑛   𝑛
+                                                                                                                1        𝑞𝑖 𝑞𝑗
+                                                                                                           𝑊=     ∑ ∑          ,                                                   (6.15)        --><a id="eq:PairEnergy"></a><!--
+                                                                                                                2 𝑖=1 𝑗=1 𝑟𝑖𝑗
+                                                                                                                       𝑗≠𝑖
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PairEnergy} \tcbhighmath { W = \frac 12 \sum \limits _{i=1}^n \sum \limits _{\substack {j=1\\ j\neq i}}^n \frac {q_iq_j}{r_{ij}}, }
+\end{equation}
+
+</p>
+
+<p>
+де множник \(1/2\) компенсує подвійний перелік кожної пари (доданок з&nbsp;індексами \(i,j\) і&nbsp;доданок з&nbsp;індексами \(j,i\) описують одну й&nbsp;ту саму пару).
+</p>
+
+<figure id="autoid-131" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-93"
+    class="lateximagesource"
+><!--
+𝑞1         𝑟12         𝑞2
+
+
+     𝑟13         𝑟23
+
+
+           𝑞3
+--><img
+   src="main-html-images\image-93.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;6.4. Система трьох точкових зарядів: взаємна енергія набирається із внесків усіх пар<a id="pic:ChargesTriangle"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Формулу&nbsp;<span class="textup">(<a href="ch6.html#eq:PairEnergy">6.15</a>)</span> зручно переписати через потенціал. Потенціал поля в&nbsp;точці розташування \(i\)-го заряду, створюваний <em>усіма іншими</em> зарядами
+(крім самого \(i\)-го, поле якого в&nbsp;точці свого ж розташування не визначене),
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{15}\)</span>
+
+<!--
+
+                                                                                                                    𝑛
+                                                                                                                       𝑞𝑗
+                                                                                                              𝜑𝑖 = ∑      ,
+                                                                                                                      𝑟
+                                                                                                                   𝑗=1 𝑖𝑗
+                                                                                                                   𝑗≠𝑖
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi _i = \sum \limits _{\substack {j=1 \\ j \neq i}}^n \frac {q_j}{r_{ij}},
+\end{equation*}
+
+</p>
+
+<p>
+тому
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{15}\)</span>
+
+<!--
+
+
+                                                                                 1
+                                                                            𝑊=     ∑𝑞 𝜑 .                                                                       (6.16)       --><a id="eq:SystemEnergyViaPotential"></a><!--
+                                                                                 2 𝑖 𝑖 𝑖
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SystemEnergyViaPotential} \tcbhighmath { W = \frac 12 \sum \limits _i q_i \phi _i. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch6.html#eq:PairEnergy">6.15</a>)</span> описує <em>лише взаємну</em> енергію&nbsp;— роботу, потрібну для зближення <em>вже готових</em> точкових зарядів з нескінченності. Вона
+<em>не враховує</em> власну енергію кожного точкового заряду окремо (докладніше про це&nbsp;— наприкінці цього розділу). Для системи зарядів, що мають скінченні розміри, формула&nbsp;<span class="textup">(<a
+href="ch6.html#eq:PairEnergy">6.15</a>)</span>&nbsp;— наближена, і&nbsp;тим точніша, чим менші розміри заряджених тіл порівняно з&nbsp;відстанями між ними.
+</p>
+</div>
+<!--
+...... subsection Електростатична енергія тіла з-неперервним розподілом заряду ......
+-->
+<h5 id="autosec-450">Електростатична енергія тіла з&nbsp;неперервним розподілом заряду</h5>
+<a id="main-html-autopage-450"></a>
+
+
+<p>
+Для тіл з&nbsp;неперервним розподілом заряду&nbsp;— об’ємною густиною \(\rho (\vect r)\) та (якщо є) поверхневою густиною \(\sigma (\vect r)\) — формулу&nbsp;<span class="textup">(<a
+href="ch6.html#eq:SystemEnergyViaPotential">6.16</a>)</span> узагальнюють природним чином, замінюючи суму на інтеграл, а&nbsp;\(q_i\)&nbsp;— на елемент заряду \(\rho \, dV\) або \(\sigma \, dS\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{16}\)</span>
+
+<!--
+
+                                                                                        ˆ                       ˆ
+                                                                                    1                       1
+                                                                           𝑊=               𝜌(𝐫)𝜑(𝐫) 𝑑𝑉 +           𝜍(𝐫)𝜑(𝐫) 𝑑𝑆.                                                           (6.17)          --><a id="eq:BodyEnergy"></a><!--
+                                                                                    2                       2
+                                                                                        𝑉                       𝑆
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:BodyEnergy} \tcbhighmath { W = \frac 12 \iiint \limits _V \rho (\vect r)\phi (\vect r)\, dV + \frac 12 \iint \limits _S \sigma (\vect r)\phi (\vect r)\, dS. }
+\end{equation}
+
+</p>
+
+<p>
+<em>Приклад 1.</em> Нехай куля радіуса \(R\) несе повний заряд \(Q\), рівномірно розподілений по <em>поверхні</em>. Потенціал усюди на поверхні однаковий і дорівнює \(\phi = Q/R\), тому
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{17}\)</span>
+
+<!--
+
+                                                                                ˆ
+                                                                            1                   1 𝑄          𝑄2
+                                                                       𝑊=           𝜍𝜑 𝑑𝑆 =      𝜍  ⋅ 4𝜋𝑅2 =    .                                                               (6.18)         --><a id="eq:SphereEnergySurface"></a><!--
+                                                                            2                   2 𝑅          2𝑅
+                                                                                𝑆
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SphereEnergySurface} W = \frac 12 \iint \limits _S \sigma \phi \, dS = \frac 12\, \sigma \, \frac {Q}{R}\cdot 4\pi R^2 = \frac {Q^2}{2R}.
+\end{equation}
+
+</p>
+
+<p>
+<em>Приклад 2.</em> Нехай тепер той самий заряд \(Q\) розподілений рівномірно по <em>об’єму</em> кулі. Обчислення (з&nbsp;урахуванням того, що потенціал всередині рівномірно зарядженої кулі залежить від \(r\)) дає інший результат:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{18}\)</span>
+
+<!--
+
+
+                                                                                                 3 𝑄2
+                                                                                            𝑊=        .                                                                           (6.19)            --><a id="eq:SphereEnergyVolume"></a><!--
+                                                                                                 5 𝑅
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SphereEnergyVolume} W = \frac 35\, \frac {Q^2}{R}.
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Той самий сумарний заряд \(Q\) на тілі того самого радіуса \(R\) дає <em>різну</em> енергію залежно від того, як саме заряд розподілений усередині тіла (формули&nbsp;<span class="textup">(<a
+href="ch6.html#eq:SphereEnergySurface">6.18</a>)</span> і&nbsp;<span class="textup">(<a href="ch6.html#eq:SphereEnergyVolume">6.19</a>)</span> відрізняються множником \(6/5\)). Це наштовхує на природне запитання: чи
+можна вважати енергію <em>властивістю самих зарядів</em>, чи, може, правильніше говорити про енергію, <em>розподілену в&nbsp;просторі</em>&nbsp;— там, де існує поле? Відповідь на це запитання ми отримаємо, коли перейдемо до
+об’ємної густини енергії поля.
+</p>
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Класичний радіус електрона.</span></em> Цікаво застосувати ці оцінки до електрона. Якщо уявити його як кульку радіуса \(r_e\), заряджену рівномірно по поверхні, то вся його енергія спокою \(m_ec^2\) мала б бути енергією електричного поля:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{19}\)</span>
+
+<!--
+
+
+                                                                                                                        𝑒2                         𝑒2
+                                                                                                                            = 𝑚 𝑒 𝑐2   ⟹   𝑟𝑒 =          .
+                                                                                                                        2𝑟𝑒                       2𝑚𝑒 𝑐2
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {e^2}{2r_e} = m_ec^2 \quad \Longrightarrow \quad r_e = \frac {e^2}{2m_ec^2}.
+\end{equation*}
+
+</p>
+
+<p>
+Чисельно це дає \(r_e \approx 1{,}4\times 10^{-13}\ \text {см}\) (з&nbsp;точністю до множника порядку одиниці, який залежить від припущення про розподіл заряду&nbsp;— по поверхні чи по об’єму). Цю величину називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>класичним радіусом електрона</span></em>. (У&nbsp;літературі під ним зазвичай розуміють \(e^2/m_ec^2\approx 2{,}8\times 10^{-13}\ \text {см}\), тобто вдвічі більше&nbsp;— це якраз і&nbsp;є згаданий множник порядку одиниці.)
+</p>
+
+<p>
+Але тут і&nbsp;криється пастка: якщо електрон справді має такий скінченний розмір, то <em>чому</em> він не розлітається від власного електричного відштовхування? І&nbsp;чому досліди з&nbsp;розсіяння на високих енергіях не бачать
+у&nbsp;нього ніякого розміру аж до \(\sim 10^{-16}\ \text {см}\)? Відповідь — електрон не є класичною зарядженою кулькою. Класичний радіус&nbsp;— це не «справжній розмір» електрона, а&nbsp;лише характерний масштаб, на якому
+електрична енергія поля зарядженої частинки стає порівнянною з&nbsp;її енергією спокою. Саме на таких відстанях класична електродинаміка остаточно ламається, і&nbsp;на зміну їй приходить квантова теорія поля.
+</p>
+</div>
+<!--
+...... subsection Енергія зарядженого конденсатора ......
+-->
+<h5 id="autosec-451">Енергія зарядженого конденсатора</h5>
+<a id="main-html-autopage-451"></a>
+
+
+<p>
+Розглянемо процес зарядки конденсатора як послідовне перенесення малих порцій заряду \(dq\) з&nbsp;однієї обкладки на іншу (рис.&nbsp;<a href="ch6.html#pic:CapacitorDq">6.5</a>). Коли на обкладках уже є заряд \(q\) (а&nbsp;різниця
+потенціалів дорівнює \(\Delta \phi = q/C\)), перенесення чергової порції \(dq\) вимагає роботи \(dW = \Delta \phi \, dq = \dfrac {q\,dq}{C}\). Інтегруючи від нульового заряду до кінцевого значення \(q\), знаходимо енергію зарядженого
+конденсатора:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{19}\)</span>
+
+<!--
+
+
+                                                                                     𝑞2   𝐶Δ𝜑2
+                                                                                𝑊=      =      .                                                                                 (6.20)        --><a id="eq:CapacitorEnergy"></a><!--
+                                                                                     2𝐶    2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CapacitorEnergy} \tcbhighmath { W = \frac {q^2}{2C} = \frac {C\Delta \phi ^2}{2}. }
+\end{equation}
+
+</p>
+
+<figure id="autoid-132" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-94"
+    class="lateximagesource"
+><!--
++        −
+
+
+    𝑑𝑞
+--><img
+   src="main-html-images\image-94.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;6.5. Перенесення заряду \(dq\) під час зарядки конденсатора<a id="pic:CapacitorDq"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+
+<div class="cb-example">
+
+<p>
+<b>Числовий приклад.</b> Конденсатор ємністю \(C = 1\ \text {мкФ}\), заряджений до напруги \(U = 100\ \text {В}\), зберігає заряд \(q = CU = 10^{-4}\ \text {Кл}\) і&nbsp;енергію \(W = CU^2/2 = 5\ \text {мДж}\). Для
+порівняння: щоб розігнати краплю води масою \(1\ \text {мг}\) до швидкості \(1\ \text {м/с}\), потрібна кінетична енергія \(mv^2/2 = 0{,}5\ \text {мкДж}\)&nbsp;— у&nbsp;<em>десять тисяч разів менша</em>. Саме тому
+конденсатори&nbsp;— попри скромні, здавалося б, розміри&nbsp;— здатні зберігати досить значну енергію і&nbsp;широко використовуються як накопичувачі (спалахи фотоапаратів, імпульсні джерела живлення, дефібрилятори).
+</p>
+</div>
+<!--
+...... subsection Густина енергії електричного поля ......
+-->
+<h5 id="autosec-455">Густина енергії електричного поля</h5>
+<a id="main-html-autopage-455"></a>
+
+
+<a id="sec:FieldEnergyDensity"></a>
+
+<p>
+Застосуємо результат&nbsp;<span class="textup">(<a href="ch6.html#eq:CapacitorEnergy">6.20</a>)</span> до плоского конденсатора. Оскільки поле в&nbsp;ньому однорідне, \(\Delta \phi = Ed\), а&nbsp;ємність дається
+формулою&nbsp;<span class="textup">(<a href="ch6.html#eq:FlatCap">6.12</a>)</span>, маємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{20}\)</span>
+
+<!--
+
+
+                                                                                                         1        1 𝜀𝑆          𝜀𝐸2
+                                                                                                    𝑊=     𝐶Δ𝜑2 =       (𝐸𝑑)2 =     𝑉,
+                                                                                                         2        2 4𝜋𝑑         8𝜋
+
+-->
+
+<p>
+
+\begin{equation*}
+W = \frac 12 C \Delta \phi ^2 = \frac 12\,\frac {\epsilon S}{4\pi d}\,(Ed)^2 = \frac {\epsilon E^2}{8\pi }\, V,
+\end{equation*}
+
+</p>
+
+<p>
+де \(V = Sd\)&nbsp;— об’єм простору між обкладками, тобто об’єм, що його займає поле. Звідси природно ввести <em><span
+    class="textcolor"
+    style="color:#990000"
+>об’ємну густину енергії поля</span></em>
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{20}\)</span>
+
+<!--
+
+
+                                                                                  𝜀𝐸2   𝐸𝐷
+                                                                             𝑤=       =                                                                             (6.21)        --><a id="eq:CapacitorEnergyDensity"></a><!--
+                                                                                  8𝜋    8𝜋
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CapacitorEnergyDensity} \tcbhighmath { w = \frac {\epsilon E^2}{8\pi } = \frac {ED}{8\pi } }
+\end{equation}
+
+</p>
+
+<p>
+(останню рівність отримано підстановкою \(D = \epsilon E\); див.&nbsp;розділ&nbsp;<a href="ch5.html#FieldInDielectrics">5</a>).
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch6.html#eq:CapacitorEnergyDensity">6.21</a>)</span> виражає енергію конденсатора <em>не</em> через заряди на обкладках, а&nbsp;через характеристики поля \(\Efield \) і \(\Dfield
+\) у&nbsp;тій області простору, де це поле існує. Це дає підставу для важливої фізичної інтерпретації: саме <em><span
+    class="textcolor"
+    style="color:#990000"
+>електричне поле</span></em> є носієм взаємодії між зарядами і, водночас, носієм енергії&nbsp;— енергія <em>локалізована</em> в&nbsp;тих областях простору, де є поле (у&nbsp;плоскому конденсаторі — виключно в&nbsp;проміжку між
+обкладками), а&nbsp;не «приписана» безпосередньо зарядам.
+</p>
+</div>
+<!--
+...... subsection Густина енергії електричного поля (строге виведення) ......
+-->
+<h5 id="autosec-456">Густина енергії електричного поля (строге виведення)</h5>
+<a id="main-html-autopage-456"></a>
+
+
+<a id="sec:FieldEnergyDensityStrict"></a>
+
+<p>
+Формулу&nbsp;<span class="textup">(<a href="ch6.html#eq:CapacitorEnergyDensity">6.21</a>)</span> отримано для окремого випадку однорідного поля, локалізованого в&nbsp;проміжку між обкладками плоского конденсатора. Виникає
+природне запитання: чи має вона більш загальний характер, чи є наслідком саме цієї спрощеної геометрії? Покажемо, що вираз для густини енергії електричного поля залишається справедливим для <em>довільного</em> електростатичного
+поля&nbsp;— однорідного чи ні, локалізованого в&nbsp;скінченній області чи створеного як завгодно розподіленими зарядами,&nbsp;— і&nbsp;виведемо його строго, виходячи з&nbsp;енергії взаємодії зарядів.
+</p>
+
+<p>
+Нехай заряд системи змінюється на нескінченно малу величину \(\delta \rho (\vect r)\). Оскільки енергія \(W=\tfrac 12\iiint \rho \phi \,dV\) квадратична за \(\rho \) (адже сам потенціал \(\phi \) лінійно виражається через \(\rho \)),
+пряме варіювання дає внесок не лише від зміни \(\rho \) при фіксованому \(\phi \), а&nbsp;й&nbsp;від відповідної зміни самого потенціалу. Записуючи \(\phi \to \phi +\delta \phi \), де \(\delta \phi (\vect r)=\iiint \delta \rho
+(\vect r&apos;)/|\vect r-\vect r&apos;|\,dV&apos;\)&nbsp;— потенціал, створений приростом заряду,&nbsp;— та користуючись симетрією потенціалу точкового заряду,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{21}\)</span>
+
+<!--
+
+                                                                                                ˆ                   ˆˆ                                       ˆ
+                                                                                                                             𝜌(𝐫) 𝛿𝜌(𝐫′ )
+                                                                                                    𝜌 𝛿𝜑 𝑑𝑉 =                             𝑑𝑉 𝑑𝑉 ′ =              𝛿𝜌 𝜑 𝑑𝑉 ,
+                                                                                                                               |𝐫 − 𝐫′ |
+
+-->
+
+<p>
+
+\begin{equation*}
+\iiint \rho \,\delta \phi \,dV = \iiint \!\!\iiint \frac {\rho (\vect r)\,\delta \rho (\vect r&apos;)}{|\vect r-\vect r&apos;|}\,dV\,dV&apos; = \iiint \delta \rho \,\phi \,dV,
+\end{equation*}
+
+</p>
+
+<p>
+бо відстань між точками не залежить від порядку, \(|\vect r-\vect r&apos;|=|\vect r&apos;-\vect r|\). Отже,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{21}\)</span>
+
+<!--
+
+                                                                                                                               ˆ
+                                                                                                                     𝛿𝑊 =          𝛿𝜌(𝐫) 𝜑(𝐫) 𝑑𝑉 .                                          (6.22)        --><a id="eq:DeltaW"></a><!--
+                                                                                                                               𝑉
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:DeltaW} \tcbhighmath { \delta W = \iiint \limits _V \delta \rho (\vect r)\, \phi (\vect r)\, dV. }
+\end{equation}
+
+</p>
+
+<p>
+За теоремою Гаусса для вектора \(\Dfield \) у&nbsp;диференціальній формі, \(\delta \rho = \dfrac 1{4\pi }\divg \delta \Dfield \), тому
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{22}\)</span>
+
+<!--
+
+                                                                                                                                   ˆ
+                                                                                                                              1
+                                                                                                                𝛿𝑊 =                    (𝛁 ⋅ 𝛿𝐃) 𝜑 𝑑𝑉 .
+                                                                                                                             4𝜋
+                                                                                                                                   𝑉
+
+-->
+
+<p>
+
+\begin{equation*}
+\delta W = \frac 1{4\pi } \iiint \limits _V \left (\divg \delta \Dfield \right ) \phi \, dV.
+\end{equation*}
+
+</p>
+
+<p>
+Скористаємось векторною тотожністю \(\divg (\phi \, \delta \Dfield ) = \phi \, \divg \delta \Dfield + \delta \Dfield \cdot \vect \nabla \phi \), звідки
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{22}\)</span>
+
+<!--
+
+                                                                                                                ˆ                                    ˆ
+                                                                                                            1                                   1
+                                                                                                    𝛿𝑊 =                𝛁 ⋅ (𝜑 𝛿𝐃) 𝑑𝑉 −                   𝛿𝐃 ⋅ 𝛁𝜑 𝑑𝑉 .
+                                                                                                           4𝜋                                  4𝜋
+                                                                                                                𝑉                                    𝑉
+
+-->
+
+<p>
+
+\begin{equation*}
+\delta W = \frac 1{4\pi } \iiint \limits _V \divg \left (\phi \, \delta \Dfield \right ) dV - \frac 1{4\pi } \iiint \limits _V \delta \Dfield \cdot \vect \nabla \phi \, dV.
+\end{equation*}
+
+</p>
+
+<p>
+Поширимо інтегрування на весь (нескінченний) простір, обравши \(V\) як велику кулю радіуса \(R\) із центром десь усередині системи зарядів, і&nbsp;розглянемо границю \(R\to \infty \). Перший доданок за теоремою Остроградського-Гаусса
+перетворюється на потік крізь сферу \(S_R\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{22}\)</span>
+
+<!--
+
+                                                                                                                ˛                         ˛
+                                                                                                                        𝜑 𝛿𝐃 ⋅ 𝑑𝐒 =           𝜑 𝛿𝐷𝑟 𝑑𝑆.
+                                                                                                                𝑆𝑅                       𝑆𝑅
+
+-->
+
+<p>
+
+\begin{equation*}
+\oiint \limits _{S_R} \phi \,\delta \Dfield \cdot d\vect S = \oiint \limits _{S_R} \phi \,\delta D_r\, dS.
+\end{equation*}
+
+</p>
+
+<p>
+Для обмеженої системи зарядів на великих відстанях \(\phi \sim q/R\), а&nbsp;\(\delta D_r\sim 1/R^2\), тому підінтегральний вираз спадає як \(1/R^3\), тоді як площа сфери зростає як \(R^2\). Отже, весь поверхневий інтеграл спадає як
+\(1/R\) і&nbsp;прямує до нуля при \(R\to \infty \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{22}\)</span>
+
+<!--
+
+                                                                                                                ˛
+                                                                                                                                          1
+                                                                                                                     𝜑 𝛿𝐷𝑟 𝑑𝑆 ∼             −−−−→ 0.
+                                                                                                                                          𝑅 𝑅→∞
+                                                                                                            𝑆𝑅
+
+-->
+
+<p>
+
+\begin{equation*}
+\oiint \limits _{S_R} \phi \,\delta D_r\, dS \;\sim \; \frac 1R \;\xrightarrow [R\to \infty ]{}\; 0.
+\end{equation*}
+
+</p>
+
+<p>
+Тому перший доданок зникає, і&nbsp;залишається лише
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{22}\)</span>
+
+<!--
+
+                                                                                                                         ˆ                       ˆ
+                                                                                                                     1                                   𝐄 ⋅ 𝛿𝐃
+                                                                                                     𝛿𝑊 = −                  𝛿𝐃 ⋅ 𝛁𝜑 𝑑𝑉 =                       𝑑𝑉 ,
+                                                                                                                    4𝜋                                     4𝜋
+                                                                                                                         𝑉                       𝑉
+
+-->
+
+<p>
+
+\begin{equation*}
+\delta W = -\frac 1{4\pi } \iiint \limits _V \delta \Dfield \cdot \vect \nabla \phi \, dV = \iiint \limits _V \frac {\Efield \cdot \delta \Dfield }{4\pi }\, dV,
+\end{equation*}
+
+</p>
+
+<p>
+де ми скористались зв’язком \(\Efield = -\vect \nabla \phi \).
+</p>
+
+<p>
+Для лінійного діелектрика (\(\Dfield = \epsilon \Efield \)) це співвідношення інтегрується елементарно (\(\Efield \cdot \delta \Dfield = \tfrac 12\delta (\Efield \cdot \Dfield )\)), і&nbsp;ми приходимо до загального результату:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{22}\)</span>
+
+<!--
+
+                                                                          ˆ
+                                                                              𝐄⋅𝐃             𝐄⋅𝐃   𝜀𝐸2
+                                                                     𝑊=           𝑑𝑉 ,   𝑤=       =     .                                                                    (6.23)        --><a id="eq:GeneralEnergyDensity"></a><!--
+                                                                               8𝜋              8𝜋   8𝜋
+                                                                          𝑉
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:GeneralEnergyDensity} \tcbhighmath { W = \iiint \limits _V \frac {\Efield \cdot \Dfield }{8\pi }\, dV, \qquad w = \frac {\Efield \cdot \Dfield }{8\pi } = \frac {\epsilon E^2}{8\pi }. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch6.html#eq:GeneralEnergyDensity">6.23</a>)</span> спирається на лінійний зв’язок \(\Dfield =\epsilon \Efield \) з&nbsp;\(\epsilon =\text {const}\). Саме на кроці \(\Efield \cdot
+\delta \Dfield =\tfrac 12\delta (\Efield \cdot \Dfield )\) ми цим скористалися. Проміжний результат \(\delta w = \Efield \cdot \delta \Dfield /4\pi \) є при цьому набагато загальнішим: він справедливий для
+<em>довільного</em> середовища&nbsp;— лінійного чи нелінійного, ізотропного чи ні. Формулу&nbsp;<span class="textup">(<a href="ch6.html#eq:DeltaW">6.22</a>)</span> тоді слід розуміти як <em>роботу</em> перенесення додаткового
+заряду \(\delta \rho \) з&nbsp;нескінченності в&nbsp;точки з&nbsp;потенціалом \(\phi \) (вище ми дійшли до неї через \(W=\tfrac 12\iiint \rho \phi \,dV\), що коректно для лінійного середовища, але сама ця робота від лінійності не
+залежить). Далі використано лише скінченність повного заряду системи (яка забезпечила зникнення поверхневого інтеграла на нескінченності) та зв’язок \(\Efield =-\vect \nabla \phi \), а&nbsp;не конкретний вигляд зв’язку між \(\Efield \)
+і&nbsp;\(\Dfield \).
+</p>
+
+<p>
+Тому в&nbsp;загальному (нелінійному) випадку густину енергії слід обчислювати як роботу, виконану джерелами поля при поступовому наростанні поля від нуля до заданого значення:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{23}\)</span>
+
+<!--
+
+
+                                                                                                                                   ˆ𝐃
+                                                                                                                              1
+                                                                                                                     𝑤=                 𝐄(𝐃′ ) ⋅ 𝑑𝐃′ ,
+                                                                                                                             4𝜋
+                                                                                                                                   0
+
+-->
+
+<p>
+
+\begin{equation*}
+w = \frac 1{4\pi }\int \limits _0^{\Dfield } \Efield (\Dfield &apos;)\cdot d\Dfield &apos;,
+\end{equation*}
+
+</p>
+
+<p>
+що для ізотропного середовища (\(\Dfield \parallel \Efield \)) зводиться до звичайного інтеграла \(w=\tfrac 1{4\pi }\int _0^{D}E(D&apos;)\,dD&apos;\) — площі під кривою \(E(D)\). Для термодинамічно оборотного (без гістерезису)
+середовища цей інтеграл не залежить від шляху в просторі \(\Dfield \), і&nbsp;\(w(\Dfield )\) є справжньою функцією стану поля. Легко переконатись, що при \(\epsilon =\text {const}\) цей вираз відтворює&nbsp;<span
+class="textup">(<a href="ch6.html#eq:GeneralEnergyDensity">6.23</a>)</span>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{23}\)</span>
+
+<!--
+
+
+                                                                                                                    ˆ𝐷
+                                                                                                            1            𝐷′       𝐷2    𝜀𝐸2   𝐄⋅𝐃
+                                                                                                     𝑤=                     𝑑𝐷′ =     =     =     .
+                                                                                                           4𝜋            𝜀        8𝜋𝜀   8𝜋     8𝜋
+                                                                                                                    0
+
+-->
+
+<p>
+
+\begin{equation*}
+w = \frac 1{4\pi }\int \limits _0^{D} \frac {D&apos;}{\epsilon }\,dD&apos; = \frac {D^2}{8\pi \epsilon } = \frac {\epsilon E^2}{8\pi } = \frac {\Efield \cdot \Dfield }{8\pi }.
+\end{equation*}
+
+</p>
+
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Енергія поля точкового заряду.</b> Оцінімо енергію поля точкового заряду \(q\) у&nbsp;вакуумі. Густина енергії \(w = E^2/(8\pi ) = q^2/(8\pi r^4)\). Інтегруючи по сферичних оболонках \(dV = 4\pi r^2\, dr\) від деякого малого
+радіуса \(r_0\) до нескінченності:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{23}\)</span>
+
+<!--
+
+                                                                                                            ˆ∞                                   ˆ∞
+                                                                                                                     𝑞2               𝑞2                 𝑑𝑟    𝑞2
+                                                                                                      𝑊=                4
+                                                                                                                          ⋅ 4𝜋𝑟2 𝑑𝑟 =                      2
+                                                                                                                                                             =      .
+                                                                                                                    8𝜋𝑟               2                  𝑟     2𝑟 0
+                                                                                                           𝑟0                                    𝑟0
+
+-->
+
+<p>
+
+\begin{equation*}
+W = \int \limits _{r_0}^{\infty } \frac {q^2}{8\pi r^4}\cdot 4\pi r^2\, dr = \frac {q^2}{2}\int \limits _{r_0}^{\infty } \frac {dr}{r^2} = \frac {q^2}{2r_0}.
+\end{equation*}
+
+</p>
+
+<p>
+При \(r_0 \to 0\) цей інтеграл <em>розбігається</em>&nbsp;— власна енергія точкового заряду нескінченна. Це&nbsp;— не фізична катастрофа, а&nbsp;сигнал, що «точковий заряд»&nbsp;— ідеалізація, яка ламається на дуже малих відстанях
+(там потрібна квантова теорія поля). Для реальних заряджених тіл скінченних розмірів (як куля в&nbsp;прикладах вище) власна енергія залишається скінченною.
+</p>
+</div>
+<!--
+...... subsection Власна та взаємна енергія зарядів ......
+-->
+<h5 id="autosec-457">Власна та взаємна енергія зарядів</h5>
+<a id="main-html-autopage-457"></a>
+
+
+<p>
+Порівняємо два, на перший погляд, різні вирази для енергії системи зарядів: «дискретну» формулу&nbsp;<span class="textup">(<a href="ch6.html#eq:PairEnergy">6.15</a>)</span>, \(W = \tfrac 12\sum q_iq_j/r_{ij}\), і&nbsp;«польову»
+формулу&nbsp;<span class="textup">(<a href="ch6.html#eq:GeneralEnergyDensity">6.23</a>)</span>, \(W = \int E^2/(8\pi )\, dV\). Перша з&nbsp;них, узагалі кажучи, може набувати як додатних, так і&nbsp;від’ємних значень
+(притягання різнойменних зарядів дає від’ємний внесок); друга ж, як інтеграл від невід’ємної величини \(E^2\),&nbsp;— <em>завжди</em> невід’ємна. Це здається суперечністю, проте насправді обидві формули описують не зовсім те саме.
+</p>
+
+<p>
+Розглянемо поле системи двох зарядів, \(\Efield = \Efield _1 + \Efield _2\). Тоді
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{23}\)</span>
+
+<!--
+
+                                                                                                          ˆ             ˆ              ˆ              ˆ
+                                                                                                              𝐸2            𝐸12            𝐸22            𝐄1 ⋅ 𝐄 2
+                                                                                                 𝑊=              𝑑𝑉 =           𝑑𝑉 +           𝑑𝑉 +                𝑑𝑉 .
+                                                                                                              8𝜋            8𝜋             8𝜋               4𝜋
+                                                                                                          𝑉             𝑉              𝑉              𝑉
+
+-->
+
+<p>
+
+\begin{equation*}
+W = \int \limits _V \frac {E^2}{8\pi }\, dV = \int \limits _V \frac {E_1^2}{8\pi }\, dV + \int \limits _V \frac {E_2^2}{8\pi }\, dV + \int \limits _V \frac {\Efield _1\cdot \Efield _2}{4\pi }\, dV.
+\end{equation*}
+
+</p>
+
+<p>
+Перші два доданки&nbsp;— це <em><span
+    class="textcolor"
+    style="color:#990000"
+>власна енергія</span></em> кожного із зарядів окремо; вони завжди додатні,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{23}\)</span>
+
+<!--
+
+                                                                                                                ˆ                      ˆ
+                                                                                                                    𝐸12                    𝐸22
+                                                                                                                        𝑑𝑉 > 0,                𝑑𝑉 > 0,
+                                                                                                                    8𝜋                     8𝜋
+                                                                                                                𝑉                      𝑉
+
+-->
+
+<p>
+
+\begin{equation*}
+\int \limits _V \frac {E_1^2}{8\pi }\, dV &gt; 0, \qquad \int \limits _V \frac {E_2^2}{8\pi }\, dV &gt; 0,
+\end{equation*}
+
+</p>
+
+<p>
+і&nbsp;не залежать від взаємного розташування зарядів. Третій доданок&nbsp;— це <em><span
+    class="textcolor"
+    style="color:#990000"
+>взаємна (інтерференційна) енергія</span></em>
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{23}\)</span>
+
+<!--
+
+                                                                                      ˆ
+                                                                                          𝐄1 ⋅ 𝐄 2
+                                                                              𝑊вз =                𝑑𝑉 ,                                                                        (6.24)         --><a id="eq:SelfMutualEnergy"></a><!--
+                                                                                            4𝜋
+                                                                                      𝑉
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SelfMutualEnergy} W_\text {вз} = \int \limits _V \frac {\Efield _1\cdot \Efield _2}{4\pi }\, dV,
+\end{equation}
+
+</p>
+
+<p>
+яка може мати будь-який знак залежно від взаємного розташування й&nbsp;знаків зарядів, і&nbsp;саме вона точно відповідає «дискретній» формулі \(q_1q_2/r_{12}\) з&nbsp;попереднього пункту.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch6.html#eq:PairEnergy">6.15</a>)</span> для точкових зарядів описує <em>лише взаємну</em> енергію&nbsp;— енергію, потрібну для зближення вже готових точкових зарядів
+з&nbsp;нескінченності. Вона свідомо <em>не враховує</em> власну енергію кожного точкового заряду окремо, оскільки поле точкового заряду \(E \sim 1/r^2\) поблизу нього необмежено зростає, а&nbsp;його власна енергія \(\int E^2/(8\pi
+)\, dV\)&nbsp;— розбігається (звертається в&nbsp;нескінченність) при \(r \to 0\). Саме тому «дискретна» енергія системи точкових зарядів може бути від’ємною&nbsp;— вона є лише частиною (взаємною частиною) від справді повної, завжди
+додатної, енергії поля, яка додатково містить (нескінченно великі) власні енергії кожного точкового заряду. Для тіл скінченних розмірів (як у&nbsp;прикладах з&nbsp;кулею вище) власна енергія, звісно, залишається скінченною.
+</p>
+</div>
+<!--
+...... section Пондеромоторні сили ......
+-->
+<h4 id="autosec-458"><span class="sectionnumber">6.3&#x2003;</span>Пондеромоторні сили</h4>
+<a id="main-html-autopage-458"></a>
+
+
+<p>
+<a id="LWR-ht-ponderomotive-forces"></a>
+</p>
+
+<p>
+Термін <em><span
+    class="textcolor"
+    style="color:#990000"
+>пондеромоторні сили</span></em> походить від латинських слів <i>pondus</i> (вага, тягар) та <i>motor</i> (той, що рухає). Історично цей термін виник у&nbsp;механіці для позначення сил, які здатні викликати механічний рух тіла.
+У&nbsp;контексті електродинаміки поняття набуло вужчого значення: <em><span
+    class="textcolor"
+    style="color:#990000"
+>пондеромоторними</span></em> називають механічні сили, що діють на макроскопічні заряджені тіла (провідники, діелектрики, магнітні матеріали) з&nbsp;боку електромагнітного поля.
+</p>
+<!--
+...... subsection Метод віртуальних переміщень ......
+-->
+<h5 id="autosec-459">Метод віртуальних переміщень</h5>
+<a id="main-html-autopage-459"></a>
+
+
+<p>
+Одним з&nbsp;найефективніших способів обчислення сил, що діють на заряджені провідники й&nbsp;діелектрики, є <em><span
+    class="textcolor"
+    style="color:#990000"
+>метод віртуальних переміщень</span></em>. Його ідея полягає в&nbsp;тому, щоб обчислити роботу сил поля \(\delta A = F_x\, dx\) при уявному (<em>віртуальному</em>) нескінченно малому зміщенні тіла на \(dx\) у напрямку, що нас
+цікавить, після чого шукана сила знаходиться просто як
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{24}\)</span>
+
+<!--
+
+
+                                                                                                                         𝛿𝐴
+                                                                                                                  𝐹𝑥 =      .
+                                                                                                                         𝑑𝑥
+
+-->
+
+<p>
+
+\begin{equation*}
+F_x = \frac {\delta A}{dx}.
+\end{equation*}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Метод віртуальних переміщень&nbsp;— універсальний: він не вимагає з’ясування фізичної природи сили (електричної чи механічної) і&nbsp;автоматично враховує <em>всі</em> силові взаємодії в&nbsp;системі, оскільки спирається лише на закон
+збереження енергії.
+</p>
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+<em>Теорема Томсона.</em> У&nbsp;методі віртуальних переміщень ми неявно спираємось на глибший факт: рівноважний розподіл заряду на провідниках за заданих повних зарядів \(q_i\)&nbsp;— <em>єдиний</em>, що мінімізує
+електростатичну енергію системи серед усіх уявних розподілів заряду, сумісних з&nbsp;накладеними умовами (за заданих потенціалів \(\phi _i\) мінімізується не сама енергія \(W\), а&nbsp;величина \(W-\sum _i q_i\phi _i\)). Інтуїція проста:
+якби якийсь інший розподіл давав меншу енергію, заряд самочинно перерозподілився б, і&nbsp;рівновага була б неможливою. Це&nbsp;— своєрідний варіаційний принцип електростатики, тісно пов’язаний з&nbsp;теоремою єдиності розв’язку
+рівняння Пуассона з&nbsp;попередніх розділів.
+</p>
+</div>
+<!--
+...... subsection Сила при сталому заряді провідників ......
+-->
+<h5 id="autosec-460">Сила при сталому заряді провідників</h5>
+<a id="main-html-autopage-460"></a>
+
+
+<p>
+Нехай на провідниках підтримується сталий заряд, \(q = \const \), тобто в&nbsp;системі немає зовнішніх джерел енергії (батарей тощо). За таких умов уся робота \(\delta A\) внутрішніх сил системи при віртуальному переміщенні відбувається
+виключно за рахунок <em>зменшення</em> власної електричної енергії системи \(W\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{24}\)</span>
+
+<!--
+
+
+                                                                                                            𝛿𝐴 = − (𝑑𝑊 )𝑞=const .
+
+-->
+
+<p>
+
+\begin{equation*}
+\delta A = -\left (dW\right )_{q=\const }.
+\end{equation*}
+
+</p>
+
+<p>
+Якщо шукана сила \(F_x\) здійснює роботу \(\delta A = F_x\, dx\) при зміщенні тіла на \(dx\), то
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{24}\)</span>
+
+<!--
+
+
+                                                                                                                      𝑑𝑊 |
+                                                                                                             𝐹𝑥 = −      |        .                                                    (6.25)        --><a id="eq:ForceConstQ"></a><!--
+                                                                                                                      𝑑𝑥 |𝑞=const
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ForceConstQ} \tcbhighmath { F_x = -\left .\frac {dW}{dx}\right |_{q=\const }. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch6.html#eq:ForceConstQ">6.25</a>)</span>&nbsp;— це суто математичний прийом: для її застосування не обов’язково, щоб заряди провідників у&nbsp;<em>реальному</em> процесі
+залишалися незмінними. Достатньо знайти приріст енергії \(dW\), уявляючи, що заряд саме такий, яким він є в&nbsp;даний момент, і&nbsp;<em>умовно</em> вважаючи його фіксованим при обчисленні похідної.
+</p>
+</div>
+<!--
+...... subsection Сила при сталій різниці потенціалів ......
+-->
+<h5 id="autosec-461">Сила при сталій різниці потенціалів</h5>
+<a id="main-html-autopage-461"></a>
+
+
+<p>
+Нехай тепер, навпаки, на провідниках підтримуються сталими потенціали, \(\Delta \phi = \const \) (наприклад, провідники приєднані до батареї, яка підживлює заряди в&nbsp;міру переміщення тіл і&nbsp;виконує при цьому роботу). За
+законом збереження енергії, робота джерела \(\delta A_\text {дж}\) витрачається одночасно на виконання механічної роботи \(F_x\, dx\) і&nbsp;на зміну енергії поля \(dW\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{25}\)</span>
+
+<!--
+
+
+                                                                                                               𝛿𝐴дж = 𝐹𝑥 𝑑𝑥 + 𝑑𝑊.
+
+-->
+
+<p>
+
+\begin{equation*}
+\delta A_\text {дж} = F_x\, dx + dW.
+\end{equation*}
+
+</p>
+
+<p>
+З&nbsp;іншого боку, робота джерела з&nbsp;перенесення заряду \(\delta q\) через різницю потенціалів \(\Delta \phi \) дорівнює \(\delta A_\text {дж} = \delta q\, \Delta \phi \); оскільки \(q = C\Delta \phi \), а&nbsp;\(\Delta
+\phi = \const \), маємо \(\delta q = \Delta \phi \, \delta C\), тобто \(\delta A_\text {дж} = \Delta \phi ^2\, \delta C\). Водночас, за формулою&nbsp;<span class="textup">(<a
+href="ch6.html#eq:CapacitorEnergy">6.20</a>)</span>, \(dW = \tfrac 12\Delta \phi ^2\, \delta C\) (енергія при сталому \(\Delta \phi \) зростає разом із ємністю). Підставляючи, знаходимо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{25}\)</span>
+
+<!--
+
+                                                                                                                       1         1
+                                                                                                    𝐹𝑥 𝑑𝑥 = Δ𝜑2 𝛿𝐶 −     Δ𝜑2 𝛿𝐶 = Δ𝜑2 𝛿𝐶 = 𝑑𝑊,
+                                                                                                                       2         2
+
+-->
+
+<p>
+
+\begin{equation*}
+F_x\, dx = \Delta \phi ^2\,\delta C - \frac 12\Delta \phi ^2\,\delta C = \frac 12\Delta \phi ^2\,\delta C = dW,
+\end{equation*}
+
+</p>
+
+<p>
+звідки
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{25}\)</span>
+
+<!--
+
+
+                                                                                         𝑑𝑊 |
+                                                                                𝐹𝑥 = +      |         .                                                                            (6.26)         --><a id="eq:ForceConstPhiE"></a><!--
+                                                                                         𝑑𝑥 |Δ𝜑=const
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ForceConstPhiE} \tcbhighmath { F_x = +\left .\frac {dW}{dx}\right |_{\Delta \phi =\const }. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Формули&nbsp;<span class="textup">(<a href="ch6.html#eq:ForceConstQ">6.25</a>)</span> і&nbsp;<span class="textup">(<a href="ch6.html#eq:ForceConstPhiE">6.26</a>)</span> відрізняються <em>знаком</em>, проте описують
+<em>одну й&nbsp;ту саму</em> фізичну силу: сама сила, що діє на нерухоме (у&nbsp;момент обчислення) тіло, не може залежати від того, який уявний спосіб зміни системи ми обираємо для її обчислення — метод сталого заряду чи метод сталого
+потенціалу. Різниця знаків пояснюється тим, що при сталому \(\Delta \phi \) енергію в&nbsp;систему додатково вкладає джерело, і&nbsp;саме цей додатковий внесок «перевертає» знак похідної.
+</p>
+
+<p>
+<em>Мнемонічне правило:</em> якщо система «віддана сама собі» (\(q = \const \))&nbsp;— вона «прагне» зменшити свою енергію; якщо система підживлюється джерелом (\(\Delta \phi = \const \))&nbsp;— джерело «допомагає» силі,
+і&nbsp;знак стає додатним. Але фізична сила — однакова в&nbsp;обох випадках.
+</p>
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Притягування обкладок зарядженого конденсатора.</b>
+</p>
+
+<p>
+Знайдемо силу взаємного притягання обкладок плоского конденсатора, уявивши, що одна з&nbsp;обкладок зазнає віртуального зміщення \(dx\) вздовж напрямку, що з’єднує обкладки (рис.&nbsp;<a
+href="ch6.html#pic:VirtualDisplacement">6.6</a>).
+</p>
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-95"
+    class="lateximagesource"
+><!--
+𝑑𝑥
+     𝑥
+--><img
+   src="main-html-images\image-95.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+<a id="autoid-133" ></a >
+Рис.&nbsp;6.6. Віртуальне зміщення \(dx\) обкладки конденсатора<a id="pic:VirtualDisplacement"></a>
+</div>
+</div>
+
+<p>
+<em>Спосіб 1: \(q = \const \).</em> Зміна енергії поля при зміні відстані між обкладками:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{26}\)</span>
+
+<!--
+
+
+                                                                                                          𝑞2       𝑞2                𝜀𝑆                    𝐶
+                                                                                               𝑑𝑊 = 𝑑 (      ) = − 2 𝑑𝐶,       𝐶=       ,         𝑑𝐶 = −     𝑑𝑥,
+                                                                                                          2𝐶      2𝐶                4𝜋𝑥                    𝑥
+
+-->
+
+<p>
+
+\begin{equation*}
+dW = d\left (\frac {q^2}{2C}\right ) = -\frac {q^2}{2C^2}\, dC, \qquad C = \frac {\epsilon S}{4\pi x}, \qquad dC = -\frac {C}{x}\, dx,
+\end{equation*}
+
+</p>
+
+<p>
+звідки \(dW = \dfrac {q^2}{2Cx}\, dx\). Виражаючи через напруженість поля (\(q = CEd = C E x\), де \(x\) тут відіграє роль відстані між обкладками),
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{26}\)</span>
+
+<!--
+
+
+                                                                                                                     𝐸 2 𝑥2 𝜀𝑆       𝜀𝐸 2 𝑆
+                                                                                                             𝑑𝑊 =               𝑑𝑥 =        𝑑𝑥,
+                                                                                                                    2 ⋅ 4𝜋𝑥 ⋅ 𝑥       8𝜋
+
+-->
+
+<p>
+
+\begin{equation*}
+dW = \frac {E^2 x^2\, \epsilon S}{2 \cdot 4\pi x \cdot x}\, dx = \frac {\epsilon E^2 S}{8\pi }\, dx,
+\end{equation*}
+
+</p>
+
+<p>
+і&nbsp;за формулою&nbsp;<span class="textup">(<a href="ch6.html#eq:ForceConstQ">6.25</a>)</span>
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{26}\)</span>
+
+<!--
+
+
+                                                                                       𝑑𝑊    𝜀𝐸 2
+                                                                              𝐹𝑥 = −      =−      𝑆.                                                                       (6.27)        --><a id="eq:ForceCapacitorPlates"></a><!--
+                                                                                       𝑑𝑥    8𝜋
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ForceCapacitorPlates} F_x = -\frac {dW}{dx} = -\frac {\epsilon E^2}{8\pi }\, S.
+\end{equation}
+
+</p>
+
+<p>
+<em>Спосіб 2: \(\Delta \phi = \const \).</em> Аналогічно, \(dW = d\left (\dfrac {C\Delta \phi ^2}{2}\right ) = \dfrac {\Delta \phi ^2}{2}\, dC = -\dfrac {\Delta \phi ^2 C}{2x}\, dx\), що після підстановки \(\Delta \phi =
+Ex\) дає \(dW = -\dfrac {\epsilon E^2 S}{8\pi }\, dx\), і&nbsp;за формулою&nbsp;<span class="textup">(<a href="ch6.html#eq:ForceConstPhiE">6.26</a>)</span> знову отримуємо той самий результат&nbsp;<span
+class="textup">(<a href="ch6.html#eq:ForceCapacitorPlates">6.27</a>)</span>.
+</p>
+
+<p>
+Знак «мінус» у&nbsp;формулі&nbsp;<span class="textup">(<a href="ch6.html#eq:ForceCapacitorPlates">6.27</a>)</span> свідчить про те, що сила спрямована на <em>зменшення</em> відстані між обкладками, тобто обкладки
+<em>притягуються</em> одна до одної&nbsp;— незалежно від знаків зарядів на них, оскільки сила пропорційна \(E^2\).
+</p>
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+Результат&nbsp;<span class="textup">(<a href="ch6.html#eq:ForceCapacitorPlates">6.27</a>)</span> має набагато загальніший характер, ніж просто «сила між обкладками конденсатора». Тиск поля на одиницю площі будь-якої
+зарядженої поверхні провідника дорівнює
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{27}\)</span>
+
+<!--
+
+
+                                                                                                                          𝐸2
+                                                                                                                     𝑝=      = 2𝜋𝜍2 ,
+                                                                                                                          8𝜋
+
+-->
+
+<p>
+
+\begin{equation*}
+p = \frac {E^2}{8\pi } = 2\pi \sigma ^2,
+\end{equation*}
+
+</p>
+
+<p>
+де \(E\)&nbsp;— напруженість поля безпосередньо біля поверхні (зовні провідника), а&nbsp;\(\sigma \)&nbsp;— поверхнева густина заряду в&nbsp;цій точці (тут використано \(E=4\pi \sigma \) біля поверхні провідника). Це&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>електростатичний тиск</span></em>, що намагається «розірвати» будь-яке заряджене тіло; він діє в&nbsp;кожній точці поверхні незалежно від її форми і&nbsp;завжди спрямований <em>назовні</em> провідника. У&nbsp;випадку плоского
+конденсатора цей тиск, помножений на площу обкладки \(S\), і&nbsp;дає силу&nbsp;<span class="textup">(<a href="ch6.html#eq:ForceCapacitorPlates">6.27</a>)</span>.
+</p>
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Сила втягування діелектрика в&nbsp;конденсатор.</b> Розглянемо плоский конденсатор, у&nbsp;який частково (на глибину \(x\)) всунуто пластину діелектрика з&nbsp;проникністю \(\epsilon \), і&nbsp;знайдемо силу, що діє на цю
+пластину. Зручно замінити реальну систему еквівалентною&nbsp;— двома паралельно з’єднаними конденсаторами: один, площею \(S_1\),&nbsp;— вакуумний, а інший, площею \(S_2\),&nbsp;— повністю заповнений діелектриком.
+</p>
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-96"
+    class="lateximagesource"
+><!--
+                          +
+
+−   −   − − − − −−−−−−−
+                          𝐅
++   +   + + + + +++++++
+         𝐸𝜏
+
+                          −
+           𝐄
+--><img
+   src="main-html-images\image-96.svg"
+   alt="(figure)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+<a id="autoid-134" ></a >
+Рис.&nbsp;6.7. Модель конденсатора з&nbsp;частково всунутою пластиною діелектрика: паралельне з’єднання вакуумного та заповненого діелектриком конденсаторів<a id="pic:DielectricInCapacitor"></a>
+</div>
+</div>
+
+<p>
+За формулою для паралельного з’єднання&nbsp;<span class="textup">(<a href="ch6.html#eq:ParallelCap">6.10</a>)</span>,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{27}\)</span>
+
+<!--
+
+                                                                                                                                 𝑆1   𝜀𝑆2
+                                                                                                               𝐶 = 𝐶 1 + 𝐶2 =       +     .
+                                                                                                                                4𝜋𝑑   4𝜋𝑑
+
+-->
+
+<p>
+
+\begin{equation*}
+C = C_1 + C_2 = \frac {S_1}{4\pi d} + \frac {\epsilon S_2}{4\pi d}.
+\end{equation*}
+
+</p>
+
+<p>
+Нехай повна довжина конденсатора (у&nbsp;напрямку висування) дорівнює \(L\), ширина обкладок&nbsp;— \(h\), тоді повна площа \(S = Lh\) стала, а \(S_1 = \left (1 - \dfrac {x}{L}\right ) S\), \(S_2 = \dfrac {x}{L}S\) (тут
+\(x\)&nbsp;— глибина занурення пластини діелектрика). Підставляючи, знаходимо ємність як функцію \(x\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{27}\)</span>
+
+<!--
+
+                                                                                                                         𝑆              𝑥
+                                                                                                               𝐶(𝑥) =       (1 + (𝜀 − 1) ) .
+                                                                                                                        4𝜋𝑑             𝐿
+
+-->
+
+<p>
+
+\begin{equation*}
+C(x) = \frac {S}{4\pi d}\left (1 + (\epsilon - 1)\frac {x}{L}\right ).
+\end{equation*}
+
+</p>
+
+<p>
+Обчислимо силу при сталому заряді \(q = \const \) за формулою&nbsp;<span class="textup">(<a href="ch6.html#eq:ForceConstQ">6.25</a>)</span>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{27}\)</span>
+
+<!--
+
+
+                                                                                                  𝑑𝑊    𝑑𝑊 𝑑𝐶             𝑑𝑊     𝑞2            𝑑𝐶    𝑆 𝜀−1
+                                                                                         𝐹𝑥 = −      =−       ,              = − 2,               =        ,
+                                                                                                  𝑑𝑥    𝑑𝐶 𝑑𝑥             𝑑𝐶    2𝐶             𝑑𝑥   4𝜋𝑑 𝐿
+
+-->
+
+<p>
+
+\begin{equation*}
+F_x = -\frac {dW}{dx} = -\frac {dW}{dC}\frac {dC}{dx}, \qquad \frac {dW}{dC} = -\frac {q^2}{2C^2}, \qquad \frac {dC}{dx} = \frac {S}{4\pi d}\, \frac {\epsilon -1}{L},
+\end{equation*}
+
+</p>
+
+<p>
+звідки
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{27}\)</span>
+
+<!--
+
+
+                                                                                                              𝑞2   𝑆    𝜀 − 1 𝑞=𝐶𝐸𝑑 (𝜀 − 1)𝐸 2
+                                                                                                      𝐹𝑥 =       ⋅    ⋅         =              ℎ𝑑,
+                                                                                                             2𝐶 2 4𝜋𝑑     𝐿             8𝜋
+
+-->
+
+<p>
+
+\begin{equation*}
+F_x = \frac {q^2}{2C^2}\cdot \frac {S}{4\pi d}\cdot \frac {\epsilon - 1}{L} \stackrel {q = CEd}{=} \frac {(\epsilon -1)E^2}{8\pi }\, hd,
+\end{equation*}
+
+</p>
+
+<p>
+де ми скористались тим, що в&nbsp;кожен момент \(q = CEd\), а&nbsp;\(S/L = h\). Остаточно,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{6.}{27}\)</span>
+
+<!--
+
+
+                                                                                    (𝜀 − 1)𝐸 2
+                                                                             𝐹𝑥 =              𝑆торця ,                                                                       (6.28)        --><a id="eq:ForceDielectric"></a><!--
+                                                                                        8𝜋
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ForceDielectric} F_x = \frac {(\epsilon -1)E^2}{8\pi }\, S_\text {торця},
+\end{equation}
+
+</p>
+
+<p>
+де \(S_\text {торця} = hd\)&nbsp;— площа торцевого перерізу пластини діелектрика (перерізу, яким вона «входить» у&nbsp;конденсатор). Оскільки \(\epsilon &gt; 1\), сила \(F_x\) додатна&nbsp;— вона спрямована в&nbsp;бік
+<em>втягування</em> діелектрика всередину конденсатора.
+</p>
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+На рисунку&nbsp;<a href="ch6.html#pic:DielectricInCapacitor">6.7</a> вектор \(\vect {F}\) зображено в&nbsp;зоні, де поле виглядає однорідним, і&nbsp;складається враження, ніби сила діє на поверхню діелектрика в&nbsp;області
+однорідного поля. Метод віртуальних переміщень дає правильний кількісний результат, але приховує справжній механізм явища. Насправді ж на диполь діє сила з&nbsp;боку <em>неоднорідного</em> поля <span class="textup">(<a
+href="ch3.html#eq:EforceOnDipole">3.9</a>)</span>. Саме неоднорідність поля на краю конденсатора створює результуючу силу, що діє на диполі всередині діелектрика, а&nbsp;отже, втягує діелектрик усередину.
+</p>
+
+<p>
+Цей механізм підтверджується і&nbsp;формально. У&nbsp;формулі&nbsp;<span class="textup">(<a href="ch6.html#eq:ForceDielectric">6.28</a>)</span> сила пропорційна \((\epsilon - 1)\), тобто <em>дорівнює нулю</em> за
+\(\epsilon = 1\) і&nbsp;зростає з&nbsp;поляризовністю середовища. Це природно: втягування&nbsp;— прямий прояв <em><span
+    class="textcolor"
+    style="color:#990000"
+>поляризації</span></em> діелектрика в&nbsp;неоднорідному полі (розділ&nbsp;<a href="ch5.html#FieldInDielectrics">5</a>). Чим сильніше середовище поляризується, тим сильніше воно «притягується» до області сильного поля. Так само
+рідкий діелектрик піднімається між частково зануреними в&nbsp;нього обкладками зарядженого конденсатора (задача&nbsp;<a href="ch6.html#prb:LiquidDielectricRise">6.7</a>).
+</p>
+</div>
+<!--
+...... section Підсумки ......
+-->
+<h4 id="autosec-468">Підсумки</h4>
+<a id="main-html-autopage-468"></a>
+
+
+<p>
+Усі результати цього розділу спираються на одну спільну ідею: електричне поле&nbsp;— не допоміжна розрахункова абстракція, а&nbsp;фізичний об’єкт, який <em>сам є носієм енергії</em>. Ємність описує, скільки заряду (а&nbsp;отже,
+і&nbsp;поля) система здатна накопичити при заданій різниці потенціалів; енергія поля визначається інтегралом густини \(w = \Efield \cdot \Dfield /8\pi \) за областю, де це поле існує; а&nbsp;пондеромоторні сили, що діють на провідники
+й діелектрики,&nbsp;— це прояв фундаментального прагнення будь-якої фізичної системи до мінімуму енергії.
+</p>
+
+<p>
+Практично з&nbsp;цього розділу варто винести три речі. По-перше, ємність будь-якої системи провідників обчислюється за єдиним алгоритмом: задати заряд, знайти поле, проінтегрувати різницю потенціалів, поділити. По-друге, густина енергії
+поля \(w = \Efield \cdot \Dfield /8\pi \)&nbsp;— формула загальна, а не лише для плоского конденсатора: вона справедлива для довільного електростатичного поля. По-третє, сили, що діють на провідники й&nbsp;діелектрики, найпростіше
+знаходити методом віртуальних переміщень&nbsp;— через похідну енергії за координатою, з&nbsp;урахуванням того, яка величина (заряд чи потенціал) підтримується сталою.
+</p>
+<!--
+...... section Задачі ......
+-->
+<h4 id="autosec-469">Задачі</h4>
+<a id="main-html-autopage-469"></a>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-135"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 6.1.</span></span> <a id="autoid-136" ></a ><a id="prb:CapacitanceMatrix"></a> <em>Матриця ємностей.</em> Для двох куль із попереднього прикладу покладіть
+\(R_1=1\)&nbsp;см, \(R_2=2\)&nbsp;см, \(b=50\)&nbsp;см і&nbsp;обчисліть \(C_{11}, C_{22}, C_{12}\) чисельно. <em>Відповідь:</em> \(C_{11} \approx 1\)&nbsp;см, \(C_{22} \approx 2\)&nbsp;см, \(C_{12} \approx -0{,}04\)&nbsp;см
+(знак від’ємний, оскільки \(C_{12} \approx -R_1R_2/b\)).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-137"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 6.2.</span></span> <a id="autoid-138" ></a ><a id="prb:CapacitorBank"></a> <em>Ємність батареї.</em> Три конденсатори ємностями \(C_1 = 1\ \text {мкФ}\),
+\(C_2 = 2\ \text {мкФ}\), \(C_3 = 3\ \text {мкФ}\) з’єднано спочатку послідовно, потім паралельно. Обчисліть сумарну ємність у&nbsp;кожному випадку. <em>Відповідь:</em> послідовно \(\approx 0{,}55\ \text {мкФ}\); паралельно \(6\
+\text {мкФ}\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-139"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 6.3.</span></span> <a id="autoid-140" ></a ><a id="prb:UnequalCharges"></a> <em>Заряд однієї обкладки подвоєно.</em> Плоский конденсатор заряджений звичайним
+чином: \(q_1=q\), \(q_2=-q\). Заряд однієї з&nbsp;обкладок збільшили вдвічі, не чіпаючи другої (стало \(q_1&apos;=2q\), \(q_2=-q\)). У&nbsp;скільки разів зміниться напруженість поля <em>між</em> обкладками? Чи лишається конденсатор при
+цьому ідеально екранованим? <em>Вказівка:</em> скористайтесь розкладом&nbsp;<span class="textup">(<a href="ch6.html#eq:UnequalPlatesField">6.8</a>)</span>. <em>Відповідь:</em> поле між обкладками зросте в&nbsp;\(1{,}5\) раза;
+екранування порушиться&nbsp;— з’явиться поле й&nbsp;назовні, \(E_\text {зовні}=2\pi q/S\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-141"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 6.4.</span></span> <a id="autoid-142" ></a ><a id="prb:SphereEnergy"></a> <em>Енергія поля зарядженої кулі.</em> Обчисліть енергію електричного поля рівномірно
+зарядженої по об’єму кулі радіуса \(R\) із повним зарядом \(Q\) двома способами: (а) через формулу&nbsp;<span class="textup">(<a href="ch6.html#eq:SphereEnergyVolume">6.19</a>)</span>; (б) через інтеграл \(\int E^2/(8\pi )\, dV\) за
+всім простором. Переконайтесь, що результати збігаються. <em>Вказівка:</em> поле всередині кулі \(E = Qr/R^3\), зовні&nbsp;— \(E = Q/r^2\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-143"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 6.5.</span></span> <a id="autoid-144" ></a ><a id="prb:ForceConstPhi"></a> <em>Сила при сталій напрузі.</em> Плоский конденсатор із площею обкладок \(S=20\
+\text {см}^2\) приєднано до батареї, що підтримує напругу \(U=300\)&nbsp;В; відстань між обкладками \(d=0{,}5\)&nbsp;мм. Обчисліть силу притягання обкладок безпосередньо за формулою&nbsp;<span class="textup">(<a
+href="ch6.html#eq:ForceConstPhiE">6.26</a>)</span> (через залежність \(C(x)\)), не користуючись готовим результатом&nbsp;<span class="textup">(<a href="ch6.html#eq:ForceCapacitorPlates">6.27</a>)</span>,
+і&nbsp;переконайтесь, що відповідь збігається. <em>Вказівка:</em> у&nbsp;СІ \(C=\epsilon _0S/x\). <em>Відповідь:</em> \(F=\epsilon _0SU^2/2d^2\approx 3{,}2\times 10^{-3}\ \text {Н}\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-145"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 6.6.</span></span> <a id="autoid-146" ></a ><a id="prb:DielectricForce"></a> <em>Сила, що діє на діелектрик.</em> У&nbsp;плоский конденсатор з&nbsp;обкладками
+шириною \(h = 5\ \text {см}\) і&nbsp;відстанню між ними \(d = 2\ \text {мм}\) частково всунуто пластину діелектрика з&nbsp;\(\epsilon = 4\). Поле в&nbsp;конденсаторі \(E = 5\times 10^4\ \text {В/м}\). Обчисліть силу, що втягує
+пластину всередину конденсатора. <em>Вказівка:</em> у&nbsp;СІ формула&nbsp;<span class="textup">(<a href="ch6.html#eq:ForceDielectric">6.28</a>)</span> має вигляд \(F = \dfrac {(\epsilon -1)\epsilon _0E^2}{2}\,hd\).
+<em>Відповідь:</em> \(F \approx 3{,}3\times 10^{-6}\ \text {Н}\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-147"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 6.7.</span></span> <a id="autoid-148" ></a ><a id="prb:LiquidDielectricRise"></a> <em>Втягування рідкого діелектрика.</em> Плоский конденсатор із вертикально
+розташованими обкладками (площа кожної \(S = l\cdot h_0\), відстань між обкладками \(d\)) з’єднано з&nbsp;джерелом постійної напруги \(U\). Нижні кінці обкладок занурено в&nbsp;рідину з&nbsp;діелектричною проникністю \(\epsilon \)
+і&nbsp;густиною \(\rho _\text {р}\), яка не проводить струм. Рідина втягується в&nbsp;проміжок між обкладками і&nbsp;встановлюється на деякій висоті \(h\) (відносно рівня рідини поза конденсатором; \(h&lt;h_0\), крайовими ефектами
+й&nbsp;капілярністю знехтуйте).
+</p>
+
+<p>
+Знайдіть:
+</p>
+<ul class="enumerate" style="list-style-type:none">
+
+
+<li>
+<p>
+<span class="listmarker">1.</span> висоту підйому рідини \(h\);
+</p>
+
+
+</li>
+<li>
+
+
+<p>
+<span class="listmarker">2.</span> кількість теплоти \(Q\), що виділилася при встановленні рівноваги.
+</p>
+</li>
+</ul>
+
+<p>
+<em>Вказівка:</em> скористайтесь тим, що при сталій напрузі втягувальна сила \(F_{\text {ел}} = \dfrac {(\epsilon -1)l}{4\pi d}\dfrac {U^2}{2}\) (це формула&nbsp;<span class="textup">(<a
+href="ch6.html#eq:ForceDielectric">6.28</a>)</span> при \(E=U/d\), \(S_\text {торця}=ld\)) не залежить від глибини занурення, а&nbsp;зміна енергії конденсатора \(\Delta W\) і&nbsp;робота джерела \(A_{\text {дж}}\) пов’язані
+співвідношенням \(A_{\text {дж}} = 2\Delta W\). При рівновазі втягувальна сила зрівноважується вагою піднятого стовпа рідини. Теплоту знайдіть із закону збереження енергії \(A_{\text {дж}}=\Delta W+\tfrac 12 mgh+Q\), де \(\tfrac 12
+mgh\)&nbsp;— приріст потенціальної енергії піднятої рідини.
+</p>
+
+<p>
+<em>Відповідь:</em> \(h = \dfrac {(\epsilon -1)U^2}{8\pi \rho _\text {р} g d^2}\); &#x2003;\(Q = \dfrac {1}{2}mgh = \dfrac {(\epsilon -1)^2 l U^4}{128\pi ^2\rho _\text {р} g d^3}\), де \(m=\rho _\text {р} l d
+h\)&nbsp;— маса піднятого стовпа.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Що називають ємністю усамітненого провідника? Чому відношення \(C = q/\phi \) не залежить від заряду і&nbsp;від чого воно залежить насправді?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Чому означення \(C = q/\phi \) втрачає сенс, якщо поблизу є інші провідники? Як тоді визначається взаємна ємність пари провідників?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Що таке конденсатор і&nbsp;чому його взаємна ємність майже не залежить від оточуючих тіл?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> Чому дорівнює ємність двох далеких одна від одної куль (рис.&nbsp;<a href="ch6.html#pic:TwoSpheres">6.2</a>) у&nbsp;головному наближенні? Що описує поправка, пропорційна \(1/b\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Виведіть формули для ємності батареї при послідовному та паралельному з’єднанні конденсаторів (рис.&nbsp;<a href="ch6.html#pic:CapacitorsConnection">6.3</a>). Що залишається однаковим
+у&nbsp;кожному з&nbsp;випадків: заряд чи напруга?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> Чому послідовне з’єднання завжди зменшує сумарну ємність, а&nbsp;паралельне збільшує? У&nbsp;чому відмінність від з’єднання резисторів?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> Сформулюйте триетапний алгоритм обчислення ємності. Застосуйте його для плоского конденсатора та запишіть результат.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Виведіть ємність сферичного конденсатора. Що станеться з&nbsp;формулою при \(R_2\to \infty \) і&nbsp;чому цей результат очікуваний?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> Яка загальна структура формул для ємності плоского, сферичного та циліндричного конденсаторів? Що в&nbsp;них відіграє роль «геометричного розміру»?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Чому дорівнює взаємна енергія системи точкових зарядів? Навіщо в&nbsp;формулі \(W = \tfrac 12\sum \sum q_iq_j/r_{ij}\) множник \(\tfrac 12\) і&nbsp;чому вона не враховує власну енергію
+зарядів?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> Запишіть енергію системи зарядів через потенціали. Чому енергія кулі, зарядженої по поверхні, відрізняється від енергії кулі того ж заряду й&nbsp;радіуса, зарядженої по об’єму? Яке запитання це ставить
+про локалізацію енергії?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Виведіть енергію зарядженого конденсатора \(W = q^2/2C = C\Delta \phi ^2/2\) через роботу перенесення заряду \(dq\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">13.</span> Як з&nbsp;енергії плоского конденсатора отримують густину енергії поля \(w = \epsilon E^2/8\pi = ED/8\pi \)? Чому цю формулу можна вважати загальною, а&nbsp;не лише для однорідного поля?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">14.</span> Яку роль відіграє те, що потік вектора \(\phi \,\delta \Dfield \) крізь нескінченно віддалену поверхню дорівнює нулю, у&nbsp;виведенні загального виразу для густини енергії?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">15.</span> Чому енергія «дискретної» формули для точкових зарядів може бути від’ємною, а&nbsp;енергія, обчислена як інтеграл від \(E^2/8\pi \), завжди додатна? Що таке власна та взаємна (інтерференційна)
+енергія?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">16.</span> Чому власна енергія точкового заряду нескінченна? Що це означає для моделі «точковий заряд»?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">17.</span> Що таке пондеромоторні сили та звідки походить термін? У&nbsp;чому полягає метод віртуальних переміщень?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">18.</span> Виведіть формули для сили при \(q=\const \) та при \(\Delta \phi =\const \). Чому вони відрізняються знаком, хоча описують одну й&nbsp;ту саму фізичну силу?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">19.</span> Знайдіть силу притягання обкладок плоского конденсатора. Чому вона напрямлена на зменшення відстані між обкладками незалежно від знаків зарядів?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">20.</span> Чому діелектрик втягується в&nbsp;область сильного поля конденсатора? Як у&nbsp;формулі для сили з’являється множник \((\epsilon -1)\) і&nbsp;що з&nbsp;цього випливає для вакууму?
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>

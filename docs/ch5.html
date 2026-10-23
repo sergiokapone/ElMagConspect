@@ -1,0 +1,5366 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Основи електростатики діелектриків</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-289"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span>&#x2003;Електричні заряди та їх взаємодія</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span>&#x2003;Сили (взаємодії) в природі</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span>&#x2003;Електричний заряд</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-12" class="tocsection" >
+<span class="sectionnumber">1.3</span>&#x2003;Як заряджають тіла?</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-17" class="tocsection" >
+<span class="sectionnumber">1.4</span>&#x2003;Закон Кулона</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-25" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-32" class="tocchapter" >
+<span class="sectionnumber">2</span>&#x2003;Постійне електричне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocsection" >
+<span class="sectionnumber">2.1</span>&#x2003;Електромагнітне поле</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.2</span>&#x2003;Напруженість поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-46" class="tocsection" >
+<span class="sectionnumber">2.3</span>&#x2003;Силові лінії та математичне поняття поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-62" class="tocsection" >
+<span class="sectionnumber">2.4</span>&#x2003;Теорема Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-88" class="tocsection" >
+<span class="sectionnumber">2.5</span>&#x2003;Зауваження щодо інтегральної та диференціальної форми теореми Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-90" class="tocsection" >
+<span class="sectionnumber">2.6</span>&#x2003;Потенціальність електростатичного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-102" class="tocsection" >
+<span class="sectionnumber">2.7</span>&#x2003;Циркуляція вектора \(\symbf {E}\)</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-121" class="tocsection" >
+<span class="sectionnumber">2.8</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-128" class="tocsection" >
+<span class="sectionnumber">2.9</span>&#x2003;Рівняння Пуассона та Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-129" class="tocsection" >
+<span class="sectionnumber">2.10</span>&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-134" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-153" class="tocchapter" >
+<span class="sectionnumber">3</span>&#x2003;Електричне поле статичної системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-154" class="tocsection" >
+<span class="sectionnumber">3.1</span>&#x2003;Дипольний момент системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-158" class="tocsection" >
+<span class="sectionnumber">3.2</span>&#x2003;Поле точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-162" class="tocsection" >
+<span class="sectionnumber">3.3</span>&#x2003;Потенціал поля точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-163" class="tocsection" >
+<span class="sectionnumber">3.4</span>&#x2003;Потенціал системи зарядів на далеких відстанях</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-178" class="tocsection" >
+<span class="sectionnumber">3.5</span>&#x2003;Диполь в електричному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-196" class="tocsection" >
+<span class="sectionnumber">3.6</span>&#x2003;Енергія довільної системи зарядів у зовнішньому полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-197" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-200" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-214" class="tocchapter" >
+<span class="sectionnumber">4</span>&#x2003;Електричне поле у провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-215" class="tocsection" >
+<span class="sectionnumber">4.1</span>&#x2003;Структура провідників</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-221" class="tocsection" >
+<span class="sectionnumber">4.2</span>&#x2003;Провідник у полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-244" class="tocsection" >
+<span class="sectionnumber">4.3</span>&#x2003;Електричне поле біля вістря</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-253" class="tocsection" >
+<span class="sectionnumber">4.4</span>&#x2003;Єдиність розв’язку електростатичної задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-263" class="tocsection" >
+<span class="sectionnumber">4.5</span>&#x2003;Металева куля в однорідному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-275" class="tocsection" >
+<span class="sectionnumber">4.6</span>&#x2003;Сили, що діють на поверхню провідника в полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-279" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-280" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-291" class="tocchapter" >
+<span class="sectionnumber">5</span>&#x2003;Основи електростатики діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-292" class="tocsection" >
+<span class="sectionnumber">5.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-294" class="tocsection" >
+<span class="sectionnumber">5.2</span>&#x2003;Структура діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-331" class="tocsection" >
+<span class="sectionnumber">5.3</span>&#x2003;Поляризація діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-358" class="tocsection" >
+<span class="sectionnumber">5.4</span>&#x2003;Вектор поляризації</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-363" class="tocsection" >
+<span class="sectionnumber">5.5</span>&#x2003;Вектор електричної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-370" class="tocsection" >
+<span class="sectionnumber">5.6</span>&#x2003;Граничні умови в&nbsp;присутності діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-383" class="tocsection" >
+<span class="sectionnumber">5.7</span>&#x2003;Мікроскопічна теорія діелектричної проникності</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-390" class="tocsection" >
+<span class="sectionnumber">5.8</span>&#x2003;Типи діелектриків та їх застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-413" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-414" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-423" class="tocchapter" >
+<span class="sectionnumber">6</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-424" class="tocsection" >
+<span class="sectionnumber">6.1</span>&#x2003;Електрична ємність</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-445" class="tocsection" >
+<span class="sectionnumber">6.2</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-458" class="tocsection" >
+<span class="sectionnumber">6.3</span>&#x2003;Пондеромоторні сили</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-468" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-469" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-479" class="tocchapter" >
+<span class="sectionnumber">7</span>&#x2003;Постійний електричний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-480" class="tocsection" >
+<span class="sectionnumber">7.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-487" class="tocsection" >
+<span class="sectionnumber">7.2</span>&#x2003;Природа носіїв заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-489" class="tocsection" >
+<span class="sectionnumber">7.3</span>&#x2003;Закон збереження заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-496" class="tocsection" >
+<span class="sectionnumber">7.4</span>&#x2003;Закон Ома</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-527" class="tocsection" >
+<span class="sectionnumber">7.5</span>&#x2003;Закон Джоуля-Ленца</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-528" class="tocsection" >
+<span class="sectionnumber">7.6</span>&#x2003;Струми в необмежених середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-535" class="tocsection" >
+<span class="sectionnumber">7.7</span>&#x2003;Перехідні процеси в колі з конденсатором</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-548" class="tocsection" >
+<span class="sectionnumber">7.8</span>&#x2003;Максвеллівський час релаксації заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-550" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-562" class="tocchapter" >
+<span class="sectionnumber">8</span>&#x2003;Електричний струм у&nbsp;різних середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-564" class="tocsection" >
+<span class="sectionnumber">8.1</span>&#x2003;Електричний струм у&nbsp;металах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-584" class="tocsection" >
+<span class="sectionnumber">8.2</span>&#x2003;Електричний струм в&nbsp;електролітах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-590" class="tocsection" >
+<span class="sectionnumber">8.3</span>&#x2003;Електричний струм у&nbsp;газах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-601" class="tocsection" >
+<span class="sectionnumber">8.4</span>&#x2003;Електричний струм у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-615" class="tocsection" >
+<span class="sectionnumber">8.5</span>&#x2003;Електричний струм у&nbsp;напівпровідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-636" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-638" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-674" class="tocchapter" >
+<span class="sectionnumber">9</span>&#x2003;Магнітне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-675" class="tocsection" >
+<span class="sectionnumber">9.1</span>&#x2003;Означення</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-679" class="tocsection" >
+<span class="sectionnumber">9.2</span>&#x2003;Характеристика магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-680" class="tocsection" >
+<span class="sectionnumber">9.3</span>&#x2003;Дія магнітного поля на заряджені частинки та струми</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-701" class="tocsection" >
+<span class="sectionnumber">9.4</span>&#x2003;Закон Біо-Савара-Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-714" class="tocsection" >
+<span class="sectionnumber">9.5</span>&#x2003;Вектор-потенціал магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-719" class="tocsection" >
+<span class="sectionnumber">9.6</span>&#x2003;Теореми магнітостатики</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-740" class="tocsection" >
+<span class="sectionnumber">9.7</span>&#x2003;Магнітний момент</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-756" class="tocsection" >
+<span class="sectionnumber">9.8</span>&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-766" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-767" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-775" class="tocchapter" >
+<span class="sectionnumber">10</span>&#x2003;Магнітне поле в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-780" class="tocsection" >
+<span class="sectionnumber">10.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-783" class="tocsection" >
+<span class="sectionnumber">10.2</span>&#x2003;Намагнічування</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-795" class="tocsection" >
+<span class="sectionnumber">10.3</span>&#x2003;Теорема про циркуляцію в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-801" class="tocsection" >
+<span class="sectionnumber">10.4</span>&#x2003;Магнітна сприйнятливість речовини</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-832" class="tocsection" >
+<span class="sectionnumber">10.5</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-847" class="tocsection" >
+<span class="sectionnumber">10.6</span>&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-864" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-865" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-872" class="tocchapter" >
+<span class="sectionnumber">11</span>&#x2003;Рух заряджених частинок</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-873" class="tocsection" >
+<span class="sectionnumber">11.1</span>&#x2003;Рух частинок в&nbsp;однорідних полях</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-891" class="tocsection" >
+<span class="sectionnumber">11.2</span>&#x2003;Застосування схрещених полів</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-899" class="tocsection" >
+<span class="sectionnumber">11.3</span>&#x2003;Методи вимірювання питомого заряду електрона</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-909" class="tocsection" >
+<span class="sectionnumber">11.4</span>&#x2003;Досліди Міллікена</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-911" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-912" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-923" class="tocchapter" >
+<span class="sectionnumber">12</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-924" class="tocsection" >
+<span class="sectionnumber">12.1</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-929" class="tocsection" >
+<span class="sectionnumber">12.2</span>&#x2003;Закон електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-930" class="tocsection" >
+<span class="sectionnumber">12.3</span>&#x2003;Робота, що виконується при переміщенні провідника зі струмом у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-933" class="tocsection" >
+<span class="sectionnumber">12.4</span>&#x2003;Електромагнітна індукція в&nbsp;рухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-940" class="tocsection" >
+<span class="sectionnumber">12.5</span>&#x2003;Електромагнітна індукція в&nbsp;нерухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-959" class="tocsection" >
+<span class="sectionnumber">12.6</span>&#x2003;Явище самоіндукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-979" class="tocsection" >
+<span class="sectionnumber">12.7</span>&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-996" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-997" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1015" class="tocchapter" >
+<span class="sectionnumber">13</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1016" class="tocsection" >
+<span class="sectionnumber">13.1</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1022" class="tocsection" >
+<span class="sectionnumber">13.2</span>&#x2003;Взаємна індукція</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1038" class="tocsection" >
+<span class="sectionnumber">13.3</span>&#x2003;Енергія системи зв’язаних контурів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1041" class="tocsection" >
+<span class="sectionnumber">13.4</span>&#x2003;Потенціальна енергія струмів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1043" class="tocsection" >
+<span class="sectionnumber">13.5</span>&#x2003;Принцип роботи трансформаторів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1047" class="tocsection" >
+<span class="sectionnumber">13.6</span>&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1053" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1054" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1059" class="tocchapter" >
+<span class="sectionnumber">14</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1064" class="tocsection" >
+<span class="sectionnumber">14.1</span>&#x2003;Струм зміщення</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1085" class="tocsection" >
+<span class="sectionnumber">14.2</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1102" class="tocsection" >
+<span class="sectionnumber">14.3</span>&#x2003;Про рівняння Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1104" class="tocsection" >
+<span class="sectionnumber">14.4</span>&#x2003;Енергія електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1118" class="tocsection" >
+<span class="sectionnumber">14.5</span>&#x2003;Скін-ефект</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1140" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1141" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1148" class="tocchapter" >
+<span class="sectionnumber">15</span>&#x2003;Відносність електричного і&nbsp;магнітного полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1150" class="tocsection" >
+<span class="sectionnumber">15.1</span>&#x2003;Нерелятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1153" class="tocsection" >
+<span class="sectionnumber">15.2</span>&#x2003;Релятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1159" class="tocsection" >
+<span class="sectionnumber">15.3</span>&#x2003;Тензор електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1161" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1162" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1171" class="tocchapter" >
+<span class="sectionnumber">16</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1172" class="tocsection" >
+<span class="sectionnumber">16.1</span>&#x2003;Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1188" class="tocsection" >
+<span class="sectionnumber">16.2</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1193" class="tocsection" >
+<span class="sectionnumber">16.3</span>&#x2003;Енергія та вектор Пойнтінга для хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1204" class="tocsection" >
+<span class="sectionnumber">16.4</span>&#x2003;Імпульс і момент імпульсу електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1210" class="tocsection" >
+<span class="sectionnumber">16.5</span>&#x2003;Відбивання хвиль від поверхні двох діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1230" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1231" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1242" class="tocchapter" >
+<span class="sectionnumber">17</span>&#x2003;Випромінювання електромагнітних хвиль</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1243" class="tocsection" >
+<span class="sectionnumber">17.1</span>&#x2003;Історична довідка: досліди Герца</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1246" class="tocsection" >
+<span class="sectionnumber">17.2</span>&#x2003;Елементарна модель випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1259" class="tocsection" >
+<span class="sectionnumber">17.3</span>&#x2003;Дипольне випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1275" class="tocsection" >
+<span class="sectionnumber">17.4</span>&#x2003;Потужність випромінювання осцилятора</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1280" class="tocsection" >
+<span class="sectionnumber">17.5</span>&#x2003;Випромінювання рухомого заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1285" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1286" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1292" class="tocchapter" >
+<span class="sectionnumber">18</span>&#x2003;Коливальні процеси в електричних колах</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1293" class="tocsection" >
+<span class="sectionnumber">18.1</span>&#x2003;Квазістаціонарне наближення</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1294" class="tocsection" >
+<span class="sectionnumber">18.2</span>&#x2003;Вільні коливання в коливальному контурі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1319" class="tocsection" >
+<span class="sectionnumber">18.3</span>&#x2003;Вимушені коливання під дією гармонічної ЕРС</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1333" class="tocsection" >
+<span class="sectionnumber">18.4</span>&#x2003;Змінний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">18.5</span>&#x2003;Трансформатор</a>
+</p>
+<p>
+<a href="ch18.html#autosec-1374" class="tocsection" >
+<span class="sectionnumber">18.6</span>&#x2003;Частотні фільтри</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1390" class="tocsection" >
+<span class="sectionnumber">18.7</span>&#x2003;Трифазний струм: фізичні засади, топології кіл та застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1433" class="tocchapter" >
+<span class="sectionnumber">19</span>&#x2003;Довгі лінії. Телеграфні рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1434" class="tocsection" >
+<span class="sectionnumber">19.1</span>&#x2003;Від зосереджених елементів до розподілених</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1435" class="tocsection" >
+<span class="sectionnumber">19.2</span>&#x2003;Виведення телеграфних рівнянь</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1439" class="tocsection" >
+<span class="sectionnumber">19.3</span>&#x2003;Гармонічний режим. Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1440" class="tocsection" >
+<span class="sectionnumber">19.4</span>&#x2003;Лінія без втрат</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1447" class="tocsection" >
+<span class="sectionnumber">19.5</span>&#x2003;Польова картина. Зв’язок з рівняннями Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1454" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1455" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1461" class="tocchapter" >
+<span class="sectionnumber">20</span>&#x2003;Хвилеводи</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1462" class="tocsection" >
+<span class="sectionnumber">20.1</span>&#x2003;Від довгої лінії до хвилеводу</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1463" class="tocsection" >
+<span class="sectionnumber">20.2</span>&#x2003;Прямокутний хвилевід</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1476" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1479" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1480" class="tocsection" >
+<span class="sectionnumber">А</span>&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1485" class="tocsection" >
+<span class="sectionnumber">Б</span>&#x2003;Основні формули векторного аналізу</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1503" class="tocchapter" >
+Література</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Основи електростатики діелектриків">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Основи електростатики діелектриків ......
+-->
+<h3 id="autosec-291">Розділ&nbsp;<span class="sectionnumber">5&#x2003;</span>Основи електростатики діелектриків</h3>
+<a id="main-html-autopage-291"></a>
+<a id="main-html-autofile-5"></a>
+
+<a id="FieldInDielectrics"></a>
+
+<p>
+<a id="LWR-ht-FieldInDielectrics"></a>
+</p>
+<div class="epigraph" role="note">
+
+
+<div class="qitem">
+
+<p>
+Речовина в&nbsp;електричному полі&nbsp;— це не пасивне тло, а&nbsp;активний співучасник взаємодії: поле поляризує речовину, а&nbsp;речовина, у&nbsp;відповідь, послаблює поле.
+</p>
+
+
+<div class="epigraphsource">
+
+<p>
+Переосмислення ідей сучасної фізики
+</p>
+</div>
+
+</div>
+
+</div>
+
+<p>
+У&nbsp;попередніх розділах ми вивчали електричне поле у&nbsp;вакуумі та поведінку в&nbsp;ньому провідників. Тепер розглянемо третій, найпоширеніший клас середовищ&nbsp;— діелектрики: з’ясуємо, яка мікроскопічна природа поляризації
+речовини, як описати її макроскопічно і&nbsp;як це змінює закони електростатики порівняно з&nbsp;вакуумом.
+</p>
+<!--
+...... section Основні поняття ......
+-->
+<h4 id="autosec-292"><span class="sectionnumber">5.1&#x2003;</span>Основні поняття</h4>
+<a id="main-html-autopage-292"></a>
+
+
+<p>
+<a id="LWR-ht-dielectrics-basic-concepts"></a>
+</p>
+
+<p>
+Досі ми розглядали електричне поле у&nbsp;вакуумі та у&nbsp;провідниках. У&nbsp;провідниках, як ми з’ясували, вільні заряди&nbsp;— електрони&nbsp;— під дією як завгодно слабкого поля переміщуються на макроскопічні відстані, аж доки
+поле всередині провідника не звернеться в&nbsp;нуль. Проте більшість речовин, що оточують нас,&nbsp;— скло, вода, повітря, пластмаси,&nbsp;— поводяться зовсім інакше: внесені в&nbsp;електричне поле, вони не гасять його всередині себе,
+а&nbsp;лише <em>послаблюють</em>. Такі речовини називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>діелектриками</span></em>.
+</p>
+
+<p>
+Відмінність діелектрика від провідника пов’язана з&nbsp;тим, які заряди є в&nbsp;його структурі. Домовимось умовно розділяти всі заряди речовини на два типи.
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>Вільні заряди</span></em>&nbsp;— це заряди, які можуть переміщатися на великі відстані в&nbsp;речовині (набагато більші за міжатомні відстані). Саме вільні заряди відповідають за струм і&nbsp;за повну компенсацію зовнішнього поля
+всередині провідника. У&nbsp;діелектриках вільних зарядів, як правило, дуже мало, або немає зовсім.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>Зв’язані (поляризаційні) заряди</span></em>&nbsp;— це заряди, які під дією зовнішніх полів або сил лише незначно <em>зміщуються</em> відносно свого положення рівноваги (електрон у&nbsp;атомі, іон у&nbsp;вузлі кристалічної ґратки)
+і&nbsp;повертаються назад, у&nbsp;положення рівноваги, одразу після зняття зовнішнього впливу.
+</p>
+</li>
+</ul>
+
+
+<div class="cb-attention">
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Діелектриками</span></em> називають речовини, в&nbsp;структурі яких є зв’язані заряди, а&nbsp;вільних зарядів дуже мало або зовсім немає. На відміну від провідників, у&nbsp;діелектриках немає носіїв заряду, здатних переміщатися по
+всьому об’єму тіла: усі заряджені частинки&nbsp;— електрони та ядра — міцно утримуються в&nbsp;межах свого атома чи молекули.
+</p>
+</div>
+<!--
+...... subsection Мікроскопічне та макроскопічне поле ......
+-->
+<h5 id="autosec-293">Мікроскопічне та макроскопічне поле</h5>
+<a id="main-html-autopage-293"></a>
+
+
+<p>
+Щоб коректно описати поведінку речовини в&nbsp;полі, потрібно спершу з’ясувати, про яке саме поле йдеться. Якщо подивитись на речовину на атомному масштабі, електричне поле виявляється надзвичайно нерівномірним: всередині атома чи
+молекули воно на багато порядків сильніше, ніж у&nbsp;проміжку між молекулами, і&nbsp;різко змінюється від точки до точки та в&nbsp;часі&nbsp;— адже електрони рухаються, атоми коливаються. Таке істинне, швидкозмінне поле називають
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>мікрополем</span></em> \(\Efield _\text {micro}\).
+</p>
+
+<p>
+Усі макроскопічні прилади&nbsp;— вольтметри, зонди, наші вимірювання&nbsp;— фізично не здатні відстежити настільки швидкі та дрібномасштабні варіації поля. Те, що вони фіксують,&nbsp;— це поле, усереднене по деякому <em>фізично
+нескінченно малому</em> об’єму \(\Delta V\): досить малому порівняно з&nbsp;розмірами тіла, щоб вважатися «точкою» в&nbsp;макроскопічному сенсі, але водночас достатньо великому, щоб містити величезну кількість атомів і&nbsp;молекул.
+Таке <em><span
+    class="textcolor"
+    style="color:#990000"
+>середнє (макроскопічне) поле</span></em> визначається як
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{0}\)</span>
+
+<!--
+
+                                                                                                                       ˆ
+                                                                                                                   1
+                                                                                                          ⟨𝐄⟩ =             𝐄micro 𝑑𝑉 .
+                                                                                                                  Δ𝑉
+                                                                                                                       Δ𝑉
+
+
+-->
+
+<p>
+
+\begin{equation*}
+\tcbhighmath { \left \langle \Efield \right \rangle = \frac 1{\Delta V} \iiint \limits _{\Delta V} \Efield _\text {micro}\, dV. }
+\end{equation*}
+
+</p>
+
+<p>
+Це поле змінюється в&nbsp;просторі істотно повільніше, ніж мікрополе, і&nbsp;саме його ми надалі й&nbsp;називатимемо просто \(\Efield \), коли говоритимемо про поле всередині речовини.
+</p>
+<!--
+...... section Структура діелектриків ......
+-->
+<h4 id="autosec-294"><span class="sectionnumber">5.2&#x2003;</span>Структура діелектриків</h4>
+<a id="main-html-autopage-294"></a>
+
+
+<p>
+<a id="LWR-ht-dielectric-structure"></a>
+</p>
+<!--
+...... subsection Дипольні моменти молекул ......
+-->
+<h5 id="autosec-295">Дипольні моменти молекул</h5>
+<a id="main-html-autopage-295"></a>
+
+
+<p>
+За відсутності зовнішнього поля позитивний заряд ядер атомів, що утворюють молекулу, і&nbsp;негативний заряд електронної оболонки в&nbsp;сумі дають нуль, тобто молекула електронейтральна. Проте розподіл цих зарядів у&nbsp;просторі не
+завжди симетричний. Якщо «центр ваги» позитивного заряду молекули не збігається з&nbsp;«центром ваги» негативного, молекула має власний, сталий <em><span
+    class="textcolor"
+    style="color:#990000"
+>дипольний момент</span></em> \(\vect p_0\). Причиною такої асиметрії є <em>різна електронегативність</em> атомів, що входять до складу молекули: атом з&nbsp;більшою електронегативністю сильніше «притягує» до себе спільну
+електронну хмару, і&nbsp;на ньому виникає надлишок негативного заряду, тоді як на іншому атомі&nbsp;— надлишок позитивного.
+</p>
+
+<p>
+Молекули з&nbsp;ненульовим власним дипольним моментом називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>полярними</span></em>. Класичний приклад&nbsp;— молекула води <span
+    id="lateximage-main-html-52"
+    class="lateximagesource"
+><!--
+H2 O
+--><img
+   src="main-html-images\3BD50A5CF48F9588DE1B1A127A250217.svg"
+   alt="\ce{H2O}"
+   style=""
+   class="lateximage"
+></span>: через кутову форму молекули (кут між зв’язками <span
+   id="lateximage-main-html-53"
+   class="lateximagesource"
+><!--
+O–H
+--><img
+   src="main-html-images\2DD1CD242CF0EA93AA3E2507782102EE.svg"
+   alt="\ce{O-H}"
+   style=""
+   class="lateximage"
+></span> становить приблизно \(105^\circ \)) дипольні моменти окремих зв’язків <span
+   id="lateximage-main-html-54"
+   class="lateximagesource"
+><!--
+O–H
+--><img
+   src="main-html-images\2DD1CD242CF0EA93AA3E2507782102EE.svg"
+   alt="\ce{O-H}"
+   style=""
+   class="lateximage"
+></span> не компенсують одне одного, і&nbsp;молекула в цілому має досить великий дипольний момент (рис.&nbsp;<a href="ch5.html#pic:MoleculeDipoles">5.1</a>).
+</p>
+
+<figure id="autoid-109" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-303"></a>
+
+<p>
+<span
+    id="lateximage-main-html-55"
+    class="lateximagesource"
+><!--
+          105∘
+             𝐩
+
+
+H+1   +          +   H+1
+
+
+
+          O2 –
+--><img
+   src="main-html-images\image-55.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-306"></a>
+
+<p>
+<span
+    id="lateximage-main-html-56"
+    class="lateximagesource"
+><!--
+        O
+
+
+
+
++               +
+    𝐩
+            +
+--><img
+   src="main-html-images\image-56.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;5.1. Власні дипольні моменти молекул врди та амміаку
+
+</div>
+
+<a id="pic:MoleculeDipoles"></a>
+
+</div>
+
+</figure>
+
+<p>
+Для вимірювання дипольних моментів молекул зручно користуватись позасистемною одиницею&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>дебаєм</span></em> (позначається <i>Д</i> або <i>D</i>), названою на честь фізика П.&nbsp;Дебая:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{0}\)</span>
+
+<!--
+
+
+                                                                                                   1 Дебай = 10−18 Фр ⋅ см.
+
+-->
+
+<p>
+
+\begin{equation*}
+1\ \text {Дебай} = 10^{-18}\ \text {Фр}\cdot \text {см}.
+\end{equation*}
+
+</p>
+
+<figure id="autoid-110" class="table ">
+<div class="center">
+
+
+<div class="figurecaption">
+Таблиця&nbsp;5.1. Дипольні моменти деяких полярних молекул<a id="tab:dipoles"></a>
+
+</div>
+<table>
+
+<tr style="display:none"><th>.</th></tr>
+
+<tr class="hline">
+<td colspan="1" class="tdc tvertbarl tvertbarr" style="background:#0064AA; border-left: 1px solid black; border-right: 1px solid black"><span
+   class="textcolor"
+   style="color:#FFFFFF"
+><b>Молекула</b></span></td>
+<td class="tdp tvertbarr tdcenter" style="background:#0064AA; border-right: 1px solid black">
+
+<p>
+<span
+    class="textcolor"
+    style="color:#FFFFFF"
+><b>Дипольний момент (Дебай)</b></span>
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Вуглекислий газ (\(\ce {CO2}\))
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+0.00
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="background:#F2F2F2; border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Хлороводень (\(\ce {HCl}\))
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+1.08
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Аміак (\(\ce {NH3}\))
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+1.46
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="background:#F2F2F2; border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Вода (\(\ce {H2O}\))
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+1.84
+</p>
+</td>
+</tr>
+
+<tr class="hline" aria-hidden="true">
+<td class="tdp tdleft">
+
+</td>
+<td class="tdp tdcenter">
+
+</td>
+</tr>
+</table>
+
+</div>
+
+</figure>
+
+<p>
+Більшість полярних молекул має дипольний момент порядку \(1\) Д. Одиниця широко застосовується у&nbsp;фізичній хімії, атомній і&nbsp;молекулярній фізиці. Дипольні моменти деяких відомих полярних молекул наведено
+в&nbsp;таблиці&nbsp;<a href="ch5.html#tab:dipoles">5.1</a>.
+</p>
+
+<p>
+Показовим є приклад вуглекислого газу <span
+    id="lateximage-main-html-57"
+    class="lateximagesource"
+><!--
+CO2
+--><img
+   src="main-html-images\FAC188068524E4DDF140E14E338F3177.svg"
+   alt="\ce{CO2}"
+   style=""
+   class="lateximage"
+></span>: попри те, що кожен зв’язок <span
+   id="lateximage-main-html-58"
+   class="lateximagesource"
+><!--
+C–O
+--><img
+   src="main-html-images\542AF1C76C82987F2946DF9D02C6E7DF.svg"
+   alt="\ce{C=O}"
+   style=""
+   class="lateximage"
+></span> є полярним, молекула лінійна і&nbsp;симетрична, тому дипольні моменти окремих зв’язків повністю компенсують одне одного, і&nbsp;сумарний дипольний момент молекули дорівнює нулю.
+</p>
+<!--
+...... subsection Неполярні молекули та наведений дипольний момент ......
+-->
+<h5 id="autosec-315">Неполярні молекули та наведений дипольний момент</h5>
+<a id="main-html-autopage-315"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Неполярні молекули</span></em>&nbsp;— це молекули, в&nbsp;яких електричні заряди розподілені симетрично, і&nbsp;власний дипольний момент відсутній (\(p_0 = 0\)). У&nbsp;таких молекулах атоми зазвичай мають однакову або близьку
+електронегативність, тому спільна електронна хмара розподілена рівномірно між атомами, або ж молекула має достатньо високу симетрію (як у&nbsp;випадку <span
+    id="lateximage-main-html-59"
+    class="lateximagesource"
+><!--
+CO2
+--><img
+   src="main-html-images\FAC188068524E4DDF140E14E338F3177.svg"
+   alt="\ce{CO2}"
+   style=""
+   class="lateximage"
+></span>). Прикладами неполярних молекул є кисень <span
+   id="lateximage-main-html-60"
+   class="lateximagesource"
+><!--
+O2
+--><img
+   src="main-html-images\29404E849785FA970A0C17CC1758E215.svg"
+   alt="\ce{O2}"
+   style=""
+   class="lateximage"
+></span>, азот <span
+   id="lateximage-main-html-61"
+   class="lateximagesource"
+><!--
+N2
+--><img
+   src="main-html-images\320403B2D8B7F4EAD45738B5A49BE91A.svg"
+   alt="\ce{N2}"
+   style=""
+   class="lateximage"
+></span>, метан <span
+   id="lateximage-main-html-62"
+   class="lateximagesource"
+><!--
+CH4
+--><img
+   src="main-html-images\41F19D92C998B76C74348C182644EE2C.svg"
+   alt="\ce{CH4}"
+   style=""
+   class="lateximage"
+></span>, а&nbsp;також окремі атоми інертних газів.
+</p>
+
+<p>
+Важливо розуміти, що відсутність <em><span
+    class="textcolor"
+    style="color:#990000"
+>власного</span></em> дипольного моменту не означає, що неполярна молекула взагалі не може мати дипольного моменту. У зовнішньому електричному полі позитивно заряджене ядро і&nbsp;негативно заряджена електронна хмара зміщуються
+в&nbsp;протилежні боки: ядро&nbsp;— за полем, електрони&nbsp;— проти поля (рис.&nbsp;<a href="ch5.html#pic:InducedDipole">5.2</a>). В&nbsp;результаті «центри ваги» позитивного та негативного зарядів розходяться,
+і&nbsp;в&nbsp;молекулі виникає <em><span
+    class="textcolor"
+    style="color:#990000"
+>наведений (індукований) дипольний момент</span></em>, пропорційний прикладеному полю:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{0}\)</span>
+
+<!--
+
+
+                                                                                                              𝐩 = 𝛼𝐄,                                                           (5.1)       --><a id="eq:InducedDipole"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:InducedDipole} \vect p = \alpha \Efield ,
+\end{equation}
+
+</p>
+
+<p>
+де коефіцієнт \(\alpha \) називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>поляризовністю молекули</span></em>.
+</p>
+
+<figure id="autoid-111" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:232pt ; ">
+
+<a id="main-html-autopage-325"></a>
+
+<p>
+<span
+    id="lateximage-main-html-63"
+    class="lateximagesource"
+><!--
+−
+    +
+--><img
+   src="main-html-images\image-63.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<p>
+(а) без поля: \(p = 0\)
+</p>
+
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:232pt ; ">
+
+<a id="main-html-autopage-328"></a>
+
+<p>
+<span
+    id="lateximage-main-html-64"
+    class="lateximagesource"
+><!--
+−   +
+--><img
+   src="main-html-images\image-64.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<p>
+(б) у зовнішньому полі \(\Efield \): \(p \neq 0\)
+</p>
+
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;5.2. Неполярна молекула без зовнішнього поля та в&nbsp;зовнішньому полі<a id="pic:InducedDipole"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Цей механізм появи дипольного моменту називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>електронною (деформаційною) поляризацією</span></em>: оскільки маса електронної хмари набагато менша за масу ядра, саме зміщення електронної хмари відносно ядра і&nbsp;дає основний внесок у&nbsp;наведений момент. На відміну від
+орієнтаційного механізму, який ми розглянемо в&nbsp;п.&nbsp;<a href="ch5.html#sec:Langevin-Debye">5.7</a>, електронна поляризовність практично не залежить від температури.
+</p>
+<!--
+...... section Поляризація діелектриків ......
+-->
+<h4 id="autosec-331"><span class="sectionnumber">5.3&#x2003;</span>Поляризація діелектриків</h4>
+<a id="main-html-autopage-331"></a>
+
+
+<p>
+<a id="LWR-ht-dielectric-polarization"></a>
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Поляризація</span></em>&nbsp;— це просторовий <em>перерозподіл зв’язаних зарядів</em>, що призводить до виникнення об’ємного дипольного моменту середовища. Поляризація може виникати як під дією зовнішнього електричного поля, так
+і&nbsp;під впливом інших зовнішніх чинників&nbsp;— механічної деформації, зміни температури тощо.
+</p>
+</div>
+
+<p>
+Розглянемо, як відбувається поляризація в&nbsp;двох основних класах діелектриків.
+</p>
+
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>Полярні діелектрики</span></em> складаються з&nbsp;полярних молекул, кожна з&nbsp;яких уже має власний дипольний момент \(\vect p_0 \neq 0\). За відсутності зовнішнього поля теплове (хаотичне) обертання молекул орієнтує їхні
+дипольні моменти цілком випадково в&nbsp;усіх напрямках, тому в&nbsp;будь-якому фізично малому об’ємі дипольні моменти в&nbsp;середньому взаємно компенсуються, і&nbsp;сумарний дипольний момент речовини дорівнює нулю. Коли ж
+прикладене зовнішнє поле, воно створює момент сил, що прагне розвернути кожен диполь уздовж поля (див.&nbsp;формулу \(\vect M = [\vect p\times \Efield ]\), отриману в попередньому розділі). Тепловий рух заважає ідеальному
+впорядкуванню, проте певна переважна орієнтація вздовж поля все ж встановлюється&nbsp;— виникає так звана <em><span
+    class="textcolor"
+    style="color:#990000"
+>орієнтаційна поляризація</span></em> (рис.&nbsp;<a href="ch5.html#pic:PolarizationPolar">5.3</a>).
+</p>
+<figure id="autoid-112" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+<a id="main-html-autopage-333"></a>
+<p>
+<span
+    id="lateximage-main-html-65"
+    class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-65.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+(а) Без поля
+</div>
+<a id="pic:PolarNoField"></a>
+<a id="sub@pic:PolarNoField"></a>
+</div>
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+<a id="main-html-autopage-336"></a>
+<p>
+<span
+    id="lateximage-main-html-66"
+    class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-66.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+(б) У&nbsp;полі
+</div>
+<a id="pic:PolarField"></a>
+<a id="sub@pic:PolarField"></a>
+</div>
+
+<div class="figurecaption">
+Рис.&nbsp;5.3. Поляризація полярних молекул: (<a href="ch5.html#pic:PolarNoField">а</a>)&nbsp;— без поля; (<a href="ch5.html#pic:PolarField">б</a>)&nbsp;— у&nbsp;зовнішньому електричному полі, диполі орієнтуються вздовж поля.
+</div>
+<a id="pic:PolarizationPolar"></a>
+</div>
+</figure>
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>Неполярні діелектрики</span></em> складаються з&nbsp;неполярних молекул, у&nbsp;яких за відсутності поля центри позитивного й&nbsp;негативного зарядів збігаються. Зовнішнє поле зміщує електронні хмари відносно ядер&nbsp;<span
+class="textup">(<a href="ch5.html#eq:InducedDipole">5.1</a>)</span>, і&nbsp;в&nbsp;кожній молекулі виникає наведений дипольний момент, зорієнтований уздовж поля, — <em><span
+    class="textcolor"
+    style="color:#990000"
+>електронна поляризація</span></em> (рис.&nbsp;<a href="ch5.html#pic:PolarizationNonPolar">5.4</a>).
+</p>
+<figure id="autoid-113" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+<a id="main-html-autopage-340"></a>
+<p>
+<span
+    id="lateximage-main-html-67"
+    class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-67.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+(а) Без поля
+</div>
+<a id="pic:NonPolarNoField"></a>
+<a id="sub@pic:NonPolarNoField"></a>
+</div>
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+<a id="main-html-autopage-343"></a>
+<p>
+<span
+    id="lateximage-main-html-68"
+    class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-68.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+(б) У&nbsp;полі
+</div>
+<a id="pic:NonPolarField"></a>
+<a id="sub@pic:NonPolarField"></a>
+</div>
+
+<div class="figurecaption">
+Рис.&nbsp;5.4. Поляризація неполярних молекул: (<a href="ch5.html#pic:NonPolarNoField">а</a>)&nbsp;— без поля; (<a href="ch5.html#pic:NonPolarField">б</a>)&nbsp;— у&nbsp;зовнішньому електричному полі молекули деформуються,
+утворюючи індукований дипольний момент.
+</div>
+<a id="pic:PolarizationNonPolar"></a>
+</div>
+</figure>
+</li>
+</ul>
+
+<p>
+У&nbsp;випадку йонних кристалів (наприклад, <span
+    id="lateximage-main-html-69"
+    class="lateximagesource"
+><!--
+NaCl
+--><img
+   src="main-html-images\F5D3D94558715DE30B6AAFF6804CBF67.svg"
+   alt="\ce{NaCl}"
+   style=""
+   class="lateximage"
+></span>) існує ще один механізм&nbsp;— <em><span
+   class="textcolor"
+   style="color:#990000"
+>йонна поляризація</span></em>: позитивні та негативні йони кристалічної ґратки під дією поля зміщуються один відносно одного як цілі підґратки, що також створює об’ємний дипольний момент. Детальніше про всі три механізми (електронний,
+йонний, орієнтаційний) і&nbsp;про те, як кожен із них залежить від частоти поля й&nbsp;температури, йтиметься в&nbsp;розділі&nbsp;II (п.&nbsp;<a href="ch5.html#sec:AtomPolarizability">5.7</a>).
+</p>
+
+<p>
+В&nbsp;обох випадках&nbsp;— полярних і&nbsp;неполярних діелектриків&nbsp;— результат один: на межах виділеного в&nbsp;речовині об’єму з’являються надлишкові (некомпенсовані) зв’язані заряди, тоді як в&nbsp;основному об’ємі
+речовини позитивні та негативні заряди сусідніх диполів взаємно компенсують одне одного. Саме ці надлишкові поверхневі заряди і&nbsp;створюють власне поле речовини \(\Efield &apos;\), яке, за принципом суперпозиції, додається до
+зовнішнього поля \(\Efield _\text {ex}\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{1}\)</span>
+
+<!--
+
+
+                                                                                                               𝐄 = 𝐄ex + 𝐄′ .
+
+-->
+
+<p>
+
+\begin{equation*}
+\Efield = \Efield _\text {ex} + \Efield &apos;.
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки диполі орієнтуються так, що їхні позитивні полюси «дивляться» за полем, а&nbsp;негативні&nbsp;— проти поля, власне поле \(\Efield &apos;\) спрямоване <em>назустріч</em> зовнішньому, і&nbsp;сумарне поле в&nbsp;діелектрику
+завжди <em>послаблюється</em> порівняно з&nbsp;зовнішнім.
+</p>
+
+<p>
+На рисунку&nbsp;<a href="ch5.html#pic:PolarizedDielectric">5.5</a> схематично показано поляризований діелектрик у&nbsp;зовнішньому електричному полі: на протилежних поверхнях виділеного об’єму виникають некомпенсовані
+зв’язані заряди \(-Q\) та \(+Q\), власне поле яких спрямоване назустріч зовнішньому.
+</p>
+
+<figure id="autoid-114" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-70"
+    class="lateximagesource"
+><!--
+−   +
+
+−   +
+
+−   +
+
+−   +
+--><img
+   src="main-html-images\image-70.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;5.5. Поляризований діелектрик у&nbsp;зовнішньому електричному полі: на поверхнях виникають зв’язані заряди \(-Q\) та \(+Q\). Стрілки означають: <span
+   id="lateximage-main-html-71"
+   class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-71.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span> — зовнішнє поле \(\Efield _\text {ex}\); <span
+   id="lateximage-main-html-72"
+   class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-72.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span> — поле зв’язаних зарядів \(\Efield &apos;\); <span
+   id="lateximage-main-html-73"
+   class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-73.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span> — вектор поляризації \(\vect {P}\) (також співпадає з&nbsp;результуючим полем \(\Efield \)).
+
+</div>
+
+<a id="pic:PolarizedDielectric"></a>
+
+</div>
+
+</figure>
+<!--
+...... subsection Електрострикція ......
+-->
+<h5 id="autosec-357">Електрострикція</h5>
+<a id="main-html-autopage-357"></a>
+
+
+<p>
+Уміщення діелектрика в&nbsp;електричне поле призводить не лише до поляризації, а&nbsp;й&nbsp;до <em>зміни розмірів тіла</em>&nbsp;— явища, яке називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>електрострикцією</span></em>. Електрострикція спостерігається в&nbsp;усіх без винятку діелектриках, проте в&nbsp;переважній більшості матеріалів виражена слабко: деформація пропорційна <em>квадрату</em> поля, \(\Delta \ell \sim
+E^2\), тому не залежить від напрямку поля (зміна знака поля не змінює знака деформації) і стає помітною лише в&nbsp;дуже сильних полях. У&nbsp;техніці електрострикцію майже завжди «перекриває» значно сильніший <em><span
+    class="textcolor"
+    style="color:#990000"
+>п’єзоефект</span></em> (п.&nbsp;<a href="ch5.html#sec:PiezoPyro">5.8</a>), тому як самостійне явище вона застосовується рідко.
+</p>
+<!--
+...... section Вектор поляризації ......
+-->
+<h4 id="autosec-358"><span class="sectionnumber">5.4&#x2003;</span>Вектор поляризації</h4>
+<a id="main-html-autopage-358"></a>
+
+
+<p>
+<a id="LWR-ht-polarization-vector"></a>
+</p>
+
+<p>
+Для кількісного опису стану поляризованого діелектрика вводять <em>макроскопічну</em> характеристику&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>вектор поляризації</span></em> (або <em><span
+    class="textcolor"
+    style="color:#990000"
+>поляризованість</span></em>), який дорівнює дипольному моменту одиниці об’єму речовини:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{1}\)</span>
+
+<!--
+
+
+                                                                                                                       1
+                                                                                                                  𝐏=     ∑𝐩 ,                                                                         (5.2)       --><a id="eq:Pdef"></a><!--
+                                                                                                                       𝑉 𝑖 𝑖
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Pdef} \tcbhighmath { \vect P = \frac 1V \sum _i \vect p_i, }
+\end{equation}
+
+</p>
+
+<p>
+де підсумовування проводиться за всіма молекулярними диполями \(\vect p_i\), що потрапляють у&nbsp;фізично малий об’єм \(V\).
+</p>
+
+<p>
+Для великого класу діелектриків, що не надто відрізняються за своїми властивостями від вакууму (гази, більшість рідин та аморфних твердих тіл за не надто сильних полів), експериментально встановлено, що поляризованість лінійно залежить від
+напруженості поля <em>в&nbsp;самому діелектрику</em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{2}\)</span>
+
+<!--
+
+
+                                                                                                                    𝐏 = 𝜒𝐄,                                                                   (5.3)           --><a id="eq:PlinearE"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PlinearE} \tcbhighmath { \vect P = \chi \Efield , }
+\end{equation}
+
+</p>
+
+<p>
+де безрозмірна величина \(\chi &gt; 0\) називається <em><span
+    class="textcolor"
+    style="color:#990000"
+>поляризовністю речовини</span></em> (у&nbsp;частині літератури цю ж величину називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>діелектричною сприйнятливістю</span></em>&nbsp;— термін цілком рівноправний, проте надалі ми користуватимемось терміном «поляризовність», підкреслюючи його спорідненість з&nbsp;поляризовністю окремої молекули \(\alpha \),
+формула&nbsp;<span class="textup">(<a href="ch5.html#eq:InducedDipole">5.1</a>)</span>: перша&nbsp;— мікроскопічна, друга&nbsp;— макроскопічна характеристики того самого явища, а&nbsp;нетривіальний зв’язок між
+ними&nbsp;— предмет розділу&nbsp;II). Поляризовність \(\chi \) не залежить від \(\Efield \) і&nbsp;характеризує властивості самого діелектрика (тип молекул, їхню концентрацію, температуру тощо). Такі діелектрики називають
+<em>лінійними</em>.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Не всі діелектрики є лінійними. Існують діелектрики, для яких просте співвідношення \(\vect P = \chi \Efield \) не виконується. По-перше, у&nbsp;кристалах без сферичної симетрії поляризовність, взагалі кажучи, є не скаляром,
+а&nbsp;<em><span
+    class="textcolor"
+    style="color:#990000"
+>тензором</span></em>: \(P_i = \sum _j \chi _{ij}\,E_j\) — поле вздовж однієї кристалографічної осі породжує складові поляризації й&nbsp;уздовж інших осей. По-друге, у&nbsp;досить сильних полях (наприклад, лазерних) \(\vect P\)
+перестає бути лінійною функцією поля: \(P_i = \sum _j \chi ^{(1)}_{ij}E_j + \sum _{jk}\chi ^{(2)}_{ijk}E_jE_k + \ldots \)&nbsp;— саме на цьому ґрунтується нелінійна оптика. Особливий випадок&nbsp;— деякі йонні кристали,
+електрети, та <em><span
+    class="textcolor"
+    style="color:#990000"
+>сегнетоелектрики</span></em>, для яких зв’язок між \(\vect P\) і&nbsp;\(\Efield \) нелінійний і&nbsp;до того ж неоднозначний.
+</p>
+</div>
+<!--
+...... subsection Однорідна та неоднорідна поляризація ......
+-->
+<h5 id="autosec-359">Однорідна та неоднорідна поляризація</h5>
+<a id="main-html-autopage-359"></a>
+
+
+<p>
+Поляризацію називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>однорідною</span></em>, якщо вектор \(\vect P\) є сталим у&nbsp;всьому об’ємі речовини, \(\vect P = \const \), і&nbsp;<em><span
+    class="textcolor"
+    style="color:#990000"
+>неоднорідною</span></em>, якщо \(\vect P\) змінюється від точки до точки.
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Однорідна поляризація.</span></em> Нехай поляризація однорідна. Розглянемо косокутний паралелепіпед, вирізаний із поляризованої речовини так, що його бічне ребро паралельне вектору поляризації \(\vect P\) (рис.&nbsp;<a
+href="ch5.html#pic:PolarizedParallelepiped">5.6</a>). Якщо \(S\)&nbsp;— площа бічної грані, а&nbsp;\(\ell \)&nbsp;— довжина ребра паралелепіпеда, то його об’єм дорівнює \(V = S\ell \cos \theta \), де \(\theta \)&nbsp;— кут між
+ребром \(\vect \ell \) і&nbsp;нормаллю до бічної грані.
+</p>
+
+<figure id="autoid-115" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-74"
+    class="lateximagesource"
+><!--
+        −           +
+    −           +
+                                 𝐏
+−           +           𝜃
+                        𝐧
+                            𝑃𝑛
+        𝓵
+--><img
+   src="main-html-images\image-74.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;5.6. Косокутний паралелепіпед, вирізаний з&nbsp;однорідно поляризованого діелектрика уздовж вектора поляризації \(\vect P\)<a id="pic:PolarizedParallelepiped"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Диполі всередині такого паралелепіпеда шикуються «голова до хвоста»: позитивний заряд одного диполя сусідить з&nbsp;негативним зарядом наступного, і&nbsp;в об’ємі речовини ці заряди взаємно компенсуються. Некомпенсованими
+лишаються тільки заряди на двох торцевих гранях: на одній виступає надлишковий позитивний заряд, на іншій&nbsp;— негативний. Тому весь паралелепіпед еквівалентний одному великому диполю з&nbsp;дипольним моментом \(\vect p =
+\sigma &apos; S \vect \ell \), де \(\sigma &apos;\)&nbsp;— поверхнева густина <em><span
+    class="textcolor"
+    style="color:#990000"
+>зв’язаного (поляризаційного)</span></em> заряду на торцевій грані. З&nbsp;іншого боку, за означенням&nbsp;<span class="textup">(<a href="ch5.html#eq:Pdef">5.2</a>)</span>, дипольний момент паралелепіпеда дорівнює \(\vect p =
+\vect P \cdot V = \vect P \, S\ell \cos \theta \). Прирівнюючи обидва вирази і&nbsp;враховуючи, що \(\vect P \cdot \vect n = P\cos \theta \) (де \(\vect n\)&nbsp;— зовнішня нормаль до грані), отримуємо просту
+й&nbsp;важливу формулу:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{3}\)</span>
+
+<!--
+
+
+                                                                                                                         𝐏 ⋅ 𝐧 = 𝑃𝑛 = 𝜍′ .                                                   (5.4)      --><a id="eq:SigmaPrime"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SigmaPrime} \tcbhighmath { \vect P \cdot \vect n = P_n = \sigma &apos;. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Нормальна складова вектора поляризації на поверхні діелектрика чисельно дорівнює поверхневій густині зв’язаного заряду, що виступає на цій поверхні. Там, де вектор \(\vect P\) спрямований <em>із</em> речовини (нормальна складова
+додатна), на поверхні виступає позитивний зв’язаний заряд; там, де \(\vect P\) спрямований <em>у</em> речовину,&nbsp;— негативний.
+</p>
+</div>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Неоднорідна поляризація.</span></em> Нехай тепер поляризація неоднорідна, і&nbsp;в&nbsp;товщі речовини виділено об’єм \(V\) довільної форми, обмежений замкненою поверхнею \(S\). Кожен малий елемент поверхні \(dS\) можна, як
+і&nbsp;вище, вважати гранню елементарного косокутного паралелепіпеда, тому на ньому виступає поверхневий зв’язаний заряд \(d q&apos; = \sigma &apos; dS = P_n\, dS\).
+</p>
+
+<p>
+Підсумовуючи (інтегруючи) цей вираз за всією замкненою поверхнею, знаходимо повний заряд, що вийшов на зовнішню поверхню виділеного об’єму:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{4}\)</span>
+
+<!--
+
+                                                                                                                                   ˛
+                                                                                                                         𝑞′пов =       𝑃𝑛 𝑑𝑆.
+                                                                                                                                   𝑆
+
+-->
+
+<p>
+
+\begin{equation*}
+q&apos;_{\text {пов}} = \oiint \limits _S P_n\, dS.
+\end{equation*}
+
+</p>
+
+<p>
+Але сама речовина, з&nbsp;якої вирізано цей об’єм, електронейтральна: поляризація лише <em>перерозподіляє</em> наявні заряди, не створюючи нових. Тому якщо на зовнішню поверхню вийшов заряд \(q&apos;_{\text {пов}}\), то всередині
+об’єму мусив залишитися зв’язаний заряд протилежного знака, розподілений з об’ємною густиною \(\rho &apos;\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{4}\)</span>
+
+<!--
+
+                                                                            ˛              ˛               ˆ
+                                                                                𝐏 ⋅ 𝑑𝐒 =       𝑃𝑛 𝑑𝑆 = −       𝜌′ 𝑑𝑉 .                                                                (5.5)          --><a id="eq:GaussForP-int"></a><!--
+                                                                            𝑆              𝑆               𝑉
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:GaussForP-int} \tcbhighmath { \oiint \limits _S \vect P\cdot d\vect S = \oiint \limits _S P_n\, dS = - \iiint \limits _V \rho &apos;\, dV. }
+\end{equation}
+
+</p>
+
+<p>
+Це співвідношення називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>теоремою Гаусса для вектора поляризації</span></em>: воно за формою повністю аналогічне теоремі Гаусса для поля \(\Efield \) (п.&nbsp;<a href="ch2.html#sec:Gauss">2.4</a>), проте зв’язує потік вектора \(\vect P\) не з&nbsp;повним,
+а&nbsp;лише зі <em><span
+    class="textcolor"
+    style="color:#990000"
+>зв’язаним</span></em> зарядом, узятим із протилежним знаком.
+</p>
+
+<p>
+Так само як ми переходили від інтегральної форми теореми Гаусса для \(\Efield \) до диференціальної, стягуючи об’єм \(V\) у&nbsp;точку, з формули&nbsp;<span class="textup">(<a href="ch5.html#eq:GaussForP-int">5.5</a>)</span>
+отримуємо <em><span
+    class="textcolor"
+    style="color:#990000"
+>диференціальну форму теореми Гаусса для вектора поляризації</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{5}\)</span>
+
+<!--
+
+
+                                                                                                                           𝛁 ⋅ 𝐏 = −𝜌′ .                                             (5.6)           --><a id="eq:GaussForP-diff"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:GaussForP-diff} \tcbhighmath { \divg \vect P = -\rho &apos;. }
+\end{equation}
+
+</p>
+
+<p>
+Дивергенція вектора поляризації в&nbsp;даній точці дорівнює об’ємній густині зв’язаного заряду в&nbsp;цій точці, узятій зі знаком мінус. У&nbsp;окремому випадку однорідної поляризації, коли \(\vect P = \const \), маємо \(\divg \vect P
+\equiv 0\), а&nbsp;отже, і&nbsp;\(\rho &apos; = 0\): об’ємний зв’язаний заряд в&nbsp;однорідно поляризованому діелектрику відсутній, увесь надлишковий заряд зосереджений на поверхні, що узгоджується з&nbsp;розглянутим вище
+прикладом паралелепіпеда.
+</p>
+<!--
+...... section Вектор електричної індукції ......
+-->
+<h4 id="autosec-363"><span class="sectionnumber">5.5&#x2003;</span>Вектор електричної індукції</h4>
+<a id="main-html-autopage-363"></a>
+
+
+<a id="sec:Dfield"></a>
+
+<p>
+<a id="LWR-ht-electric-displacement-vector"></a>
+</p>
+
+<p>
+Електричне поле всередині речовини створюється не лише вільними, а&nbsp;й&nbsp;зв’язаними (поляризаційними) зарядами. Тому в&nbsp;теоремі Гаусса для поля \(\Efield \) (яка, нагадаємо, є універсальним законом і&nbsp;виконується для
+будь-яких зарядів) слід урахувати обидва типи зарядів&nbsp;— і&nbsp;вільні \(\rho \), і зв’язані \(\rho &apos;\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{6}\)</span>
+
+<!--
+
+
+                                                                                                               𝛁 ⋅ 𝐄 = 4𝜋(𝜌 + 𝜌′ ).
+
+-->
+
+<p>
+
+\begin{equation*}
+\divg \Efield = 4\pi (\rho + \rho &apos;).
+\end{equation*}
+
+</p>
+
+<p>
+Скориставшись знайденим щойно співвідношенням&nbsp;<span class="textup">(<a href="ch5.html#eq:GaussForP-diff">5.6</a>)</span>, а&nbsp;саме \(\rho &apos; = -\divg \vect P\), отримуємо:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{6}\)</span>
+
+<!--
+
+
+                                                                                             𝛁 ⋅ 𝐄 = 4𝜋𝜌 − 4𝜋𝛁 ⋅ 𝐏     ⟹         𝛁 ⋅ (𝐄 + 4𝜋𝐏) = 4𝜋𝜌.
+
+-->
+
+<p>
+
+\begin{equation*}
+\divg \Efield = 4\pi \rho - 4\pi \divg \vect P \quad \Longrightarrow \quad \divg \left (\Efield + 4\pi \vect P\right ) = 4\pi \rho .
+\end{equation*}
+
+</p>
+
+<p>
+Вираз у&nbsp;дужках зручно позначити окремим символом і&nbsp;назвати <em><span
+    class="textcolor"
+    style="color:#990000"
+>вектором електричної індукції</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{6}\)</span>
+
+<!--
+
+
+                                                                                                                 𝐃 = 𝐄 + 4𝜋𝐏.                                                                (5.7)        --><a id="eq:Ddef"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Ddef} \tcbhighmath { \Dfield = \Efield + 4\pi \vect P. }
+\end{equation}
+
+</p>
+
+<p>
+Тоді теорема Гаусса для електричного поля <em>в&nbsp;речовині</em> набуває вигляду:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{7}\)</span>
+
+<!--
+
+
+                                                                                                                  𝛁 ⋅ 𝐃 = 4𝜋𝜌,                                                    (5.8)        --><a id="eq:GaussForD-diff"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:GaussForD-diff} \tcbhighmath { \divg \Dfield = 4\pi \rho , }
+\end{equation}
+
+</p>
+
+<p>
+а&nbsp;в&nbsp;інтегральній формі&nbsp;— відповідно
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{8}\)</span>
+
+<!--
+
+                                                                                                           ˛                 ˆ
+                                                                                                               𝐃 ⋅ 𝑑𝐒 = 4𝜋       𝜌 𝑑𝑉 .                                            (5.9)        --><a id="eq:GaussForD-int"></a><!--
+                                                                                                           𝑆                 𝑉
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:GaussForD-int} \tcbhighmath { \oiint \limits _S \Dfield \cdot d\vect S = 4\pi \iiint \limits _V \rho \, dV. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+У&nbsp;формулювання теореми Гаусса для поля в&nbsp;речовині входять <em>тільки вільні заряди</em> \(\rho \). Внесок зв’язаних (поляризаційних) зарядів уже враховано&nbsp;— він «захований» усередині означення вектора індукції
+\(\Dfield \). Саме тому вектор \(\Dfield \) є надзвичайно зручним інструментом: для обчислення його потоку крізь довільну поверхню достатньо знати лише розподіл <em><span
+    class="textcolor"
+    style="color:#990000"
+>вільних</span></em> зарядів, які, на відміну від зв’язаних, як правило, відомі заздалегідь (наприклад, задані зарядом на обкладинках конденсатора).
+</p>
+</div>
+
+<p>
+Підкреслимо: на відміну від \(\Efield \), вектор \(\Dfield \) <em>не</em> є потенціальним силовим полем у&nbsp;звичайному розумінні&nbsp;— він не діє безпосередньо на пробний заряд. Це допоміжна, суто розрахункова величина, яка
+водночас має ясний фізичний зміст: вона «відстежує» тільки ті заряди, якими ми керуємо ззовні (вільні), незалежно від того, який діелектрик їх оточує.
+</p>
+<!--
+...... subsection Діелектрична проникність ......
+-->
+<h5 id="autosec-364">Діелектрична проникність</h5>
+<a id="main-html-autopage-364"></a>
+
+
+<p>
+Для лінійних діелектриків, у&nbsp;яких справедливе співвідношення&nbsp;<span class="textup">(<a href="ch5.html#eq:PlinearE">5.3</a>)</span>, вектор індукції теж виявляється пропорційним \(\Efield \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{9}\)</span>
+
+<!--
+
+
+                                                                                                    𝐃 = 𝐄 + 4𝜋𝐏 = 𝐄 + 4𝜋𝜒𝐄 = (1 + 4𝜋𝜒)𝐄.
+
+-->
+
+<p>
+
+\begin{equation*}
+\Dfield = \Efield + 4\pi \vect P = \Efield + 4\pi \chi \Efield = (1+4\pi \chi )\Efield .
+\end{equation*}
+
+</p>
+
+<p>
+Позначаючи
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{9}\)</span>
+
+<!--
+
+
+                                                                                                                𝜀 = 1 + 4𝜋𝜒,                                                              (5.10)        --><a id="eq:eps"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:eps} \tcbhighmath { \epsilon = 1 + 4\pi \chi , }
+\end{equation}
+
+</p>
+
+<p>
+отримуємо просте й&nbsp;дуже часто використовуване співвідношення
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{10}\)</span>
+
+<!--
+
+
+                                                                                                                  𝐃 = 𝜀𝐄.                                                               (5.11)        --><a id="eq:DepsE"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:DepsE} \tcbhighmath { \Dfield = \epsilon \Efield . }
+\end{equation}
+
+</p>
+
+<p>
+Величину \(\epsilon \) називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>діелектричною проникністю середовища</span></em>. Оскільки для звичайних (не сегнетоелектричних) речовин у&nbsp;постійних полях завжди \(\chi &gt; 0\), то й&nbsp;\(\epsilon &gt; 1\): діелектрична проникність будь-якого
+«нормального» діелектрика перевищує одиницю. Для вакууму, в&nbsp;якому поляризація відсутня (\(\chi = 0\)), маємо \(\epsilon = 1\), і&nbsp;вектори \(\Dfield \) та \(\Efield \) збігаються.
+</p>
+
+<p>
+Для орієнтації наведемо порядки величин \(\epsilon \) для кількох типових речовин (постійне поле, кімнатна температура):
+</p>
+<div class="center">
+<table>
+
+<tr style="display:none"><th>.</th></tr>
+
+<tr class="hline">
+<td colspan="1" class="tdc tvertbarl tvertbarr" style="background:#0064AA; border-left: 1px solid black; border-right: 1px solid black"><span
+   class="textcolor"
+   style="color:#FFFFFF"
+><b>Речовина</b></span></td>
+<td class="tdp tvertbarr tdcenter" style="background:#0064AA; border-right: 1px solid black">
+
+<p>
+<span
+    class="textcolor"
+    style="color:#FFFFFF"
+><b>\(\epsilon \)</b></span>
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Повітря (сухе)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(1{,}0006\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="background:#F2F2F2; border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Вода
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+\(81\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Скло
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(5\)–\(7\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="background:#F2F2F2; border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Титанат барію (\(\ce {BaTiO3}\))
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+\(10^3\)–\(10^4\)
+</p>
+</td>
+</tr>
+
+<tr class="hline" aria-hidden="true">
+<td class="tdp tdleft">
+
+</td>
+<td class="tdp tdcenter">
+
+</td>
+</tr>
+</table>
+
+</div>
+
+<p>
+Бачимо, що для газів \(\epsilon \) дуже близька до одиниці (молекули далеко одна від одної), для рідин і&nbsp;твердих тіл&nbsp;— суттєво більша, а&nbsp;для сегнетоелектриків (розділ&nbsp;III) сягає аномально великих значень.
+</p>
+
+<p>
+<em>Приклад.</em> Розглянемо точковий заряд \(Q\), вміщений у&nbsp;нескінченний однорідний діелектрик з&nbsp;проникністю \(\epsilon \) (рис.&nbsp;<a href="ch5.html#pic:PointChargeDielectric">5.7</a>). Через сферичну симетрію
+задачі, за теоремою Гаусса для вектора \(\Dfield \), як і&nbsp;у&nbsp;випадку поля у&nbsp;вакуумі,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{11}\)</span>
+
+<!--
+
+                                                                                                                        𝑄𝐫
+                                                                                                                   𝐃=        ,
+                                                                                                                        𝑟2 𝑟
+
+-->
+
+<p>
+
+\begin{equation*}
+\Dfield = \frac {Q}{r^2}\frac {\vect r}{r},
+\end{equation*}
+
+</p>
+
+<p>
+а&nbsp;звідси, користуючись&nbsp;<span class="textup">(<a href="ch5.html#eq:DepsE">5.11</a>)</span>, знаходимо напруженість поля безпосередньо в&nbsp;діелектрику:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{11}\)</span>
+
+<!--
+
+                                                                                                                     𝐃   𝑄 𝐫
+                                                                                                                𝐄=     = 2 .
+                                                                                                                     𝜀  𝜀𝑟 𝑟
+
+-->
+
+<p>
+
+\begin{equation*}
+\Efield = \frac {\Dfield }{\epsilon } = \frac {Q}{\epsilon r^2}\frac {\vect r}{r}.
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки \(\epsilon &gt; 1\), поле точкового заряду в&nbsp;діелектрику всюди <em>слабкіше</em>, ніж таке саме поле у&nbsp;вакуумі. Наприклад, у&nbsp;воді (\(\epsilon \approx 81\)) поле на тій самій відстані від заряду слабкіше
+у&nbsp;\(81\) раз, а&nbsp;у&nbsp;склі (\(\epsilon \approx 5\))&nbsp;— у&nbsp;\(5\) разів. Це прямий кількісний прояв уже відомого нам якісного результату: <em>поляризаційні заряди, що виникають навколо заряду \(Q\), послаблюють його
+поле</em>.
+</p>
+
+<figure id="autoid-116" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-75"
+    class="lateximagesource"
+><!--
++𝑄
+
+
+
+
+     𝜀
+--><img
+   src="main-html-images\image-75.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;5.7. Точковий заряд у&nbsp;нескінченному однорідному діелектрику<a id="pic:PointChargeDielectric"></a>
+
+</div>
+
+</div>
+
+</figure>
+<!--
+...... section Граничні умови в-присутності діелектриків ......
+-->
+<h4 id="autosec-370"><span class="sectionnumber">5.6&#x2003;</span>Граничні умови в&nbsp;присутності діелектриків</h4>
+<a id="main-html-autopage-370"></a>
+
+
+<p>
+<a id="LWR-ht-dielectric-boundary-conditions"></a>
+</p>
+
+<p>
+Як і&nbsp;у&nbsp;випадку поля у&nbsp;вакуумі (п.&nbsp;<a href="ch2.html#sec:BC_vacuum">2.8</a>), на межі розділу двох середовищ (двох діелектриків, або діелектрика й&nbsp;вакууму) поле може змінюватись стрибком. Знайдемо, як
+пов’язані значення полів по обидва боки межі.
+</p>
+<!--
+...... subsection Перша гранична умова (для нормальної складової ) ......
+-->
+<h5 id="autosec-371">Перша гранична умова (для нормальної складової \(\Dfield \))</h5>
+<a id="main-html-autopage-371"></a>
+
+
+<p>
+Застосуємо теорему Гаусса для вектора \(\Dfield \) до нескінченно малого циліндра, що охоплює невелику ділянку межі розділу середовищ 1 та 2, так само, як ми робили це для поля \(\Efield \) на поверхні провідника (рис.&nbsp;<a
+href="ch5.html#pic:BC1">5.8</a>). Нехай \(\sigma \) — поверхнева густина <em><span
+    class="textcolor"
+    style="color:#990000"
+>вільного</span></em> заряду на межі розділу (якщо він там є). Враховуючи, що \(d\vect S_1 = -d\vect S_2 = \vect n\, dS\), де \(\vect n\) — нормаль, спрямована з&nbsp;середовища 1 у&nbsp;середовище 2, маємо
+</p>
+
+<figure id="autoid-117" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-76"
+    class="lateximagesource"
+><!--
+           𝐃2
+
+     𝑑𝐒2
+
+
+
+
+     𝐧
+
+
+
+
+𝐃1
+
+
+
+     𝑑𝐒1
+--><img
+   src="main-html-images\image-76.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;5.8. Циліндр Гаусса на межі розділу двох середовищ для виведення граничної умови на нормальну складову \(\Dfield \)<a id="pic:BC1"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{11}\)</span>
+
+<!--
+
+                                                                                     ˛
+                                                                                         𝐃 ⋅ 𝑑𝐒 = 4𝜋𝜍 𝑑𝑆   ⟹   𝐃2 ⋅ 𝑑𝐒2 + 𝐃1 ⋅ 𝑑𝐒1 ≡ (𝐷2𝑛 − 𝐷1𝑛 ) 𝑑𝑆 = 4𝜋𝜍 𝑑𝑆,
+                                                                                     𝑆
+
+-->
+
+<p>
+
+\begin{equation*}
+\oiint \limits _S \Dfield \cdot d\vect S = 4\pi \sigma \, dS \quad \Longrightarrow \quad \Dfield _2 \cdot d\vect S_2 + \Dfield _1\cdot d\vect S_1 \equiv (D_{2n} - D_{1n})\, dS = 4\pi \sigma \, dS,
+\end{equation*}
+
+</p>
+
+<p>
+звідки
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{11}\)</span>
+
+<!--
+
+
+                                                                                                               𝐷2𝑛 − 𝐷1𝑛 = 4𝜋𝜍.                                                               (5.12)        --><a id="eq:BC1-D"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:BC1-D} \tcbhighmath { D_{2n} - D_{1n} = 4\pi \sigma . }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Нормальна складова вектора \(\Dfield \) зазнає стрибка при переході через границю розділу середовищ <em>лише за наявності на ній вільних зарядів</em>. Якщо вільних зарядів на межі розділу немає (\(\sigma = 0\)), то \(D_{1n} = D_{2n}\),
+і&nbsp;стрибка немає&nbsp;— на відміну від нормальної складової \(\Efield \), яка, узагалі кажучи, все одно змінюється стрибком через наявність зв’язаних поверхневих зарядів!
+</p>
+</div>
+<!--
+...... subsection Друга гранична умова (для тангенціальної складової ) ......
+-->
+<h5 id="autosec-375">Друга гранична умова (для тангенціальної складової \(\Efield \))</h5>
+<a id="main-html-autopage-375"></a>
+
+
+<p>
+Ця умова не пов’язана з&nbsp;наявністю діелектрика і&nbsp;виводиться так само, як і раніше (п.&nbsp;<a href="ch2.html#sec:BC_vacuum">2.8</a>), із теореми про циркуляцію вектора \(\Efield \) уздовж нескінченно малого прямокутного
+контуру \(L\), що проходить по обидва боки межі розділу (рис.&nbsp;<a href="ch5.html#pic:BC2">5.9</a>); ця теорема залишається справедливою в&nbsp;будь-якому середовищі&nbsp;— адже електростатичне поле завжди потенціальне,
+незалежно від того, вакуум це чи діелектрик:
+</p>
+
+<figure id="autoid-118" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-77"
+    class="lateximagesource"
+><!--
+             𝐄2
+
+
+
+
+           𝑑𝐫2
+
+
+
+     𝑑𝐫1
+𝐄1
+--><img
+   src="main-html-images\image-77.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;5.9. Контур циркуляції на межі розділу двох середовищ для виведення граничної умови на тангенціальну складову \(\Efield \)<a id="pic:BC2"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{12}\)</span>
+
+<!--
+
+
+                                                                                                              𝐸1𝜏 = 𝐸2𝜏 .                                  (5.13)   --><a id="eq:BC2-E"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:BC2-E} \tcbhighmath { E_{1\tau } = E_{2\tau }. }
+\end{equation}
+
+</p>
+
+<p>
+Тангенціальна складова \(\Efield \) однакова по обидва боки межі розділу і&nbsp;не зазнає стрибка.
+</p>
+<!--
+...... subsection Заломлення силових ліній на границі діелектрика ......
+-->
+<h5 id="autosec-379">Заломлення силових ліній на границі діелектрика</h5>
+<a id="main-html-autopage-379"></a>
+
+
+<p>
+Розглянемо межу розділу двох однорідних лінійних діелектриків із проникностями \(\epsilon _1\) та \(\epsilon _2\), на якій вільні заряди відсутні. Нехай силова лінія поля \(\Efield _1\) (а&nbsp;отже, і&nbsp;\(\Dfield _1\))
+у&nbsp;середовищі 1 утворює кут \(\alpha _1\) з&nbsp;нормаллю до межі, а&nbsp;в&nbsp;середовищі 2&nbsp;— кут \(\alpha _2\) (рис.&nbsp;<a href="ch5.html#pic:RefractionE">5.10</a>). Граничні умови&nbsp;<span
+class="textup">(<a href="ch5.html#eq:BC1-D">5.12</a>)</span> (без вільних зарядів) та&nbsp;<span class="textup">(<a href="ch5.html#eq:BC2-E">5.13</a>)</span> дають:
+</p>
+
+<figure id="autoid-119" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-78"
+    class="lateximagesource"
+><!--
+         𝛼2
+
+2
+
+
+
+
+1
+
+    𝛼1
+
+
+
+
+              Поле вектора 𝐄   Поле вектора 𝐃
+--><img
+   src="main-html-images\image-78.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;5.10. Заломлення силових ліній \(\Efield \) і&nbsp;\(\Dfield \) на межі розділу двох діелектриків<a id="pic:RefractionE"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{13}\)</span>
+
+<!--
+
+
+                                                                                               𝐸 = 𝐸2𝜏 ⟹ 𝐸1 sin 𝛼1 = 𝐸2 sin 𝛼2 ,
+                                                                                              { 1𝜏
+                                                                                               𝐷1𝑛 = 𝐷2𝑛 ⟹ 𝜀1 𝐸1 cos 𝛼1 = 𝜀2 𝐸2 cos 𝛼2 .
+
+-->
+
+<p>
+
+\begin{equation*}
+\begin{cases} E_{1\tau } = E_{2\tau } \quad \Longrightarrow \quad E_1\sin \alpha _1 = E_2\sin \alpha _2, \\ D_{1n} = D_{2n} \quad \Longrightarrow \quad \epsilon _1 E_1\cos \alpha _1 = \epsilon _2 E_2\cos \alpha
+_2. \end {cases}
+\end{equation*}
+
+</p>
+
+<p>
+Поділивши перше рівняння на друге, отримуємо <em><span
+    class="textcolor"
+    style="color:#990000"
+>закон заломлення силових ліній</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{13}\)</span>
+
+<!--
+
+
+                                                                                                               tg 𝛼2  𝜀
+                                                                                                                     = 2.                                                        (5.14)        --><a id="eq:RefractionE"></a><!--
+                                                                                                               tg 𝛼1  𝜀1
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RefractionE} \tcbhighmath { \frac {\tg \alpha _2}{\tg \alpha _1} = \frac {\epsilon _2}{\epsilon _1}. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Лінії векторів \(\Efield \) і&nbsp;\(\Dfield \) заломлюються на межі двох діелектриків за однаковим законом&nbsp;<span class="textup">(<a href="ch5.html#eq:RefractionE">5.14</a>)</span>. У&nbsp;середовищі з <em>більшим</em>
+значенням діелектричної проникності лінії поля утворюють <em>більший</em> кут із нормаллю до межі розділу&nbsp;— тобто «притискаються» до поверхні. Це явище цілком аналогічне заломленню світлового променя на межі двох оптичних
+середовищ.
+</p>
+</div>
+<!--
+...... section Мікроскопічна теорія діелектричної проникності ......
+-->
+<h4 id="autosec-383"><span class="sectionnumber">5.7&#x2003;</span>Мікроскопічна теорія діелектричної проникності</h4>
+<a id="main-html-autopage-383"></a>
+
+
+<p>
+<a id="LWR-ht-microscopic-permittivity-theory"></a>
+</p>
+
+<p>
+Ми ввели діелектричну проникність \(\epsilon \) як <em>феноменологічну</em> величину: ми знаємо, як її виміряти (через ємність конденсатора), і&nbsp;як нею користуватись у&nbsp;розрахунках, вияснимо, природу її виникнення.
+</p>
+<!--
+...... subsection Механізми поляризовності молекули ......
+-->
+<h5 id="autosec-384">Механізми поляризовності молекули</h5>
+<a id="main-html-autopage-384"></a>
+
+
+<a id="sec:AtomPolarizability"></a>
+
+<p>
+У&nbsp;зовнішньому полі \(\Efield \) молекула набуває наведеного дипольного моменту \(\vect p = \alpha \Efield \) (формула&nbsp;<span class="textup">(<a href="ch5.html#eq:InducedDipole">5.1</a>)</span>). Але <em>звідки</em>
+береться цей момент&nbsp;— питання не одне, а&nbsp;фізично різне залежно від будови молекули:
+</p>
+
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> \(\alpha _e\)&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>електронна</span></em>: поле зміщує легку електронну хмару відносно ядра. Є <em>в&nbsp;усіх</em> атомах і&nbsp;молекулах без винятку, встигає за полем аж до оптичних частот (\(\sim 10^{15}\) Гц);
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> \(\alpha _i\)&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>йонна</span></em>: у&nbsp;йонних кристалах поле зміщує одні йони відносно інших (маса набагато більша за електронну) — «вимикається» вже в&nbsp;ІЧ-діапазоні;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> \(\alpha _\text {ор}\)&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>орієнтаційна</span></em>: якщо молекула <em>вже має</em> власний дипольний момент \(p_0\) (полярна молекула), поле не наводить, а&nbsp;<em>розвертає</em> його. Найповільніший і&nbsp;найчутливіший до \(T\) механізм&nbsp;—
+«вимикається» вже у&nbsp;НВЧ-діапазоні.
+</p>
+</li>
+</ul>
+
+<p>
+Повна статична поляризовність&nbsp;— сума всіх діючих на цій частоті внесків, \(\alpha = \alpha _e + \alpha _i + \alpha _\text {ор}\).
+</p>
+<!--
+...... subsection Орієнтаційна поляризація полярних діелектриків ......
+-->
+<h5 id="autosec-385">Орієнтаційна поляризація полярних діелектриків</h5>
+<a id="main-html-autopage-385"></a>
+
+
+<a id="sec:Langevin-Debye"></a>
+
+<p>
+Полярна молекула (\(p_0\neq 0\)) в&nbsp;полі \(\Efield \) має потенціальну енергію
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{14}\)</span>
+
+<!--
+
+
+                                                                                                                 𝑈(𝜃) = −𝐩0 ⋅ 𝐄 = −𝑝0 𝐸 cos 𝜃
+
+-->
+
+<p>
+
+\begin{equation*}
+U(\theta ) = -\vect p_0\cdot \Efield = -p_0 E\cos \theta
+\end{equation*}
+
+</p>
+
+<p>
+(п.&nbsp;<a href="ch3.html#sec:DipoleEnergy">3.5</a>), де \(\theta \)&nbsp;— кут між диполем і&nbsp;полем; енергія мінімальна (\(U=-p_0E\)) при орієнтації вздовж поля, максимальна (\(U=+p_0E\))&nbsp;— проти поля. За відсутності поля
+тепловий рух орієнтує диполі цілком хаотично; у&nbsp;полі ж число молекул, орієнтованих в&nbsp;одиничний тілесний кут навколо напрямку \(\theta \), підкоряється <em><span
+    class="textcolor"
+    style="color:#990000"
+>розподілу Больцмана</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{14}\)</span>
+
+<!--
+
+
+                                                                                                              𝑛(𝜃) = 𝑛0 𝑒−𝑈/𝑘𝑇 = 𝑛0 𝑒+𝑝0 𝐸 cos 𝜃/𝑘𝑇 .                                      (5.15)          --><a id="eq:Boltzmann"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Boltzmann} n(\theta ) = n_0\, e^{-U/kT} = n_0\, e^{+p_0 E\cos \theta / kT}.
+\end{equation}
+
+</p>
+
+<p>
+Це й&nbsp;означає порушення хаосу: молекул, орієнтованих вздовж поля (\(\cos \theta =1\), менша енергія), <em>експоненційно більше</em>, ніж орієнтованих проти поля (\(\cos \theta =-1\)).
+</p>
+
+<p>
+У&nbsp;практично важливому випадку&nbsp;— не надто сильне поле й&nbsp;не надто низька температура, \(p_0E \ll kT\)&nbsp;— показник експоненти малий, тож розподіл&nbsp;<span class="textup">(<a
+href="ch5.html#eq:Boltzmann">5.15</a>)</span> можна розкласти в&nbsp;ряд і&nbsp;обмежитись лінійним членом:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{15}\)</span>
+
+<!--
+
+
+                                                                                              𝑝0 𝐸 cos 𝜃
+                                                                             𝑛(𝜃) ≈ 𝑛0 (1 +              ).                                                                       (5.16)              --><a id="eq:BoltzmannLinear"></a><!--
+                                                                                                  𝑘𝑇
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:BoltzmannLinear} n(\theta ) \approx n_0\left (1 + \frac {p_0 E \cos \theta }{kT}\right ).
+\end{equation}
+
+</p>
+
+<p>
+Фізично: за кімнатної температури \(kT\) на багато порядків перевищує енергію орієнтації \(p_0E\) навіть у&nbsp;сильних лабораторних полях, тому переважна орієнтація&nbsp;— <em>слабка</em> поправка до майже хаотичного розподілу,
+а&nbsp;не повне вишикування диполів вздовж поля.
+</p>
+
+<p>
+Поляризація \(P\)&nbsp;— це дипольний момент одиниці об’єму. У&nbsp;напрямку, перпендикулярному полю, внески різних диполів у&nbsp;середньому компенсуються (за симетрією \(\theta \to \pi -\theta \)); вздовж поля&nbsp;— ні. Тому
+\(P\) напрямлена вздовж поля і&nbsp;дорівнює добутку концентрації молекул \(n\) на середню проєкцію дипольного моменту:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{16}\)</span>
+
+<!--
+
+                                                                                                                                 ˆ 𝜋
+                                                                                                                                       cos 𝜃 𝑛(𝜃) 2𝜋 sin 𝜃 𝑑𝜃
+                                                                                                                                  0
+                                                                                                     𝑃 = 𝑛 𝑝0 cos 𝜃 = 𝑛𝑝0 ⋅           ˆ 𝜋                       .
+                                                                                                                                            𝑛(𝜃) 2𝜋 sin 𝜃 𝑑𝜃
+                                                                                                                                       0
+
+-->
+
+<p>
+
+\begin{equation*}
+P = n\, p_0\, \overline {\cos \theta } = n p_0 \cdot \frac {\displaystyle \int _0^\pi \cos \theta \, n(\theta )\, 2\pi \sin \theta \, d\theta } {\displaystyle \int _0^\pi n(\theta )\, 2\pi \sin \theta \,
+d\theta }.
+\end{equation*}
+
+</p>
+
+<p>
+Підставляючи сюди лінеаризований розподіл&nbsp;<span class="textup">(<a href="ch5.html#eq:BoltzmannLinear">5.16</a>)</span> і&nbsp;виконуючи інтегрування за кутом (у&nbsp;знаменнику лишається \(n_0\), у чисельнику&nbsp;—
+лише доданок з&nbsp;\(\cos \theta \), оскільки \(\int \cos \theta \,d\Omega =0\), а&nbsp;\(\int \cos ^2\theta \,d\Omega = 4\pi /3\)), одержуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{16}\)</span>
+
+<!--
+
+
+                                                                                                                                 𝑛𝑝20
+                                                                                                                            𝑃=        𝐸.                                            (5.17)             --><a id="eq:LangevinDebye"></a><!--
+                                                                                                                                 3𝑘𝑇
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:LangevinDebye} \tcbhighmath { P = \frac {n p_0^2}{3kT}\, E. }
+\end{equation}
+
+</p>
+
+<p>
+Це і&nbsp;є <em><span
+    class="textcolor"
+    style="color:#990000"
+>закон Ланжевена-Дебая</span></em>: поляризація речовини лінійна за полем, а&nbsp;коефіцієнт пропорційності явно виражений через мікроскопічні характеристики молекули (\(p_0\)) і&nbsp;речовини (\(n\), \(T\)).
+</p>
+
+<p>
+Оскільки за означенням \(P = \chi E\), порівняння з&nbsp;<span class="textup">(<a href="ch5.html#eq:LangevinDebye">5.17</a>)</span> одразу дає поляризовність речовини (а&nbsp;заразом і&nbsp;орієнтаційну поляризовність
+<em>однієї</em> молекули, \(\chi = n\alpha _\text {ор}\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{17}\)</span>
+
+<!--
+
+
+                                                                                                                    𝑛𝑝20                             𝑝20
+                                                                                                               𝜒=             ⟹             𝛼ор =        .
+                                                                                                                    3𝑘𝑇                             3𝑘𝑇
+
+-->
+
+<p>
+
+\begin{equation*}
+\chi = \frac {n p_0^2}{3kT} \qquad \Longrightarrow \qquad \alpha _\text {ор} = \frac {p_0^2}{3kT}.
+\end{equation*}
+
+</p>
+
+<p>
+Підставляючи \(\chi \) в&nbsp;означення проникності \(\epsilon = 1+4\pi \chi \), знаходимо остаточний макроскопічний результат:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{17}\)</span>
+
+<!--
+
+
+                                                                                                                                  4𝜋𝑛𝑝20
+                                                                                                                           𝜀=1+          .                                                   (5.18)         --><a id="eq:CurieLaw"></a><!--
+                                                                                                                                   3𝑘𝑇
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CurieLaw} \tcbhighmath { \epsilon = 1 + \frac {4\pi n p_0^2}{3kT}. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+\(\alpha _\text {ор} \sim 1/T\)&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>закон Кюрі</span></em>: чим вища температура, тим інтенсивніший тепловий рух, який руйнує впорядкування диполів. Якщо \(\epsilon \) речовини помітно спадає з&nbsp;ростом \(T\)&nbsp;— пряма ознака, що діелектрик полярний
+(електронна й&nbsp;йонна поляризовність від \(T\) практично не залежать, п.&nbsp;<a href="ch5.html#sec:AtomPolarizability">5.7</a>).
+</p>
+</div>
+<!--
+...... subsection Неполярні діелектрики. Формула Клаузіуса-Моссотті ......
+-->
+<h5 id="autosec-386">Неполярні діелектрики. Формула Клаузіуса-Моссотті</h5>
+<a id="main-html-autopage-386"></a>
+
+
+<a id="sec:ClausiusMossotti"></a>
+
+<p>
+Для розріджених середовищ справджується просте співвідношення \(\chi = n\alpha \): кожна молекула відчуває лише зовнішнє (середнє) поле \(\Efield \), бо наведений момент окремої молекули за означенням \(\alpha \)
+(формула&nbsp;<span class="textup">(<a href="ch5.html#eq:InducedDipole">5.1</a>)</span>) визначається саме тим полем, яке <em>реально діє</em> на неї, \(\vect p = \alpha \Efield _\text {лок}\), а&nbsp;не середнім полем
+\(\Efield \) у&nbsp;речовині. У&nbsp;розрідженому газі відстані між молекулами великі, тож поле, яке створюють на місці обраної молекули всі <em>інші</em>, вже поляризовані нею молекули,&nbsp;— нехтовно мале порівняно із зовнішнім:
+\(\Efield _\text {лок}\approx \Efield \). Тому поляризація речовини (дипольний момент одиниці об’єму з&nbsp;концентрацією \(n\))&nbsp;— це просто
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{18}\)</span>
+
+<!--
+
+
+                                                                                                          𝐏 = 𝑛𝐩 = 𝑛𝛼𝐄лок ≈ 𝑛𝛼𝐄,
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect P = n\vect p = n\alpha \Efield _\text {лок} \approx n\alpha \Efield ,
+\end{equation*}
+
+</p>
+
+<p>
+звідки, порівнюючи з&nbsp;означенням \(\vect P = \chi \Efield \), і&nbsp;виходить \(\chi \approx n\alpha \).
+</p>
+
+<p>
+У&nbsp;густому ж середовищі кожна молекула занурена в&nbsp;поле <em>вже поляризованих</em> сусідів, тож реальне (локальне) поле \(\Efield _\text {лок}\), що на неї діє,&nbsp;— не \(\Efield \), а&nbsp;деяка відмінна від нього
+величина, яку й&nbsp;належить знайти.
+</p>
+
+<p>
+Оточимо обрану молекулу уявною сферою Лоренца (яка мала порівняно з&nbsp;тілом, однак, велика порівняно з&nbsp;міжмолекулярними відстанями). Поле, що діє на молекулу це сума трьох внесків (рис.&nbsp;<a
+href="ch5.html#pic:CavityField">5.11</a>): середнє поле \(\Efield \); мінус поле кулі-вирізу, \(+\frac {4\pi }{3}\vect P\) (див. задачу&nbsp;<a href="ch5.html#prb:hole_in_dielectric">5.2</a>); і&nbsp;поле дискретних сусідів
+усередині сфери. Для кубічних кристалів, газів і&nbsp;слабополярних рідин останній внесок за симетрією дорівнює нулю, звідки
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{18}\)</span>
+
+<!--
+
+
+                                                                                                                          4𝜋
+                                                                                                             𝐄лок = 𝐄 +      𝐏.                                                      (5.19)        --><a id="eq:LorentzField"></a><!--
+                                                                                                                           3
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:LorentzField} \tcbhighmath { \Efield _\text {лок} = \Efield + \frac {4\pi }{3}\vect P. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Наближення: працює для кубічних кристалів і&nbsp;більшості неполярних/слабополярних речовин. Для сильно полярних рідин з&nbsp;водневими зв’язками (вода)&nbsp;— потребує уточнення (теорія Онзагера).
+</p>
+</div>
+
+<figure id="autoid-120" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-79"
+    class="lateximagesource"
+><!--
+         − −
+    −−         −
+𝐏
+
+
+
+    ++         +
+         + +
+--><img
+   src="main-html-images\image-79.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;5.11. Сферична порожнина Лоренца в&nbsp;поляризованому діелектрику<a id="pic:CavityField"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Маючи локальне поле&nbsp;<span class="textup">(<a href="ch5.html#eq:LorentzField">5.19</a>)</span>, запишемо наведений момент молекули саме через нього: \(\vect p = \alpha \Efield _\text {лок}\). Тоді для поляризації
+(дипольного моменту одиниці об’єму з&nbsp;концентрацією молекул \(n\)) маємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{19}\)</span>
+
+<!--
+
+                                                                                                                                      4𝜋
+                                                                                                          𝐏 = 𝑛𝐩 = 𝑛𝛼𝐄лок = 𝑛𝛼 (𝐄 +      𝐏) .
+                                                                                                                                       3
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect P = n\vect p = n\alpha \Efield _\text {лок} = n\alpha \left (\Efield + \frac {4\pi }{3}\vect P\right ).
+\end{equation*}
+
+</p>
+
+<p>
+Це&nbsp;— рівняння відносно самої \(\vect P\): вона входить і&nbsp;в&nbsp;ліву, і&nbsp;в&nbsp;праву частину, бо локальне поле саме поляризацією середовища й&nbsp;визначається (задача самоузгоджена&nbsp;— поляризація створює поле,
+яке, своєю чергою, впливає на поляризацію). Розкриваючи дужки та групуючи доданки з&nbsp;\(\vect P\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{19}\)</span>
+
+<!--
+
+                                                                                                          4𝜋𝑛𝛼                             𝑛𝛼
+                                                                                                 𝐏 (1 −        ) = 𝑛𝛼 𝐄   ⟹    𝐏=               𝐄.
+                                                                                                            3                              4𝜋𝑛𝛼
+                                                                                                                                      1−
+                                                                                                                                             3
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect P\left (1 - \frac {4\pi n\alpha }{3}\right ) = n\alpha \,\Efield \quad \Longrightarrow \quad \vect P = \frac {n\alpha }{1 - \dfrac {4\pi n\alpha }{3}}\,\Efield .
+\end{equation*}
+
+</p>
+
+<p>
+Порівнюючи це з&nbsp;означенням поляризовності речовини \(\vect P = \chi \Efield \), знаходимо мікроскопічний вираз для \(\chi \), що вже враховує локальне поле:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{19}\)</span>
+
+<!--
+
+                                                                                                                          𝑛𝛼
+                                                                                                                  𝜒=           .                                                       (5.20)        --><a id="eq:ChiFromAlpha"></a><!--
+                                                                                                                          4𝜋𝑛𝛼
+                                                                                                                       1−
+                                                                                                                            3
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ChiFromAlpha} \chi = \frac {n\alpha }{1 - \dfrac {4\pi n\alpha }{3}}.
+\end{equation}
+
+</p>
+
+<p>
+Знайдемо діелектричну проникність \(\epsilon = 1+4\pi \chi \). Зручно скористатись тим, що \(\epsilon - 1 = 4\pi \chi \) напряму, а отже \(\epsilon + 2 = (\epsilon -1) + 3 = 4\pi \chi + 3\). Запишемо результат у&nbsp;вигляді:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{5.}{20}\)</span>
+
+<!--
+
+
+                                                                                  𝜀−1   4𝜋
+                                                                                      =    𝑛𝛼.                                                                                    (5.21)        --><a id="eq:ClausiusMossotti"></a><!--
+                                                                                  𝜀+2    3
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ClausiusMossotti} \tcbhighmath { \frac {\epsilon - 1}{\epsilon + 2} = \frac {4\pi }{3}\, n\alpha . }
+\end{equation}
+
+</p>
+
+<p>
+Цей вираз називається <em><span
+    class="textcolor"
+    style="color:#990000"
+>формулою Клаузіуса-Моссотті</span></em>. Її головна цінність&nbsp;— вона <em>напряму</em> зв’язує макроскопічно вимірювану величину (\(\epsilon \)) з мікроскопічною молекулярною характеристикою (\(\alpha \))
+і&nbsp;концентрацією \(n\), причому враховує (на відміну від наївної \(\chi = n\alpha \)) ефекти взаємної поляризації сусідніх молекул. Використовують її в&nbsp;обидва боки: за відомим \(\alpha \) обчислюють \(\epsilon \), або, навпаки,
+за виміряним \(\epsilon \) й&nbsp;відомою концентрацією \(n\) знаходять \(\alpha \)&nbsp;— один з&nbsp;небагатьох прямих макроскопічних методів вимірювання мікроскопічної характеристики речовини.
+</p>
+
+<p>
+Для розрідженого газу (\(\frac {4\pi }{3}n\alpha \ll 1\)) знаменник у&nbsp;<span class="textup">(<a href="ch5.html#eq:ChiFromAlpha">5.20</a>)</span> можна замінити одиницею, і&nbsp;формула зводиться до \(\chi \approx
+n\alpha \), з&nbsp;якого ми й&nbsp;почали; поправка на локальне поле стає суттєвою вже в&nbsp;густій рідині чи твердому тілі.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+<em>Оцінка.</em> \(\alpha \sim 10^{-24}\ \text {см}^3\) (атомний об’єм). Газ (\(n\sim 2{,}7\times 10^{19}\ \text {см}^{-3}\)): поправка \(\sim 10^{-4}\) — нехтовна. Рідина (\(n\sim 3\times 10^{22}\ \text {см}^{-3}\)): поправка
+\(\sim 10\%\)&nbsp;— нехтувати не можна.
+</p>
+</div>
+<!--
+...... section Типи діелектриків та їх застосування ......
+-->
+<h4 id="autosec-390"><span class="sectionnumber">5.8&#x2003;</span>Типи діелектриків та їх застосування</h4>
+<a id="main-html-autopage-390"></a>
+
+
+<p>
+<a id="LWR-ht-dielectric-types-applications"></a>
+</p>
+<!--
+...... subsection Електрети ......
+-->
+<h5 id="autosec-391">Електрети</h5>
+<a id="main-html-autopage-391"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Електрети</span></em>&nbsp;— це діелектрики, здатні тривалий час зберігати поляризацію <em>після зняття</em> зовнішнього поля, яке цю поляризацію створило. Електрет часто називають «<em>електричним аналогом постійного
+магніту</em>»: подібно до того, як постійний магніт створює магнітне поле без зовнішнього джерела струму, заряджений електрет створює електричне поле \(\Efield \) і&nbsp;поле індукції \(\Dfield \) поза своєю поверхнею навіть за
+відсутності будь-якого зовнішнього поля (рис.&nbsp;<a href="ch5.html#pic:Electret">5.12</a>).
+</p>
+
+<figure id="autoid-121" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-393"></a>
+
+<p>
+<span
+    id="lateximage-main-html-80"
+    class="lateximagesource"
+><!--
++
+
+
+
+
+−
+--><img
+   src="main-html-images\image-80.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+(а) Поле вектора електричної індукції \(\Dfield \)
+
+</div>
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-396"></a>
+
+<p>
+<span
+    id="lateximage-main-html-81"
+    class="lateximagesource"
+><!--
++
+
+
+
+
+−
+--><img
+   src="main-html-images\image-81.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+(б) Поле вектора напруженості електричного поля \(\Efield \)
+
+</div>
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;5.12. Поля зарядженого електрета<a id="pic:Electret"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+
+<div class="cb-attention">
+
+<p>
+В&nbsp;ідеальному електреті вільних зарядів немає <em>взагалі</em>, тож \(\rho _{\text {вільні}}\equiv 0\) і&nbsp;рівняння \(\nabla \cdot \Dfield =\rho _{\text {вільні}}\) перетворюється на тотожність \(\nabla \cdot \Dfield
+\equiv 0\) <em>всюди в&nbsp;просторі</em>. Це <em>не</em> означає, що джерелом поля \(\Dfield \) є вільні заряди&nbsp;— таких зарядів у&nbsp;електреті просто немає! Це означає лише, що \(\Dfield \) не має джерел у&nbsp;сенсі
+дивергенції&nbsp;— точно так само, як завжди \(\nabla \cdot \Bfield \equiv 0\), хоча ніхто не стверджує, ніби через це поля \(\Bfield \) не існує. Фізичною причиною самого поля \(\Dfield \) (як і&nbsp;\(\Efield \)) у&nbsp;просторі є
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>зв’язані</span></em> заряди електрета; просто конкретна комбінація \(\Dfield =\Efield +4\pi \vect {P}\) виявляється тотожно безджерельною за дивергенцією.
+</p>
+</div>
+
+<p>
+Один з&nbsp;поширених способів виготовлення електретів полягає в&nbsp;тому, що діелектрик нагрівають і&nbsp;одночасно поміщають у&nbsp;сильне електричне поле, так щоб полярні молекули встигли переорієнтуватись і&nbsp;вишикуватись
+уздовж поля. Якщо потім діелектрик охолодити (не знімаючи поля), теплова рухливість молекул різко падає, повернення диполів у&nbsp;хаотичний стан ускладнюється, і&nbsp;після зняття зовнішнього поля поляризація зберігається протягом
+місяців, років, а&nbsp;іноді й&nbsp;десятиліть. Такий стан називають «<em><span
+    class="textcolor"
+    style="color:#990000"
+>замороженою</span></em> поляризацією».
+</p>
+
+<p>
+Кварц та деякі інші форми діоксиду кремнію є природними електретами. У&nbsp;сучасній техніці більшість електретів виготовляють із синтетичних полімерів — фторопластів, поліпропілену, поліетилентерефталату (ПЕТ) тощо. Електрети широко
+застосовуються в&nbsp;електретних мікрофонах, дозиметрах, датчиках тиску та інших пристроях, де потрібне джерело сталого електричного поля без витрат енергії на його підтримку.
+</p>
+<!--
+...... subsection Сегнетоелектрики ......
+-->
+<h5 id="autosec-399">Сегнетоелектрики</h5>
+<a id="main-html-autopage-399"></a>
+
+
+<a id="sec:FE"></a>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Сегнетоелектрик</span></em>&nbsp;— це кристалічний діелектрик, який має <em><span
+    class="textcolor"
+    style="color:#990000"
+>спонтанну поляризацію всередині окремих доменів</span></em>, що виникає <em>без</em> будь-якого зовнішнього електричного поля. <em><span
+    class="textcolor"
+    style="color:#990000"
+>Домен</span></em>&nbsp;— це локальна область усередині сегнетоелектрика (типового розміру від кількох до сотень мікрометрів), у&nbsp;межах якої дипольні моменти всіх елементарних комірок кристала мимовільно вишикувані
+в&nbsp;одному напрямку, тобто поляризація в&nbsp;домені стала (рис.&nbsp;<a href="ch5.html#pic:DomainsE">5.13</a>). Однак у&nbsp;різних доменах напрямки поляризації, як правило, різні, тому сумарна поляризація незбудженого зразка
+в&nbsp;цілому близька до нуля.
+</p>
+
+<figure id="autoid-122" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="FieldInDielectrics/Pictures/domains.png" target="_blank" ><img
+   src="FieldInDielectrics/Pictures/domains.png"
+   style="
+   width:173pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;5.13. Доменна структура сегнетоелектрика<a id="pic:DomainsE"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Під впливом зовнішнього поля межі доменів (домені стінки) зміщуються, а&nbsp;самі домени переорієнтуються так, щоб їхня поляризація узгоджувалась із напрямком зовнішнього поля; домени, поляризація яких збігається з&nbsp;полем, ростуть
+внаслідок сусідніх доменів. У&nbsp;результаті сумарна поляризація зразка зростає значно швидше й&nbsp;до значно більших значень, ніж у&nbsp;звичайних лінійних діелектриках.
+</p>
+
+<p>
+Ця перебудова доменної структури має важливу особливість: вона <em>неоднозначна</em> і&nbsp;зберігає «пам’ять» про попередню історію зразка. Залежність поляризації \(P\) від поля \(E\) при циклічній зміні останнього утворює характерну
+петлю, яку називають <em>петлею гістерезису</em> (рис.&nbsp;<a href="ch5.html#pic:HysteresisE">5.14</a>):
+</p>
+
+<figure id="autoid-123" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-82"
+    class="lateximagesource"
+><!--
+      𝑃
+
+
+      𝑃𝑟
+
+−𝐸𝑐
+                 𝐸𝑐   𝐸
+
+           −𝑃𝑟
+--><img
+   src="main-html-images\image-82.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;5.14. Петля гістерезису сегнетоелектрика: \(P_r\)&nbsp;— залишкова поляризація, \(E_c\) — коерцитивна сила<a id="pic:HysteresisE"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> за досить сильного поля \(E\) поляризація виходить на насичення&nbsp;— усі домени вже переорієнтовані, і&nbsp;подальше зростання \(P\) з&nbsp;полем відбувається практично лінійно, як
+у&nbsp;звичайного діелектрика;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> якщо тепер зменшувати поле до нуля, поляризація <em>не</em> повертається в&nbsp;нуль, а&nbsp;залишається на певному рівні \(P_r\), який називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>залишковою (остаточною) поляризацією</span></em>;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> щоб звести поляризацію до нуля, потрібно прикласти поле протилежного знака&nbsp;— \(-E_c\); величину \(E_c\) називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>коерцитивною силою</span></em>;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> при подальшому зростанні поля протилежного знака поляризація знову виходить на насичення у&nbsp;протилежний бік, а&nbsp;при поверненні поля до нуля залишається на рівні \(-P_r\),&nbsp;—
+і&nbsp;цикл замикається.
+</p>
+</li>
+</ul>
+
+<p>
+Ці властивості спостерігаються лише в&nbsp;певному діапазоні температур, нижчих за характерну для кожного сегнетоелектрика <em><span
+    class="textcolor"
+    style="color:#990000"
+>температуру Кюрі</span></em>: вище цієї температури тепловий рух руйнує спонтанну доменну структуру, і&nbsp;речовина переходить у&nbsp;звичайний (параелектричний) стан.
+</p>
+
+<p>
+Найвідоміші сегнетоелектрики&nbsp;— титанат барію <span
+    id="lateximage-main-html-83"
+    class="lateximagesource"
+><!--
+BaTiO3
+--><img
+   src="main-html-images\AD996CED018E7CA0F84F890A7B43E17E.svg"
+   alt="\ce{BaTiO3}"
+   style=""
+   class="lateximage"
+></span> і&nbsp;сегнетова сіль <span
+   id="lateximage-main-html-84"
+   class="lateximagesource"
+><!--
+KNaC4 H4 O6 ⋅ 4 H2 O
+--><img
+    src="main-html-images\881FFB94798A239F89ED97902A07E68B.svg"
+    alt="\ce{KNaC4H4O6*4H2O}"
+    style=""
+    class="lateximage"
+></span> (саме на честь останньої й&nbsp;названо весь цей клас речовин). Завдяки аномально великим значенням діелектричної проникності \(\epsilon \) (яка для сегнетоелектриків може сягати \(\sim 10^3\)–\(10^4\)) сегнетоелектрики
+застосовують у&nbsp;мініатюрних конденсаторах великої ємності та варикондах (нелінійних конденсаторах зі змінною ємністю), а&nbsp;завдяки сильному зв’язку між поляризацією й&nbsp;механічною деформацією&nbsp;— у&nbsp;широкому
+спектрі електромеханічних і&nbsp;механоелектричних перетворювачів: датчиках мікропереміщень, гідрофонах, акселерометрах, стабілізаторах частоти тощо.
+</p>
+<!--
+...... subsection Інші типи діелектриків ......
+-->
+<h5 id="autosec-408">Інші типи діелектриків</h5>
+<a id="main-html-autopage-408"></a>
+
+
+<a id="sec:PiezoPyro"></a>
+
+<p>
+Окрім електретів і&nbsp;сегнетоелектриків, до <em><span
+    class="textcolor"
+    style="color:#990000"
+>активних</span></em> діелектриків&nbsp;— тобто таких, чиї властивості (спонтанна поляризація, гістерезис, зв’язок поляризації з&nbsp;механічною дією чи температурою) самі по собі є функціональними&nbsp;— відносять ще кілька класів
+речовин. Розглянемо їх коротко.
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>П’єзоелектрики</span></em>&nbsp;— кристали без центра симетрії, в&nbsp;яких деформація й&nbsp;поляризація пов’язані лінійно (прямий і&nbsp;зворотний ефекти); приклад&nbsp;— кварц; застосування&nbsp;— резонатори, п’єзодатчики,
+ультразвукові перетворювачі. <em><span
+    class="textcolor"
+    style="color:#990000"
+>Піроелектрики</span></em>&nbsp;— кристали зі спонтанною поляризацією, що змінюється з&nbsp;температурою (звідси заряд на поверхні); усі піроелектрики&nbsp;— п’єзоелектрики (не навпаки); застосовуються в&nbsp;ІЧ-детекторах
+і&nbsp;тепловізорах.
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Антисегнетоелектрики</span></em> (напр., <span
+    id="lateximage-main-html-85"
+    class="lateximagesource"
+><!--
+PbZrO3
+--><img
+   src="main-html-images\3CE3B10E3AEA87CC07806ABFF870E050.svg"
+   alt="\ce{PbZrO3}"
+   style=""
+   class="lateximage"
+></span>) мають антипаралельну поляризацію сусідніх комірок (сумарно&nbsp;— нуль), але полем стрибком переводяться у&nbsp;сегнетоелектричний стан без залишку&nbsp;— застосовуються в&nbsp;імпульсних накопичувачах енергії.
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Рідкі кристали</span></em>&nbsp;— органічні речовини зі стрижнеподібними молекулами, що утворюють мезоморфну фазу: плинні, як рідина, орієнтаційно впорядковані, як кристал; анізотропна поляризовність (\(\chi _\parallel \neq
+\chi _\perp \)) дозволяє полю переорієнтовувати молекули&nbsp;— на цьому ґрунтується робота LCD-дисплеїв.
+</p>
+
+<p>
+Натомість у&nbsp;переважній більшості технічних застосувань діелектрик відіграє <em>пасивну</em> роль ізолятора або середовища конденсатора, і&nbsp;його властивості цінують не за нелінійністю чи керованістю, а&nbsp;за високою
+електричною міцністю та малими втратами. До поширених пасивних діелектриків належать: тверді&nbsp;— слюда, кераміка, фторопласт, поліпропілен; рідкі&nbsp;— трансформаторне мастило; газоподібні&nbsp;— елегаз <span
+    id="lateximage-main-html-86"
+    class="lateximagesource"
+><!--
+SF6
+--><img
+   src="main-html-images\4B02E402C40BB93A687374BB81E854BD.svg"
+   alt="\ce{SF6}"
+   style=""
+   class="lateximage"
+></span>.
+</p>
+<!--
+...... section Підсумки ......
+-->
+<h4 id="autosec-413">Підсумки</h4>
+<a id="main-html-autopage-413"></a>
+
+
+<p>
+На відміну від провідників, у&nbsp;діелектриках майже немає вільних зарядів: усі заряди <em><span
+    class="textcolor"
+    style="color:#990000"
+>зв’язані</span></em> й&nbsp;у&nbsp;полі лише незначно зміщуються. Такий перерозподіл зв’язаних зарядів називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>поляризацією</span></em>. Вона має три мікроскопічні механізми: <em><span
+    class="textcolor"
+    style="color:#990000"
+>електронний</span></em> (зміщення електронної хмари, наведений момент \(\vect p = \alpha \Efield \), є в&nbsp;усіх речовинах), <em><span
+    class="textcolor"
+    style="color:#990000"
+>йонний</span></em> (зміщення підґраток у&nbsp;йонних кристалах) та <em><span
+    class="textcolor"
+    style="color:#990000"
+>орієнтаційний</span></em> (розворот власних дипольних моментів \(\vect p_0\) полярних молекул проти теплового хаосу). Надлишкові зв’язані заряди створюють власне поле \(\Efield &apos;\), яке напрямлене назустріч зовнішньому, тому
+поле в&nbsp;діелектрику завжди <em>послаблюється</em>. Макроскопічним полем в&nbsp;речовині називають поле, усереднене по фізично нескінченно малому об’єму.
+</p>
+
+<p>
+Кількісно поляризацію описує <em><span
+    class="textcolor"
+    style="color:#990000"
+>вектор поляризації</span></em> \(\vect P\)&nbsp;— дипольний момент одиниці об’єму; для лінійних діелектриків \(\vect P = \chi \Efield \). Його нормальна складова на поверхні дорівнює густині зв’язаного заряду, \(P_n = \sigma
+&apos;\), а&nbsp;в&nbsp;об’ємі \(\divg \vect P = -\rho &apos;\). Введення вектора індукції \(\Dfield = \Efield + 4\pi \vect P\) дозволяє записати теорему Гаусса в&nbsp;речовині через <em><span
+    class="textcolor"
+    style="color:#990000"
+>лише вільні заряди</span></em>: \(\divg \Dfield = 4\pi \rho \), а&nbsp;для лінійного діелектрика \(\Dfield = \epsilon \Efield \), де \(\epsilon = 1 + 4\pi \chi &gt; 1\). Зокрема, поле точкового заряду в&nbsp;однорідному
+діелектрику слабкіше, ніж у&nbsp;вакуумі, в&nbsp;\(\epsilon \) разів. На межі розділу двох середовищ виконуються граничні умови \(D_{2n} - D_{1n} = 4\pi \sigma \) (де \(\sigma \)&nbsp;— густина вільного заряду) та \(E_{1\tau } =
+E_{2\tau }\), звідки випливає закон заломлення силових ліній \(\tg \alpha _2/\tg \alpha _1 = \epsilon _2/\epsilon _1\).
+</p>
+
+<p>
+Мікроскопічна теорія пов’язує \(\epsilon \) з&nbsp;властивостями молекул. Для полярних діелектриків розподіл Больцмана дає закон Ланжевена-Дебая \(P = np_0^2E/(3kT)\) і, як наслідок, закон Кюрі \(\epsilon = 1 + 4\pi np_0^2/(3kT)\):
+проникність спадає з&nbsp;температурою. У&nbsp;густому середовищі на молекулу діє не середнє, а&nbsp;<em><span
+    class="textcolor"
+    style="color:#990000"
+>локальне</span></em> поле \(\Efield _\text {лок} = \Efield + \frac {4\pi }{3}\vect P\), і&nbsp;замість наївного \(\chi = n\alpha \) справджується формула Клаузіуса-Моссотті \((\epsilon - 1)/(\epsilon + 2) = 4\pi n\alpha
+/3\). Окремі класи діелектриків мають особливі властивості: <em><span
+    class="textcolor"
+    style="color:#990000"
+>електрети</span></em> зберігають поляризацію після зняття поля, <em><span
+    class="textcolor"
+    style="color:#990000"
+>сегнетоелектрики</span></em> мають доменну структуру, гістерезис і&nbsp;аномально велике \(\epsilon \) нижче температури Кюрі, а&nbsp;п’єзо- та піроелектрики пов’язують поляризацію з&nbsp;деформацією й&nbsp;температурою. Ми
+навчилися описувати поле в&nbsp;речовині; наступний розділ присвячено енергії електростатичного поля (гл.&nbsp;<a href="ch6.html#ElEnergy">6</a>).
+</p>
+<!--
+...... section Задачі ......
+-->
+<h4 id="autosec-414">Задачі</h4>
+<a id="main-html-autopage-414"></a>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-124"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 5.1.</span></span> <a id="autoid-125" ></a >Куля має однорідну поляризацію \(\mathbf {P}\). Знайти напруженість електричного поля \(\mathbf {E}\), створеного
+поляризаційними зарядами кулі у&nbsp;довільній точці всередині неї.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-126"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 5.2.</span></span> <a id="autoid-127" ></a ><a id="prb:hole_in_dielectric"></a> У&nbsp;діелектричному середовищі з&nbsp;діелектричною проникністю \(\epsilon
+\) існує однорідне поле з&nbsp;напруженістю \(\Efield \). Всередині середовища знаходиться сферична порожнина. Знайти в&nbsp;центрі сфери напруженість \(\Efield &apos;\) поля, створеного поляризаційними зарядами, індукованими на
+поверхні сфери, вважаючи, що вектор поляризації \(\vect {P}\) всюди (за винятком порожнини) має постійне значення.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Чим діелектрик принципово відрізняється від провідника з&nbsp;погляду наявних у&nbsp;ньому зарядів? Дайте означення вільних та зв’язаних (поляризаційних) зарядів.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Чому мікрополе \(\Efield _\text {micro}\) у&nbsp;речовині неможливо виміряти макроскопічними приладами? Дайте означення макроскопічного (усередненого) поля через фізично нескінченно малий
+об’єм \(\Delta V\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Що таке власний дипольний момент молекули і&nbsp;чому не всі молекули його мають? Поясніть на прикладі <span
+    id="lateximage-main-html-87"
+    class="lateximagesource"
+><!--
+H2 O
+--><img
+   src="main-html-images\3BD50A5CF48F9588DE1B1A127A250217.svg"
+   alt="\ce{H2O}"
+   style=""
+   class="lateximage"
+></span> (полярна) і&nbsp;<span
+   id="lateximage-main-html-88"
+   class="lateximagesource"
+><!--
+CO2
+--><img
+   src="main-html-images\FAC188068524E4DDF140E14E338F3177.svg"
+   alt="\ce{CO2}"
+   style=""
+   class="lateximage"
+></span> (неполярна), чому симетрія молекули визначає наявність дипольного моменту.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> Що таке наведений (індукований) дипольний момент неполярної молекули? Запишіть формулу \(\vect p = \alpha \Efield \) і&nbsp;поясніть, чому саме зміщення електронної хмари, а&nbsp;не ядра, дає
+основний внесок у&nbsp;цей механізм.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Чим орієнтаційна поляризація полярних діелектриків відрізняється від електронної поляризації неполярних? Чому тепловий рух заважає повній орієнтації диполів уздовж поля?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> Чому власне поле зв’язаних зарядів \(\Efield &apos;\) у&nbsp;поляризованому діелектрику завжди спрямоване назустріч зовнішньому полю, послаблюючи сумарне поле всередині речовини?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> Що таке електрострикція? Чому вона майже не застосовується як самостійне явище в&nbsp;техніці?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Дайте означення вектора поляризації \(\vect P\) як дипольного моменту одиниці об’єму. Що означає лінійне співвідношення \(\vect P = \chi \Efield \) і&nbsp;які діелектрики називають лінійними?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> Які діелектрики є нелінійними? Наведіть приклади (кристали без сферичної симетрії, сильні поля, сегнетоелектрики) і&nbsp;поясніть, чому для них проста формула \(\vect P=\chi \Efield \) не працює.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Виведіть формулу \(P_n = \sigma &apos;\) для однорідно поляризованого діелектрика, розглядаючи косокутний паралелепіпед, вирізаний уздовж вектора поляризації.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> Виведіть теорему Гаусса для вектора поляризації в&nbsp;інтегральній \(\oiint P_n\,dS = -\iiint \rho &apos;\,dV\) та диференціальній \(\divg \vect P = -\rho &apos;\) формах. Чому
+в&nbsp;однорідно поляризованому діелектрику об’ємний зв’язаний заряд відсутній?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Виведіть означення вектора електричної індукції \(\Dfield = \Efield + 4\pi \vect P\) з&nbsp;теореми Гаусса для \(\Efield \), що враховує і&nbsp;вільні, і&nbsp;зв’язані заряди. Запишіть теорему
+Гаусса для \(\Dfield \) в&nbsp;інтегральній та диференціальній формах.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">13.</span> Чому вектор \(\Dfield \) не є потенціальним силовим полем у&nbsp;звичайному сенсі і&nbsp;не діє безпосередньо на пробний заряд? У&nbsp;чому практична зручність цієї допоміжної величини?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">14.</span> Виведіть співвідношення \(\Dfield = \epsilon \Efield \) та \(\epsilon = 1+4\pi \chi \) для лінійного діелектрика. Чому \(\epsilon &gt;1\) для звичайних діелектриків і&nbsp;чому \(\epsilon =1\)
+у&nbsp;вакуумі?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">15.</span> Розв’яжіть задачу про точковий заряд \(Q\) у&nbsp;нескінченному однорідному діелектрику: чому поле в&nbsp;діелектрику слабкіше, ніж у&nbsp;вакуумі, рівно в&nbsp;\(\epsilon \) разів?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">16.</span> Виведіть першу граничну умову \(D_{2n}-D_{1n}=4\pi \sigma \) для нормальної складової \(\Dfield \) на межі розділу середовищ. Чому ця складова не зазнає стрибка за відсутності вільних зарядів на
+межі, на відміну від \(E_n\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">17.</span> Виведіть другу граничну умову \(E_{1\tau }=E_{2\tau }\) для тангенціальної складової \(\Efield \). Чому ця умова не пов’язана з&nbsp;наявністю діелектрика?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">18.</span> Виведіть закон заломлення силових ліній \(\tg \alpha _2/\tg \alpha _1 = \epsilon _2/\epsilon _1\) на межі двох діелектриків. Чому лінії поля притискаються до поверхні середовища
+з&nbsp;більшим \(\epsilon \)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">19.</span> Які три мікроскопічні механізми поляризовності молекули існують (електронна, йонна, орієнтаційна)? Чим вони відрізняються за швидкодією та залежністю від частоти й&nbsp;температури?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">20.</span> Виведіть закон Ланжевена-Дебая \(P = np_0^2E/(3kT)\) для орієнтаційної поляризації полярного діелектрика, використовуючи розподіл Больцмана для кутів орієнтації диполів. За якої умови справедливе
+лінійне наближення \(p_0E\ll kT\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">21.</span> Виведіть формулу Кюрі \(\epsilon = 1+4\pi np_0^2/(3kT)\) і&nbsp;поясніть, чому спадання \(\epsilon \) з&nbsp;ростом температури є ознакою полярного діелектрика.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">22.</span> Що таке локальне поле \(\Efield _\text {лок}\) і&nbsp;чим воно відрізняється від середнього поля \(\Efield \) у&nbsp;густому середовищі? Виведіть формулу Лоренца \(\Efield _\text {лок} =
+\Efield + 4\pi \vect P/3\) для сфери Лоренца.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">23.</span> Виведіть формулу Клаузіуса-Моссотті \((\epsilon -1)/(\epsilon +2) = 4\pi n\alpha /3\). У&nbsp;чому її головна цінність порівняно з&nbsp;наївним співвідношенням \(\chi =n\alpha \)? При якій
+умові вона зводиться до останнього?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">24.</span> Що таке електрет і&nbsp;чому в&nbsp;ньому \(\divg \Dfield \equiv 0\) всюди, попри те що поле \(\Dfield \) поза його поверхнею не дорівнює нулю? Як виготовляють електрети і&nbsp;де вони
+застосовуються?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">25.</span> Що таке сегнетоелектрик і&nbsp;доменна структура? Опишіть петлю гістерезису: що таке залишкова поляризація \(P_r\) та коерцитивна сила \(E_c\)? Що відбувається при температурі Кюрі?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">26.</span> Що таке п’єзоелектрики та піроелектрики? Чим відрізняються прямий і&nbsp;зворотний п’єзоефекти, і&nbsp;чому всі піроелектрики є п’єзоелектриками, а&nbsp;не навпаки?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">27.</span> Що таке антисегнетоелектрики та рідкі кристали? На якому фізичному принципі ґрунтується робота LCD-дисплеїв?
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>

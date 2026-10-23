@@ -1,0 +1,4082 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Випромінювання електромагнітних хвиль</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-1240"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span>&#x2003;Електричні заряди та їх взаємодія</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span>&#x2003;Сили (взаємодії) в природі</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span>&#x2003;Електричний заряд</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-12" class="tocsection" >
+<span class="sectionnumber">1.3</span>&#x2003;Як заряджають тіла?</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-17" class="tocsection" >
+<span class="sectionnumber">1.4</span>&#x2003;Закон Кулона</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-25" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-32" class="tocchapter" >
+<span class="sectionnumber">2</span>&#x2003;Постійне електричне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocsection" >
+<span class="sectionnumber">2.1</span>&#x2003;Електромагнітне поле</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.2</span>&#x2003;Напруженість поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-46" class="tocsection" >
+<span class="sectionnumber">2.3</span>&#x2003;Силові лінії та математичне поняття поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-62" class="tocsection" >
+<span class="sectionnumber">2.4</span>&#x2003;Теорема Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-88" class="tocsection" >
+<span class="sectionnumber">2.5</span>&#x2003;Зауваження щодо інтегральної та диференціальної форми теореми Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-90" class="tocsection" >
+<span class="sectionnumber">2.6</span>&#x2003;Потенціальність електростатичного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-102" class="tocsection" >
+<span class="sectionnumber">2.7</span>&#x2003;Циркуляція вектора \(\symbf {E}\)</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-121" class="tocsection" >
+<span class="sectionnumber">2.8</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-128" class="tocsection" >
+<span class="sectionnumber">2.9</span>&#x2003;Рівняння Пуассона та Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-129" class="tocsection" >
+<span class="sectionnumber">2.10</span>&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-134" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-153" class="tocchapter" >
+<span class="sectionnumber">3</span>&#x2003;Електричне поле статичної системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-154" class="tocsection" >
+<span class="sectionnumber">3.1</span>&#x2003;Дипольний момент системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-158" class="tocsection" >
+<span class="sectionnumber">3.2</span>&#x2003;Поле точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-162" class="tocsection" >
+<span class="sectionnumber">3.3</span>&#x2003;Потенціал поля точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-163" class="tocsection" >
+<span class="sectionnumber">3.4</span>&#x2003;Потенціал системи зарядів на далеких відстанях</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-178" class="tocsection" >
+<span class="sectionnumber">3.5</span>&#x2003;Диполь в електричному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-196" class="tocsection" >
+<span class="sectionnumber">3.6</span>&#x2003;Енергія довільної системи зарядів у зовнішньому полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-197" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-200" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-214" class="tocchapter" >
+<span class="sectionnumber">4</span>&#x2003;Електричне поле у провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-215" class="tocsection" >
+<span class="sectionnumber">4.1</span>&#x2003;Структура провідників</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-221" class="tocsection" >
+<span class="sectionnumber">4.2</span>&#x2003;Провідник у полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-244" class="tocsection" >
+<span class="sectionnumber">4.3</span>&#x2003;Електричне поле біля вістря</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-253" class="tocsection" >
+<span class="sectionnumber">4.4</span>&#x2003;Єдиність розв’язку електростатичної задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-263" class="tocsection" >
+<span class="sectionnumber">4.5</span>&#x2003;Металева куля в однорідному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-275" class="tocsection" >
+<span class="sectionnumber">4.6</span>&#x2003;Сили, що діють на поверхню провідника в полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-279" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-280" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-291" class="tocchapter" >
+<span class="sectionnumber">5</span>&#x2003;Основи електростатики діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-292" class="tocsection" >
+<span class="sectionnumber">5.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-294" class="tocsection" >
+<span class="sectionnumber">5.2</span>&#x2003;Структура діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-331" class="tocsection" >
+<span class="sectionnumber">5.3</span>&#x2003;Поляризація діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-358" class="tocsection" >
+<span class="sectionnumber">5.4</span>&#x2003;Вектор поляризації</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-363" class="tocsection" >
+<span class="sectionnumber">5.5</span>&#x2003;Вектор електричної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-370" class="tocsection" >
+<span class="sectionnumber">5.6</span>&#x2003;Граничні умови в&nbsp;присутності діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-383" class="tocsection" >
+<span class="sectionnumber">5.7</span>&#x2003;Мікроскопічна теорія діелектричної проникності</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-390" class="tocsection" >
+<span class="sectionnumber">5.8</span>&#x2003;Типи діелектриків та їх застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-413" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-414" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-423" class="tocchapter" >
+<span class="sectionnumber">6</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-424" class="tocsection" >
+<span class="sectionnumber">6.1</span>&#x2003;Електрична ємність</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-445" class="tocsection" >
+<span class="sectionnumber">6.2</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-458" class="tocsection" >
+<span class="sectionnumber">6.3</span>&#x2003;Пондеромоторні сили</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-468" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-469" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-479" class="tocchapter" >
+<span class="sectionnumber">7</span>&#x2003;Постійний електричний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-480" class="tocsection" >
+<span class="sectionnumber">7.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-487" class="tocsection" >
+<span class="sectionnumber">7.2</span>&#x2003;Природа носіїв заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-489" class="tocsection" >
+<span class="sectionnumber">7.3</span>&#x2003;Закон збереження заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-496" class="tocsection" >
+<span class="sectionnumber">7.4</span>&#x2003;Закон Ома</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-527" class="tocsection" >
+<span class="sectionnumber">7.5</span>&#x2003;Закон Джоуля-Ленца</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-528" class="tocsection" >
+<span class="sectionnumber">7.6</span>&#x2003;Струми в необмежених середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-535" class="tocsection" >
+<span class="sectionnumber">7.7</span>&#x2003;Перехідні процеси в колі з конденсатором</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-548" class="tocsection" >
+<span class="sectionnumber">7.8</span>&#x2003;Максвеллівський час релаксації заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-550" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-562" class="tocchapter" >
+<span class="sectionnumber">8</span>&#x2003;Електричний струм у&nbsp;різних середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-564" class="tocsection" >
+<span class="sectionnumber">8.1</span>&#x2003;Електричний струм у&nbsp;металах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-584" class="tocsection" >
+<span class="sectionnumber">8.2</span>&#x2003;Електричний струм в&nbsp;електролітах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-590" class="tocsection" >
+<span class="sectionnumber">8.3</span>&#x2003;Електричний струм у&nbsp;газах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-601" class="tocsection" >
+<span class="sectionnumber">8.4</span>&#x2003;Електричний струм у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-615" class="tocsection" >
+<span class="sectionnumber">8.5</span>&#x2003;Електричний струм у&nbsp;напівпровідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-636" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-638" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-674" class="tocchapter" >
+<span class="sectionnumber">9</span>&#x2003;Магнітне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-675" class="tocsection" >
+<span class="sectionnumber">9.1</span>&#x2003;Означення</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-679" class="tocsection" >
+<span class="sectionnumber">9.2</span>&#x2003;Характеристика магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-680" class="tocsection" >
+<span class="sectionnumber">9.3</span>&#x2003;Дія магнітного поля на заряджені частинки та струми</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-701" class="tocsection" >
+<span class="sectionnumber">9.4</span>&#x2003;Закон Біо-Савара-Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-714" class="tocsection" >
+<span class="sectionnumber">9.5</span>&#x2003;Вектор-потенціал магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-719" class="tocsection" >
+<span class="sectionnumber">9.6</span>&#x2003;Теореми магнітостатики</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-740" class="tocsection" >
+<span class="sectionnumber">9.7</span>&#x2003;Магнітний момент</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-756" class="tocsection" >
+<span class="sectionnumber">9.8</span>&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-766" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-767" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-775" class="tocchapter" >
+<span class="sectionnumber">10</span>&#x2003;Магнітне поле в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-780" class="tocsection" >
+<span class="sectionnumber">10.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-783" class="tocsection" >
+<span class="sectionnumber">10.2</span>&#x2003;Намагнічування</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-795" class="tocsection" >
+<span class="sectionnumber">10.3</span>&#x2003;Теорема про циркуляцію в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-801" class="tocsection" >
+<span class="sectionnumber">10.4</span>&#x2003;Магнітна сприйнятливість речовини</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-832" class="tocsection" >
+<span class="sectionnumber">10.5</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-847" class="tocsection" >
+<span class="sectionnumber">10.6</span>&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-864" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-865" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-872" class="tocchapter" >
+<span class="sectionnumber">11</span>&#x2003;Рух заряджених частинок</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-873" class="tocsection" >
+<span class="sectionnumber">11.1</span>&#x2003;Рух частинок в&nbsp;однорідних полях</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-891" class="tocsection" >
+<span class="sectionnumber">11.2</span>&#x2003;Застосування схрещених полів</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-899" class="tocsection" >
+<span class="sectionnumber">11.3</span>&#x2003;Методи вимірювання питомого заряду електрона</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-909" class="tocsection" >
+<span class="sectionnumber">11.4</span>&#x2003;Досліди Міллікена</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-911" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-912" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-923" class="tocchapter" >
+<span class="sectionnumber">12</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-924" class="tocsection" >
+<span class="sectionnumber">12.1</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-929" class="tocsection" >
+<span class="sectionnumber">12.2</span>&#x2003;Закон електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-930" class="tocsection" >
+<span class="sectionnumber">12.3</span>&#x2003;Робота, що виконується при переміщенні провідника зі струмом у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-933" class="tocsection" >
+<span class="sectionnumber">12.4</span>&#x2003;Електромагнітна індукція в&nbsp;рухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-940" class="tocsection" >
+<span class="sectionnumber">12.5</span>&#x2003;Електромагнітна індукція в&nbsp;нерухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-959" class="tocsection" >
+<span class="sectionnumber">12.6</span>&#x2003;Явище самоіндукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-979" class="tocsection" >
+<span class="sectionnumber">12.7</span>&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-996" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-997" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1015" class="tocchapter" >
+<span class="sectionnumber">13</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1016" class="tocsection" >
+<span class="sectionnumber">13.1</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1022" class="tocsection" >
+<span class="sectionnumber">13.2</span>&#x2003;Взаємна індукція</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1038" class="tocsection" >
+<span class="sectionnumber">13.3</span>&#x2003;Енергія системи зв’язаних контурів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1041" class="tocsection" >
+<span class="sectionnumber">13.4</span>&#x2003;Потенціальна енергія струмів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1043" class="tocsection" >
+<span class="sectionnumber">13.5</span>&#x2003;Принцип роботи трансформаторів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1047" class="tocsection" >
+<span class="sectionnumber">13.6</span>&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1053" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1054" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1059" class="tocchapter" >
+<span class="sectionnumber">14</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1064" class="tocsection" >
+<span class="sectionnumber">14.1</span>&#x2003;Струм зміщення</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1085" class="tocsection" >
+<span class="sectionnumber">14.2</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1102" class="tocsection" >
+<span class="sectionnumber">14.3</span>&#x2003;Про рівняння Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1104" class="tocsection" >
+<span class="sectionnumber">14.4</span>&#x2003;Енергія електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1118" class="tocsection" >
+<span class="sectionnumber">14.5</span>&#x2003;Скін-ефект</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1140" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1141" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1148" class="tocchapter" >
+<span class="sectionnumber">15</span>&#x2003;Відносність електричного і&nbsp;магнітного полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1150" class="tocsection" >
+<span class="sectionnumber">15.1</span>&#x2003;Нерелятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1153" class="tocsection" >
+<span class="sectionnumber">15.2</span>&#x2003;Релятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1159" class="tocsection" >
+<span class="sectionnumber">15.3</span>&#x2003;Тензор електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1161" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1162" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1171" class="tocchapter" >
+<span class="sectionnumber">16</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1172" class="tocsection" >
+<span class="sectionnumber">16.1</span>&#x2003;Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1188" class="tocsection" >
+<span class="sectionnumber">16.2</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1193" class="tocsection" >
+<span class="sectionnumber">16.3</span>&#x2003;Енергія та вектор Пойнтінга для хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1204" class="tocsection" >
+<span class="sectionnumber">16.4</span>&#x2003;Імпульс і момент імпульсу електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1210" class="tocsection" >
+<span class="sectionnumber">16.5</span>&#x2003;Відбивання хвиль від поверхні двох діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1230" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1231" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1242" class="tocchapter" >
+<span class="sectionnumber">17</span>&#x2003;Випромінювання електромагнітних хвиль</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1243" class="tocsection" >
+<span class="sectionnumber">17.1</span>&#x2003;Історична довідка: досліди Герца</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1246" class="tocsection" >
+<span class="sectionnumber">17.2</span>&#x2003;Елементарна модель випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1259" class="tocsection" >
+<span class="sectionnumber">17.3</span>&#x2003;Дипольне випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1275" class="tocsection" >
+<span class="sectionnumber">17.4</span>&#x2003;Потужність випромінювання осцилятора</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1280" class="tocsection" >
+<span class="sectionnumber">17.5</span>&#x2003;Випромінювання рухомого заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1285" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1286" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1292" class="tocchapter" >
+<span class="sectionnumber">18</span>&#x2003;Коливальні процеси в електричних колах</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1293" class="tocsection" >
+<span class="sectionnumber">18.1</span>&#x2003;Квазістаціонарне наближення</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1294" class="tocsection" >
+<span class="sectionnumber">18.2</span>&#x2003;Вільні коливання в коливальному контурі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1319" class="tocsection" >
+<span class="sectionnumber">18.3</span>&#x2003;Вимушені коливання під дією гармонічної ЕРС</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1333" class="tocsection" >
+<span class="sectionnumber">18.4</span>&#x2003;Змінний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">18.5</span>&#x2003;Трансформатор</a>
+</p>
+<p>
+<a href="ch18.html#autosec-1374" class="tocsection" >
+<span class="sectionnumber">18.6</span>&#x2003;Частотні фільтри</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1390" class="tocsection" >
+<span class="sectionnumber">18.7</span>&#x2003;Трифазний струм: фізичні засади, топології кіл та застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1433" class="tocchapter" >
+<span class="sectionnumber">19</span>&#x2003;Довгі лінії. Телеграфні рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1434" class="tocsection" >
+<span class="sectionnumber">19.1</span>&#x2003;Від зосереджених елементів до розподілених</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1435" class="tocsection" >
+<span class="sectionnumber">19.2</span>&#x2003;Виведення телеграфних рівнянь</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1439" class="tocsection" >
+<span class="sectionnumber">19.3</span>&#x2003;Гармонічний режим. Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1440" class="tocsection" >
+<span class="sectionnumber">19.4</span>&#x2003;Лінія без втрат</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1447" class="tocsection" >
+<span class="sectionnumber">19.5</span>&#x2003;Польова картина. Зв’язок з рівняннями Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1454" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1455" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1461" class="tocchapter" >
+<span class="sectionnumber">20</span>&#x2003;Хвилеводи</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1462" class="tocsection" >
+<span class="sectionnumber">20.1</span>&#x2003;Від довгої лінії до хвилеводу</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1463" class="tocsection" >
+<span class="sectionnumber">20.2</span>&#x2003;Прямокутний хвилевід</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1476" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1479" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1480" class="tocsection" >
+<span class="sectionnumber">А</span>&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1485" class="tocsection" >
+<span class="sectionnumber">Б</span>&#x2003;Основні формули векторного аналізу</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1503" class="tocchapter" >
+Література</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Випромінювання електромагнітних хвиль">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Випромінювання електромагнітних хвиль ......
+-->
+<h3 id="autosec-1242">Розділ&nbsp;<span class="sectionnumber">17&#x2003;</span>Випромінювання електромагнітних хвиль</h3>
+<a id="main-html-autopage-1242"></a>
+<a id="main-html-autofile-17"></a>
+
+<a id="Radiation"></a>
+
+<p>
+<a id="LWR-ht-Radiation"></a>
+</p>
+<div class="epigraph" role="note">
+
+
+<div class="qitem">
+
+<p>
+Поле, що спочиває, належить заряду. Поле, що тікає,&nbsp;— вже ні.
+</p>
+
+
+<div class="epigraphsource">
+
+<p>
+Переосмислення ідей сучасної фізики
+</p>
+</div>
+
+</div>
+
+</div>
+
+<p>
+Ми розглянули основні властивості електромагнітних хвиль: їхню природу, шкалу частот і&nbsp;закономірності поширення. Проте залишається ключове питання: як саме виникають ці хвилі?
+</p>
+<!--
+...... section Історична довідка: досліди Герца ......
+-->
+<h4 id="autosec-1243"><span class="sectionnumber">17.1&#x2003;</span>Історична довідка: досліди Герца</h4>
+<a id="main-html-autopage-1243"></a>
+
+
+<p>
+<a id="LWR-ht-hertz-experiments"></a>
+</p>
+
+<figure id="autoid-429" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="Radiation/Pictures/Hertz_Dipole.jpg" target="_blank" ><img
+   src="Radiation/Pictures/Hertz_Dipole.jpg"
+   style="
+   width:434pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;17.1. Вібратор Герца.
+
+</div>
+
+<a id="pic:Hertz_vibrator"></a>
+
+</div>
+
+</figure>
+
+<p>
+У&nbsp;1888&nbsp;році Генріх Герц<sup>1</sup><a id="main-html-autopage-1244"></a> уперше експериментально отримав електромагнітні хвилі. У&nbsp;його досліді джерелом випромінювання слугував так званий <em><span
+    class="textcolor"
+    style="color:#990000"
+>вібратор Герца</span></em> — прямолінійний провідник із невеликим повітряним проміжком посередині (рис.&nbsp;<a href="ch17.html#pic:Hertz_vibrator">17.1</a>). Завдяки цьому проміжку двом половинам вібратора можна було
+надати значних зарядів: коли різниця потенціалів сягала граничного значення, у повітряному зазорі відбувався пробій (проскакувала іскра), і&nbsp;заряди через іонізоване повітря перетікали з&nbsp;однієї половини вібратора на іншу —
+в&nbsp;такому <em><span
+    class="textcolor"
+    style="color:#990000"
+>відкритому контурі</span></em> виникали електромагнітні коливання. Щоб швидкозмінні струми існували лише у&nbsp;вібраторі й&nbsp;не замикалися через джерело живлення, між вібратором і&nbsp;джерелом вмикали <em><span
+    class="textcolor"
+    style="color:#990000"
+>дроселі</span></em>. Високочастотні коливання існують, поки іскра замикає проміжок; загасання ж їх відбувається в&nbsp;основному не шляхом джоулевих втрат (як у&nbsp;закритому коливальному контурі), а&nbsp;шляхом <em><span
+    class="textcolor"
+    style="color:#990000"
+>випромінювання електромагнітних хвиль</span></em>.
+</p>
+
+<p>
+Для виявлення хвиль Герц застосовував другий (<em>приймальний</em>) вібратор. Під дією змінного електричного поля хвилі, що надходить від випромінювача, електрони в&nbsp;приймальному вібраторі здійснюють вимушені коливання&nbsp;—
+у&nbsp;ньому збуджується швидкозмінний струм. Якщо розміри приймального вібратора такі самі, як і&nbsp;в&nbsp;випромінювального, то частоти власних коливань у&nbsp;них збігаються, і&nbsp;вимушені коливання внаслідок <em><span
+    class="textcolor"
+    style="color:#990000"
+>резонансу</span></em> досягають помітної величини. Ці коливання Герц реєстрував по проскакуванню іскри в&nbsp;мікроскопічному зазорі посередині приймального вібратора або по свіченню мініатюрної газорозрядної трубки, увімкненої
+між його половинами.
+</p>
+
+<p>
+Герц не лише експериментально довів існування електромагнітних хвиль, а&nbsp;й&nbsp;уперше почав вивчати їхні властивості&nbsp;— поглинання й&nbsp;заломлення в різних середовищах, відбивання від металевих поверхонь тощо. На
+досліді вдалося також виміряти швидкість електромагнітних хвиль, яка виявилась рівною швидкості світла. Саме цей збіг&nbsp;— швидкості електромагнітних хвиль зі швидкістю світла, виміряною задовго до їх відкриття,&nbsp;— став
+відправним пунктом для ототожнення світла з&nbsp;електромагнітними хвилями й&nbsp;створення <em><span
+    class="textcolor"
+    style="color:#990000"
+>електромагнітної теорії світла</span></em>.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Електромагнітна хвиля існує <em>без джерел поля</em> в&nbsp;тому сенсі, що після її випромінювання електромагнітне поле хвилі вже не пов’язане з джерелом. Саме цим електромагнітна хвиля відрізняється від статичних електричного
+й&nbsp;магнітного полів, які не існують у&nbsp;відриві від джерела.
+</p>
+</div>
+<div role="note" class="footnotes">
+
+<a id="main-html-autopage-1245"></a>
+<p>
+<sup>1</sup>&nbsp;Генріх Рудольф Герц (1857–1894)&nbsp;— німецький фізик.
+</p>
+
+
+</div>
+<!--
+...... section Елементарна модель випромінювання ......
+-->
+<h4 id="autosec-1246"><span class="sectionnumber">17.2&#x2003;</span>Елементарна модель випромінювання</h4>
+<a id="main-html-autopage-1246"></a>
+
+
+<p>
+<a id="LWR-ht-elementary-radiation-model"></a>
+</p>
+<!--
+...... subsection Якісна картина ......
+-->
+<h5 id="autosec-1247">Якісна картина</h5>
+<a id="main-html-autopage-1247"></a>
+
+
+<p>
+Розглянемо електричне поле точкового заряду \(q\). У&nbsp;стані спокою це звичайне електростатичне поле з&nbsp;радіальними силовими лініями. Нехай у&nbsp;момент \(t=0\) заряд під дією зовнішньої сили починає рухатися
+з&nbsp;прискоренням \(a\), а&nbsp;через невеликий час \(\tau \) дія сили припиняється, після чого заряд рухається рівномірно зі швидкістю \(v_q=a\tau \) (рис.&nbsp;<a href="ch17.html#pic:VelocityGraph">17.2</a>); нехай \(v_q\ll c\),
+а&nbsp;\(\tau \) дуже мале порівняно з&nbsp;часом спостереження \(T\).
+</p>
+
+<figure id="autoid-430" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-236"
+    class="lateximagesource"
+><!--
+𝑣𝑞
+               𝑣𝑞 ≪ 𝑐
+
+
+
+
+     𝜏   𝜏≪𝑇     𝑇      𝑡
+--><img
+   src="main-html-images\image-236.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;17.2. Швидкість заряду: короткий імпульс прискорення тривалістю \(\tau \), після якого заряд рухається рівномірно<a id="pic:VelocityGraph"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Оскільки збурення поля поширюється не миттєво, а&nbsp;зі швидкістю світла \(c\), різні спостерігачі дізнаються про прискорення заряду в&nbsp;різний момент часу. Нехай пройшов час \(T\gg \tau \) (рис.&nbsp;<a
+href="ch17.html#pic:ElementaryModel">17.3</a>):
+</p>
+
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> <em>Зовнішній спостерігач</em> (на відстані, більшій за \(cT\)) іще нічого не знає про рух заряду: сигнал про початок руху до нього не встиг дійти, і&nbsp;він бачить поле нерухомого заряду в&nbsp;його
+<em>початковому</em> положенні.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> <em>Внутрішній спостерігач</em> (на відстані, меншій за \(c(T-\tau )\)) уже знає, що прискорення закінчилось і&nbsp;заряд рухається рівномірно, — він бачить поле рівномірно рухомого заряду
+в&nbsp;його <em>поточному</em> положенні.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> У&nbsp;проміжній <em>тонкій сферичній оболонці</em> товщиною \(c\tau \)&nbsp;— <em>області випромінювання</em>&nbsp;— силові лінії поля мусять «зшивати» ці два різні поля, утворюючи
+характерний <em>злам</em>.
+</p>
+</li>
+</ul>
+
+<figure id="autoid-431" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-237"
+    class="lateximagesource"
+><!--
+                   +
+
+
+
+                   +
+
+
+
+
+ Зовні-
+ шній                            Внутрі-
+спосте-                           шній
+ рігач                           спосте-
+                                  рігач
+
+
+
+          Область випромінюва-
+                    ння
+           під час прискорення
+--><img
+   src="main-html-images\image-237.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;17.3. Заломлені («злами») силові лінії поля короткочасно прискореного заряду: межа між «старим» і&nbsp;«новим» полем<a id="pic:ElementaryModel"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+
+<div class="cb-attention">
+
+<p>
+Саме цей злам силових ліній і&nbsp;є, по суті, електромагнітна хвиля, що «відірвалась» від заряду й&nbsp;розповсюджується самостійно. Оскільки лінії неперервні (теорема Гаусса), вони не можуть обірватись на межі&nbsp;— і&nbsp;саме
+необхідність «зшити» два різні поля без розриву ліній породжує додаткову, <em>поперечну</em> складову поля, якої немає ні в&nbsp;чисто електростатичному, ні в&nbsp;чисто «рівномірно-рухомому» полі окремо.
+</p>
+</div>
+<!--
+...... subsection Математичне виведення поля випромінювання ......
+-->
+<h5 id="autosec-1254">Математичне виведення поля випромінювання</h5>
+<a id="main-html-autopage-1254"></a>
+
+
+<p>
+Розглянемо детальніше злам силової лінії, що виходила з&nbsp;заряду під кутом \(\theta \) до напряму його прискорення (рис.&nbsp;<a href="ch17.html#pic:ElementaryDerivation">17.4</a>). Нехай спостереження ведеться в&nbsp;момент
+\(T=r/c\) (де \(r\)&nbsp;— відстань до точки спостереження), тобто поле, яке зараз «на підході»,&nbsp;— це поле, випромінене в&nbsp;момент \(T-\tau \). Розкладемо поле \(\Efield \) у&nbsp;зламі на <em>радіальну</em> (поздовжню) складову
+\(E_\parallel \) і <em>поперечну</em> складову \(E_\perp \).
+</p>
+
+<figure id="autoid-432" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-238"
+    class="lateximagesource"
+><!--
+                                        𝐄∥
+
+
+
+                     𝜃
+                                             𝐄
+                 +
+
+
+      𝑣𝑞𝑇
+                                       𝐄⟂
+                 +
+
+
+ 𝑐𝑇                      𝑣 𝑞 𝑇 sin 𝜃
+
+      𝑐(𝑇 − 𝜏)
+𝑟=
+
+
+
+
+                         𝑐𝜏
+--><img
+   src="main-html-images\image-238.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;17.4. Геометрія зламу силової лінії: розкладання поля на поздовжню \(E_\parallel \) і поперечну \(E_\perp \) складові<a id="pic:ElementaryDerivation"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Із подібності трикутників (побудованих на бічних сторонах зламу) випливає:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{0}\)</span>
+
+<!--
+
+
+                                                                                 𝐸⟂   𝑣𝑞 𝑇 sin 𝜃
+                                                                                    =            .                                                               (17.1)                                 --><a id="eq:RatioEE"></a><!--
+                                                                                 𝐸∥       𝑐𝜏
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RatioEE} \frac {E_\perp }{E_\parallel } = \frac {v_qT\sin \theta }{c\tau }.
+\end{equation}
+
+</p>
+
+<p>
+Поздовжня складова&nbsp;— це просто (майже незмінене) кулонівське поле заряду на відстані \(r=cT\) (у&nbsp;гауссовій системі одиниць):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{1}\)</span>
+
+<!--
+
+                                                                                    𝑞 𝑟=𝑐𝑇   𝑞
+                                                                           𝐸∥ =         =         .                                                              (17.2)                                 --><a id="eq:EparDef"></a><!--
+                                                                                  (𝑐𝑇)2    (𝑐𝑇) 𝑟
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:EparDef} E_\parallel = \frac {q}{(cT)^2} \stackrel {r=cT}{=} \frac {q}{(cT)\,r}.
+\end{equation}
+
+</p>
+
+<p>
+Оскільки прискорення \(a=v_q/\tau \), підставляючи в&nbsp;<span class="textup">(<a href="ch17.html#eq:RatioEE">17.1</a>)</span> і&nbsp;<span class="textup">(<a href="ch17.html#eq:EparDef">17.2</a>)</span>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{2}\)</span>
+
+<!--
+
+
+                                                                        𝑞      𝑣𝑞 𝑇 sin 𝜃   1 𝑞
+                                                           𝐸⟂ (𝑡) =          ⋅            = 2 𝑎 sin 𝜃,                                                 (17.3)                                  --><a id="eq:EperpDerivation"></a><!--
+                                                                      (𝑐𝑇) 𝑟       𝑐𝜏      𝑐 𝑟
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:EperpDerivation} E_\perp (t) = \frac {q}{(cT)\,r}\cdot \frac {v_qT\sin \theta }{c\tau } = \frac 1{c^2}\frac {q}{r}\, a\,\sin \theta ,
+\end{equation}
+
+</p>
+
+<p>
+де прискорення потрібно брати саме в&nbsp;той момент, коли воно й&nbsp;породило спостережуваний зараз злам, тобто в&nbsp;момент \(t-r/c\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{3}\)</span>
+
+<!--
+
+
+                                                                                 1 𝑞       𝑟
+                                                                      𝐸⟂ (𝑡) =        𝑎(𝑡 − ) sin 𝜃.                                                        (17.4)                                  --><a id="eq:EperpResult"></a><!--
+                                                                                 𝑐2 𝑟      𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:EperpResult} \tcbhighmath { E_\perp (t) = \frac 1{c^2}\,\frac {q}{r}\, a\!\left (t-\frac {r}{c}\right )\sin \theta . }
+\end{equation}
+
+</p>
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch17.html#eq:EperpResult">17.4</a>)</span> містить дві ключові риси <em>будь-якого</em> випромінювання, які ми надалі зустрічатимемо знову й&nbsp;знову:
+</p>
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Напруженість поля <em>хвилі</em> \(E_\perp \) спадає як \(1/r\), на відміну від електростатичного поля \(E_\parallel \propto 1/r^2\). Це узгоджується із законом збереження енергії: енергія хвилі
+розподіляється по поверхні сфери (\(\propto r^2\)), а&nbsp;густина енергії \(\propto E^2\), тому \(E^2\cdot r^2 = \const \Rightarrow E\propto 1/r\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> \(E_\perp \) у&nbsp;момент часу \(t\) визначається прискоренням заряду \(a\) не в&nbsp;цей самий момент, а&nbsp;в&nbsp;<em>більш ранній</em> момент \(t-r/c\) — <em><span
+    class="textcolor"
+    style="color:#990000"
+>час запізнення</span></em>, потрібний хвилі, щоб дістатися точки спостереження на відстані&nbsp;\(r\).
+</p>
+</li>
+</ul>
+<!--
+...... subsection Випромінювання осцилюючого заряду ......
+-->
+<h5 id="autosec-1258">Випромінювання осцилюючого заряду</h5>
+<a id="main-html-autopage-1258"></a>
+
+
+<p>
+Нехай тепер заряд \(q\) не просто короткочасно прискорюється, а&nbsp;весь час рухається вздовж прямої зі змінним прискоренням \(a(t)\) поблизу початку координат&nbsp;— наприклад, здійснює гармонічні коливання. Тоді він випромінює
+електромагнітні хвилі <em>неперервно</em>, і&nbsp;напруженість поля випромінювання в&nbsp;точці на відстані \(r\) від початку координат, як і&nbsp;раніше, визначається формулою&nbsp;<span class="textup">(<a
+href="ch17.html#eq:EperpResult">17.4</a>)</span>, але тепер прискорення потрібно брати в&nbsp;більш ранній момент \(t-r/c\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{4}\)</span>
+
+<!--
+
+                                                                            1 𝑞       𝑟
+                                                                 𝐸⟂ (𝑡) =        𝑎(𝑡 − ) sin 𝜃.                                                          (17.5)                           --><a id="eq:OscillatingChargeE"></a><!--
+                                                                            𝑐2 𝑟      𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:OscillatingChargeE} E_\perp (t) = \frac {1}{c^2}\,\frac {q}{r}\,a\!\left (t-\frac {r}{c}\right )\sin \theta .
+\end{equation}
+
+</p>
+
+<p>
+Нехай, зокрема, заряд здійснює гармонічні коливання з&nbsp;амплітудою \(A\) і&nbsp;частотою \(\omega \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{5}\)</span>
+
+<!--
+
+
+                                                                                                   𝑥(𝑡) = 𝐴 cos 𝜔𝑡,           ̈
+                                                                                                                      𝑎(𝑡) = 𝑥(𝑡) = −𝜔2 𝐴 cos 𝜔𝑡.
+
+-->
+
+<p>
+
+\begin{equation*}
+x(t) = A\cos \omega t, \qquad a(t) = \ddot x(t) = -\omega ^2 A\cos \omega t.
+\end{equation*}
+
+</p>
+
+<p>
+Підставляючи це прискорення у&nbsp;<span class="textup">(<a href="ch17.html#eq:OscillatingChargeE">17.5</a>)</span>, отримуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{5}\)</span>
+
+<!--
+
+
+                                                                        𝑞𝜔2 𝐴          𝑟
+                                                           𝐸⟂ (𝑡) = −         cos 𝜔(𝑡 − ) sin 𝜃.                                                    (17.6)                            --><a id="eq:OscillatingChargeField"></a><!--
+                                                                         𝑐2 𝑟          𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:OscillatingChargeField} \tcbhighmath { E_\perp (t) = -\frac {q\omega ^2 A}{c^2 r}\,\cos \omega \!\left (t-\frac {r}{c}\right )\sin \theta . }
+\end{equation}
+
+</p>
+
+<p>
+Отже, поле в&nbsp;кожній точці простору гармонічно коливається з&nbsp;тією самою частотою \(\omega \): <em>осцилюючий заряд випромінює монохроматичну хвилю</em>. Формула&nbsp;<span class="textup">(<a
+href="ch17.html#eq:OscillatingChargeField">17.6</a>)</span> справедлива на відстанях \(r\), великих порівняно з&nbsp;амплітудою коливань \(A\) (і, звісно, за умови \(v\ll c\)).
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+<em>Монопольного випромінювання не існує!</em> Ізольований заряд не може «пульсувати» (породжувати хвилю), бо це порушило б закон збереження заряду. Але тоді виникає питання: як же тоді випромінює <em>один</em> заряд, що
+коливається? Відповідь: коли заряд коливається біля певного «центра», він фактично утворює <em><span
+    class="textcolor"
+    style="color:#990000"
+>диполь</span></em> із цим центром&nbsp;— і&nbsp;саме дипольний момент системи й&nbsp;визначає випромінювання. Тому найпростішою системою, здатною ефективно випромінювати, є <em><span
+    class="textcolor"
+    style="color:#990000"
+>електричний диполь</span></em> зі змінним у&nbsp;часі дипольним моментом. До нього ми й&nbsp;переходимо.
+</p>
+</div>
+<!--
+...... section Дипольне випромінювання ......
+-->
+<h4 id="autosec-1259"><span class="sectionnumber">17.3&#x2003;</span>Дипольне випромінювання</h4>
+<a id="main-html-autopage-1259"></a>
+
+
+<p>
+<a id="LWR-ht-dipole-radiation"></a>
+</p>
+<!--
+...... subsection Диполь як елементарний випромінювач ......
+-->
+<h5 id="autosec-1260">Диполь як елементарний випромінювач</h5>
+<a id="main-html-autopage-1260"></a>
+
+
+<p>
+Розглянемо електронейтральну систему з&nbsp;двох зарядів \(+q\) і&nbsp;\(-q\), з&nbsp;яких додатний&nbsp;— нескінченно важкий (і&nbsp;тому нерухомий), а&nbsp;від’ємний вільно рухається (рис.&nbsp;<a
+href="ch17.html#pic:DipoleTwoCharges">17.5</a>). Дипольний момент такої системи та його друга похідна за часом:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{6}\)</span>
+
+<!--
+
+
+                                                                                                         𝐩 = −𝑞𝐫′ ,   𝐩̈ = −𝑞𝐯,̇
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect p = -q\vect r&apos;, \qquad \ddot {\vect p} = -q\dot {\vect v},
+\end{equation*}
+
+</p>
+
+<p>
+де \(\vect v=\dot {\vect r}&apos;\)&nbsp;— швидкість заряду, а&nbsp;\(\dot {\vect v}\)&nbsp;— його прискорення.
+</p>
+
+<figure id="autoid-433" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-239"
+    class="lateximagesource"
+><!--
+          −𝑞
+     𝐫′
++𝑞
+--><img
+   src="main-html-images\image-239.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;17.5. Найпростіша модель диполя: важкий нерухомий заряд \(+q\) і&nbsp;легкий рухомий \(-q\)<a id="pic:DipoleTwoCharges"></a>
+
+</div>
+
+</div>
+
+</figure>
+<!--
+...... subsection Про запізнюючі потенціали (коротко) ......
+-->
+<h5 id="autosec-1264">Про запізнюючі потенціали (коротко)</h5>
+<a id="main-html-autopage-1264"></a>
+
+
+<p>
+Строге виведення полів диполя спирається на розв’язання рівнянь Максвелла через електромагнітні потенціали \(\phi \), \(\vect A\) у&nbsp;калібруванні Лоренца, що приводить до неоднорідного хвильового рівняння Даламбера
+з&nbsp;розв’язками у&nbsp;вигляді <em><span
+    class="textcolor"
+    style="color:#990000"
+>запізнюючих потенціалів</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{6}\)</span>
+
+<!--
+
+
+                                                                                                                 |𝐫 − 𝐫′ |                                     |𝐫 − 𝐫′ |
+                                                                                                    ˆ 𝐣(𝐫′ , 𝑡 −           ) 𝑑𝑉 ′                 ˆ 𝜌(𝐫′ , 𝑡 −           ) 𝑑𝑉 ′
+                                                                                                1                   𝑐                                             𝑐
+                                                                                    𝐀(𝐫, 𝑡) =                                     ,   𝜑(𝐫, 𝑡) =                                 .
+                                                                                                𝑐              |𝐫 − 𝐫′ |                                     |𝐫 − 𝐫′ |
+                                                                                                    𝑉′                                            𝑉′
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect A(\vect r, t)= \frac 1c \iiint \limits _{V&apos;} \frac {\vect j\!\left (\vect r&apos;, t - \dfrac {|\vect r-\vect r&apos;|}{c}\right ) dV&apos;}{|\vect r-\vect r&apos;|}, \qquad \phi (\vect r, t) =
+\iiint \limits _{V&apos;} \frac {\rho \!\left (\vect r&apos;, t - \dfrac {|\vect r-\vect r&apos;|}{c}\right ) dV&apos;}{|\vect r-\vect r&apos;|}.
+\end{equation*}
+
+</p>
+
+<p>
+Ці потенціали називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>запізнюючими</span></em>, бо поле в&nbsp;точці \(\vect r\) у&nbsp;момент \(t\) визначається не миттєвим розподілом зарядів і&nbsp;струмів, а їхнім станом у&nbsp;<em>попередній</em> момент часу \(t-|\vect r-\vect
+r&apos;|/c\)&nbsp;— з&nbsp;урахуванням скінченної швидкості поширення поля. Формально рівняння Даламбера допускають і&nbsp;другий розв’язок, зі знаком «\(+\)» в&nbsp;аргументі (<em><span
+    class="textcolor"
+    style="color:#990000"
+>випереджувальні потенціали</span></em>),&nbsp;— але він не має ясного фізичного сенсу (поле випереджало б причину, яка його породжує) і&nbsp;відкидається на основі <em><span
+    class="textcolor"
+    style="color:#990000"
+>причинності</span></em>. Розкладаючи ці інтеграли в&nbsp;ряд для випадку \(r\gg r&apos;\) (система набагато менша за відстань до спостерігача) і&nbsp;нерелятивістських швидкостей зарядів (\(v\ll c\)), можна довести, що головний член
+розкладу визначається виключно <em><span
+    class="textcolor"
+    style="color:#990000"
+>дипольним моментом</span></em> системи \(\vect p(t-r/c)\)&nbsp;— це й&nbsp;строго обґрунтовує, чому диполь є найпростішим (і&nbsp;найважливішим) елементарним випромінювачем; наступні члени розкладу відповідають
+магнітно-дипольному, електрично-квадрупольному й&nbsp;вищим типам випромінювання, зазвичай значно слабшим за дипольне.
+</p>
+<!--
+...... subsection Поля диполя: ближня й-хвильова зони ......
+-->
+<h5 id="autosec-1265">Поля диполя: ближня й&nbsp;хвильова зони</h5>
+<a id="main-html-autopage-1265"></a>
+
+
+<p>
+Нехай дипольний момент змінюється гармонічно, \(\vect p = \vect p_0\cos \omega t\). Точне вираження полів (у&nbsp;сферичних координатах, з&nbsp;віссю \(z\) уздовж \(\vect p_0\)) містить доданки різного порядку за \(1/r\),
+і&nbsp;його зручно аналізувати окремо у&nbsp;двох граничних випадках.
+</p>
+<!--
+...... paragraph Ближня зона. ......
+-->
+
+
+<p>
+<span class="paragraph" id="autosec-1266">Ближня зона.</span>
+<a id="main-html-autopage-1266"></a>
+Відстань від осцилятора до точки спостереження мала порівняно з&nbsp;довжиною хвилі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{6}\)</span>
+
+<!--
+
+
+                                                                                𝜆
+                                                                         𝑟≪       .                                                                  (17.7)                                   --><a id="eq:NearZoneCondition"></a><!--
+                                                                               2𝜋
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:NearZoneCondition} r \ll \frac \lambda {2\pi }.
+\end{equation}
+
+</p>
+
+<p>
+Тут електричне поле в&nbsp;кожен момент часу \(t\) практично збігається з&nbsp;полем <em>статичного</em> диполя, момент якого дорівнює миттєвому значенню \(p(t)\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{7}\)</span>
+
+<!--
+
+
+                                                                     2 cos 𝜃 𝑝(𝑡)             sin 𝜃 𝑝(𝑡)
+                                                              𝐸𝑟 =                ,    𝐸𝜃 =              ,                                                    (17.8)                                   --><a id="eq:NearZoneE"></a><!--
+                                                                          𝑟3                      𝑟3
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:NearZoneE} E_r = \frac {2\cos \theta \, p(t)}{r^3}, \qquad E_\theta = \frac {\sin \theta \, p(t)}{r^3},
+\end{equation}
+
+</p>
+
+<p>
+а&nbsp;магнітне поле, оскільки \(\dot p(t) = Il\) (де \(I\)&nbsp;— еквівалентний струм, \(l\)&nbsp;— довжина еквівалентного елемента струму), збігається з квазістатичним полем цього елемента струму за законом Біо-Савара-Лапласа:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{8}\)</span>
+
+<!--
+
+                                                                                1
+                                                                         𝐁=          ̇
+                                                                                   [𝐩(𝑡) × 𝐫] .                                                               (17.9)                                   --><a id="eq:NearZoneB"></a><!--
+                                                                               𝑐𝑟3
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:NearZoneB} \Bfield = \frac 1{cr^3}\left [\dot {\vect p}(t)\times \vect r\right ].
+\end{equation}
+
+</p>
+
+<p>
+У&nbsp;ближній зоні поля <em>не запізнюються</em> (запізнення \(r/c \ll T = 2\pi /\omega \)&nbsp;— мізерне порівняно з&nbsp;періодом коливань) і&nbsp;практично збігаються з&nbsp;полями відповідного статичного диполя
+й&nbsp;елемента струму&nbsp;— випромінювання тут ще «не встигло сформуватися».
+</p>
+<!--
+...... paragraph Хвильова зона. ......
+-->
+
+
+<p>
+<span class="paragraph" id="autosec-1267">Хвильова зона.</span>
+<a id="main-html-autopage-1267"></a>
+Відстань, набагато більша за довжину хвилі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{9}\)</span>
+
+<!--
+
+
+                                                                              𝜆
+                                                                        𝑟≫      .                                                             (17.10)                        --><a id="eq:WaveZoneCondition"></a><!--
+                                                                             2𝜋
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:WaveZoneCondition} r \gg \frac \lambda {2\pi }.
+\end{equation}
+
+</p>
+
+<p>
+Тут (рис.&nbsp;<a href="ch17.html#pic:WaveZone">17.6</a>) залишаються лише члени, що спадають як \(1/r\) (решта&nbsp;— швидше, і&nbsp;на великих відстанях нехтовно малі):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{10}\)</span>
+
+<!--
+
+
+                                                                sin 𝜃     𝑟
+                                                   𝐸𝜃 = 𝐵 𝜑 =          ̈ − ),
+                                                                      𝑝(𝑡           𝐸𝑟 = 𝐸𝜑 = 𝐵𝑟 = 𝐵𝜃 = 0.                                        (17.11)                      --><a id="eq:WaveZoneFields"></a><!--
+                                                                 𝑐2 𝑟     𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:WaveZoneFields} \tcbhighmath { E_\theta = B_\phi = \frac {\sin \theta }{c^2r}\,\ddot {p}\!\left (t-\frac {r}c\right ), \qquad E_r=E_\phi =B_r=B_\theta =0. }
+\end{equation}
+
+</p>
+
+<figure id="autoid-434" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="Radiation/Pictures/wave_zone.png" target="_blank" ><img
+   src="Radiation/Pictures/wave_zone.png"
+   style="
+   width:195pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;17.6. Поля \(E_\theta \) і&nbsp;\(B_\phi \) у&nbsp;хвильовій зоні диполя<a id="pic:WaveZone"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+У&nbsp;хвильовій зоні поля \(\Efield \) і&nbsp;\(\Bfield \) поперечні, чисельно рівні одне одному й&nbsp;спадають як \(1/r\)&nbsp;— точнісінько ті самі риси плоскої електромагнітної хвилі (гл.&nbsp;<a
+href="ch16.html#ElMagWaves">16</a>). Крім того, поле залежить від полярного кута \(\theta \): на осі диполя (\(\theta =0,\pi \)) поле дорівнює нулю, максимуму ж воно сягає в&nbsp;екваторіальній площині (\(\theta =\pi /2\))&nbsp;—
+<em>диполь не випромінює вздовж власної осі</em>. У&nbsp;кожній точці хвильової зони вектори \(\Efield \), \(\Bfield \) і&nbsp;\(\vect r\) взаємно перпендикулярні й&nbsp;утворюють правовинтову трійку.
+</p>
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch17.html#eq:WaveZoneFields">17.11</a>)</span>&nbsp;— <em>загальна</em>: вона описує випромінювання будь-якого диполя з&nbsp;довільним законом зміни моменту \(p(t)\). Зокрема,
+для гармонічного осцилятора \(p(t)=p_0\cos \omega t\) вона дає
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{11}\)</span>
+
+<!--
+
+
+                                                                                                               𝑝0 𝜔2          𝑟
+                                                                                                      𝐸𝜃 = −         cos 𝜔(𝑡 − ) sin 𝜃,
+                                                                                                                𝑐2 𝑟          𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+E_\theta = -\frac {p_0\omega ^2}{c^2r}\,\cos \omega \!\left (t-\frac {r}{c}\right )\sin \theta ,
+\end{equation*}
+
+</p>
+
+<p>
+що з&nbsp;точністю до позначень (\(p_0=qA\)) збігається з&nbsp;формулою&nbsp;<span class="textup">(<a href="ch17.html#eq:OscillatingChargeField">17.6</a>)</span>, отриманою вище для осцилюючого заряду. Отже, <em>осцилюючий
+заряд є частковим випадком диполя</em>&nbsp;— і&nbsp;загальна теорія дипольного випромінювання природно узагальнює результати попереднього розділу (рис.&nbsp;<a href="ch17.html#pic:DipoleRadiationSnapshot">17.7</a>).
+</p>
+
+<figure id="autoid-435" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="Radiation/Pictures/dipole_radiation.png" target="_blank" ><img
+   src="Radiation/Pictures/dipole_radiation.png"
+   style="
+   width:217pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;17.7. Електричне поле осцилюючого диполя: у&nbsp;ближній зоні поле ніби «причеплене» до диполя, у хвильовій&nbsp;— випромінюється
+
+</div>
+
+<a id="pic:DipoleRadiationSnapshot"></a>
+
+</div>
+
+</figure>
+<!--
+...... subsection Діаграма спрямованості ......
+-->
+<h5 id="autosec-1270">Діаграма спрямованості</h5>
+<a id="main-html-autopage-1270"></a>
+
+
+<p>
+Кутову залежність інтенсивності випромінювання диполя (\(\propto \sin ^2\theta \)) зручно зображати <em><span
+    class="textcolor"
+    style="color:#990000"
+>полярною діаграмою спрямованості</span></em> (рис.&nbsp;<a href="ch17.html#pic:PolarPattern">17.8</a>): довжина відрізка від початку координат до кривої в&nbsp;напрямку \(\theta \) дорівнює величині поля (чи інтенсивності) у
+цьому напрямку.
+</p>
+
+<figure id="autoid-436" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-240"
+    class="lateximagesource"
+><!--
+𝐩
+
+          𝜃
+
+
+
+
+    Довжина відрізка
+       дорівнює
+     величині поля
+--><img
+   src="main-html-images\image-240.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;17.8. Полярна діаграма спрямованості дипольного випромінювача: характерна форма «бублика»<a id="pic:PolarPattern"></a>
+
+</div>
+
+</div>
+
+</figure>
+<!--
+...... subsection Поляризація випромінювання ......
+-->
+<h5 id="autosec-1274">Поляризація випромінювання</h5>
+<a id="main-html-autopage-1274"></a>
+
+
+<p>
+З&nbsp;формули&nbsp;<span class="textup">(<a href="ch17.html#eq:WaveZoneFields">17.11</a>)</span> видно, що у&nbsp;хвильовій зоні відмінна від нуля лише <em>одна</em> компонента електричного поля&nbsp;— \(E_\theta \):
+вектор \(\Efield \) у&nbsp;кожній точці простору лежить у&nbsp;площині, що проходить через вісь диполя (напрямок \(\vect p\)) і&nbsp;напрямок спостереження \(\vect r\). Оскільки ця площина для заданого напрямку спостереження не
+змінюється з&nbsp;часом (диполь коливається вздовж фіксованої осі), випромінена хвиля виявляється <em><span
+    class="textcolor"
+    style="color:#990000"
+>лінійно поляризованою</span></em>: вектор \(\Efield \) у&nbsp;кожній точці простору коливається вздовж однієї й&nbsp;тієї самої прямої, а&nbsp;не обертається й&nbsp;не описує еліпс. Це не просто математична деталь: саме завдяки
+лінійній поляризації дипольного випромінювання приймальні антени ефективно вловлюють сигнал лише тоді, коли їх зорієнтовано <em>вздовж</em> площини коливань поля хвилі (детальніше&nbsp;— нижче), а&nbsp;поляризаційні світлофільтри
+здатні пропускати чи затримувати світло певної поляризації (детальніше про поляризацію&nbsp;— гл.&nbsp;<a href="ch16.html#ElMagWaves">16</a>).
+</p>
+<!--
+...... section Потужність випромінювання осцилятора ......
+-->
+<h4 id="autosec-1275"><span class="sectionnumber">17.4&#x2003;</span>Потужність випромінювання осцилятора</h4>
+<a id="main-html-autopage-1275"></a>
+
+
+<p>
+<a id="LWR-ht-oscillator-radiated-power"></a>
+</p>
+
+<p>
+Густина потоку електромагнітної енергії характеризується вектором Пойнтінга \(\vect \Pi \) (гл.&nbsp;<a href="ch14.html#MaxwellEqns">14</a>); потік енергії крізь поверхню сфери радіуса \(r\), що оточує осцилятор, і&nbsp;називають
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>потужністю випромінювання</span></em>. Елемент площі сфери в&nbsp;сферичних координатах \(d\sigma = r^2\sin \theta \, d\theta \, d\phi \), тому, підставляючи поля хвильової зони&nbsp;<span class="textup">(<a
+href="ch17.html#eq:WaveZoneFields">17.11</a>)</span> у&nbsp;\(\Pi = \dfrac {c}{4\pi }EB = \dfrac {c}{4\pi }E^2\):
+</p>
+<span class="hidden"> \(\seteqnumber{0}{17.}{11}\)</span>
+
+
+<!--
+
+
+
+          ˛               ˆ2𝜋ˆ𝜋                     2
+  𝑑𝑊                  𝑐               sin 𝜃     𝑟
+      =       Π 𝑑𝜍 =              [          ̈ − )] 𝑟2 sin 𝜃 𝑑𝜃 𝑑𝜑
+                                            𝑝(𝑡
+   𝑑𝑡                4𝜋                𝑐2 𝑟     𝑐
+          𝜍               0 0
+                                                                                                                    =
+                                                                                                                                                                                𝑟     ˆ𝜋
+                                                                                                                                                                    𝑝2̈ (𝑡 −      )
+                                                                                                                                                                                𝑐 ⋅ 2𝜋 sin3 𝜃 𝑑𝜃.   (17.12)--><a id="eq:PowerInstant"></a><!--
+                                                                                                                                                                         4𝜋𝑐3
+                                                                                                                                                                                      0
+
+
+
+-->
+
+
+<p>
+
+\begin{multline}
+\label {eq:PowerInstant} \frac {dW}{dt} = \oiint \limits _\sigma \Pi \, d\sigma = \frac {c}{4\pi }\int \limits _0^{2\pi }\!\!\int \limits _0^\pi \left [\frac {\sin \theta }{c^2r}\, \ddot {p}\!\left (t-\frac
+{r}{c}\right )\right ]^2 r^2\sin \theta \, d\theta \, d\phi \\=\\ \frac {\ddot {p}^2\!\left (t-\dfrac {r}{c}\right )}{4\pi c^3}\cdot 2\pi \int \limits _0^\pi \sin ^3\theta \, d\theta .
+\end{multline}
+Оскільки \(\displaystyle \int _0^\pi \sin ^3\theta \,d\theta = \frac 43\), отримуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{12}\)</span>
+
+<!--
+
+
+                                                                                      𝑟
+                                                                       𝑑𝑊    2𝑝2̈ (𝑡 − )
+                                                                           =          𝑐 .                                                                      (17.13)                              --><a id="eq:PowerInstantResult"></a><!--
+                                                                        𝑑𝑡        3𝑐3
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PowerInstantResult} \tcbhighmath { \frac {dW}{dt} = \frac {2\ddot {p}^2\!\left (t-\dfrac {r}{c}\right )}{3c^3}. }
+\end{equation}
+
+</p>
+
+<p>
+Тут \(\ddot {p}\)&nbsp;— друга похідна дипольного моменту за часом (тобто «прискорення» дипольного моменту). Для гармонічного осцилятора \(p=p_0\cos \omega t\), \(\ddot {p} = -\omega ^2p_0\cos \omega t\), і, усереднюючи за період
+(\(\langle \cos ^2\rangle =1/2\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{13}\)</span>
+
+<!--
+
+
+                                                                               𝑑𝑊     𝜔4 𝑝20
+                                                                           ⟨       ⟩=        .                                                                       (17.14)                            --><a id="eq:PowerAveraged"></a><!--
+                                                                                𝑑𝑡     3𝑐3
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PowerAveraged} \tcbhighmath { \left \langle \frac {dW}{dt}\right \rangle = \frac {\omega ^4p_0^2}{3c^3}. }
+\end{equation}
+
+</p>
+
+<figure id="autoid-437" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="Radiation/Pictures/HalfWaveDipole.jpg" target="_blank" ><img
+   src="Radiation/Pictures/HalfWaveDipole.jpg"
+   style="
+   width:434pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;17.9. Реальна півхвильова дипольна антена<a id="pic:HalfWaveDipole"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Середня потужність випромінювання осцилятора пропорційна квадрату амплітуди дипольного моменту \(p_0\) і&nbsp;— значно різкіше&nbsp;— <em>четвертому степені частоти</em> \(\omega \). Саме тому для радіозв’язку використовують
+відносно <em>короткі</em> хвилі (десятки метрів&nbsp;— кілометри, тобто порівняно високі частоти за мірками радіодіапазону): довгі хвилі (наднизькі частоти) від повільно змінних струмів практично не випромінюються&nbsp;— \(\omega ^4\)
+у&nbsp;чисельнику дає надзвичайно різкий виграш у&nbsp;потужності випромінювання. Реальні радіоантени часто мають розмір порядку половини довжини хвилі — саме такі <em>півхвильові диполі</em> (рис.&nbsp;<a
+href="ch17.html#pic:HalfWaveDipole">17.9</a>) найефективніше випромінюють і&nbsp;приймають електромагнітні хвилі.
+</p>
+<!--
+...... subsection Розсіювання світла: чому небо блакитне ......
+-->
+<h5 id="autosec-1277">Розсіювання світла: чому небо блакитне</h5>
+<a id="main-html-autopage-1277"></a>
+
+
+<p>
+Тим же характером залежності випромінювання осцилятора від частоти пояснюється, зокрема, і&nbsp;блакитний колір неба (рис.&nbsp;<a href="ch17.html#pic:BlueSky">17.10</a>). Сонячне світло, що пронизує атмосферу, розсіюється
+молекулами повітря, які можна вважати елементарними осциляторами: під впливом світлової хвилі вони здійснюють <em><span
+    class="textcolor"
+    style="color:#990000"
+>вимушені</span></em> коливання. Оскільки період власних коливань цих молекул істотно відрізняється від періоду видимого світла (резонанс відсутній), амплітуда вимушених коливань слабко залежить від частоти хвилі, тому інтенсивність
+розсіяного світла, тобто інтенсивність випромінювання цих вимушених осциляторів, за формулою&nbsp;<span class="textup">(<a href="ch17.html#eq:PowerAveraged">17.14</a>)</span>, обернено пропорційна \(\lambda ^4\) (позаяк
+\(\omega \propto 1/\lambda \)). Тому короткохвильове (синє) світло розсіюється значно сильніше, ніж довгохвильове (червоне),&nbsp;— і&nbsp;небо здається блакитним.
+</p>
+
+<figure id="autoid-438" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="Radiation/Pictures/BlueSky.jpg" target="_blank" ><img
+   src="Radiation/Pictures/BlueSky.jpg"
+   style="
+   width:434pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;17.10. Розсіювання сонячного світла молекулами атмосфери&nbsp;— причина блакитного кольору неба<a id="pic:BlueSky"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Та сама залежність \(\propto 1/\lambda ^4\) пояснює і, на перший погляд, протилежне явище&nbsp;— <em>червоне Сонце на заході</em>. Коли Сонце стоїть низько над горизонтом, його промені, перш ніж дістатися ока спостерігача, проходять
+крізь <em>набагато товщий</em> шар атмосфери, ніж опівдні. Синя й&nbsp;фіолетова складові світла, розсіюючись найсильніше, встигають майже повністю «вибути» з&nbsp;прямого пучка вздовж цього довгого шляху (розсіюючись убік&nbsp;—
+це і&nbsp;є та сама блакить, яку ми бачимо, дивлячись не на Сонце, а&nbsp;в&nbsp;інший бік неба); до ока ж у&nbsp;прямому напрямку доходить переважно те, що лишилося в&nbsp;пучку,&nbsp;— довгохвильове, червоно-жовтогаряче світло.
+Отже, блакитне небо вдень і&nbsp;червоне Сонце на заході&nbsp;— два прояви однієї й&nbsp;тієї самої фізики <em><span
+    class="textcolor"
+    style="color:#990000"
+>релеївського розсіювання</span></em>: розсіяне вбік світло&nbsp;— блакитне, послаблений розсіюванням прямий пучок&nbsp;— червоний.
+</p>
+<!--
+...... subsection Опір випромінювання ......
+-->
+<h5 id="autosec-1279">Опір випромінювання</h5>
+<a id="main-html-autopage-1279"></a>
+
+
+<p>
+З&nbsp;погляду генератора, що живить антену змінним струмом, випромінена антеною енергія&nbsp;— це енергія, яка <em>безповоротно</em> йде з&nbsp;кола, точнісінько так само, як і&nbsp;енергія, що розсіюється на звичайному омічному
+опорі. Тому в&nbsp;теорії кіл зручно формально ввести <em><span
+    class="textcolor"
+    style="color:#990000"
+>опір випромінювання</span></em> \(R_\text {вип}\)&nbsp;— такий еквівалентний опір, що виділяв би в&nbsp;собі ту саму середню потужність \(\langle dW/dt\rangle \) при тому самому амплітудному струмі \(I_0\) в&nbsp;антені, який
+реально в&nbsp;ній тече:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{14}\)</span>
+
+<!--
+
+
+                                                                                                                𝑑𝑊     1
+                                                                                                            ⟨       ⟩ ≡ 𝐼02 𝑅вип .
+                                                                                                                 𝑑𝑡    2
+
+-->
+
+<p>
+
+\begin{equation*}
+\left \langle \frac {dW}{dt}\right \rangle \equiv \frac 12 I_0^2 R_\text {вип}.
+\end{equation*}
+
+</p>
+
+<p>
+Це дозволяє формально врахувати випромінювання нарівні зі звичайними тепловими втратами при розрахунку електричних кіл антен, хоча фізична природа цих «втрат» зовсім інша: енергія не переходить у&nbsp;тепло всередині самої антени,
+а&nbsp;назавжди йде з&nbsp;нею у&nbsp;вигляді електромагнітної хвилі. Той самий півхвильовий диполь чудово працює й&nbsp;у&nbsp;зворотному режимі&nbsp;— як приймальна антена (це&nbsp;— наслідок <em><span
+    class="textcolor"
+    style="color:#990000"
+>теореми взаємності</span></em>: та сама геометрія провідника, що ефективно перетворює змінний струм на хвилю, так само ефективно перетворює енергію набігаючої хвилі назад у&nbsp;струм в антені). Саме тому характеристики
+антени&nbsp;— діаграма спрямованості й&nbsp;поляризаційні властивості&nbsp;— однакові й&nbsp;для передавання, і&nbsp;для приймання.
+</p>
+<!--
+...... section Випромінювання рухомого заряду ......
+-->
+<h4 id="autosec-1280"><span class="sectionnumber">17.5&#x2003;</span>Випромінювання рухомого заряду</h4>
+<a id="main-html-autopage-1280"></a>
+
+
+<p>
+<a id="LWR-ht-moving-charge-radiation"></a>
+</p>
+
+<p>
+Скориставшись моделлю «важкий \(+q\)&nbsp;— легкий рухомий \(-q\)» (див. рис.&nbsp;<a href="ch17.html#pic:DipoleTwoCharges">17.5</a>) і&nbsp;формулою&nbsp;<span class="textup">(<a
+href="ch17.html#eq:PowerInstantResult">17.13</a>)</span>, підставимо \(\ddot {\vect p} = -q\dot {\vect v}\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{14}\)</span>
+
+<!--
+
+
+                                                                          𝑑𝑊   2𝑞2
+                                                                              = 3 𝐯̇ 2 .                                                                        (17.15)                      --><a id="eq:LarmorFormula"></a><!--
+                                                                           𝑑𝑡  3𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:LarmorFormula} \tcbhighmath { \frac {dW}{dt} = \frac {2q^2}{3c^3}\dot {\vect v}^2. }
+\end{equation}
+
+</p>
+
+<p>
+Тут \(\dot {\vect v}\)&nbsp;— прискорення заряду (друга похідна його радіус-вектора за часом). Формулу&nbsp;<span class="textup">(<a href="ch17.html#eq:LarmorFormula">17.15</a>)</span> називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>формулою Лармора</span></em>.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch17.html#eq:LarmorFormula">17.15</a>)</span>&nbsp;— один із найважливіших результатів класичної електродинаміки: <em>будь-який</em> заряд, що рухається з&nbsp;прискоренням,
+неминуче випромінює електромагнітну енергію, причому втрачена потужність залежить <em>лише</em> від заряду й&nbsp;миттєвого прискорення&nbsp;— і&nbsp;зовсім не залежить від того, чому саме заряд прискорюється (електричне поле,
+магнітне поле, механічний поштовх). Заряд, що рухається <em>рівномірно</em> й&nbsp;прямолінійно (\(\dot {\vect v}=0\)), не випромінює взагалі&nbsp;— випромінює лише <em>прискорений</em> заряд.
+</p>
+</div>
+<!--
+...... subsection Гальмівне випромінювання ......
+-->
+<h5 id="autosec-1281">Гальмівне випромінювання</h5>
+<a id="main-html-autopage-1281"></a>
+
+
+<p>
+Різке гальмування швидких заряджених частинок&nbsp;— поширений і&nbsp;технологічно важливий прояв формули Лармора, який називають <em><span
+     class="textcolor"
+     style="color:#990000"
+>гальмівним випромінюванням</span></em> (нім. <i>Bremsstrahlung</i>). Саме на ньому ґрунтується робота рентгенівської трубки: пучок електронів, розігнаний високою напругою (десятки кіловольт), влучає в&nbsp;металевий анод і&nbsp;різко
+(за характерний час порядку розміру атома) гальмується електричним полем атомних ядер речовини анода. За формулою&nbsp;<span class="textup">(<a href="ch17.html#eq:LarmorFormula">17.15</a>)</span> таке величезне (від’ємне)
+прискорення неминуче супроводжується випромінюванням; оскільки різні електрони пучка гальмуються по-різному&nbsp;— одні зупиняються практично одразу в&nbsp;одному зіткненні, інші&nbsp;— поступово, за кілька послідовних зіткнень,
+віддаючи енергію частинами,&nbsp;— випромінювання виходить не на одній частоті, а&nbsp;суцільним спектром. Саме так рентгенівські трубки й отримують потрібне для медичної діагностики, дефектоскопії металів та рентгеноструктурного
+аналізу випромінювання.
+</p>
+<!--
+...... subsection Синхротронне випромінювання ......
+-->
+<h5 id="autosec-1282">Синхротронне випромінювання</h5>
+<a id="main-html-autopage-1282"></a>
+
+
+<p>
+Той самий принцип&nbsp;— прискорено рухомий по коловій траєкторії заряд неминуче випромінює&nbsp;— працює не лише для кулонівського притягання, а&nbsp;й для руху заряджених частинок по колу в&nbsp;магнітному полі (де
+прискорення забезпечує сила Лоренца, а&nbsp;не кулонівська сила). На цьому явищі, яке називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>синхротронним випромінюванням</span></em>, ґрунтується робота потужних лабораторних джерел рентгенівського й&nbsp;ультрафіолетового випромінювання (синхротронів) для дослідження речовини й&nbsp;матеріалів; водночас воно
+ж&nbsp;— головне джерело небажаних втрат енергії в&nbsp;кільцевих прискорювачах заряджених частинок. Оскільки втрати різко зростають зі зменшенням маси частинки, для легких, ультрарелятивістських електронів синхротронні втрати на
+коловій орбіті стають катастрофічними&nbsp;— саме тому найбільші сучасні прискорювачі електронів і&nbsp;позитронів роблять <em>лінійними</em>, тоді як важчі протони (Великий адронний колайдер) і&nbsp;далі успішно прискорюють по
+кільцю.
+</p>
+<!--
+...... subsection Стабільність атома: класична суперечність ......
+-->
+<h5 id="autosec-1283">Стабільність атома: класична суперечність</h5>
+<a id="main-html-autopage-1283"></a>
+
+
+<p>
+Формула Лармора має й&nbsp;драматичний історичний наслідок: електрон, що обертається по коловій орбіті навколо ядра (як у&nbsp;класичній «планетарній» моделі атома Резерфорда), рухається з&nbsp;доцентровим прискоренням,
+а&nbsp;отже, за&nbsp;<span class="textup">(<a href="ch17.html#eq:LarmorFormula">17.15</a>)</span>, <em>неминуче випромінює</em> й&nbsp;безперервно втрачає енергію. Оцінка (аналогічна до задачі&nbsp;3 нижче) показує, що
+класичний електрон мав би <em>впасти на ядро</em> за час порядку \(10^{-11}\)&nbsp;с&nbsp;— атоми в&nbsp;такій моделі просто не могли б бути стабільними!
+</p>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> Суперечність між класичною електродинамікою й&nbsp;спостережуваною стабільністю атомів стала одним з&nbsp;головних поштовхів до створення квантової механіки: М.&nbsp;Бор 1913&nbsp;р. був змушений
+постулювати, що на деяких («стаціонарних») орбітах електрон <em>всупереч</em> класичній електродинаміці не випромінює&nbsp;— цей постулат, який не мав жодного пояснення в&nbsp;межах класичної фізики, згодом отримав строге
+обґрунтування вже в&nbsp;повній квантовій теорії.
+</p>
+</div>
+<!--
+...... subsection Реакція випромінювання і-парадокси самодії ......
+-->
+<h5 id="autosec-1284">Реакція випромінювання і&nbsp;парадокси самодії</h5>
+<a id="main-html-autopage-1284"></a>
+
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch17.html#eq:LarmorFormula">17.15</a>)</span> описує втрату енергії, але не пояснює, <em>як саме</em> заряд «відчуває» цю втрату. Якщо заряд випромінює, то на нього має діяти додаткова
+сила з&nbsp;боку його власного поля&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>сила реакції випромінювання</span></em> (самодія). У&nbsp;класичній електродинаміці її записують у&nbsp;вигляді формули Абрагама-Лоренца:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{15}\)</span>
+
+<!--
+
+
+                                                                                    2𝑞2
+                                                                           𝐅rad =       𝐯.̈                                                                     (17.16)                     --><a id="eq:RadiationReaction"></a><!--
+                                                                                    3𝑐3
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RadiationReaction} \vect F_{\rm rad} = \frac {2q^2}{3c^3}\,\ddot {\vect v}.
+\end{equation}
+
+</p>
+
+<p>
+Тут \(\ddot {\vect v}\)&nbsp;— <em>третя</em> похідна радіус-вектора заряду за часом (похідна прискорення, його «ривок»). Через це рівняння руху заряду з&nbsp;урахуванням&nbsp;<span class="textup">(<a
+href="ch17.html#eq:RadiationReaction">17.16</a>)</span> стає диференціальним рівнянням <em>третього</em> порядку&nbsp;— і&nbsp;саме звідси виникають класичні парадокси.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Рівняння з&nbsp;третьою похідною має, крім фізичних, два неприйнятні типи розв’язків:
+</p>
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>самочинний розгін</span></em> (runaway): заряд без зовнішніх сил експоненційно збільшує прискорення, тобто енергія нібито береться «нізвідки»;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>передприскорення</span></em> (pre-acceleration): заряд починає реагувати на силу ще до того, як вона ввімкнулася, що в наївному вигляді порушує причинність.
+</p>
+</li>
+</ul>
+
+<p>
+До цього додається проблема точкового заряду: його власна енергія розбігається, і&nbsp;коректне віднімання нескінченностей вимагає перенормування. У&nbsp;межах класичної електродинаміки ці труднощі так і&nbsp;не були остаточно
+подолані&nbsp;— вони стали одним із кроків до квантової електродинаміки, де реакція випромінювання описується випромінюванням реальних фотонів та обміном віртуальними.
+</p>
+</div>
+<!--
+...... section Підсумки ......
+-->
+<h4 id="autosec-1285">Підсумки</h4>
+<a id="main-html-autopage-1285"></a>
+
+
+<p>
+Розділ про випромінювання замикає весь курс електрики й&nbsp;магнетизму найглибшим можливим підсумком: <em>будь-який</em> прискорений заряд неминуче породжує хвилю, що назавжди йде від нього в&nbsp;навколишній
+простір,&nbsp;— а&nbsp;електромагнітне поле остаточно постає перед нами не як допоміжна математична конструкція для опису сил між зарядами, а&nbsp;як цілком самостійна, фізично реальна субстанція, здатна існувати, поширюватись
+і&nbsp;переносити енергію <em>без</em> будь-яких зарядів поблизу. Саме на цьому явищі&nbsp;— випромінюванні прискорених зарядів — ґрунтується вся радіотехніка, вся астрофізика випромінювання зір і&nbsp;туманностей, і, зрештою, саме
+воно&nbsp;— а&nbsp;не якийсь окремий, спеціально влаштований «носій світла»&nbsp;— відповідає за існування й&nbsp;поширення видимого світла в&nbsp;природі.
+</p>
+<!--
+...... section Задачі ......
+-->
+<h4 id="autosec-1286">Задачі</h4>
+<a id="main-html-autopage-1286"></a>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-439"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 17.1.</span></span> <a id="autoid-440" ></a >Електромагнітна хвиля, що випромінюється диполем, поширюється у&nbsp;вакуумі так, що у&nbsp;хвильовій зоні на
+промені, перпендикулярному до осі диполя, на відстані \(r\) від нього середнє значення густини потоку енергії дорівнює \(\langle \Pi \rangle \). Знайти середню потужність випромінювання диполя.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Розв’язання..</b> У&nbsp;хвильовій зоні на промені, перпендикулярному до осі диполя (\(\theta =\pi /2\)), \(\sin \theta =1\), і
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{16}\)</span>
+
+<!--
+
+
+                                                                                                              𝑐           𝑐   ⟨𝑝2̈ ⟩    ⟨𝑝2̈ ⟩
+                                                                                                    ⟨Π⟩ =       ⟨𝐸 2 ⟩ =    ⋅        =         .
+                                                                                                             4𝜋          4𝜋 𝑐4 𝑟2      4𝜋𝑐3 𝑟2
+
+-->
+
+<p>
+
+\begin{equation*}
+\langle \Pi \rangle = \frac {c}{4\pi }\langle E^2\rangle = \frac {c}{4\pi }\cdot \frac {\langle \ddot {p}^2\rangle }{c^4r^2} = \frac {\langle \ddot {p}^2\rangle }{4\pi c^3r^2}.
+\end{equation*}
+
+</p>
+
+<p>
+Звідси \(\langle \ddot {p}^2\rangle = 4\pi c^3r^2\langle \Pi \rangle \). Підставляючи в&nbsp;<span class="textup">(<a href="ch17.html#eq:PowerInstantResult">17.13</a>)</span>, усереднене за часом:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{16}\)</span>
+
+<!--
+
+
+                                                                                                        𝑑𝑊      2                 8𝜋𝑟2
+                                                                                                    ⟨       ⟩ = 3 ⋅ 4𝜋𝑐3 𝑟2 ⟨Π⟩ =      ⟨Π⟩.
+                                                                                                         𝑑𝑡    3𝑐                  3
+
+-->
+
+<p>
+
+\begin{equation*}
+\left \langle \frac {dW}{dt}\right \rangle = \frac {2}{3c^3}\cdot 4\pi c^3r^2\langle \Pi \rangle = \frac {8\pi r^2}{3}\langle \Pi \rangle .
+\end{equation*}
+
+</p>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-441"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 17.2.</span></span> <a id="autoid-442" ></a >Сталий за модулем електричний дипольний момент \(\vect p\) обертають з&nbsp;кутовою швидкістю \(\omega \) навколо
+осі, перпендикулярної до осі диполя й&nbsp;що проходить через його середину. Знайти потужність випромінювання диполя.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Розв’язання..</b> Розкладемо вектор диполя на дві взаємно перпендикулярні складові в&nbsp;площині обертання: \(p_x=p\cos \omega t\), \(p_y=p\sin \omega t\). Тоді
+</p>
+<span class="hidden"> \(\seteqnumber{0}{17.}{16}\)</span>
+
+
+<!--
+
+
+
+   ̈ = −𝑝𝜔2 cos 𝜔𝑡,
+  𝑝𝑥                  𝑝𝑦̈ = −𝑝𝜔2 sin 𝜔𝑡,
+                                                                                                                                                                                𝐩̈ 2 = 𝑝2𝑥̈ + 𝑝2𝑦̈ = 𝑝2 𝜔4 (cos2 𝜔𝑡 + sin2 𝜔𝑡) = 𝑝2 𝜔4 = const .
+
+
+
+-->
+
+
+<p>
+
+\begin{multline*}
+\ddot p_x = -p\omega ^2\cos \omega t, \qquad \ddot p_y = -p\omega ^2\sin \omega t, \\ \ddot {\vect p}^{\,2} = \ddot p_x^2+\ddot p_y^2 = p^2\omega ^4\left (\cos ^2\omega t+\sin ^2\omega t\right ) = p^2\omega ^4
+= \const .
+\end{multline*}
+За формулою&nbsp;<span class="textup">(<a href="ch17.html#eq:PowerInstantResult">17.13</a>)</span> (яка тут одразу постійна в&nbsp;часі, тож усереднення не потрібне):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{16}\)</span>
+
+<!--
+
+
+                                                                                                             𝑑𝑊    2𝑝2 𝜔4
+                                                                                                                 =
+                                                                                                              𝑑𝑡    3𝑐3
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {dW}{dt} = \frac {2p^2\omega ^4}{3c^3}
+\end{equation*}
+
+</p>
+
+<p>
+— рівно вдвічі більше, ніж у&nbsp;лінійного осцилятора&nbsp;<span class="textup">(<a href="ch17.html#eq:PowerAveraged">17.14</a>)</span> з&nbsp;тією самою амплітудою \(p\).
+</p>
+
+<p>
+<em>Зауваження</em>: обертовий диполь&nbsp;— це суперпозиція <em>двох</em> лінійних осциляторів у&nbsp;взаємно перпендикулярних напрямках, зсунутих за фазою на \(90^\circ \). Оскільки миттєва потужність кожного окремого
+осцилятора коливається в&nbsp;протифазі до іншої (коли \(\cos ^2\omega t\) максимальний, \(\sin ^2\omega t\)&nbsp;— мінімальний, і&nbsp;навпаки), їхня <em>сума</em> виявляється сталою в&nbsp;часі, а&nbsp;не лише
+в&nbsp;середньому,&nbsp;— обертовий диполь випромінює цілком рівномірно, без пульсацій потужності.
+</p>
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-443"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 17.3.</span></span> <a id="autoid-444" ></a >Знайти потужність випромінювання нерелятивістської частинки із зарядом \(e\) і&nbsp;масою \(m\), що рухається коловою
+орбітою радіуса \(R\) у&nbsp;полі нерухомого точкового заряду \(q\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Розв’язання..</b> Кулонівська сила забезпечує доцентрове прискорення: \(\dfrac {eq}{R^2} = \dfrac {mv^2}{R}\), звідки доцентрове прискорення
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{16}\)</span>
+
+<!--
+
+
+                                                                                                                     𝑣2    𝑒𝑞
+                                                                                                              𝑣̇ =      =     .
+                                                                                                                     𝑅    𝑚𝑅2
+
+-->
+
+<p>
+
+\begin{equation*}
+\dot v = \frac {v^2}{R} = \frac {eq}{mR^2}.
+\end{equation*}
+
+</p>
+
+<p>
+Підставляючи у&nbsp;формулу Лармора&nbsp;<span class="textup">(<a href="ch17.html#eq:LarmorFormula">17.15</a>)</span>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{17.}{16}\)</span>
+
+<!--
+
+
+                                                                                                       𝑑𝑊   2𝑒2 𝑒𝑞 2    2𝑒4 𝑞2
+                                                                                                           = 3(    ) = 3 2 4.
+                                                                                                        𝑑𝑡  3𝑐 𝑚𝑅2    3𝑐 𝑚 𝑅
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {dW}{dt} = \frac {2e^2}{3c^3}\left (\frac {eq}{mR^2}\right )^2 = \frac {2e^4q^2}{3c^3m^2R^4}.
+\end{equation*}
+
+</p>
+
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+Саме ця формула (з&nbsp;\(e=q=\) заряд електрона, \(m=\) маса електрона, \(R\sim 10^{-10}\)&nbsp;м&nbsp;— розмір атома) і&nbsp;дає ту саму драматичну оцінку часу падіння класичного електрона на ядро \(\sim 10^{-11}\)&nbsp;с, про яку
+йшлося вище. Той самий принцип працює й&nbsp;для руху заряджених частинок по колу в&nbsp;магнітному полі (сила Лоренца замість кулонівської)&nbsp;— це <em><span
+    class="textcolor"
+    style="color:#990000"
+>синхротронне випромінювання</span></em>, про яке йшлося вище.
+</p>
+</div>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> У&nbsp;чому полягав дослід Герца 1888&nbsp;р.? Як була влаштована установка з&nbsp;випромінювальним та приймальним вібраторами, і&nbsp;чому в&nbsp;приймачі виникає резонансний відгук?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Чим електромагнітна хвиля принципово відрізняється від статичних електричного й&nbsp;магнітного полів у&nbsp;сенсі зв’язку з&nbsp;джерелом?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Опишіть якісну картину випромінювання короткочасно прискореного заряду: чим відрізняється поле, яке бачить зовнішній спостерігач, від поля, яке бачить внутрішній, і&nbsp;що відбувається
+в&nbsp;проміжній сферичній оболонці товщиною \(c\tau \)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> Чому саме необхідність «зшити» без розриву силові лінії поля до й&nbsp;після прискорення заряду породжує додаткову поперечну складову поля?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Виведіть формулу поперечної складової поля випромінювання \(E_\perp = \dfrac {q}{c^2r}\,a(t-r/c)\sin \theta \), використовуючи подібність трикутників у&nbsp;зламі силової лінії.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> Чому напруженість поля хвилі спадає як \(1/r\), на відміну від електростатичного поля \(\propto 1/r^2\)? Як це узгоджується із законом збереження енергії?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> Що таке час запізнення і&nbsp;чому поле випромінювання в&nbsp;момент \(t\) визначається прискоренням заряду не в&nbsp;цей самий момент, а&nbsp;в&nbsp;момент \(t-r/c\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Чому монопольного випромінювання не існує? Як ізольований коливний заряд, попри закон збереження заряду, все ж утворює випромінюючу систему&nbsp;— диполь?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> Що таке запізнюючі потенціали і&nbsp;чим вони відрізняються від випереджувальних? Чому саме запізнюючий розв’язок відповідає фізичній причинності?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Чим поле диполя в&nbsp;ближній зоні (\(r\ll \lambda /2\pi \)) відрізняється від поля в&nbsp;хвильовій зоні (\(r\gg \lambda /2\pi \))? Чому в&nbsp;ближній зоні поле практично збігається зі
+статичним полем диполя того самого моментального значення \(p(t)\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> Запишіть поля хвильової зони диполя \(E_\theta =B_\phi =\sin \theta \,\ddot {p}(t-r/c)/(c^2r)\). Які риси плоскої електромагнітної хвилі вони відтворюють? Чому диполь не випромінює вздовж
+власної осі?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Що таке діаграма спрямованості дипольного випромінювача? Чому вона має характерну форму «бублика», з&nbsp;максимумом в&nbsp;екваторіальній площині?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">13.</span> Чому випромінювання диполя виявляється лінійно поляризованим? Яке практичне значення це має для орієнтації приймальних антен?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">14.</span> Виведіть формулу миттєвої потужності дипольного випромінювання \(dW/dt = 2\ddot {p}^2(t-r/c)/(3c^3)\), інтегруючи вектор Пойнтінга по сфері у&nbsp;хвильовій зоні.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">15.</span> Виведіть середню потужність випромінювання гармонічного осцилятора \(\langle dW/dt\rangle = \omega ^4p_0^2/(3c^3)\). Чому саме різка залежність від четвертого степеня частоти пояснює
+перевагу коротких хвиль для ефективного радіовипромінювання?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">16.</span> Поясніть, чому небо блакитне, спираючись на залежність інтенсивності розсіяного світла \(\propto 1/\lambda ^4\). Як та сама залежність пояснює червоний колір Сонця на заході?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">17.</span> Що таке опір випромінювання антени? Чим фізична природа цих «втрат» відрізняється від звичайних омічних втрат, попри формальну схожість у&nbsp;розрахунку кіл?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">18.</span> Виведіть формулу Лармора \(dW/dt = 2q^2\dot {\vect v}^2/(3c^3)\) для потужності випромінювання довільного прискореного заряду. Чому рівномірно рухомий заряд не випромінює взагалі?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">19.</span> Що таке гальмівне випромінювання (Bremsstrahlung)? Чому воно виходить не на одній частоті, а&nbsp;суцільним спектром, і&nbsp;як це використовується в&nbsp;рентгенівських трубках?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">20.</span> Що таке синхротронне випромінювання? Чому синхротронні втрати особливо катастрофічні для легких ультрарелятивістських частинок, і&nbsp;чому це змушує будувати найбільші прискорювачі
+електронів лінійними, а&nbsp;не кільцевими?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">21.</span> У&nbsp;чому полягає класична суперечність між формулою Лармора та стабільністю атома? Який історичний вихід із цієї суперечності запропонував Бор?
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>

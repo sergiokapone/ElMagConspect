@@ -545,6 +545,37 @@ nav.toc .sidetoc-appendix-title{
 #search mjx-container[display="true"] { display: block; margin: .4rem 0; overflow-x: auto; overflow-y: hidden; }
 #search a mjx-container, #search a mjx-container * { color: inherit !important; }
 
+/* 9. Відступи: без них поле й результати впираються в краї бічної панелі */
+#search { padding: .8rem .6rem .2rem; }
+
+/* 10. Кнопка «Очистити»: її підпис має змінну ширину (≈93px і більше) при правому відступі поля лише ≈57px —
+   вона наїжджала на введений текст, а у вузькій панелі виступала за її межі. Тому це хрестик фіксованого
+   розміру; підпис лишається в DOM (font-size:0 ховає його лише візуально), підказку-title додає book.js. */
+#search .pagefind-ui__search-input { padding-right: 2.9rem !important; }
+#search .pagefind-ui__search-clear {
+  box-sizing: border-box; width: 1.9rem; height: 1.9rem; min-width: 0; padding: 0 !important; margin: 0;
+  top: calc((64px * var(--pagefind-ui-scale) - 1.9rem) / 2) !important; right: .55rem !important;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+  font-size: 0 !important; line-height: 0; cursor: pointer;
+  border: 0; border-radius: 50%; background: rgba(255, 255, 255, .1) !important;
+}
+#search .pagefind-ui__search-clear::before {
+  content: "\00d7"; font: 400 1.3rem/1 var(--sans); color: #d9e2f3; transform: translateY(-.05em);
+}
+#search .pagefind-ui__search-clear:hover { background: rgba(255, 255, 255, .22) !important; }
+#search .pagefind-ui__search-clear:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+/* ── Посилання на сторінку посібника (index.html) і PDF: дописує publish_html.py ── */
+.sidetoctitle .sidetoc-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .15rem .55rem;
+  margin-top: .45rem; font-size: .8rem; color: var(--side-dim); }
+.sidetoc-meta a { color: #d9e2f3; text-decoration: none; font-weight: 500; }
+.sidetoc-meta a:hover { color: var(--gold); text-decoration: underline; }
+/* головна сторінка книги (без бічної панелі): рядок над назвою */
+.book-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .2rem .6rem;
+  margin: 0 0 1.2rem; font: .85rem/1.4 var(--sans); opacity: .8; }
+.book-meta a { text-decoration: none; }
+.book-meta a:hover { text-decoration: underline; }
+
 /* ── Мобільна адаптація пошуку ──────────────────────────────── */
 @media (max-width: 980px) {
   #search .pagefind-ui__search-input {

@@ -1,0 +1,4415 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Електричне поле статичної системи зарядів</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-151"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span>&#x2003;Електричні заряди та їх взаємодія</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span>&#x2003;Сили (взаємодії) в природі</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span>&#x2003;Електричний заряд</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-12" class="tocsection" >
+<span class="sectionnumber">1.3</span>&#x2003;Як заряджають тіла?</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-17" class="tocsection" >
+<span class="sectionnumber">1.4</span>&#x2003;Закон Кулона</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-25" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-32" class="tocchapter" >
+<span class="sectionnumber">2</span>&#x2003;Постійне електричне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocsection" >
+<span class="sectionnumber">2.1</span>&#x2003;Електромагнітне поле</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.2</span>&#x2003;Напруженість поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-46" class="tocsection" >
+<span class="sectionnumber">2.3</span>&#x2003;Силові лінії та математичне поняття поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-62" class="tocsection" >
+<span class="sectionnumber">2.4</span>&#x2003;Теорема Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-88" class="tocsection" >
+<span class="sectionnumber">2.5</span>&#x2003;Зауваження щодо інтегральної та диференціальної форми теореми Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-90" class="tocsection" >
+<span class="sectionnumber">2.6</span>&#x2003;Потенціальність електростатичного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-102" class="tocsection" >
+<span class="sectionnumber">2.7</span>&#x2003;Циркуляція вектора \(\symbf {E}\)</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-121" class="tocsection" >
+<span class="sectionnumber">2.8</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-128" class="tocsection" >
+<span class="sectionnumber">2.9</span>&#x2003;Рівняння Пуассона та Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-129" class="tocsection" >
+<span class="sectionnumber">2.10</span>&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-134" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-153" class="tocchapter" >
+<span class="sectionnumber">3</span>&#x2003;Електричне поле статичної системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-154" class="tocsection" >
+<span class="sectionnumber">3.1</span>&#x2003;Дипольний момент системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-158" class="tocsection" >
+<span class="sectionnumber">3.2</span>&#x2003;Поле точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-162" class="tocsection" >
+<span class="sectionnumber">3.3</span>&#x2003;Потенціал поля точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-163" class="tocsection" >
+<span class="sectionnumber">3.4</span>&#x2003;Потенціал системи зарядів на далеких відстанях</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-178" class="tocsection" >
+<span class="sectionnumber">3.5</span>&#x2003;Диполь в електричному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-196" class="tocsection" >
+<span class="sectionnumber">3.6</span>&#x2003;Енергія довільної системи зарядів у зовнішньому полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-197" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-200" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-214" class="tocchapter" >
+<span class="sectionnumber">4</span>&#x2003;Електричне поле у провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-215" class="tocsection" >
+<span class="sectionnumber">4.1</span>&#x2003;Структура провідників</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-221" class="tocsection" >
+<span class="sectionnumber">4.2</span>&#x2003;Провідник у полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-244" class="tocsection" >
+<span class="sectionnumber">4.3</span>&#x2003;Електричне поле біля вістря</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-253" class="tocsection" >
+<span class="sectionnumber">4.4</span>&#x2003;Єдиність розв’язку електростатичної задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-263" class="tocsection" >
+<span class="sectionnumber">4.5</span>&#x2003;Металева куля в однорідному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-275" class="tocsection" >
+<span class="sectionnumber">4.6</span>&#x2003;Сили, що діють на поверхню провідника в полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-279" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-280" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-291" class="tocchapter" >
+<span class="sectionnumber">5</span>&#x2003;Основи електростатики діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-292" class="tocsection" >
+<span class="sectionnumber">5.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-294" class="tocsection" >
+<span class="sectionnumber">5.2</span>&#x2003;Структура діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-331" class="tocsection" >
+<span class="sectionnumber">5.3</span>&#x2003;Поляризація діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-358" class="tocsection" >
+<span class="sectionnumber">5.4</span>&#x2003;Вектор поляризації</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-363" class="tocsection" >
+<span class="sectionnumber">5.5</span>&#x2003;Вектор електричної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-370" class="tocsection" >
+<span class="sectionnumber">5.6</span>&#x2003;Граничні умови в&nbsp;присутності діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-383" class="tocsection" >
+<span class="sectionnumber">5.7</span>&#x2003;Мікроскопічна теорія діелектричної проникності</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-390" class="tocsection" >
+<span class="sectionnumber">5.8</span>&#x2003;Типи діелектриків та їх застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-413" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-414" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-423" class="tocchapter" >
+<span class="sectionnumber">6</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-424" class="tocsection" >
+<span class="sectionnumber">6.1</span>&#x2003;Електрична ємність</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-445" class="tocsection" >
+<span class="sectionnumber">6.2</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-458" class="tocsection" >
+<span class="sectionnumber">6.3</span>&#x2003;Пондеромоторні сили</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-468" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-469" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-479" class="tocchapter" >
+<span class="sectionnumber">7</span>&#x2003;Постійний електричний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-480" class="tocsection" >
+<span class="sectionnumber">7.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-487" class="tocsection" >
+<span class="sectionnumber">7.2</span>&#x2003;Природа носіїв заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-489" class="tocsection" >
+<span class="sectionnumber">7.3</span>&#x2003;Закон збереження заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-496" class="tocsection" >
+<span class="sectionnumber">7.4</span>&#x2003;Закон Ома</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-527" class="tocsection" >
+<span class="sectionnumber">7.5</span>&#x2003;Закон Джоуля-Ленца</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-528" class="tocsection" >
+<span class="sectionnumber">7.6</span>&#x2003;Струми в необмежених середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-535" class="tocsection" >
+<span class="sectionnumber">7.7</span>&#x2003;Перехідні процеси в колі з конденсатором</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-548" class="tocsection" >
+<span class="sectionnumber">7.8</span>&#x2003;Максвеллівський час релаксації заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-550" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-562" class="tocchapter" >
+<span class="sectionnumber">8</span>&#x2003;Електричний струм у&nbsp;різних середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-564" class="tocsection" >
+<span class="sectionnumber">8.1</span>&#x2003;Електричний струм у&nbsp;металах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-584" class="tocsection" >
+<span class="sectionnumber">8.2</span>&#x2003;Електричний струм в&nbsp;електролітах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-590" class="tocsection" >
+<span class="sectionnumber">8.3</span>&#x2003;Електричний струм у&nbsp;газах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-601" class="tocsection" >
+<span class="sectionnumber">8.4</span>&#x2003;Електричний струм у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-615" class="tocsection" >
+<span class="sectionnumber">8.5</span>&#x2003;Електричний струм у&nbsp;напівпровідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-636" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-638" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-674" class="tocchapter" >
+<span class="sectionnumber">9</span>&#x2003;Магнітне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-675" class="tocsection" >
+<span class="sectionnumber">9.1</span>&#x2003;Означення</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-679" class="tocsection" >
+<span class="sectionnumber">9.2</span>&#x2003;Характеристика магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-680" class="tocsection" >
+<span class="sectionnumber">9.3</span>&#x2003;Дія магнітного поля на заряджені частинки та струми</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-701" class="tocsection" >
+<span class="sectionnumber">9.4</span>&#x2003;Закон Біо-Савара-Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-714" class="tocsection" >
+<span class="sectionnumber">9.5</span>&#x2003;Вектор-потенціал магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-719" class="tocsection" >
+<span class="sectionnumber">9.6</span>&#x2003;Теореми магнітостатики</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-740" class="tocsection" >
+<span class="sectionnumber">9.7</span>&#x2003;Магнітний момент</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-756" class="tocsection" >
+<span class="sectionnumber">9.8</span>&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-766" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-767" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-775" class="tocchapter" >
+<span class="sectionnumber">10</span>&#x2003;Магнітне поле в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-780" class="tocsection" >
+<span class="sectionnumber">10.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-783" class="tocsection" >
+<span class="sectionnumber">10.2</span>&#x2003;Намагнічування</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-795" class="tocsection" >
+<span class="sectionnumber">10.3</span>&#x2003;Теорема про циркуляцію в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-801" class="tocsection" >
+<span class="sectionnumber">10.4</span>&#x2003;Магнітна сприйнятливість речовини</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-832" class="tocsection" >
+<span class="sectionnumber">10.5</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-847" class="tocsection" >
+<span class="sectionnumber">10.6</span>&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-864" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-865" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-872" class="tocchapter" >
+<span class="sectionnumber">11</span>&#x2003;Рух заряджених частинок</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-873" class="tocsection" >
+<span class="sectionnumber">11.1</span>&#x2003;Рух частинок в&nbsp;однорідних полях</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-891" class="tocsection" >
+<span class="sectionnumber">11.2</span>&#x2003;Застосування схрещених полів</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-899" class="tocsection" >
+<span class="sectionnumber">11.3</span>&#x2003;Методи вимірювання питомого заряду електрона</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-909" class="tocsection" >
+<span class="sectionnumber">11.4</span>&#x2003;Досліди Міллікена</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-911" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-912" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-923" class="tocchapter" >
+<span class="sectionnumber">12</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-924" class="tocsection" >
+<span class="sectionnumber">12.1</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-929" class="tocsection" >
+<span class="sectionnumber">12.2</span>&#x2003;Закон електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-930" class="tocsection" >
+<span class="sectionnumber">12.3</span>&#x2003;Робота, що виконується при переміщенні провідника зі струмом у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-933" class="tocsection" >
+<span class="sectionnumber">12.4</span>&#x2003;Електромагнітна індукція в&nbsp;рухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-940" class="tocsection" >
+<span class="sectionnumber">12.5</span>&#x2003;Електромагнітна індукція в&nbsp;нерухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-959" class="tocsection" >
+<span class="sectionnumber">12.6</span>&#x2003;Явище самоіндукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-979" class="tocsection" >
+<span class="sectionnumber">12.7</span>&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-996" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-997" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1015" class="tocchapter" >
+<span class="sectionnumber">13</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1016" class="tocsection" >
+<span class="sectionnumber">13.1</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1022" class="tocsection" >
+<span class="sectionnumber">13.2</span>&#x2003;Взаємна індукція</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1038" class="tocsection" >
+<span class="sectionnumber">13.3</span>&#x2003;Енергія системи зв’язаних контурів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1041" class="tocsection" >
+<span class="sectionnumber">13.4</span>&#x2003;Потенціальна енергія струмів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1043" class="tocsection" >
+<span class="sectionnumber">13.5</span>&#x2003;Принцип роботи трансформаторів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1047" class="tocsection" >
+<span class="sectionnumber">13.6</span>&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1053" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1054" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1059" class="tocchapter" >
+<span class="sectionnumber">14</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1064" class="tocsection" >
+<span class="sectionnumber">14.1</span>&#x2003;Струм зміщення</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1085" class="tocsection" >
+<span class="sectionnumber">14.2</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1102" class="tocsection" >
+<span class="sectionnumber">14.3</span>&#x2003;Про рівняння Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1104" class="tocsection" >
+<span class="sectionnumber">14.4</span>&#x2003;Енергія електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1118" class="tocsection" >
+<span class="sectionnumber">14.5</span>&#x2003;Скін-ефект</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1140" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1141" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1148" class="tocchapter" >
+<span class="sectionnumber">15</span>&#x2003;Відносність електричного і&nbsp;магнітного полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1150" class="tocsection" >
+<span class="sectionnumber">15.1</span>&#x2003;Нерелятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1153" class="tocsection" >
+<span class="sectionnumber">15.2</span>&#x2003;Релятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1159" class="tocsection" >
+<span class="sectionnumber">15.3</span>&#x2003;Тензор електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1161" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1162" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1171" class="tocchapter" >
+<span class="sectionnumber">16</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1172" class="tocsection" >
+<span class="sectionnumber">16.1</span>&#x2003;Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1188" class="tocsection" >
+<span class="sectionnumber">16.2</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1193" class="tocsection" >
+<span class="sectionnumber">16.3</span>&#x2003;Енергія та вектор Пойнтінга для хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1204" class="tocsection" >
+<span class="sectionnumber">16.4</span>&#x2003;Імпульс і момент імпульсу електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1210" class="tocsection" >
+<span class="sectionnumber">16.5</span>&#x2003;Відбивання хвиль від поверхні двох діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1230" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1231" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1242" class="tocchapter" >
+<span class="sectionnumber">17</span>&#x2003;Випромінювання електромагнітних хвиль</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1243" class="tocsection" >
+<span class="sectionnumber">17.1</span>&#x2003;Історична довідка: досліди Герца</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1246" class="tocsection" >
+<span class="sectionnumber">17.2</span>&#x2003;Елементарна модель випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1259" class="tocsection" >
+<span class="sectionnumber">17.3</span>&#x2003;Дипольне випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1275" class="tocsection" >
+<span class="sectionnumber">17.4</span>&#x2003;Потужність випромінювання осцилятора</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1280" class="tocsection" >
+<span class="sectionnumber">17.5</span>&#x2003;Випромінювання рухомого заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1285" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1286" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1292" class="tocchapter" >
+<span class="sectionnumber">18</span>&#x2003;Коливальні процеси в електричних колах</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1293" class="tocsection" >
+<span class="sectionnumber">18.1</span>&#x2003;Квазістаціонарне наближення</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1294" class="tocsection" >
+<span class="sectionnumber">18.2</span>&#x2003;Вільні коливання в коливальному контурі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1319" class="tocsection" >
+<span class="sectionnumber">18.3</span>&#x2003;Вимушені коливання під дією гармонічної ЕРС</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1333" class="tocsection" >
+<span class="sectionnumber">18.4</span>&#x2003;Змінний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">18.5</span>&#x2003;Трансформатор</a>
+</p>
+<p>
+<a href="ch18.html#autosec-1374" class="tocsection" >
+<span class="sectionnumber">18.6</span>&#x2003;Частотні фільтри</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1390" class="tocsection" >
+<span class="sectionnumber">18.7</span>&#x2003;Трифазний струм: фізичні засади, топології кіл та застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1433" class="tocchapter" >
+<span class="sectionnumber">19</span>&#x2003;Довгі лінії. Телеграфні рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1434" class="tocsection" >
+<span class="sectionnumber">19.1</span>&#x2003;Від зосереджених елементів до розподілених</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1435" class="tocsection" >
+<span class="sectionnumber">19.2</span>&#x2003;Виведення телеграфних рівнянь</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1439" class="tocsection" >
+<span class="sectionnumber">19.3</span>&#x2003;Гармонічний режим. Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1440" class="tocsection" >
+<span class="sectionnumber">19.4</span>&#x2003;Лінія без втрат</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1447" class="tocsection" >
+<span class="sectionnumber">19.5</span>&#x2003;Польова картина. Зв’язок з рівняннями Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1454" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1455" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1461" class="tocchapter" >
+<span class="sectionnumber">20</span>&#x2003;Хвилеводи</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1462" class="tocsection" >
+<span class="sectionnumber">20.1</span>&#x2003;Від довгої лінії до хвилеводу</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1463" class="tocsection" >
+<span class="sectionnumber">20.2</span>&#x2003;Прямокутний хвилевід</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1476" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1479" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1480" class="tocsection" >
+<span class="sectionnumber">А</span>&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1485" class="tocsection" >
+<span class="sectionnumber">Б</span>&#x2003;Основні формули векторного аналізу</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1503" class="tocchapter" >
+Література</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Електричне поле статичної системи зарядів">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Електричне поле статичної системи зарядів ......
+-->
+<h3 id="autosec-153">Розділ&nbsp;<span class="sectionnumber">3&#x2003;</span>Електричне поле статичної системи зарядів</h3>
+<a id="main-html-autopage-153"></a>
+<a id="main-html-autofile-3"></a>
+
+<a id="ChargeSystem"></a>
+
+<p>
+<a id="LWR-ht-ChargeSystem"></a>
+</p>
+<div class="epigraph" role="note">
+
+
+<div class="qitem">
+
+<p>
+Заряд може зникнути весь до нуля — і все ж система не замовкне: вона просто заговорить мовою наступного порядку.
+</p>
+
+
+<div class="epigraphsource">
+
+<p>
+Переосмислення ідей сучасної фізики
+</p>
+</div>
+
+</div>
+
+</div>
+<!--
+...... section Дипольний момент системи зарядів ......
+-->
+<h4 id="autosec-154"><span class="sectionnumber">3.1&#x2003;</span>Дипольний момент системи зарядів</h4>
+<a id="main-html-autopage-154"></a>
+
+
+<p>
+<a id="LWR-ht-dipole-moment"></a>
+</p>
+
+<p>
+Будь-яка матерія складається із заряджених частинок — електронів і атомних ядер, — тому кожне тіло певною мірою і створює електричне поле, і реагує на зовнішнє. Щоб описати цю взаємодію, часто недостатньо знати лише сумарний заряд
+системи \(q = \sum _i q_i\); важливу роль відіграє й те, як заряди розташовані один відносно одного. На додаток, можливий і крайній випадок: сумарний заряд може дорівнювати нулю (\(q=0\)), і все ж система зарядів не буде «невидимою» для
+зовнішнього спостерігача — вона однаково створює поле в просторі й реагує на зовнішнє поле, просто ця взаємодія визначається вже не сумарним зарядом, а саме взаємним розташуванням зарядів. Найпростішою кількісною мірою такого
+взаємного розташування зарядів слугує <em><span
+    class="textcolor"
+    style="color:#990000"
+>дипольний момент</span></em> — векторна сума добутків зарядів на їхні радіус-вектори:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{0}\)</span>
+
+<!--
+
+                                                                                         𝑛
+                                                                                    𝐩 = ∑ 𝑞𝑖 𝐫𝑖 ,                                                                                 (3.1)              --><a id="eq:el_momentum"></a><!--
+                                                                                        𝑖=1
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:el_momentum} \vect {p} = \sum _{i=1}^{n}q_i\vect {r}_i,
+\end{equation}
+
+</p>
+
+<p>
+де \(\vect {r}_i\) — радіус-вектор \(i\)-го заряду.
+</p>
+
+<p>
+Дипольний момент — перша (після сумарного заряду) характеристика в такому описі; якщо і сумарний заряд, і дипольний момент виявляються нульовими, слід звернутися до наступного члена розкладу — квадрупольного моменту <span
+class="textup">(<a href="ch3.html#eq:quadrupole_momentum">3.7</a>)</span>.
+</p>
+
+<p>
+Загалом дипольний момент залежить від вибору початку відліку. Однак якщо система в цілому електронейтральна \(\sum _{i=1}^{n} q_i = 0\), то дипольний момент \(\vect {p}\) системи визначений однозначно.
+</p>
+
+<p>
+Найпростішою й водночас найважливішою системою з ненульовим дипольним моментом є <em><span
+    class="textcolor"
+    style="color:#990000"
+>диполь</span></em> — система, що складається з двох точкових зарядів \(q\), однакових за величиною і протилежних за знаком (рис.&nbsp;<a href="ch3.html#tikz:el_dipole">3.1</a>).
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Плече диполя</span></em> — вектор (\(\symbfscr {l}\)), що йде від «\(-\)» заряду до «\(+\)», довжина якого дорівнює відстані між зарядами.
+</p>
+
+<figure id="autoid-58" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-28"
+    class="lateximagesource"
+><!--
+             −        𝓵
+                          +
+
+
+    𝑧   𝐫−       𝐫+
+
+
+
+
+             𝑦
+
+𝑥
+--><img
+   src="main-html-images\image-28.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;3.1. Електричний диполь
+
+</div>
+
+<a id="tikz:el_dipole"></a>
+
+</div>
+
+</figure>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Дипольним моментом</span></em> елементарного диполя називається вектор
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{1}\)</span>
+
+<!--
+
+
+                                                                                                              𝐩 = 𝑞𝓵.                          (3.2)
+
+-->
+
+<p>
+
+\begin{equation}
+\vect {p} = q\symbfscr {l}.
+\end{equation}
+
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Жорсткий диполь</span></em> — диполь із фіксованою відстанню між зарядами, що не змінюється під зовнішніми впливами.
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Пружний диполь</span></em> — диполь, де відстань між зарядами змінюється під зовнішніми впливами, і дипольний момент може змінюватися.
+</p>
+
+<p>
+Якщо необхідно визначити поле диполя на далеких відстанях, то зручно користуватись концепцією елементарного, або точкового диполя. <em><span
+    class="textcolor"
+    style="color:#990000"
+>Елементарним, або точковим диполем</span></em> називають граничну систему з \(\ell \to 0\), \(|q| \to \infty \) за кінцевої величини \(p\).
+</p>
+<!--
+...... section Поле точкового диполя ......
+-->
+<h4 id="autosec-158"><span class="sectionnumber">3.2&#x2003;</span>Поле точкового диполя</h4>
+<a id="main-html-autopage-158"></a>
+
+
+<a id="sec:DipoleField"></a>
+
+<p>
+<a id="LWR-ht-point-dipole-field"></a>
+</p>
+
+<p>
+Знайдемо поле диполя на далеких відстанях \(r\), тобто за умови \(\ell \ll r\). У такому разі, ми можемо диполь вважати точковим. Для зручності розрахунків, розташуємо диполь на осі \(Oy\), симетрично відносно початку координат
+(рис.&nbsp;<a href="ch3.html#tikz:dipolefield">3.2</a>).
+</p>
+
+<figure id="autoid-59" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-29"
+    class="lateximagesource"
+><!--
+                                  𝑃
+
+
+
+
+        𝑧       𝐫−       𝐫   𝐫+
+
+
+
+
+    −                +
+            𝐩                𝑦
+
+
+
+
+𝑥
+--><img
+   src="main-html-images\image-29.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;3.2. До виведення напруженості та потенціалу поля диполя
+
+</div>
+
+<a id="tikz:dipolefield"></a>
+
+</div>
+
+</figure>
+
+<p>
+Поле точкового диполя можна знайти за допомогою принципу суперпозиції та з урахуванням нерівності \(\ell \ll r\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{2}\)</span>
+
+<!--
+
+
+                                                                                                 (−𝑞)𝐫−   (+𝑞)𝐫+        𝐫 = 𝐫 + 𝐫′−                               ℓ
+                                                                                            𝐄=          +        ,     { −              ,     |𝐫′− | = |𝐫′+ | =     .
+                                                                                                    3
+                                                                                                   𝑟−        3
+                                                                                                            𝑟+          𝐫+ = 𝐫 − 𝐫′+                              2
+
+-->
+
+<p>
+
+\begin{equation*}
+\Efield = \frac {(-q)\vect {r}_-}{r_-^3} + \frac {(+q)\vect {r}_+}{r_+^3}, \quad \begin{cases} \vect {r}_- = \vect {r} + \vect {r}&apos;_- \\ \vect {r}_+ = \vect {r} - \vect {r}&apos;_+ \end {cases}, \quad
+|\vect {r}&apos;_-| = |\vect {r}&apos;_+| = \frac {\ell }2.
+\end{equation*}
+
+</p>
+
+<p>
+Виразимо \(\vect r_\pm \) через плече диполя \(\symbfscr {l}\) (воно напрямлене від \(-q\) до \(+q\)): \(\vect r_\pm =\vect r\mp \symbfscr {l}/2\). Оскільки \(\ell \ll r\), ці вектори лише трохи відрізняються від \(\vect r\), тому
+знаменники \(r_\pm ^3\) зручно розкласти за малим зсувом. Для довільного вектора \(\vect a\) з \(|\vect a|\ll r\)
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{2}\)</span>
+
+<!--
+
+                                                                                                                                              2𝐫 ⋅ 𝐚
+                                                                                                     |𝐫 − 𝐚|2 = 𝑟2 − 2 𝐫 ⋅ 𝐚 + 𝑎2 ≈ 𝑟2 (1 −          )
+                                                                                                                                               𝑟2
+
+-->
+
+<p>
+
+\begin{equation*}
+|\vect r-\vect a|^2 = r^2-2\,\vect r\cdot \vect a+a^2 \approx r^2\left (1-\frac {2\,\vect r\cdot \vect a}{r^2}\right )
+\end{equation*}
+
+</p>
+
+<p>
+(доданок \(a^2\) має другий порядок малості за \(a/r\) і відкидається). Скориставшись наближенням \((1+x)^\alpha \approx 1+\alpha x\) при \(|x|\ll 1\), одержуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{2}\)</span>
+
+<!--
+
+                                                                             1      1       𝐫⋅𝐚
+                                                                                  ≈ 𝑛 (1 + 𝑛 2 ) .                                                                        (3.3)               --><a id="eq:shift_first_order"></a><!--
+                                                                         |𝐫 − 𝐚|𝑛  𝑟         𝑟
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:shift_first_order} \frac 1{|\vect r-\vect a|^{n}} \approx \frac 1{r^{n}}\left (1+n\,\frac {\vect r\cdot \vect a}{r^2}\right ).
+\end{equation}
+
+</p>
+
+<p>
+Для поля диполя потрібне \(n=3\) (для потенціалу в розд.&nbsp;<a href="ch3.html#sec:DipolePotential">3.3</a> буде \(n=1\)). Для \(r_+=|\vect r-\symbfscr {l}/2|\) беремо \(\vect a=\symbfscr {l}/2\), для \(r_-=|\vect r+\symbfscr
+{l}/2|\) — \(\vect a=-\symbfscr {l}/2\), і суперпозицію записуємо як \(\Efield =q\left (\vect r_+/r_+^3-\vect r_-/r_-^3\right )\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{3}\)</span>
+
+<!--
+
+                                                                                                     𝑞       𝓵       3𝐫 ⋅ 𝓵         𝓵       3𝐫 ⋅ 𝓵
+                                                                                                𝐄≈      [(𝐫 − ) (1 +        ) − (𝐫 + ) (1 −        )] .
+                                                                                                     𝑟3      2        2𝑟2           2        2𝑟2
+
+-->
+
+<p>
+
+\begin{equation*}
+\Efield \approx \frac {q}{r^3}\left [\left (\vect r-\frac {\symbfscr {l}}2\right )\left (1+\frac {3\,\vect r\cdot \symbfscr {l}}{2r^2}\right ) - \left (\vect r+\frac {\symbfscr {l}}2\right )\left (1-\frac
+{3\,\vect r\cdot \symbfscr {l}}{2r^2}\right )\right ].
+\end{equation*}
+
+</p>
+
+<p>
+Розкриваючи дужки, зберігаємо лише члени першого порядку за \(\ell \): добутки виду \(\symbfscr {l}\,(\vect r\cdot \symbfscr {l})\) мають другий порядок і відкидаються. Доданки з \(\vect r\) — це поля двох зарядів, взятих окремо,
+— взаємно скорочуються, тож головний внесок дає саме перший порядок:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{3}\)</span>
+
+<!--
+
+
+                                                                                                                    𝑞 3 (𝐫 ⋅ 𝓵) 𝐫
+                                                                                                               𝐄=      [          − 𝓵] .
+                                                                                                                    𝑟3    𝑟2
+
+-->
+
+<p>
+
+\begin{equation*}
+\Efield = \frac {q}{r^3}\left [\frac {3\,(\vect r\cdot \symbfscr {l})\,\vect r}{r^2}-\symbfscr {l}\right ].
+\end{equation*}
+
+</p>
+
+<p>
+Множник \(3\) походить від показника степеня в \(r_\pm ^{-3}\). У границі точкового диполя (\(\ell \to 0\), \(\vect p=q\symbfscr {l}\) фіксований) відкинуті члени зникають, і наближена рівність стає точною. Підставляючи \(\vect
+p=q\symbfscr {l}\), одержуємо:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{3}\)</span>
+
+<!--
+
+
+                                                                                    3(𝐩 ⋅ 𝐫)𝐫   𝐩
+                                                                               𝐄=             − 3.                                                                                (3.4)            --><a id="eq:dipole_field"></a><!--
+                                                                                       𝑟5      𝑟
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:dipole_field} \tcbhighmath { \Efield = \frac {3(\vect {p}\cdot \vect {r})\vect {r}}{r^5} - \frac {\vect {p}}{r^3}. }
+\end{equation}
+
+</p>
+
+<p>
+Таким чином, напруженість поля точкового диполя зменшується з відстанню за законом
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{4}\)</span>
+
+<!--
+
+
+                                                                                                                       𝐸 ∼ 1/𝑟3 .
+
+-->
+
+<p>
+
+\begin{equation*}
+E \sim 1/{r^3}.
+\end{equation*}
+
+</p>
+<!--
+...... section Потенціал поля точкового диполя ......
+-->
+<h4 id="autosec-162"><span class="sectionnumber">3.3&#x2003;</span>Потенціал поля точкового диполя</h4>
+<a id="main-html-autopage-162"></a>
+
+
+<a id="sec:DipolePotential"></a>
+
+<p>
+<a id="LWR-ht-point-dipole-potential"></a>
+</p>
+
+<p>
+Потенціал поля точкового диполя можна знайти за допомогою принципу суперпозиції та з урахуванням нерівності \(\ell \ll r\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{4}\)</span>
+
+<!--
+
+
+                                                                                                    (−𝑞)   (+𝑞)        𝐫 = 𝐫 + 𝐫′−                            ℓ
+                                                                                               𝜑=        +      ,     { −             ,   |𝐫′− | = |𝐫′+ | =     .
+                                                                                                     𝑟−     𝑟+         𝐫+ = 𝐫 − 𝐫′+                           2
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi = \frac {(-q)}{r_-} + \frac {(+q)}{r_+}, \quad \begin{cases} \vect {r}_- = \vect {r} + \vect {r}&apos;_- \\ \vect {r}_+ = \vect {r} - \vect {r}&apos;_+ \end {cases}, \quad |\vect {r}&apos;_-| = |\vect
+{r}&apos;_+| = \frac {\ell }2.
+\end{equation*}
+
+</p>
+
+<p>
+Скористаємося розкладом <span class="textup">(<a href="ch3.html#eq:shift_first_order">3.3</a>)</span> при \(n=1\), узявши \(\vect a=\pm \symbfscr {l}/2\) для \(r_\pm =|\vect r\mp \symbfscr {l}/2|\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{4}\)</span>
+
+<!--
+
+                                                                                                         1    1    𝑞      𝐫⋅𝓵          𝐫⋅𝓵      𝑞𝓵 ⋅ 𝐫
+                                                                                               𝜑 = 𝑞(      −    ) ≈ [(1 +     ) − (1 −     )] =        .
+                                                                                                        𝑟+   𝑟−    𝑟      2𝑟2          2𝑟2       𝑟3
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi = q\left (\frac 1{r_+}-\frac 1{r_-}\right ) \approx \frac qr\left [\left (1+\frac {\vect r\cdot \symbfscr {l}}{2r^2}\right )-\left (1-\frac {\vect r\cdot \symbfscr {l}}{2r^2}\right )\right ] = \frac
+{q\,\symbfscr {l}\cdot \vect r}{r^3}.
+\end{equation*}
+
+</p>
+
+<p>
+Доданки \(1/r\) (кулонівські потенціали двох зарядів окремо) скорочуються через протилежні знаки зарядів, тому потенціал диполя спадає швидше за кулонівський. Врахувавши \(\vect p=q\symbfscr {l}\), маємо:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{4}\)</span>
+
+<!--
+
+
+                                                                                       𝐩⋅𝐫
+                                                                                  𝜑=       .                                                                                 (3.5)               --><a id="eq:potential_dipole"></a><!--
+                                                                                        𝑟3
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:potential_dipole} \tcbhighmath { \phi = \frac {\vect {p}\cdot \vect {r}}{r^3}. }
+\end{equation}
+
+</p>
+
+<p>
+Таким чином, потенціал поля точкового диполя зменшується з відстанню за законом
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{5}\)</span>
+
+<!--
+
+
+                                                                                                                        𝜑 ∼ 1/𝑟2 .
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi \sim 1/{r^2}.
+\end{equation*}
+
+</p>
+
+<p>
+Знаючи вираз для потенціалу точкового диполя <span class="textup">(<a href="ch3.html#eq:potential_dipole">3.5</a>)</span>, можна отримати вираз для поля <span class="textup">(<a
+href="ch3.html#eq:dipole_field">3.4</a>)</span> використовуючи формулу зв’язку потенціалу і напруженості \(\Efield =-\vect \nabla \phi \).
+</p>
+
+
+<div class="cb-example">
+
+<p>
+<b>Виведення.</b> Запишемо \(\phi =(\vect p\cdot \vect r)\,r^{-3}\) і застосуємо правило диференціювання добутку:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{5}\)</span>
+
+<!--
+
+
+                                                                                                            𝛁𝜑 = 𝑟−3 𝛁(𝐩 ⋅ 𝐫) + (𝐩 ⋅ 𝐫) 𝛁𝑟−3 .
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect \nabla \phi =r^{-3}\,\vect \nabla (\vect p\cdot \vect r)+(\vect p\cdot \vect r)\,\vect \nabla r^{-3}.
+\end{equation*}
+
+</p>
+
+<p>
+Знайдемо обидва градієнти. Оскільки \(\vect p\cdot \vect r=p_x x+p_y y+p_z z\), де \(\vect p\) — сталий вектор, то частинні похідні за \(x\), \(y\), \(z\) дорівнюють \(p_x\), \(p_y\), \(p_z\), тобто \(\vect \nabla (\vect p\cdot \vect
+r)=\vect p\). Далі, \(r=\sqrt {x^2+y^2+z^2}\), тому \(\dfrac {\partial r}{\partial x}=\dfrac xr\), і аналогічно для \(y\) та \(z\); отже, \(\vect \nabla r=\dfrac {\vect r}{r}\). За правилом диференціювання складної функції
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{5}\)</span>
+
+<!--
+
+                                                                                                                                   3𝐫
+                                                                                                                𝛁𝑟−3 = −3𝑟−4 𝛁𝑟 = − 5 .
+                                                                                                                                   𝑟
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect \nabla r^{-3}=-3r^{-4}\,\vect \nabla r=-\frac {3\vect r}{r^5}.
+\end{equation*}
+
+</p>
+
+<p>
+Підставляючи, одержуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{5}\)</span>
+
+<!--
+
+
+                                                                                                                           3(𝐩 ⋅ 𝐫) 𝐫   𝐩
+                                                                                                               𝐄 = −𝛁𝜑 =              − 3,
+                                                                                                                              𝑟5       𝑟
+
+-->
+
+<p>
+
+\begin{equation*}
+\Efield =-\vect \nabla \phi =\frac {3(\vect p\cdot \vect r)\,\vect r}{r^5}-\frac {\vect p}{r^3},
+\end{equation*}
+
+</p>
+
+<p>
+що збігається з <span class="textup">(<a href="ch3.html#eq:dipole_field">3.4</a>)</span>.
+</p>
+</div>
+<!--
+...... section Потенціал системи зарядів на далеких відстанях ......
+-->
+<h4 id="autosec-163"><span class="sectionnumber">3.4&#x2003;</span>Потенціал системи зарядів на далеких відстанях</h4>
+<a id="main-html-autopage-163"></a>
+
+
+<p>
+<a id="LWR-ht-far-field-potential"></a>
+</p>
+
+<p>
+Ми знайшли поле й потенціал диполя — системи з двох зарядів. Узагальнимо цей результат на довільну систему зарядів \(\{q_i\}\), що займає певну скінченну область у просторі (рис.&nbsp;<a href="ch3.html#tikz:far_potential">3.3</a>).
+</p>
+
+<figure id="autoid-60" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-30"
+    class="lateximagesource"
+><!--
+                  𝑧                              𝑃
+                                   𝐫 − 𝐫𝑖    𝐫
+        𝑞𝑖
+        +         +
+
+
+
+    −
+             𝐫𝑖           −
+                                  Система
+                  +                зарядів
+                              𝑦
+                      −
+         −
+
+                  +
+
+
+𝑥
+--><img
+   src="main-html-images\image-30.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;3.3. До визначення потенціалу на далеких відстанях
+
+</div>
+
+<a id="tikz:far_potential"></a>
+
+</div>
+
+</figure>
+
+<p>
+Потенціал поля в точці спостереження \(P\) дорівнює сумі потенціалів, створюваних усіма зарядами:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{5}\)</span>
+
+<!--
+
+                                                                                                                                                     𝑞𝑖
+                                                                                                                                𝜑(𝐫) = ∑                    .
+                                                                                                                                             𝑖
+                                                                                                                                                  |𝐫 − 𝐫𝑖 |
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi (\vect {r}) = \sum _i \frac {q_i}{|\vect {r} - \vect {r}_i|}.
+\end{equation*}
+
+</p>
+
+<p>
+Початок системи координат вибираємо всередині системи зарядів і знайдемо потенціал на відстанях, що набагато більші за розмір області, в якій локалізуються заряди (\(r_i \ll r\)). У розд.&nbsp;<a
+href="ch3.html#sec:DipolePotential">3.3</a> ми зберігали в розкладі \(1/|\vect r-\vect r_i|\) лише члени першого порядку малості за \(r_i/r\) <span class="textup">(<a href="ch3.html#eq:shift_first_order">3.3</a>)</span> —
+для диполя цього досить. Але якщо \(q=0\) і \(\vect p=0\), ці члени нічого не дають, тому потрібне наступне наближення. Отримаємо його тим самим прийомом, не відкидаючи тепер квадратичних доданків:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{5}\)</span>
+
+<!--
+
+
+                                                                                                               1       1                                    2 𝐫 ⋅ 𝐫𝑖  𝑟2
+                                                                                                                      = (1 + 𝜀)−1/2 ,               𝜀=−         2
+                                                                                                                                                                     + 𝑖2 ≪ 1.
+                                                                                                            |𝐫 − 𝐫𝑖 |  𝑟                                      𝑟       𝑟
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac 1{|\vect r-\vect r_i|} = \frac 1r\,(1+\epsilon )^{-1/2}, \qquad \epsilon = -\frac {2\,\vect r\cdot \vect r_i}{r^2}+\frac {r_i^2}{r^2}\ll 1.
+\end{equation*}
+
+</p>
+
+<p>
+Розкладаємо за малим \(\epsilon \): \((1+\epsilon )^{-1/2}\approx 1-\frac {\epsilon }2+\frac {3\epsilon ^2}8\). Доданок \(-2\,\vect r\cdot \vect r_i/r^2\) у \(\epsilon \) має перший порядок за \(r_i/r\), а \(r_i^2/r^2\) —
+другий, тому в \(\epsilon ^2\) залишаємо лише \(4(\vect r\cdot \vect r_i)^2/r^4\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{5}\)</span>
+
+<!--
+
+
+                                                                                                                                           𝐫 ⋅ 𝐫𝑖   𝑟2   3(𝐫 ⋅ 𝐫𝑖 )2
+                                                                                                                  (1 + 𝜀)−1/2 ≈ 1 +               − 𝑖2 +             .
+                                                                                                                                            𝑟 2    2𝑟       2𝑟4
+
+-->
+
+<p>
+
+\begin{equation*}
+(1+\epsilon )^{-1/2}\approx 1+\frac {\vect r\cdot \vect r_i}{r^2}-\frac {r_i^2}{2r^2}+\frac {3(\vect r\cdot \vect r_i)^2}{2r^4}.
+\end{equation*}
+
+</p>
+
+<p>
+Доданок \(-r_i^2/(2r^2)\) породжує \(-r^2r_i^2\) у чисельнику третього члена; саме він у підсумку робить тензор квадрупольного моменту безслідним (див. нижче). Помноживши на \(1/r\), маємо розклад до другого порядку за \(r_i/r\)
+включно:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{5}\)</span>
+
+<!--
+
+                                                                                                     2
+                                                                                      3(𝐫 ⋅ 𝐫𝑖 ) − 𝑟 𝑟𝑖     2 2
+                                                                      1       1 𝐫⋅𝐫
+                                                                             ≈ + 3𝑖 +                   .                                                                        (3.6)               --><a id="eq:multipole_second_order"></a><!--
+                                                                   |𝐫 − 𝐫𝑖 |  𝑟  𝑟           2𝑟5
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:multipole_second_order} \frac 1{|\vect r - \vect r_i|} \approx \frac 1r + \frac {\vect r\cdot \vect r_i}{r^3} + \frac {3(\vect r\cdot \vect r_i)^2 - r^2 r_i^2}{2r^5}.
+\end{equation}
+
+</p>
+
+<p>
+Підставляючи <span class="textup">(<a href="ch3.html#eq:multipole_second_order">3.6</a>)</span> у \(\phi (\vect r) = \sum _i q_i/|\vect r - \vect r_i|\), одержуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{6}\)</span>
+
+<!--
+
+                                                                                                                  1      𝐫          1
+                                                                                                         𝜑(𝐫) ≈     ∑𝑞 +   ⋅ ∑𝑞 𝐫 +   ∑ 𝑞 [3(𝐫 ⋅ 𝐫𝑖 )2 − 𝑟2 𝑟𝑖2 ] .
+                                                                                                                  𝑟 𝑖 𝑖 𝑟3 𝑖 𝑖 𝑖 2𝑟5 𝑖 𝑖
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi (\vect {r}) \approx \frac 1r\sum _i q_i + \frac {\vect r}{r^3}\cdot \sum _i q_i\vect r_i + \frac 1{2r^5}\sum _i q_i\left [3(\vect r\cdot \vect r_i)^2 - r^2 r_i^2\right ].
+\end{equation*}
+
+</p>
+
+<p>
+Перші дві суми — це вже знайомі нам повний заряд і дипольний момент системи:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{6}\)</span>
+
+<!--
+
+
+                                                                                                                             𝑞 = ∑ 𝑞𝑖 ,          𝐩 = ∑ 𝑞𝑖 𝐫𝑖 .
+                                                                                                                                   𝑖                   𝑖
+
+-->
+
+<p>
+
+\begin{equation*}
+q = \sum _i {q_i}, \quad \vect {p} = \sum _i q_i\vect {r}_i.
+\end{equation*}
+
+</p>
+
+<p>
+Третю суму розпишемо покомпонентно, позначаючи декартові компоненти індексами \(\alpha ,\beta = x,y,z\) (за індексами, що повторюються, мається на увазі підсумовування):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{6}\)</span>
+
+<!--
+
+
+                                                                                                               (𝐫 ⋅ 𝐫𝑖 )2 = 𝑟𝛼 𝑟𝛽 𝑟𝑖𝛼 𝑟𝑖𝛽 ,          𝑟2 𝑟𝑖2 = 𝑟𝛼 𝑟𝛽 𝛿𝛼𝛽 𝑟𝑖2 ,
+
+-->
+
+<p>
+
+\begin{equation*}
+(\vect r\cdot \vect r_i)^2 = r_\alpha r_\beta \, r_{i\alpha } r_{i\beta }, \qquad r^2 r_i^2 = r_\alpha r_\beta \, \delta _{\alpha \beta }\, r_i^2,
+\end{equation*}
+
+</p>
+
+<p>
+де \(\delta _{\alpha \beta }\) — символ Кронекера. Тоді
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{6}\)</span>
+
+<!--
+
+                                                                                                     1                               1
+                                                                                                       ∑ 𝑞 [3(𝐫 ⋅ 𝐫𝑖 )2 − 𝑟2 𝑟𝑖2 ] = 5 𝑟𝛼 𝑟𝛽 ∑ 𝑞𝑖 (3𝑟𝑖𝛼 𝑟𝑖𝛽 − 𝑟𝑖2 𝛿𝛼𝛽 ) .
+                                                                                                    2𝑟5 𝑖 𝑖                         2𝑟       𝑖
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac 1{2r^5}\sum _i q_i\left [3(\vect r\cdot \vect r_i)^2 - r^2 r_i^2\right ] = \frac 1{2r^5}\, r_\alpha r_\beta \sum _i q_i\left (3r_{i\alpha }r_{i\beta } - r_i^2\delta _{\alpha \beta }\right ).
+\end{equation*}
+
+</p>
+
+<p>
+Величину, що стоїть під знаком суми, називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>тензором квадрупольного моменту</span></em> системи зарядів:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{6}\)</span>
+
+<!--
+
+
+                                                                          𝐷𝛼𝛽 = ∑ 𝑞𝑖 (3𝑟𝑖𝛼 𝑟𝑖𝛽 − 𝑟𝑖2 𝛿𝛼𝛽 ) .                                                                         (3.7)              --><a id="eq:quadrupole_momentum"></a><!--
+                                                                                  𝑖
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:quadrupole_momentum} \tcbhighmath { D_{\alpha \beta } = \sum _i q_i\left (3r_{i\alpha }r_{i\beta } - r_i^2\delta _{\alpha \beta }\right ). }
+\end{equation}
+
+</p>
+
+<p>
+Це симетричний тензор другого рангу (\(D_{\alpha \beta }=D_{\beta \alpha }\)), причому сума його діагональних елементів (слід) дорівнює нулю:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{7}\)</span>
+
+<!--
+
+
+                                                                                                                        ∑ 𝐷𝛼𝛼 = ∑ 𝑞𝑖 (3𝑟𝑖2 − 3𝑟𝑖2 ) = 0,
+                                                                                                                         𝛼             𝑖
+
+-->
+
+<p>
+
+\begin{equation*}
+\sum _\alpha D_{\alpha \alpha } = \sum _i q_i\left (3r_i^2 - 3r_i^2\right ) = 0,
+\end{equation*}
+
+</p>
+
+<p>
+тому серед дев’яти компонент \(D_{\alpha \beta }\) лише п’ять незалежних; а якщо перейти у власну систему координат тензора (в якій він діагональний), залишаються лише дві незалежні компоненти.
+</p>
+
+<p>
+Отже, повний розклад потенціалу системи зарядів на далеких відстанях набуває вигляду
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{7}\)</span>
+
+<!--
+
+                                                                                  𝑞           𝐩⋅𝐫    1
+                                                                     𝜑(𝐫) =              +         + 5 ∑ 𝐷𝛼𝛽 𝑟𝛼 𝑟𝛽 + … ,                                                                     (3.8)               --><a id="eq:multipoles"></a><!--
+                                                                                  ⏟
+                                                                                  𝑟          ⏟ 𝑟3   2𝑟 𝛼𝛽
+                                                                              монополь       диполь ⏟⎵⎵⎵⎵⏟⎵⎵⎵⎵⏟
+                                                                                                         квадруполь
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:multipoles} \phi (\vect r) = \underbrace {\frac {q}r}_{\text {монополь}} + \underbrace {\frac {\vect p\cdot \vect r}{r^3}}_{\text {диполь}} + \underbrace {\frac 1{2r^5}\sum _{\alpha \beta } D_{\alpha
+\beta }\, r_\alpha r_\beta }_{\text {квадруполь}} + \ldots \,,
+\end{equation}
+
+</p>
+
+<p>
+Проаналізуємо цей розклад. Кожен наступний доданок спадає з відстанню швидше за попередній: \(\phi \sim 1/r\) для монополя, \(\phi \sim 1/r^2\) для диполя і \(\phi \sim 1/r^3\) для квадруполя (відповідно й напруженість поля
+\(\Efield =-\vect \nabla \phi \sim 1/r^4\) спадає швидше, ніж дипольна \(\sim 1/r^3\)). Тому внесок у поле на далеких відстанях фактично дає лише перший доданок розкладу, що не занулюється: при \(q\neq 0\) домінує монополь; при
+\(q=0,\ \vect p\neq 0\) — диполь; при \(q=0\) і \(\vect p=0\) — квадруполь.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Систему зарядів, у якої \(q=0\), \(\vect p = 0\), а \(D_{\alpha \beta }\neq 0\), називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>квадруполем</span></em>.
+</p>
+</div>
+
+<p>
+Молекули здебільшого електронейтральні, а деякі з них (наприклад, <span
+    id="lateximage-main-html-31"
+    class="lateximagesource"
+><!--
+H2 O
+--><img
+   src="main-html-images\3BD50A5CF48F9588DE1B1A127A250217.svg"
+   alt="\ce{H2O}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-32"
+   class="lateximagesource"
+><!--
+HCl
+--><img
+   src="main-html-images\D77BF755C425B4DC44C076C4CD040ED4.svg"
+   alt="\ce{HCl}"
+   style=""
+   class="lateximage"
+></span>) мають ненульовий дипольний момент. Інші, такі як лінійна симетрична молекула <span
+   id="lateximage-main-html-33"
+   class="lateximagesource"
+><!--
+CO2
+--><img
+    src="main-html-images\FAC188068524E4DDF140E14E338F3177.svg"
+    alt="\ce{CO2}"
+    style=""
+    class="lateximage"
+></span>, дипольного моменту не мають (\(\vect p = 0\)) через симетрію розташування атомів кисню відносно атома вуглецю, проте мають ненульовий квадрупольний момент. Тому далекодійна електростатична взаємодія таких молекул між
+собою і з іншими зарядами визначається саме квадруполь-квадрупольною або квадруполь-дипольною взаємодією і є значно слабшою, ніж диполь-дипольна.
+</p>
+
+
+<div class="cb-example">
+
+<p>
+<b>Лінійний квадруполь.</b> Розглянемо три заряди, розташовані на осі \(Oz\): заряди \(+q\) у точках \(z=\pm a\) та заряд \(-2q\) у початку координат \(z=0\) — грубу модель лінійної неполярної молекули на кшталт <span
+    id="lateximage-main-html-34"
+    class="lateximagesource"
+><!--
+CO2
+--><img
+   src="main-html-images\FAC188068524E4DDF140E14E338F3177.svg"
+   alt="\ce{CO2}"
+   style=""
+   class="lateximage"
+></span>.
+</p>
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-35"
+    class="lateximagesource"
+><!--
++𝑞       −2𝑞       +𝑞   𝑧
+
+
+     𝑎         𝑎
+--><img
+   src="main-html-images\image-35.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+</div>
+
+<p>
+Сумарний заряд системи дорівнює нулю:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{8}\)</span>
+
+<!--
+
+
+                                                                                                               𝑞Σ = 𝑞 + (−2𝑞) + 𝑞 = 0.
+
+-->
+
+<p>
+
+\begin{equation*}
+q_\Sigma = q + (-2q) + q = 0.
+\end{equation*}
+
+</p>
+
+<p>
+Дипольний момент також дорівнює нулю через симетрію розташування зарядів відносно початку координат:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{8}\)</span>
+
+<!--
+
+
+                                                                                                       𝐩 = 𝑞 𝑎𝐞𝑧 + (−2𝑞) ⋅ 0 + 𝑞 (−𝑎)𝐞𝑧 = 0.
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect p = q\,a\vect e_z + (-2q)\cdot 0 + q\,(-a)\vect e_z = 0.
+\end{equation*}
+
+</p>
+
+<p>
+Отже, поле на далеких відстанях визначається квадрупольним моментом. Обчислимо компоненти тензора \(D_{\alpha \beta }\). Оскільки всі заряди лежать на осі \(z\), для кожного заряду \(r_{ix}=r_{iy}=0\), \(r_{iz}=z_i\),
+\(r_i^2=z_i^2\). Тому недіагональні компоненти й компоненти \(D_{xy}\) рівні нулю, а
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{8}\)</span>
+
+<!--
+
+
+                                                                                      𝐷𝑧𝑧 = ∑ 𝑞𝑖 (3𝑧𝑖2 − 𝑧𝑖2 ) = 2 ∑ 𝑞𝑖 𝑧𝑖2 = 2 [𝑞 𝑎2 + (−2𝑞) ⋅ 0 + 𝑞 𝑎2 ] = 4𝑞𝑎2 ,
+                                                                                              𝑖                     𝑖
+
+-->
+
+<p>
+
+\begin{equation*}
+D_{zz} = \sum _i q_i\left (3z_i^2 - z_i^2\right ) = 2\sum _i q_i z_i^2 = 2\left [q\,a^2 + (-2q)\cdot 0 + q\,a^2\right ] = 4qa^2,
+\end{equation*}
+
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{8}\)</span>
+
+
+<!--
+
+
+
+  𝐷𝑥𝑥 = ∑ 𝑞𝑖 (3 ⋅ 0 − 𝑧𝑖2 ) = − ∑ 𝑞𝑖 𝑧𝑖2 = − (𝑞𝑎2 + 𝑞𝑎2 ) = −2𝑞𝑎2 ,
+          𝑖                     𝑖
+                                                                                                                                                                                                                     𝐷𝑦𝑦 = 𝐷𝑥𝑥 = −2𝑞𝑎2
+
+
+
+-->
+
+
+<p>
+
+\begin{multline*}
+D_{xx} = \sum _i q_i\left (3\cdot 0 - z_i^2\right ) = -\sum _i q_i z_i^2 = -\left (qa^2 + qa^2\right ) = -2qa^2, \\ D_{yy}=D_{xx}=-2qa^2
+\end{multline*}
+(перевірка сліду: \(D_{xx}+D_{yy}+D_{zz} = -2qa^2-2qa^2+4qa^2=0\) — узгоджується із загальною властивістю). Оскільки тензор уже діагональний, для точки спостереження на осі \(z\) (де \(\vect r = z\vect e_z\)) залишається лише доданок
+з \(D_{zz}\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{8}\)</span>
+
+<!--
+
+
+                                                                                                                           𝐷𝑧𝑧   2𝑞𝑎2
+                                                                                                               𝜑кв (𝑧) =       =      .
+                                                                                                                           2𝑧3    𝑧3
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi _{\text {кв}}(z) = \frac {D_{zz}}{2z^3} = \frac {2qa^2}{z^3}.
+\end{equation*}
+
+</p>
+
+</div>
+<!--
+...... section Диполь в електричному полі ......
+-->
+<h4 id="autosec-178"><span class="sectionnumber">3.5&#x2003;</span>Диполь в електричному полі</h4>
+<a id="main-html-autopage-178"></a>
+
+
+<a id="sec:DipoleEnergy"></a>
+
+<p>
+<a id="LWR-ht-dipole-in-field"></a>
+</p>
+
+<p>
+Досі ми цікавились полем, яке диполь <em>створює</em>. Тепер розглянемо обернену задачу: як диполь поводиться, потрапивши у <em>зовнішнє</em> електричне поле — яка сила й момент сил на нього діють і яку енергію він при цьому має.
+</p>
+<!--
+...... subsection Момент сил, що діє на диполь в однорідному полі ......
+-->
+<h5 id="autosec-179">Момент сил, що діє на диполь в однорідному полі</h5>
+<a id="main-html-autopage-179"></a>
+
+
+<p>
+Розглянемо диполь в однорідному електричному полі (рис.&nbsp;<a href="ch3.html#tikz:Momentum_on_dipole_in_yniform_field">3.4</a>). Результуюча сила, що діє на цей диполь дорівнює нулю: \(\vect {F} = (+q)\Efield + (-q)\Efield
+= 0\).
+</p>
+
+<figure id="autoid-61" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-36"
+    class="lateximagesource"
+><!--
+                                  +𝑞      𝐄
+                              +
+                                       𝐅+ = 𝑞𝐄
+                         𝓵
+𝐅− = −𝑞𝐄
+                −            𝐫+
+           −𝑞
+                    𝐫−
+
+                         𝑂
+--><img
+   src="main-html-images\image-36.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;3.4. до виведення моменту сил, що діє на диполь в однорідному електричному полі
+
+</div>
+
+<a id="tikz:Momentum_on_dipole_in_yniform_field"></a>
+
+</div>
+
+</figure>
+
+<p>
+Однак цей диполь може орієнтуватися у такому полі, оскільки на нього може діяти обертовий момент сил. Розрахуємо його, використовуючи означення, відоме з курсу механіки:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{8}\)</span>
+
+<!--
+
+
+                                                                                       𝐌𝑂 = 𝐫+ × 𝐅+ + 𝐫− × 𝐅− = 𝐫+ × (+𝑞)𝐄 + 𝐫− × (−𝑞)𝐄 = 𝑞(𝐫+ − 𝐫− ) × 𝐄.
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect {M}_O = \vect {r}_+ \times \vect {F}_+ + \vect {r}_- \times \vect {F}_- = \vect {r}_+ \times (+q)\Efield + \vect {r}_- \times (-q)\Efield = q(\vect {r}_+ - \vect {r}_-)\times \Efield .
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки \(q(\vect {r}_+ - \vect {r}_-) = \vect {p}\), то остаточно маємо:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{8}\)</span>
+
+<!--
+
+
+                                                                                                                  𝐌 = [𝐩 × 𝐄] .
+
+-->
+
+<p>
+
+\begin{equation*}
+\tcbhighmath { \vect {M} = \left [\vect {p}\times \Efield \right ]. }
+\end{equation*}
+
+</p>
+
+<p>
+Бачимо, що момент сил (пари сил) не залежить від вибору точки \(O\). Цей момент орієнтує диполь в однорідному полі.
+</p>
+<!--
+...... subsection Сила, що діє на диполь у неоднорідному полі ......
+-->
+<h5 id="autosec-183">Сила, що діє на диполь у неоднорідному полі</h5>
+<a id="main-html-autopage-183"></a>
+
+
+<p>
+Розрахуємо силу, що діє на диполь у неоднорідному полі (рис.&nbsp;<a href="ch3.html#tikz:dipole_in_nonuniform_field">3.5</a>).
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{8}\)</span>
+
+<!--
+
+
+                                                                                              𝐅 = (+𝑞)𝐄+ + (−𝑞)𝐄− = 𝑞(𝐄+ − 𝐄− ) = 𝑞Δ𝐄.
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect {F} = (+q)\Efield _+ + (-q)\Efield _- = q(\Efield _+ - \Efield _-) = q\Delta \Efield .
+\end{equation*}
+
+</p>
+
+<figure id="autoid-62" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-37"
+    class="lateximagesource"
+><!--
+                     +𝑞𝐄+
+            +𝑞
+                 +
+
+
+                 𝓵
+
+−𝑞𝐄−
+            −
+       −𝑞
+--><img
+   src="main-html-images\image-37.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;3.5. Диполь у неоднорідному полі
+
+</div>
+
+<a id="tikz:dipole_in_nonuniform_field"></a>
+
+</div>
+
+</figure>
+
+<p>
+Для точкового диполя різницю \(\Delta \Efield \) можна записати використовуючи формулу <span class="textup">(<a href="ch2.html#eq:vec_diff">2.17</a>)</span> у вигляді:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{8}\)</span>
+
+<!--
+
+                                                                                                                               𝜕𝐄      𝜕𝐄      𝜕𝐄
+                                                                                                   Δ𝐄 = 𝐄(𝐫 + 𝓵) − 𝐄(𝐫) = ℓ𝑥      + ℓ𝑦    + ℓ𝑧    .
+                                                                                                                               𝜕𝑥      𝜕𝑦      𝜕𝑧
+
+-->
+
+<p>
+
+\begin{equation*}
+\Delta \Efield = \Efield (\vect {r} + \symbfscr {l}) - \Efield (\vect {r})= \ell _x \frac {\partial \Efield }{\partial x} + \ell _y \frac {\partial \Efield }{\partial y} + \ell _z \frac {\partial \Efield
+}{\partial z}.
+\end{equation*}
+
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{8}\)</span>
+
+<!--
+
+
+                                                                            𝜕𝐄      𝜕𝐄      𝜕𝐄
+                                                                   𝐅 = 𝑝𝑥      + 𝑝𝑦    + 𝑝𝑧    = (𝐩 ⋅ 𝛁)𝐄.                                                             (3.9)   --><a id="eq:EforceOnDipole"></a><!--
+                                                                            𝜕𝑥      𝜕𝑦      𝜕𝑧
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:EforceOnDipole} \tcbhighmath { \vect {F} = p_x \frac {\partial \Efield }{\partial x} + p_y \frac {\partial \Efield }{\partial y} + p_z \frac {\partial \Efield }{\partial z} = (\vect {p}\cdot \vect
+{\nabla })\Efield . }
+\end{equation}
+
+</p>
+
+<p>
+Якщо <em>диполь перебуває в неоднорідному полі</em> — виникає <em>результуюча сила</em>, що діє на диполь як ціле, що <em>втягуватиме диполь в область сильного поля</em>.
+</p>
+<!--
+...... subsection Енергія жорсткого диполя в електричному полі ......
+-->
+<h5 id="autosec-187">Енергія жорсткого диполя в електричному полі</h5>
+<a id="main-html-autopage-187"></a>
+
+
+<p>
+Енергія точкового заряду \(q\) у зовнішньому полі дорівнює \(U = q\phi \), де \(\phi \) — потенціал поля в точці знаходження заряду \(q\). Диполь — це система з двох зарядів, тому його енергія в зовнішньому полі \(U= q\phi _+ + (-q)\phi
+_- = q (\phi _+ - \phi _-)\). Для різниці можна використати формулу&nbsp;<span class="textup">(<a href="ch2.html#eq:sc_diff">2.16</a>)</span>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{9}\)</span>
+
+<!--
+
+
+                                                                                                   𝑈 = 𝑞𝜑+ + (−𝑞)𝜑− = 𝑞(𝜑+ − 𝜑− ) = 𝑞𝓵 ⋅ 𝛁𝜑.
+
+-->
+
+<p>
+
+\begin{equation*}
+U= q\phi _+ + (-q)\phi _- = q (\phi _+ - \phi _-) = q \symbfscr {l}\cdot \vect {\nabla }\phi .
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки \(-\vect {\nabla }\phi = \Efield \), а \(\vect {p} = q\symbfscr {l}\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{9}\)</span>
+
+<!--
+
+
+                                                                                                                  𝑈 = −𝐩 ⋅ 𝐄.
+
+-->
+
+<p>
+
+\begin{equation*}
+\tcbhighmath { U = -\vect {p}\cdot \Efield . }
+\end{equation*}
+
+</p>
+
+<p>
+Мінімальну енергію диполь має в положенні \(\vect {p} \uparrow \uparrow \Efield \) (положення стійкої рівноваги). У разі відхилення з цього положення виникає момент зовнішніх сил, що повертає диполь до положення рівноваги.
+</p>
+<figure id="autoid-63" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:top ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-189"></a>
+
+<p>
+<span
+    id="lateximage-main-html-38"
+    class="lateximagesource"
+><!--
+−       +
+    𝐩
+--><img
+   src="main-html-images\image-38.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+(а)
+
+</div>
+
+<a id="tikz:parallel"></a>
+
+<a id="sub@tikz:parallel"></a>
+
+</div>
+<div class="minipage" style="vertical-align:top ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-192"></a>
+
+<p>
+<span
+    id="lateximage-main-html-39"
+    class="lateximagesource"
+><!--
+−
+
+    𝐩
+        +
+--><img
+   src="main-html-images\image-39.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+(б)
+
+</div>
+
+<a id="tikz:angle"></a>
+
+<a id="sub@tikz:angle"></a>
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;3.6. Положення диполя в однорідному електричному полі. Ліворуч (<a href="ch3.html#tikz:parallel">а</a>) — положення стійкої рівноваги з мінімальною енергією. Праворуч (<a href="ch3.html#tikz:angle">б</a>) — нестійке
+положення.
+
+</div>
+
+</div>
+
+</figure>
+<!--
+...... subsection Енергія пружного диполя в електричному полі ......
+-->
+<h5 id="autosec-195">Енергія пружного диполя в електричному полі</h5>
+<a id="main-html-autopage-195"></a>
+
+
+<p>
+Під дією електричного поля плече диполя збільшується на таку величину \(\ell \), що сила з боку поля врівноважується силою пружності \(k\ell = qE \). Звідси знаходимо, що дипольний момент \(p = q\ell \) залежить від прикладеного поля
+за законом:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{9}\)</span>
+
+<!--
+
+
+                                                                                                                      𝑞2 𝐸
+                                                                                                                 𝑝=        = 𝛼𝐸
+                                                                                                                       𝑘
+
+-->
+
+<p>
+
+\begin{equation*}
+p = \frac {q^2E}{k} = \alpha E
+\end{equation*}
+
+</p>
+
+<p>
+Коефіцієнт \(\alpha \) називається <em><span
+    class="textcolor"
+    style="color:#990000"
+>поляризовністю молекули</span></em>.
+</p>
+
+<p>
+На відміну від жорсткого диполя, тут недостатньо врахувати лише енергію пружної деформації — потрібна ще й енергія взаємодії заряду з полем. Повна енергія системи як функція зміщення \(x\) складається з цих двох внесків:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{9}\)</span>
+
+<!--
+
+
+                                                                                                                       𝑘𝑥2
+                                                                                                              𝑈(𝑥) =       − 𝑞𝑥𝐸.
+                                                                                                                        2
+
+-->
+
+<p>
+
+\begin{equation*}
+U(x) = \frac {kx^2}2 - qxE.
+\end{equation*}
+
+</p>
+
+<p>
+Мінімізуючи за \(x\) (\(dU/dx = kx - qE = 0\)), знаходимо те саме рівноважне зміщення \(x=\ell =qE/k\), що й з умови рівноваги сил. Підставляючи його назад, одержуємо повну енергію в рівновазі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{9}\)</span>
+
+<!--
+
+
+                                                                                                       𝑘ℓ2         𝑞𝐸ℓ           𝑞𝐸ℓ    𝑝𝐸
+                                                                                                  𝑈=       − 𝑞𝐸ℓ =     − 𝑞𝐸ℓ = −     =−    .
+                                                                                                        2           2             2      2
+
+-->
+
+<p>
+
+\begin{equation*}
+U = \frac {k\ell ^2}2 - qE\ell = \frac {qE\ell }2 - qE\ell = -\frac {qE\ell }2 = -\frac {pE}2.
+\end{equation*}
+
+</p>
+
+<p>
+Тут вектор дипольного моменту, індукований зовнішнім полем, паралельний електричному полю \(\vect {p}\uparrow \uparrow \Efield \). Тому останню формулу можна переписати у векторній формі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{9}\)</span>
+
+<!--
+
+
+                                                                                                                        1
+                                                                                                                 𝑈=−      𝐩 ⋅ 𝐄.                                                                                                         (3.10)
+                                                                                                                        2
+
+-->
+
+<p>
+
+\begin{equation}
+\tcbhighmath { U = -\frac 12\ \vect {p}\cdot \Efield . }
+\end{equation}
+
+</p>
+
+<p>
+Знак «мінус» тут той самий, що й для жорсткого диполя (вирівнювання вздовж поля знижує енергію), але вдвічі менший за модулем: половину «виграшу» від взаємодії з полем «з’їдає» енергія пружної деформації, необхідної для створення самого
+диполя.
+</p>
+<!--
+...... section Енергія довільної системи зарядів у зовнішньому полі ......
+-->
+<h4 id="autosec-196"><span class="sectionnumber">3.6&#x2003;</span>Енергія довільної системи зарядів у зовнішньому полі</h4>
+<a id="main-html-autopage-196"></a>
+
+
+<p>
+<a id="LWR-ht-energy-in-external-field"></a>
+</p>
+
+<p>
+Розглянемо систему зарядів \(\{q_i\}\), локалізовану в деякій обмеженій області простору, яку внесено у <em>зовнішнє</em> електричне поле з потенціалом \(\phi (\vect r)\) і напруженістю \(\Efield (\vect r) = -\vect \nabla \phi
+(\vect r)\). Слово «зовнішнє» тут ключове: це поле створене <em>іншими</em> зарядами, розташованими <em>поза</em> системою \(\{q_i\}\) — система \(\{q_i\}\) лише перебуває в цьому вже заданому полі, не будучи його джерелом.
+Знайдемо енергію взаємодії системи \(\{q_i\}\) із цим зовнішнім полем.
+</p>
+
+<p>
+Результат \(U=-\vect p\cdot \Efield \), отриманий вище для жорсткого диполя (двох зарядів) в однорідному полі, виявиться першим наближенням загальнішого розкладу, застосовного до довільної системи \(\{q_i\}\) у довільному (не
+обов’язково однорідному) зовнішньому полі. Енергія системи дорівнює сумі енергій окремих зарядів у цьому полі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{10}\)</span>
+
+<!--
+
+
+                                                                                                                   𝑈 = ∑ 𝑞𝑖 𝜑(𝐫𝑖 ).
+                                                                                                                            𝑖
+
+-->
+
+<p>
+
+\begin{equation*}
+U = \sum _i q_i\, \phi (\vect r_i).
+\end{equation*}
+
+</p>
+
+<p>
+Виберемо початок координат \(O\) десь усередині системи й розкладемо \(\phi (\vect r_i)\) у ряд Тейлора за \(\vect r_i\), аналогічно до того, як це робилося для потенціалу самої системи (пор.&nbsp;<span class="textup">(<a
+href="ch3.html#eq:multipole_second_order">3.6</a>)</span>):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{10}\)</span>
+
+<!--
+
+
+                                                                                                                                  1         𝜕2 𝜑
+                                                                                                   𝜑(𝐫𝑖 ) ≈ 𝜑(0) + 𝐫𝑖 ⋅ 𝛁𝜑(0) +     𝑟 𝑟           (0).
+                                                                                                                                  2 𝑖𝛼 𝑖𝛽 𝜕𝑥𝛼 𝜕𝑥𝛽
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi (\vect r_i) \approx \phi (0) + \vect r_i\cdot \vect \nabla \phi (0) + \frac 12\, r_{i\alpha }r_{i\beta }\, \frac {\partial ^2\phi }{\partial x_\alpha \partial x_\beta }(0).
+\end{equation*}
+
+</p>
+
+<p>
+Підсумовуючи із вагами \(q_i\) й використовуючи \(\vect \nabla \phi = -\Efield \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{10}\)</span>
+
+<!--
+
+
+                                                                                                                           1                    𝜕2 𝜑
+                                                                                            𝑈 ≈ 𝜑(0) ∑ 𝑞𝑖 −𝐄(0) ⋅ ∑ 𝑞𝑖 𝐫𝑖 + ∑ [∑ 𝑞𝑖 𝑟𝑖𝛼 𝑟𝑖𝛽 ]         (0).
+                                                                                                     ⏟
+                                                                                                     𝑖            ⏟𝑖⎵⏟⎵⏟   2 𝛼𝛽 𝑖
+                                                                                                                                              𝜕𝑥𝛼 𝜕𝑥𝛽
+                                                                                                       𝑞              𝐩
+
+-->
+
+<p>
+
+\begin{equation*}
+U \approx \phi (0)\underbrace {\sum _i q_i}_{q} - \Efield (0)\cdot \underbrace {\sum _i q_i\vect r_i}_{\vect p} + \frac 12\sum _{\alpha \beta }\left [\sum _i q_i\, r_{i\alpha }r_{i\beta }\right ]\frac {\partial
+^2\phi }{\partial x_\alpha \partial x_\beta }(0).
+\end{equation*}
+
+</p>
+
+<p>
+Останній доданок хочеться виразити через уже введений тензор \(D_{\alpha \beta }\), а не через \(\sum _i q_i r_{i\alpha }r_{i\beta }\) напряму. Оскільки в точці \(O\) немає зарядів самої зовнішньої системи (поле там задовольняє
+рівняння Лапласа), маємо \(\nabla ^2\phi (0) = \sum _\alpha \dfrac {\partial ^2\phi }{\partial x_\alpha ^2}(0) = 0, \) тобто тензор других похідних \(\partial ^2\phi /\partial x_\alpha \partial x_\beta \) безслідовий —
+так само як і \(D_{\alpha \beta }\). Це дозволяє показати (додавши й віднявши слідову частину), що
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{10}\)</span>
+
+<!--
+
+
+                                                                                      1                     𝜕2 𝜑       1        𝜕2 𝜑         1      𝜕𝐸𝛼
+                                                                                        ∑ [∑ 𝑞𝑖 𝑟𝑖𝛼 𝑟𝑖𝛽 ]         (0) = ∑ 𝐷𝛼𝛽         (0) = − ∑ 𝐷𝛼𝛽     (0),
+                                                                                      2 𝛼𝛽 𝑖              𝜕𝑥𝛼 𝜕𝑥𝛽      6 𝛼𝛽   𝜕𝑥𝛼 𝜕𝑥𝛽        6 𝛼𝛽   𝜕𝑥𝛽
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac 12\sum _{\alpha \beta }\left [\sum _i q_i\, r_{i\alpha }r_{i\beta }\right ]\frac {\partial ^2\phi }{\partial x_\alpha \partial x_\beta }(0) = \frac 16\sum _{\alpha \beta } D_{\alpha \beta }\, \frac
+{\partial ^2\phi }{\partial x_\alpha \partial x_\beta }(0) = -\frac 16\sum _{\alpha \beta } D_{\alpha \beta }\, \frac {\partial E_\alpha }{\partial x_\beta }(0),
+\end{equation*}
+
+</p>
+
+<p>
+адже доданок, пропорційний \(\delta _{\alpha \beta }\), зникає через безслідовість \(\partial ^2\phi /\partial x_\alpha \partial x_\beta \). Остаточно енергія довільної системи зарядів у зовнішньому полі — це ряд за
+мультипольними моментами системи:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{3.}{10}\)</span>
+
+<!--
+
+
+                                                                                                                                1       𝜕𝐸𝛼
+                                                                                                 𝑈= ⏟
+                                                                                                    𝑞⎵
+                                                                                                     𝜑(0)
+                                                                                                      ⏟⎵⏟ − 𝐩 ⋅ 𝐄(0) −
+                                                                                                            ⏟⎵⏟⎵⏟                 ∑𝐷        (0) + …                                                                                       (3.11)
+                                                                                                                                6 𝛼𝛽 𝛼𝛽 𝜕𝑥𝛽
+                                                                                                      монополь     диполь       ⏟⎵ ⎵⎵⎵⎵⏟⎵⎵⎵⎵⎵⏟
+                                                                                                                                    квадруполь
+
+-->
+
+<p>
+
+\begin{equation}
+U = \underbrace {q\,\phi (0)}_{\text {монополь}} \;-\; \underbrace {\vect p\cdot \Efield (0)}_{\text {диполь}} \;-\; \underbrace {\frac 16\sum _{\alpha \beta } D_{\alpha \beta }\, \frac {\partial E_\alpha
+}{\partial x_\beta }(0)}_{\text {квадруполь}} \;+\;\ldots
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Умова \(\nabla ^2\phi (0)=0\) — це не тотожність, а суттєве припущення: вона виконується лише тому, що \(\phi \) тут — потенціал <em>зовнішнього</em> поля, створеного зарядами <em>поза</em> системою \(\{q_i\}\). Якби \(\phi \)
+включало власне поле системи (наприклад, при обчисленні енергії взаємодії зарядів системи одне з одним), у точці \(O\) були б заряди, і за рівнянням Пуассона \(\nabla ^2\phi (0) = -4\pi \rho (0) \neq 0\). Тоді слідовий доданок не
+скорочувався б і формула нижче набула б додаткового внеску.
+</p>
+</div>
+
+<p>
+Кожен доданок відповідає за взаємодію відповідного мультипольного моменту системи з полем (або його похідними) у точці \(O\): заряд взаємодіє з потенціалом, диполь — із самим полем, квадруполь — з градієнтом поля (неоднорідністю), і так
+далі. Для жорсткого диполя \(q=0\), а всі моменти вищі за дипольний дорівнюють нулю (два точкові заряди не мають квадрупольного моменту відносно середини відрізка, що їх з’єднує), тому в розкладі залишається лише \(U=-\vect p\cdot
+\Efield \) — результат, отриманий вище елементарним способом.
+</p>
+<!--
+...... section Підсумки ......
+-->
+<h4 id="autosec-197">Підсумки</h4>
+<a id="main-html-autopage-197"></a>
+
+
+<p>
+Щоб описати взаємодію системи зарядів з полем, недостатньо знати лише її сумарний заряд: при \(q=0\) усе визначає взаємне розташування зарядів. Першою (після заряду) його характеристикою є <em><span
+    class="textcolor"
+    style="color:#990000"
+>дипольний момент</span></em> \(\vect p=\sum _i q_i\vect r_i\)&nbsp;<span class="textup">(<a href="ch3.html#eq:el_momentum">3.1</a>)</span>, який для електронейтральної системи не залежить від вибору початку відліку.
+Найпростіша система з ненульовим \(\vect p\) — <em><span
+    class="textcolor"
+    style="color:#990000"
+>диполь</span></em>, тобто пара рівних за величиною й протилежних за знаком зарядів, \(\vect p=q\symbfscr {l}\). У границі точкового диполя його поле \(\Efield =\dfrac {3(\vect p\cdot \vect r)\vect r}{r^5}-\dfrac {\vect
+p}{r^3}\)&nbsp;<span class="textup">(<a href="ch3.html#eq:dipole_field">3.4</a>)</span> спадає як \(1/r^3\), а потенціал \(\phi =\dfrac {\vect p\cdot \vect r}{r^3}\)&nbsp;<span class="textup">(<a
+href="ch3.html#eq:potential_dipole">3.5</a>)</span> — як \(1/r^2\), тобто швидше, ніж кулонівські.
+</p>
+
+<p>
+Узагальнення цього результату&nbsp;— розклад потенціалу довільної системи зарядів на великих відстанях за мультипольними моментами&nbsp;<span class="textup">(<a href="ch3.html#eq:multipoles">3.8</a>)</span>: <em><span
+    class="textcolor"
+    style="color:#990000"
+>монополь</span></em> \(q/r\), <em><span
+    class="textcolor"
+    style="color:#990000"
+>диполь</span></em> і&nbsp;<em><span
+    class="textcolor"
+    style="color:#990000"
+>квадруполь</span></em>, який задається симетричним безслідовим тензором \(D_{\alpha \beta }\)&nbsp;<span class="textup">(<a href="ch3.html#eq:quadrupole_momentum">3.7</a>)</span> з&nbsp;п’ятьма незалежними компонентами.
+Кожен наступний доданок спадає швидше за попередній, тому на далеких відстанях поле визначає перший з&nbsp;ненульових моментів. Так, у&nbsp;молекули <span
+    id="lateximage-main-html-40"
+    class="lateximagesource"
+><!--
+CO2
+--><img
+   src="main-html-images\FAC188068524E4DDF140E14E338F3177.svg"
+   alt="\ce{CO2}"
+   style=""
+   class="lateximage"
+></span> немає дипольного моменту, і&nbsp;її електростатична взаємодія визначається квадрупольним моментом.
+</p>
+
+<p>
+Ті самі моменти визначають і поведінку системи в <em>зовнішньому</em> полі. В однорідному полі на диполь діє нульова сила, але ненульовий момент \(\vect M=\vect p\times \Efield \), що орієнтує його вздовж поля. У неоднорідному полі
+виникає ще й сила \(\vect F=(\vect p\cdot \vect \nabla )\Efield \)&nbsp;<span class="textup">(<a href="ch3.html#eq:EforceOnDipole">3.9</a>)</span>, що втягує диполь в область сильнішого поля. Енергія жорсткого диполя
+дорівнює \(U=-\vect p\cdot \Efield \), а пружного, у якого \(\vect p=\alpha \Efield \) (\(\alpha \) — поляризовність), — \(U=-\frac 12\vect p\cdot \Efield \): половину виграшу поглинає енергія деформації. Для довільної системи
+енергія у зовнішньому полі також є рядом за мультипольними моментами: заряд взаємодіє з потенціалом, диполь — з полем, квадруполь — з градієнтом поля.
+</p>
+<!--
+...... section Задачі ......
+-->
+<h4 id="autosec-200">Задачі</h4>
+<a id="main-html-autopage-200"></a>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-64"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 3.1.</span></span> <a id="autoid-65" ></a ><a id="prb:DipolePolar"></a> <em>Полярні компоненти.</em> Точковий диполь \(\vect p\) напрямлений уздовж осі \(Oz\);
+\(\theta \) — кут між \(\vect r\) і \(\vect p\). Виходячи з \(\phi = p\cos \theta /r^2\), знайдіть компоненти \(E_r\) і \(E_\theta \) поля диполя. Який вигляд має поле на осі диполя (\(\theta =0\)) і на його серединному перпендикулярі
+(\(\theta =\pi /2\))? <em>Відповідь:</em> \(E_r=\dfrac {2p\cos \theta }{r^3}\), \(E_\theta =\dfrac {p\sin \theta }{r^3}\); на осі \(E=2p/r^3\) уздовж \(\vect p\), на серединному перпендикулярі \(E=p/r^3\) проти \(\vect p\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-66"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 3.2.</span></span> <a id="autoid-67" ></a ><a id="prb:DipoleMagicAngle"></a> <em>Особливий кут.</em> Під яким кутом \(\theta \) до дипольного моменту \(\vect
+p\) вектор напруженості поля диполя перпендикулярний до \(\vect p\)? <em>Відповідь:</em> \(\cos ^2\theta =\dfrac 13\), тобто \(\theta \approx 54{,}7^\circ \) (і \(125{,}3^\circ \)). Підказка: \(\vect p\cdot \Efield =\dfrac
+{p^2}{r^3}\,(3\cos ^2\theta -1)\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-68"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 3.3.</span></span> <a id="autoid-69" ></a ><a id="prb:SquareQuadrupole"></a> <em>Плоский квадруполь.</em> У площині \(Oxy\) у вершинах квадрата зі стороною \(a\)
+розташовано заряди: \(+q\) у точці \((0,0)\), \(-q\) у \((a,0)\), \(+q\) у \((a,a)\), \(-q\) у \((0,a)\). Знайдіть сумарний заряд, дипольний момент і компоненти тензора \(D_{\alpha \beta }\). <em>Відповідь:</em> \(q_\Sigma =0\), \(\vect
+p=0\); єдині ненульові компоненти \(D_{xy}=D_{yx}=3qa^2\) (слід нульовий).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-70"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 3.4.</span></span> <a id="autoid-71" ></a ><a id="prb:QuadrupoleAccuracy"></a> <em>Точність наближення.</em> Для лінійного квадруполя з прикладу
+(\(+q,\,-2q,\,+q\) на осі \(Oz\) у точках \(z=a,\,0,\,-a\)): (а)&nbsp;знайдіть \(E_z(z)\) на осі в квадрупольному наближенні; (б)&nbsp;обчисліть точне значення потенціалу в точці \(z=5a\) і порівняйте його з \(\phi _{\text
+{кв}}=2qa^2/z^3\). Яка відносна похибка? <em>Відповідь:</em> (а)&nbsp;\(E_z=6qa^2/z^4\). (б)&nbsp;Точно \(\phi =\dfrac {2qa^2}{z(z^2-a^2)}=\dfrac {q}{60a}\), наближення дає \(\dfrac {2q}{125a}\); їхнє відношення
+\((z^2-a^2)/z^2=24/25\), тож похибка \(\approx 4\%\) (наближення занижує).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-72"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 3.5.</span></span> <a id="autoid-73" ></a ><a id="prb:DipoleOscillations"></a> <em>Коливання диполя.</em> Жорсткий диполь з моментом \(p\) і моментом інерції
+\(I\) (відносно осі, перпендикулярної до \(\vect p\)) може вільно обертатися в однорідному полі \(\Efield \). Знайдіть період малих коливань біля положення стійкої рівноваги. <em>Відповідь:</em> \(T=2\pi \sqrt {I/(pE)}\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-74"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 3.6.</span></span> <a id="autoid-75" ></a ><a id="prb:DipoleRotationWork"></a> <em>Робота повороту.</em> Яку роботу треба виконати, щоб повернути жорсткий
+диполь в однорідному полі з положення \(\vect p\uparrow \uparrow \Efield \) у положення \(\vect p\uparrow \downarrow \Efield \)? А в положення \(\vect p\perp \Efield \)? <em>Відповідь:</em> \(A=2pE\) і \(A=pE\) відповідно.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-76"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 3.7.</span></span> <a id="autoid-77" ></a ><a id="prb:DipoleAndCharge"></a> <em>Диполь і точковий заряд.</em> Точковий заряд \(Q\) створює поле \(\Efield =Q\vect
+r/r^3\). На відстані \(r\) від нього розташований жорсткий диполь \(\vect p\), напрямлений уздовж радіуса від заряду. Знайдіть силу, що діє на диполь, і перевірте відповідь за допомогою третього закону Ньютона й поля диполя.
+<em>Відповідь:</em> \(F_r=p\,\dfrac {d}{dr}\dfrac {Q}{r^2}=-\dfrac {2pQ}{r^3}\), тобто притягання із силою \(2pQ/r^3\). Перевірка: поле диполя на осі в місці заряду дорівнює \(2p/r^3\), тож сила на заряд \(2pQ/r^3\) і вона протилежна.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-78"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 3.8.</span></span> <a id="autoid-79" ></a ><a id="prb:TwoDipoles"></a> <em>Взаємодія двох диполів.</em> Два однакових жорстких диполі \(p\) з паралельними
+моментами розташовані на відстані \(r\) один від одного. Знайдіть енергію їхньої взаємодії, якщо (а)&nbsp;\(\vect r\parallel \vect p\) (на одній прямій); (б)&nbsp;\(\vect r\perp \vect p\) (поруч). Яке розташування вигідніше?
+<em>Відповідь:</em> (а)&nbsp;\(U=-2p^2/r^3\); (б)&nbsp;\(U=+p^2/r^3\). Вигідніше розташування на одній прямій.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-80"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 3.9.</span></span> <a id="autoid-81" ></a ><a id="prb:Polarizability"></a> <em>Поляризовність.</em> Молекулу змодельовано зарядом \(e\) і масою \(m\) на пружині з
+власною круговою частотою \(\omega _0=10^{16}\ \text {c}^{-1}\). Виразіть поляризовність \(\alpha \) через \(e\), \(m\), \(\omega _0\) та оцініть її в \(\text {см}^3\). <em>Відповідь:</em> \(\alpha =\dfrac {e^2}{m\omega _0^2}\approx
+\dfrac {(4{,}8\cdot 10^{-10})^2}{9{,}1\cdot 10^{-28}\cdot 10^{32}}\approx 2{,}5\cdot 10^{-24}\ \text {см}^3\) (порядок розміру атома в кубі).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Чому для опису системи зарядів недостатньо знати лише сумарний заряд? Запишіть означення дипольного моменту системи зарядів. За якої умови він не залежить від вибору початку відліку?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Що таке електричний диполь і плече диполя? Куди напрямлений вектор \(\vect {p} = q\symbfscr {l}\) відносно зарядів диполя?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Чим відрізняються жорсткий і пружний диполі? Що таке елементарний (точковий) диполь і в якій границі його вводять?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> Запишіть формулу для напруженості поля точкового диполя. Як вона залежить від відстані і чому поле диполя спадає швидше, ніж поле точкового заряду?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Запишіть потенціал поля точкового диполя. За яким законом він зменшується з відстанню? Чому в його виведенні вважають \(\ell \ll r\) (рис.&nbsp;<a href="ch3.html#tikz:dipolefield">3.2</a>)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> З яких доданків складається розклад потенціалу довільної системи зарядів на великих відстанях? Який із них є домінуючим при \(q \neq 0\), а коли суттєвим стає внесок диполя чи квадруполя?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> За яких умов на систему зарядів поле на далеких відстанях визначається саме квадрупольним моментом? Запишіть означення тензора квадрупольного моменту \(D_{\alpha \beta }\) і виведіть його з
+розкладу \(1/|\vect r-\vect r_i|\) до другого порядку.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Доведіть, що тензор квадрупольного моменту симетричний і безслідовий. Скільки незалежних компонент він має і скільки — у власній системі координат?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> Запишіть формулу для потенціалу квадрупольного доданка \(\phi _{\text {кв}}(\vect r)\) через \(D_{\alpha \beta }\). Як він і відповідна напруженість поля спадають з відстанню порівняно з
+дипольним і монопольним доданками?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Чому молекула <span
+    id="lateximage-main-html-41"
+    class="lateximagesource"
+><!--
+CO2
+--><img
+   src="main-html-images\FAC188068524E4DDF140E14E338F3177.svg"
+   alt="\ce{CO2}"
+   style=""
+   class="lateximage"
+></span> не має дипольного моменту, але має ненульовий квадрупольний момент? Обчисліть \(D_{zz}\) для моделі лінійного квадруполя — зарядів \(+q,-2q,+q\) на осі, симетрично розташованих на відстані \(a\) від центру.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> Чому результуюча сила, що діє на диполь в однорідному електричному полі, дорівнює нулю, а обертовий момент — ні? Запишіть формулу для \(\vect {M}\) і поясніть, чому він не залежить від вибору точки
+\(O\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Як буде орієнтуватися диполь в однорідному полі? Чому положення \(\vect {p}\uparrow \uparrow \Efield \) є стійким, а \(\vect {p}\uparrow \downarrow \Efield \) — нестійким?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">13.</span> Що відбувається з диполем у неоднорідному електричному полі? Запишіть формулу для сили \(\vect {F}\) і поясніть, чому диполь втягується в область сильного поля.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">14.</span> Виведіть та поясніть формулу для енергії жорсткого диполя в зовнішньому полі \(U = -\vect {p}\cdot \Efield \). Як залежить енергія від кута між \(\vect {p}\) і \(\Efield \) і в яких положеннях вона
+мінімальна та максимальна?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">15.</span> Що таке поляризовність молекули \(\alpha \)? Як вона пов’язана з жорсткістю «пружини» \(k\) і зарядом \(q\) у моделі пружного диполя?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">16.</span> Чому енергія пружного диполя дорівнює \(U = -\tfrac 12\,\vect {p}\cdot \Efield \), тоді як для жорсткого диполя \(U = -\vect {p}\cdot \Efield \)? Звідки береться множник \(\tfrac 12\)?
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,3138 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Хвилеводи</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-1459"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span>&#x2003;Електричні заряди та їх взаємодія</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span>&#x2003;Сили (взаємодії) в природі</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span>&#x2003;Електричний заряд</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-12" class="tocsection" >
+<span class="sectionnumber">1.3</span>&#x2003;Як заряджають тіла?</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-17" class="tocsection" >
+<span class="sectionnumber">1.4</span>&#x2003;Закон Кулона</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-25" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-32" class="tocchapter" >
+<span class="sectionnumber">2</span>&#x2003;Постійне електричне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocsection" >
+<span class="sectionnumber">2.1</span>&#x2003;Електромагнітне поле</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.2</span>&#x2003;Напруженість поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-46" class="tocsection" >
+<span class="sectionnumber">2.3</span>&#x2003;Силові лінії та математичне поняття поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-62" class="tocsection" >
+<span class="sectionnumber">2.4</span>&#x2003;Теорема Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-88" class="tocsection" >
+<span class="sectionnumber">2.5</span>&#x2003;Зауваження щодо інтегральної та диференціальної форми теореми Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-90" class="tocsection" >
+<span class="sectionnumber">2.6</span>&#x2003;Потенціальність електростатичного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-102" class="tocsection" >
+<span class="sectionnumber">2.7</span>&#x2003;Циркуляція вектора \(\symbf {E}\)</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-121" class="tocsection" >
+<span class="sectionnumber">2.8</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-128" class="tocsection" >
+<span class="sectionnumber">2.9</span>&#x2003;Рівняння Пуассона та Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-129" class="tocsection" >
+<span class="sectionnumber">2.10</span>&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-134" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-153" class="tocchapter" >
+<span class="sectionnumber">3</span>&#x2003;Електричне поле статичної системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-154" class="tocsection" >
+<span class="sectionnumber">3.1</span>&#x2003;Дипольний момент системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-158" class="tocsection" >
+<span class="sectionnumber">3.2</span>&#x2003;Поле точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-162" class="tocsection" >
+<span class="sectionnumber">3.3</span>&#x2003;Потенціал поля точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-163" class="tocsection" >
+<span class="sectionnumber">3.4</span>&#x2003;Потенціал системи зарядів на далеких відстанях</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-178" class="tocsection" >
+<span class="sectionnumber">3.5</span>&#x2003;Диполь в електричному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-196" class="tocsection" >
+<span class="sectionnumber">3.6</span>&#x2003;Енергія довільної системи зарядів у зовнішньому полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-197" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-200" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-214" class="tocchapter" >
+<span class="sectionnumber">4</span>&#x2003;Електричне поле у провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-215" class="tocsection" >
+<span class="sectionnumber">4.1</span>&#x2003;Структура провідників</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-221" class="tocsection" >
+<span class="sectionnumber">4.2</span>&#x2003;Провідник у полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-244" class="tocsection" >
+<span class="sectionnumber">4.3</span>&#x2003;Електричне поле біля вістря</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-253" class="tocsection" >
+<span class="sectionnumber">4.4</span>&#x2003;Єдиність розв’язку електростатичної задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-263" class="tocsection" >
+<span class="sectionnumber">4.5</span>&#x2003;Металева куля в однорідному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-275" class="tocsection" >
+<span class="sectionnumber">4.6</span>&#x2003;Сили, що діють на поверхню провідника в полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-279" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-280" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-291" class="tocchapter" >
+<span class="sectionnumber">5</span>&#x2003;Основи електростатики діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-292" class="tocsection" >
+<span class="sectionnumber">5.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-294" class="tocsection" >
+<span class="sectionnumber">5.2</span>&#x2003;Структура діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-331" class="tocsection" >
+<span class="sectionnumber">5.3</span>&#x2003;Поляризація діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-358" class="tocsection" >
+<span class="sectionnumber">5.4</span>&#x2003;Вектор поляризації</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-363" class="tocsection" >
+<span class="sectionnumber">5.5</span>&#x2003;Вектор електричної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-370" class="tocsection" >
+<span class="sectionnumber">5.6</span>&#x2003;Граничні умови в&nbsp;присутності діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-383" class="tocsection" >
+<span class="sectionnumber">5.7</span>&#x2003;Мікроскопічна теорія діелектричної проникності</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-390" class="tocsection" >
+<span class="sectionnumber">5.8</span>&#x2003;Типи діелектриків та їх застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-413" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-414" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-423" class="tocchapter" >
+<span class="sectionnumber">6</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-424" class="tocsection" >
+<span class="sectionnumber">6.1</span>&#x2003;Електрична ємність</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-445" class="tocsection" >
+<span class="sectionnumber">6.2</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-458" class="tocsection" >
+<span class="sectionnumber">6.3</span>&#x2003;Пондеромоторні сили</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-468" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-469" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-479" class="tocchapter" >
+<span class="sectionnumber">7</span>&#x2003;Постійний електричний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-480" class="tocsection" >
+<span class="sectionnumber">7.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-487" class="tocsection" >
+<span class="sectionnumber">7.2</span>&#x2003;Природа носіїв заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-489" class="tocsection" >
+<span class="sectionnumber">7.3</span>&#x2003;Закон збереження заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-496" class="tocsection" >
+<span class="sectionnumber">7.4</span>&#x2003;Закон Ома</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-527" class="tocsection" >
+<span class="sectionnumber">7.5</span>&#x2003;Закон Джоуля-Ленца</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-528" class="tocsection" >
+<span class="sectionnumber">7.6</span>&#x2003;Струми в необмежених середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-535" class="tocsection" >
+<span class="sectionnumber">7.7</span>&#x2003;Перехідні процеси в колі з конденсатором</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-548" class="tocsection" >
+<span class="sectionnumber">7.8</span>&#x2003;Максвеллівський час релаксації заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-550" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-562" class="tocchapter" >
+<span class="sectionnumber">8</span>&#x2003;Електричний струм у&nbsp;різних середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-564" class="tocsection" >
+<span class="sectionnumber">8.1</span>&#x2003;Електричний струм у&nbsp;металах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-584" class="tocsection" >
+<span class="sectionnumber">8.2</span>&#x2003;Електричний струм в&nbsp;електролітах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-590" class="tocsection" >
+<span class="sectionnumber">8.3</span>&#x2003;Електричний струм у&nbsp;газах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-601" class="tocsection" >
+<span class="sectionnumber">8.4</span>&#x2003;Електричний струм у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-615" class="tocsection" >
+<span class="sectionnumber">8.5</span>&#x2003;Електричний струм у&nbsp;напівпровідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-636" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-638" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-674" class="tocchapter" >
+<span class="sectionnumber">9</span>&#x2003;Магнітне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-675" class="tocsection" >
+<span class="sectionnumber">9.1</span>&#x2003;Означення</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-679" class="tocsection" >
+<span class="sectionnumber">9.2</span>&#x2003;Характеристика магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-680" class="tocsection" >
+<span class="sectionnumber">9.3</span>&#x2003;Дія магнітного поля на заряджені частинки та струми</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-701" class="tocsection" >
+<span class="sectionnumber">9.4</span>&#x2003;Закон Біо-Савара-Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-714" class="tocsection" >
+<span class="sectionnumber">9.5</span>&#x2003;Вектор-потенціал магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-719" class="tocsection" >
+<span class="sectionnumber">9.6</span>&#x2003;Теореми магнітостатики</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-740" class="tocsection" >
+<span class="sectionnumber">9.7</span>&#x2003;Магнітний момент</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-756" class="tocsection" >
+<span class="sectionnumber">9.8</span>&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-766" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-767" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-775" class="tocchapter" >
+<span class="sectionnumber">10</span>&#x2003;Магнітне поле в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-780" class="tocsection" >
+<span class="sectionnumber">10.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-783" class="tocsection" >
+<span class="sectionnumber">10.2</span>&#x2003;Намагнічування</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-795" class="tocsection" >
+<span class="sectionnumber">10.3</span>&#x2003;Теорема про циркуляцію в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-801" class="tocsection" >
+<span class="sectionnumber">10.4</span>&#x2003;Магнітна сприйнятливість речовини</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-832" class="tocsection" >
+<span class="sectionnumber">10.5</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-847" class="tocsection" >
+<span class="sectionnumber">10.6</span>&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-864" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-865" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-872" class="tocchapter" >
+<span class="sectionnumber">11</span>&#x2003;Рух заряджених частинок</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-873" class="tocsection" >
+<span class="sectionnumber">11.1</span>&#x2003;Рух частинок в&nbsp;однорідних полях</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-891" class="tocsection" >
+<span class="sectionnumber">11.2</span>&#x2003;Застосування схрещених полів</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-899" class="tocsection" >
+<span class="sectionnumber">11.3</span>&#x2003;Методи вимірювання питомого заряду електрона</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-909" class="tocsection" >
+<span class="sectionnumber">11.4</span>&#x2003;Досліди Міллікена</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-911" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-912" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-923" class="tocchapter" >
+<span class="sectionnumber">12</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-924" class="tocsection" >
+<span class="sectionnumber">12.1</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-929" class="tocsection" >
+<span class="sectionnumber">12.2</span>&#x2003;Закон електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-930" class="tocsection" >
+<span class="sectionnumber">12.3</span>&#x2003;Робота, що виконується при переміщенні провідника зі струмом у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-933" class="tocsection" >
+<span class="sectionnumber">12.4</span>&#x2003;Електромагнітна індукція в&nbsp;рухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-940" class="tocsection" >
+<span class="sectionnumber">12.5</span>&#x2003;Електромагнітна індукція в&nbsp;нерухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-959" class="tocsection" >
+<span class="sectionnumber">12.6</span>&#x2003;Явище самоіндукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-979" class="tocsection" >
+<span class="sectionnumber">12.7</span>&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-996" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-997" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1015" class="tocchapter" >
+<span class="sectionnumber">13</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1016" class="tocsection" >
+<span class="sectionnumber">13.1</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1022" class="tocsection" >
+<span class="sectionnumber">13.2</span>&#x2003;Взаємна індукція</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1038" class="tocsection" >
+<span class="sectionnumber">13.3</span>&#x2003;Енергія системи зв’язаних контурів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1041" class="tocsection" >
+<span class="sectionnumber">13.4</span>&#x2003;Потенціальна енергія струмів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1043" class="tocsection" >
+<span class="sectionnumber">13.5</span>&#x2003;Принцип роботи трансформаторів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1047" class="tocsection" >
+<span class="sectionnumber">13.6</span>&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1053" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1054" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1059" class="tocchapter" >
+<span class="sectionnumber">14</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1064" class="tocsection" >
+<span class="sectionnumber">14.1</span>&#x2003;Струм зміщення</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1085" class="tocsection" >
+<span class="sectionnumber">14.2</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1102" class="tocsection" >
+<span class="sectionnumber">14.3</span>&#x2003;Про рівняння Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1104" class="tocsection" >
+<span class="sectionnumber">14.4</span>&#x2003;Енергія електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1118" class="tocsection" >
+<span class="sectionnumber">14.5</span>&#x2003;Скін-ефект</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1140" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1141" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1148" class="tocchapter" >
+<span class="sectionnumber">15</span>&#x2003;Відносність електричного і&nbsp;магнітного полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1150" class="tocsection" >
+<span class="sectionnumber">15.1</span>&#x2003;Нерелятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1153" class="tocsection" >
+<span class="sectionnumber">15.2</span>&#x2003;Релятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1159" class="tocsection" >
+<span class="sectionnumber">15.3</span>&#x2003;Тензор електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1161" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1162" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1171" class="tocchapter" >
+<span class="sectionnumber">16</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1172" class="tocsection" >
+<span class="sectionnumber">16.1</span>&#x2003;Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1188" class="tocsection" >
+<span class="sectionnumber">16.2</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1193" class="tocsection" >
+<span class="sectionnumber">16.3</span>&#x2003;Енергія та вектор Пойнтінга для хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1204" class="tocsection" >
+<span class="sectionnumber">16.4</span>&#x2003;Імпульс і момент імпульсу електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1210" class="tocsection" >
+<span class="sectionnumber">16.5</span>&#x2003;Відбивання хвиль від поверхні двох діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1230" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1231" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1242" class="tocchapter" >
+<span class="sectionnumber">17</span>&#x2003;Випромінювання електромагнітних хвиль</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1243" class="tocsection" >
+<span class="sectionnumber">17.1</span>&#x2003;Історична довідка: досліди Герца</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1246" class="tocsection" >
+<span class="sectionnumber">17.2</span>&#x2003;Елементарна модель випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1259" class="tocsection" >
+<span class="sectionnumber">17.3</span>&#x2003;Дипольне випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1275" class="tocsection" >
+<span class="sectionnumber">17.4</span>&#x2003;Потужність випромінювання осцилятора</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1280" class="tocsection" >
+<span class="sectionnumber">17.5</span>&#x2003;Випромінювання рухомого заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1285" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1286" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1292" class="tocchapter" >
+<span class="sectionnumber">18</span>&#x2003;Коливальні процеси в електричних колах</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1293" class="tocsection" >
+<span class="sectionnumber">18.1</span>&#x2003;Квазістаціонарне наближення</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1294" class="tocsection" >
+<span class="sectionnumber">18.2</span>&#x2003;Вільні коливання в коливальному контурі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1319" class="tocsection" >
+<span class="sectionnumber">18.3</span>&#x2003;Вимушені коливання під дією гармонічної ЕРС</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1333" class="tocsection" >
+<span class="sectionnumber">18.4</span>&#x2003;Змінний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">18.5</span>&#x2003;Трансформатор</a>
+</p>
+<p>
+<a href="ch18.html#autosec-1374" class="tocsection" >
+<span class="sectionnumber">18.6</span>&#x2003;Частотні фільтри</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1390" class="tocsection" >
+<span class="sectionnumber">18.7</span>&#x2003;Трифазний струм: фізичні засади, топології кіл та застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1433" class="tocchapter" >
+<span class="sectionnumber">19</span>&#x2003;Довгі лінії. Телеграфні рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1434" class="tocsection" >
+<span class="sectionnumber">19.1</span>&#x2003;Від зосереджених елементів до розподілених</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1435" class="tocsection" >
+<span class="sectionnumber">19.2</span>&#x2003;Виведення телеграфних рівнянь</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1439" class="tocsection" >
+<span class="sectionnumber">19.3</span>&#x2003;Гармонічний режим. Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1440" class="tocsection" >
+<span class="sectionnumber">19.4</span>&#x2003;Лінія без втрат</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1447" class="tocsection" >
+<span class="sectionnumber">19.5</span>&#x2003;Польова картина. Зв’язок з рівняннями Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1454" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1455" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1461" class="tocchapter" >
+<span class="sectionnumber">20</span>&#x2003;Хвилеводи</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1462" class="tocsection" >
+<span class="sectionnumber">20.1</span>&#x2003;Від довгої лінії до хвилеводу</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1463" class="tocsection" >
+<span class="sectionnumber">20.2</span>&#x2003;Прямокутний хвилевід</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1476" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1479" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1480" class="tocsection" >
+<span class="sectionnumber">А</span>&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1485" class="tocsection" >
+<span class="sectionnumber">Б</span>&#x2003;Основні формули векторного аналізу</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1503" class="tocchapter" >
+Література</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Хвилеводи">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Хвилеводи ......
+-->
+<h3 id="autosec-1461">Розділ&nbsp;<span class="sectionnumber">20&#x2003;</span>Хвилеводи</h3>
+<a id="main-html-autopage-1461"></a>
+<a id="main-html-autofile-20"></a>
+
+<a id="Waveguides"></a>
+
+<p>
+<a id="LWR-ht-Waveguides"></a>
+</p>
+<!--
+...... section Від довгої лінії до хвилеводу ......
+-->
+<h4 id="autosec-1462"><span class="sectionnumber">20.1&#x2003;</span>Від довгої лінії до хвилеводу</h4>
+<a id="main-html-autopage-1462"></a>
+
+
+<p>
+<a id="LWR-ht-from-line-to-waveguide"></a>
+</p>
+
+<p>
+У попередньому розділі ми розглянули довгу лінію — найпростішу напрямну систему, в якій електромагнітна хвиля поширюється вздовж <em>двох</em> провідників. Така конфігурація має принципове обмеження: зі зростанням частоти (а отже, зі
+зменшенням довжини хвилі) відстань між провідниками стає сумірною з довжиною хвилі, а втрати в діелектрику й металі різко зростають. На частотах вище кількох гігагерців коаксіальний кабель стає непридатним для передачі великої
+потужності.
+</p>
+
+<p>
+Природний вихід — <em>відмовитися від другого провідника</em>. Виявляється, що електромагнітна хвиля може поширюватися вздовж <em>порожнистої металевої труби</em> або <em>діелектричного стрижня</em>, не маючи жодного
+«зворотного» дроту. Такі напрямні системи називаються <em><span
+    class="textcolor"
+    style="color:#990000"
+>хвилеводами</span></em>.
+</p>
+
+<p>
+Будь-яку електромагнітну хвилю, що поширюється вздовж осі \(x\), можна розкласти на поперечну (у площині \(yz\)) та поздовжню (уздовж \(x\)) складові. Залежно від того, які складові мають електричне й магнітне поля, розрізняють три типи
+хвиль:
+</p>
+
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>TEM-хвиля</span></em> (від англ. <em>Transverse Electro-Magnetic</em>, <em><span
+    class="textcolor"
+    style="color:#990000"
+>поперечно-електромагнітна</span></em>): <em>обидва</em> вектори — і \(\Efield \), і \(\Hfield \) — лежать у поперечній площині. Поздовжніх складових немає: \(E_x = 0\), \(H_x = 0\) (\(x\) — напрям поширення хвилі).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>TE-хвиля</span></em> (від англ. <em>Transverse Electric</em>, <em><span
+    class="textcolor"
+    style="color:#990000"
+>поперечно-електрична</span></em>): електричне поле \(\Efield \) лежить у поперечній площині (\(E_x = 0\)), але магнітне поле має поздовжню складову (\(H_x \neq 0\)). Іноді позначають як <em><span
+    class="textcolor"
+    style="color:#990000"
+>H-хвиля</span></em>.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>TM-хвиля</span></em> (від англ. <em>Transverse Magnetic</em>, <em><span
+    class="textcolor"
+    style="color:#990000"
+>поперечно-магнітна</span></em>): магнітне поле \(\Hfield \) лежить у поперечній площині (\(H_x = 0\)), але електричне поле має поздовжню складову (\(E_x \neq 0\)). Іноді позначають як <em><span
+    class="textcolor"
+    style="color:#990000"
+>E-хвиля</span></em>.
+</p>
+</li>
+</ul>
+
+<p>
+У довгій лінії існує ТЕМ-хвиля. У порожнистому металевому хвилеводі ТЕМ-хвиля існувати не може. Там поширюються лише TE- або TM-хвилі.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Чому ТЕМ-хвиля неможлива в порожнистому хвилеводі? Інтуїтивно: для ТЕМ-хвилі електричне поле в перерізі має бути потенціальним, тобто описуватися скалярним потенціалом \(\phi (y,z)\), який задовольняє рівняння Лапласа \(\Delta \phi
+= 0\). Але стінки порожнистого хвилеводу утворюють <em>один</em> провідник, тому гранична умова вимагає \(\phi = \text {const}\) на всьому контурі перерізу, а це разом із рівнянням Лапласа дає \(\phi = \text {const}\) всередині —
+тобто \(\Efield = 0\). (У коаксіальному кабелі два провідники мають різні потенціали, тому там ТЕМ-хвиля можлива.) Отже, ТЕМ-хвилі в порожнистому хвилеводі не буває.
+</p>
+</div>
+<!--
+...... section Прямокутний хвилевід ......
+-->
+<h4 id="autosec-1463"><span class="sectionnumber">20.2&#x2003;</span>Прямокутний хвилевід</h4>
+<a id="main-html-autopage-1463"></a>
+
+
+<p>
+<a id="LWR-ht-rectangular-waveguide"></a>
+</p>
+
+<p>
+Найпростіший і найпоширеніший тип хвилеводу — <em>прямокутна металева труба</em> зі сторонами \(a\) і \(b\) (зазвичай \(a &gt; b\)). Оскільки, як ми вже з’ясували, ТЕМ-хвиля в порожнистому хвилеводі неможлива, у ньому можуть
+поширюватися лише хвилі типу \(\text {TE}\) або \(\text {TM}\).
+</p>
+
+<figure id="autoid-501" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-270"
+    class="lateximagesource"
+><!--
+    𝑦
+
+            𝑥
+
+
+
+
+𝑏
+
+
+                𝑧
+        𝑎
+--><img
+   src="main-html-images\image-270.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;20.1. Прямокутний хвилевід
+
+</div>
+
+<a id="pic:waveguide"></a>
+
+</div>
+
+</figure>
+
+<p>
+Розглянемо \(\text {TE}\)-хвилі в прямокутному хвилеводі. Стінки хвилеводу будемо вважати ідеально провідними, розміри хвилеводу та положення системи координат наведено на рис. <a href="ch20.html#pic:waveguide">20.1</a>.
+Припустимо, що електричний вектор хвилі напрямлений уздовж осі \(y\). Для спрощення ситуації приймемо розмір \(b\) хвилеводу вздовж осі \(y\) нескінченним (фактично, хвилевід перетворюється на дві паралельні провідні площини \(z=0\) та
+\(z=a\)). Це позбавляє від необхідності врахування граничних умов для вектора \(\Efield \) на поверхнях хвилеводу, паралельних площині \(xz\), і значно полегшує розв’язання задачі. Крім того, при нескінченній протяжності хвилеводу в
+напрямку осі \(y\) задачу можна розглянути методом зображень, що дозволяє з’ясувати фізичну ситуацію та суть процесів, які відбуваються при поширенні хвиль у хвилеводі.
+</p>
+
+<p>
+Таким чином, задача зводиться до двох вимірів. Хвильове рівняння <span class="textup">(<a href="ch16.html#eq:WaveEqE">16.9</a>)</span> для напруженості електричного поля у вибраній системі декартових координат має вигляд
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{0}\)</span>
+
+<!--
+
+
+                                                               𝜕2 𝐸   𝜕2 𝐸   1 𝜕2 𝐸
+                                                                  2
+                                                                    +    2
+                                                                           − 2      = 0,                                                           (20.1)                                               --><a id="eq:wave_eqn"></a><!--
+                                                               𝜕𝑥     𝜕𝑧    𝑐 𝜕𝑡2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:wave_eqn} \frac {\partial ^2 E}{\partial x^2} + \frac {\partial ^2 E}{\partial z^2} - \frac {1}{c^2} \frac {\partial ^2 E}{\partial t^2} = 0,
+\end{equation}
+
+</p>
+
+<p>
+де \(E = E_y (x, z, t)\).
+</p>
+
+<p>
+Оскільки стінки хвилеводу ідеально провідні, гранична умова для \(E\) має вигляд
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{1}\)</span>
+
+<!--
+
+
+                                                               𝐸(𝑥, 0, 𝑡) = 0,   𝐸(𝑥, 𝑎, 𝑡) = 0.                                                      (20.2)                                               --><a id="eq:bound"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:bound} E (x, 0, t) = 0, \quad E (x, a, t) = 0.
+\end{equation}
+
+</p>
+
+<p>
+Будемо шукати розв’язок рівняння у вигляді
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{2}\)</span>
+
+<!--
+
+
+                                                                 𝐸 = 𝐸0 sin 𝑘𝑧 𝑧𝑒𝑖(𝜔𝑡−𝑘𝑥 𝑥) ,                                                        (20.3)                                               --><a id="eq:TE_sol"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:TE_sol} E = E_0 \sin k_z z e^{i (\omega t - k_x x)},
+\end{equation}
+
+</p>
+
+<p>
+причому для задоволення граничним умовам <span class="textup">(<a href="ch20.html#eq:bound">20.2</a>)</span> треба покласти
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{3}\)</span>
+
+<!--
+
+
+                                                                                                          𝑘𝑧 𝑎 = 𝜋𝑛   (𝑛 = 1, 2, … ).                                                                                                (20.4)
+
+-->
+
+<p>
+
+\begin{equation}
+k_z a = \pi n \quad (n = 1, 2, \dots ).
+\end{equation}
+
+</p>
+
+<p>
+На рисунку <span class="textup">(<a href="ch20.html#pic:TE_mode_profile">20.2</a>)</span> для \(n=1\) показано поперечний профіль
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{4}\)</span>
+
+<!--
+
+                                                                                                                           𝜋𝑧
+                                                                                                               𝐸𝑦 ∝ sin(      ),                                                                                                     (20.5)
+                                                                                                                           𝑎
+
+-->
+
+<p>
+
+\begin{equation}
+E_y\propto \sin \!\left (\frac {\pi z}{a}\right ),
+\end{equation}
+
+</p>
+
+<p>
+який дорівнює нулю на стінках \(z=0\) та \(z=a\), а максимум має при \(z=a/2\). Це і є графічна ілюстрація граничних умов <span class="textup">(<a href="ch20.html#eq:bound">20.2</a>)</span> і вибраної моди хвилеводу.
+</p>
+
+<figure id="autoid-502" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-271"
+    class="lateximagesource"
+><!--
+𝐸𝑦
+
+
+
+
+         𝑧
+0    𝑎
+--><img
+   src="main-html-images\image-271.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;20.2. Графік рівняння&nbsp;<span class="textup">(<a href="ch20.html#eq:TE_sol">20.3</a>)</span> при \(n=1\).
+
+</div>
+
+<a id="pic:TE_mode_profile"></a>
+
+</div>
+
+</figure>
+
+<p>
+Очевидно також, що розв’язок <span class="textup">(<a href="ch20.html#eq:TE_sol">20.3</a>)</span> задовольняє умову відсутності вільних зарядів у хвилеводі: \(\divg \Efield = \partial E_y / \partial y = 0\), \(E_x = E_z = 0\).
+Підставляючи <span class="textup">(<a href="ch20.html#eq:TE_sol">20.3</a>)</span> в <span class="textup">(<a href="ch20.html#eq:wave_eqn">20.1</a>)</span>, отримуємо:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{5}\)</span>
+
+<!--
+
+
+                                                                                                      (−𝑘2𝑥 − 𝑘2𝑧 + 𝜔2 /𝑐2 )𝐸 = 0.                                                                                           (20.6)
+
+-->
+
+<p>
+
+\begin{equation}
+(-k_x^2 - k_z^2 + \omega ^2/c^2) E = 0.
+\end{equation}
+
+</p>
+
+<p>
+Ця рівність може бути задоволена лише за умови
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{6}\)</span>
+
+<!--
+
+
+                                                                                                        −𝑘2𝑥 − 𝑘2𝑧 + 𝜔2 /𝑐2 = 0,                                                                                             (20.7)
+
+-->
+
+<p>
+
+\begin{equation}
+-k_x^2 - k_z^2 + \omega ^2/c^2 = 0,
+\end{equation}
+
+</p>
+
+<p>
+з якого випливає, що
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{7}\)</span>
+
+<!--
+
+
+                                                                      𝜔2   𝜋2 𝑛2
+                                                             𝑘𝑥 = √      −       .                                                         (20.8)                                              --><a id="eq:kx_formula"></a><!--
+                                                                      𝑐2    𝑎2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:kx_formula} k_x = \sqrt {\frac {\omega ^2}{c^2} - \frac {\pi ^2 n^2}{a^2}}.
+\end{equation}
+
+</p>
+<!--
+...... subsection Гранична частота ......
+-->
+<h5 id="autosec-1470">Гранична частота</h5>
+<a id="main-html-autopage-1470"></a>
+
+
+<p>
+Електромагнітна хвиля поширюється в хвилеводі без затухання, якщо в <span class="textup">(<a href="ch20.html#eq:TE_sol">20.3</a>)</span> величина \(k_x\) дійсна. Це означає, що в <span class="textup">(<a
+href="ch20.html#eq:kx_formula">20.8</a>)</span> підкореневий вираз не повинен бути від’ємним. Звідси отримуємо умову, за якої у хвилеводі поширюються хвилі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{8}\)</span>
+
+<!--
+
+
+                                                            𝜔2   𝜋2 𝑛2
+                                                             2
+                                                               −       ⩾0                                                            (20.9)                                                --><a id="eq:propagation_condition"></a><!--
+                                                            𝑐     𝑎2
+
+-->
+
+<p>
+
+\begin{equation}
+\frac {\omega ^2}{c^2} - \frac {\pi ^2 n^2}{a^2} \geqslant 0 \label {eq:propagation_condition}
+\end{equation}
+
+</p>
+
+<p>
+або
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{9}\)</span>
+
+<!--
+
+                                                                   𝜋𝑐
+                                                              𝜔⩾      𝑛.                                                            (20.10)                                                --><a id="eq:cutoff_frequency_ineq"></a><!--
+                                                                   𝑎
+
+-->
+
+<p>
+
+\begin{equation}
+\omega \geqslant \frac {\pi c}{a} n. \label {eq:cutoff_frequency_ineq}
+\end{equation}
+
+</p>
+
+<p>
+Таким чином, при заданому значенні \(n\), що характеризує форму хвилі в напрямку осі \(z\), існує <em><span
+    class="textcolor"
+    style="color:#990000"
+>гранична частота</span></em>. Електромагнітні хвилі з меншою частотою не можуть поширюватися в хвилеводі: при \(\omega &lt;\omega _0\) величина \(k_x=-i\kappa \) уявна, поле спадає вздовж хвилеводу як \(e^{-\kappa x}\) і енергія
+не переноситься. Значення цієї частоти отримується з <span class="textup">(<a href="ch20.html#eq:cutoff_frequency_ineq">20.10</a>)</span> при \(n = 1\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{10}\)</span>
+
+<!--
+
+
+                                                                𝜔0 = 𝜋𝑐/𝑎.                                                                (20.11)                                               --><a id="eq:cutoff_frequency"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\omega _0 = \pi c / a. \label {eq:cutoff_frequency}
+\end{equation}
+
+</p>
+
+<p>
+Наявність граничної частоти означає, іншими словами, існування хвилі з максимальною довжиною хвилі, яка здатна поширюватися в хвилеводі. Враховуючи, що \(\lambda = cT = 2\pi c/\omega \), отримуємо для граничної довжини хвилі
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{11}\)</span>
+
+<!--
+
+
+                                                            𝜆0 = 2𝜋𝑐/𝜔0 = 2𝑎.                                                           (20.12)                                                --><a id="eq:cutoff_wavelength"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\lambda _0 = 2\pi c / \omega _0 = 2a. \label {eq:cutoff_wavelength}
+\end{equation}
+
+</p>
+
+<p>
+Ця рівність має дуже ясний геометричний зміст: <em>в розглядуваному хвилеводі можуть поширюватися лише хвилі, довжина хвилі яких (у вільному просторі) менша за подвоєну ширину хвилеводу \(2a\).</em>
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Наявність граничної частоти є характерною рисою порожнистих металевих хвилеводів (ТЕМ-лінії, як-от коаксіальний кабель, граничної частоти не мають), хоча її значення залежить від форми й розмірів перерізу. Саме тому такі хвилеводи — це
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>фільтри верхніх частот</span></em>: вони пропускають високі частоти й блокують низькі. Це принципово відрізняє їх від довгої лінії, яка пропускає все.
+</p>
+</div>
+<!--
+...... subsection Фазова швидкість ......
+-->
+<h5 id="autosec-1471">Фазова швидкість</h5>
+<a id="main-html-autopage-1471"></a>
+
+
+<p>
+Згідно з виразом <span class="textup">(<a href="ch20.html#eq:TE_sol">20.3</a>)</span> ця швидкість знаходиться з умови
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{12}\)</span>
+
+<!--
+
+
+                                                                   𝜔𝑡 − 𝑘𝑥 𝑥 = const,                                                            (20.13)                                                --><a id="eq:phase_const"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\omega t - k_x x = \text {const}, \label {eq:phase_const}
+\end{equation}
+
+</p>
+
+<p>
+звідки
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{13}\)</span>
+
+<!--
+
+
+                                                    𝑑𝑥   𝜔           𝜔                 𝜔
+                                             𝑣ф =      =    =                  =𝑐                 > 𝑐.                                       (20.14)                                                 --><a id="eq:phase_velocity"></a><!--
+                                                    𝑑𝑡   𝑘𝑥   √𝜔2 /𝑐2 − 𝜋2 /𝑎2    √𝜔2 − 𝜋2 𝑐2 /𝑎2
+
+-->
+
+<p>
+
+\begin{equation}
+v_\text {ф} = \frac {dx}{dt} = \frac {\omega }{k_x} = \frac {\omega }{\sqrt {\omega ^2/c^2 - \pi ^2/a^2}} = c \frac {\omega }{\sqrt {\omega ^2 - \pi ^2 c^2/a^2}} &gt; c. \label {eq:phase_velocity}
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Фазова швидкість електромагнітних хвиль у хвилеводі більша за швидкість світла. Це не суперечить теорії відносності: фазова швидкість — це швидкість руху точки сталої фази, а не швидкість перенесення енергії чи сигналу (див. групову
+швидкість нижче). Конкретне значення \(v_\text {ф}\) залежить від властивостей хвилеводу та типу хвилі.
+</p>
+</div>
+
+<p>
+З урахуванням виразів <span class="textup">(<a href="ch20.html#eq:cutoff_frequency">20.11</a>)</span> і <span class="textup">(<a href="ch20.html#eq:cutoff_wavelength">20.12</a>)</span> формулу <span class="textup">(<a
+href="ch20.html#eq:phase_velocity">20.14</a>)</span> зручно подати у вигляді
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{14}\)</span>
+
+<!--
+
+                                                               𝑐                  𝑐
+                                                 𝑣ф =                   =                   .                                      (20.15)                                                --><a id="eq:phase_velocity_relative"></a><!--
+                                                        √1 − (𝜔0 /𝜔)2       √1 − (𝜆/𝜆0 )2
+
+-->
+
+<p>
+
+\begin{equation}
+v_\text {ф} = \frac {c}{\sqrt {1 - (\omega _0/\omega )^2}} = \frac {c}{\sqrt {1 - (\lambda /\lambda _0)^2}}. \label {eq:phase_velocity_relative}
+\end{equation}
+
+</p>
+
+<p>
+Отже, \(\omega \geqslant \omega _0\), \(\lambda \leqslant \lambda _0\), оскільки в протилежному випадку фазова швидкість стає уявною, тобто поширення хвиль неможливе.
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Групова швидкість.</span></em> Енергію й сигнал переносить хвильовий пакет, що рухається з <em><span
+    class="textcolor"
+    style="color:#990000"
+>груповою швидкістю</span></em> \(v_\text {г}=d\omega /dk_x\). З дисперсійного співвідношення \(\omega ^2=c^2(k_x^2+k_z^2)\) маємо \(\omega \,d\omega =c^2k_x\,dk_x\), тому
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{20.}{15}\)</span>
+
+<!--
+
+
+                                                            𝑐2 𝑘𝑥        𝜔 2
+                                                     𝑣г =         = 𝑐 1−( 0) ,          𝑣ф 𝑣г = 𝑐2 .                                         (20.16)                                                 --><a id="eq:group_velocity"></a><!--
+                                                             𝜔       √   𝜔
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:group_velocity} v_\text {г}=\frac {c^2k_x}{\omega }=c\sqrt {1-\left (\frac {\omega _0}{\omega }\right )^2},\qquad v_\text {ф}\,v_\text {г}=c^2.
+\end{equation}
+
+</p>
+
+<p>
+Отже, \(v_\text {г}&lt;c\): сигнал у хвилеводі поширюється повільніше за світло у вакуумі. При \(\omega \to \omega _0\) групова швидкість прямує до нуля (уздовж хвилеводу хвиля майже не просувається), а при \(\omega \gg \omega _0\)
+обидві швидкості наближаються до \(c\).
+</p>
+
+<p>
+Фізичний зміст цього результату простий. Розв’язок <span class="textup">(<a href="ch20.html#eq:TE_sol">20.3</a>)</span> є різницею двох плоских хвиль, що біжать під кутами \(\pm \theta \) до осі \(x\) і багаторазово відбиваються від
+стінок, причому \(\sin \theta =k_zc/\omega \), \(\cos \theta =k_xc/\omega \). Уздовж хвилеводу хвиля просувається зигзагом, тому \(v_\text {г}=c\cos \theta &lt;c\), а фазова картина вздовж осі «біжить» швидше: \(v_\text
+{ф}=c/\cos \theta &gt;c\). На граничній частоті \(\theta =90^\circ \): хвиля лише «б’ється» між стінками й нікуди не рухається вздовж осі. Така сама картина багаторазових відбиттів лежить в основі оптичного волокна.
+</p>
+<!--
+...... subsection Оптичне волокно --- діелектричний хвилевід ......
+-->
+<h5 id="autosec-1472">Оптичне волокно — діелектричний хвилевід</h5>
+<a id="main-html-autopage-1472"></a>
+
+
+<p>
+Металеві хвилеводи — не єдиний тип напрямних систем. На початку розділу ми вже згадали діелектричний стрижень як хвилевід без металевих стінок; найважливіший приклад такого хвилеводу — оптичне волокно. Якщо замість порожнистої
+труби взяти <em>діелектричний стрижень</em> із показником заломлення \(n_1\), оточений середовищем із меншим показником \(n_2 &lt; n_1\), то електромагнітна хвиля може поширюватися вздовж стрижня завдяки <em><span
+    class="textcolor"
+    style="color:#990000"
+>повному внутрішньому відбиттю</span></em>.
+</p>
+
+<p>
+Саме так працює <em>оптичне волокно</em>. Його серцевина має показник заломлення \(n_1\), а оболонка — \(n_2 &lt; n_1\). Світло, яке входить у серцевину під достатньо малим кутом, багаторазово відбивається від межі «серцевина-оболонка»
+і поширюється вздовж волокна з дуже малими втратами (рис.&nbsp;<a href="ch20.html#pic:fiber_tir">20.3</a>). Умова повного відбиття: кут падіння \(\theta \) на межу (від нормалі) має задовольняти \(\sin \theta \geqslant n_2/n_1\).
+</p>
+
+<figure id="autoid-503" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-272"
+    class="lateximagesource"
+><!--
+                  оболонка (𝑛2 < 𝑛1 )
+
+серцевина (𝑛1 )
+--><img
+   src="main-html-images\image-272.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;20.3. Поширення світла в оптичному волокні завдяки повному внутрішньому відбиттю на межі серцевина-оболонка: промінь «замкнений» усередині серцевини й рухається вздовж волокна майже без втрат.
+
+</div>
+
+<a id="pic:fiber_tir"></a>
+
+</div>
+
+</figure>
+
+
+<div class="cb-attention">
+
+<p>
+Оптичне волокно — це, по суті, хвилевід, у якому роль «стінок» відіграє не метал, а межа двох діелектриків. У ньому теж існують моди (їх називають \(\text {LP}\)), для вищих мод існує критична частота (основна мода її не має — на цьому
+ґрунтується одномодовий режим). Волокно з діаметром серцевини близько \(9\)&nbsp;мкм використовується в магістральних лініях зв’язку; втрати в ньому становлять близько \(0{,}2\)&nbsp;дБ/км, тому сигнал проходить десятки й сотні
+кілометрів без підсилення, а з оптичними підсилювачами — тисячі.
+</p>
+</div>
+<!--
+...... section Підсумки ......
+-->
+<h4 id="autosec-1476">Підсумки</h4>
+<a id="main-html-autopage-1476"></a>
+
+
+<p>
+На високих частотах двопровідні лінії стають непридатними, і електромагнітну хвилю спрямовують уздовж порожнистої металевої труби або діелектричного стрижня&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>хвилеводу</span></em>. Залежно від наявності поздовжніх складових полів розрізняють ТЕМ-, ТЕ- та ТМ-хвилі; у порожнистому металевому хвилеводі ТЕМ-хвиля неможлива, бо за відсутності другого провідника потенціал перерізу стала
+величина.
+</p>
+
+<p>
+Усе зводиться до відповідей на три запитання:
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> <em>Які хвилі можуть існувати в хвилеводі?</em> Лише ТЕ та ТМ (у порожнистому металевому); електричне поле на стінках мусить зникати, тому поперек хвилеводу вкладається ціла кількість півхвиль,
+\(k_za=\pi n\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>Коли хвиля поширюється?</span></em> Лише за \(\omega &gt;\omega _0\), тобто коли довжина хвилі менша за \(2a\). Нижче граничної частоти поле експоненційно спадає вздовж хвилеводу, а енергія не переноситься.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> <em>З якою швидкістю?</em> Фазова швидкість перевищує \(c\), групова&nbsp;— менша за \(c\), а&nbsp;їхній добуток дорівнює \(c^2\); перенесення енергії відбувається з&nbsp;груповою швидкістю,
+тому теорії відносності це не суперечить.
+</p>
+</li>
+</ul>
+
+<p>
+Фізично все це&nbsp;— наслідок багаторазового відбиття плоскої хвилі від стінок: вздовж осі хвиля просувається зигзагом зі швидкістю \(c\cos \theta \), а на граничній частоті \(\theta =90^\circ \). Те саме відбиття, але на межі двох
+діелектриків, утримує світло в оптичному волокні. Порівняно з довгою лінією, де ТЕМ-хвиля не має граничної частоти й поширюється без дисперсії зі швидкістю \(c/\sqrt {\epsilon \mu }\), хвилевід є фільтром верхніх частот із дисперсією.
+</p>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Чому на частотах вище кількох гігагерців коаксіальний кабель стає непридатним для передачі великої потужності, і який природний вихід із цієї проблеми пропонують хвилеводи?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Дайте означення трьох типів хвиль у напрямних системах — ТЕМ, ТЕ (H-хвиля) та ТМ (E-хвиля) — через наявність поздовжніх складових \(\Efield \) і \(\Hfield \).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Доведіть, чому ТЕМ-хвиля неможлива в порожнистому металевому хвилеводі, спираючись на рівняння Лапласа для потенціалу поперечного електричного поля та граничні умови на стінках.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> Запишіть хвильове рівняння для поля \(E_y(x,z,t)\) у прямокутному хвилеводі та граничні умови на ідеально провідних стінках. Чому шукають розв’язок у вигляді \(E=E_0\sin (k_zz)\,e^{i(\omega
+t-k_xx)}\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Виведіть умову квантування поперечного хвильового числа \(k_za=\pi n\) з граничних умов на стінках хвилеводу.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> Підставте припущений розв’язок у хвильове рівняння і виведіть дисперсійне співвідношення \(k_x=\sqrt {\omega ^2/c^2-\pi ^2n^2/a^2}\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> Що таке гранична (критична) частота хвилеводу? Виведіть умову поширення хвилі без затухання та граничну частоту \(\omega _0=\pi c/a\) для моди з \(n=1\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Чому граничну частоту хвилеводу можна інтерпретувати через граничну довжину хвилі \(\lambda _0=2a\)? Який геометричний зміст цього результату?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> Чому хвилеводи називають фільтрами верхніх частот, і чим це принципово відрізняє їх від довгої лінії?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Виведіть формулу фазової швидкості хвилі у хвилеводі \(v_\text {ф}=c/\sqrt {1-(\omega _0/\omega )^2}\). Чому ця швидкість завжди перевищує швидкість світла і чому це не суперечить теорії
+відносності? Що таке групова швидкість \(v_\text {г}\) і як вона пов’язана з \(v_\text {ф}\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> Поясніть поширення хвилі у хвилеводі як багаторазове відбиття плоскої хвилі від стінок. Як через кут \(\theta \) виражаються \(v_\text {ф}\) і \(v_\text {г}\) і що відбувається при \(\omega \to
+\omega _0\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Як влаштоване оптичне волокно як діелектричний хвилевід? Поясніть, чому світло утримується в серцевині завдяки повному внутрішньому відбиттю на межі з оболонкою.
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>

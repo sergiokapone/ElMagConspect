@@ -1,0 +1,4467 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Довгі лінії. Телеграфні рівняння</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-1431"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span>&#x2003;Електричні заряди та їх взаємодія</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span>&#x2003;Сили (взаємодії) в природі</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span>&#x2003;Електричний заряд</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-12" class="tocsection" >
+<span class="sectionnumber">1.3</span>&#x2003;Як заряджають тіла?</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-17" class="tocsection" >
+<span class="sectionnumber">1.4</span>&#x2003;Закон Кулона</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-25" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-32" class="tocchapter" >
+<span class="sectionnumber">2</span>&#x2003;Постійне електричне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocsection" >
+<span class="sectionnumber">2.1</span>&#x2003;Електромагнітне поле</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.2</span>&#x2003;Напруженість поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-46" class="tocsection" >
+<span class="sectionnumber">2.3</span>&#x2003;Силові лінії та математичне поняття поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-62" class="tocsection" >
+<span class="sectionnumber">2.4</span>&#x2003;Теорема Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-88" class="tocsection" >
+<span class="sectionnumber">2.5</span>&#x2003;Зауваження щодо інтегральної та диференціальної форми теореми Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-90" class="tocsection" >
+<span class="sectionnumber">2.6</span>&#x2003;Потенціальність електростатичного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-102" class="tocsection" >
+<span class="sectionnumber">2.7</span>&#x2003;Циркуляція вектора \(\symbf {E}\)</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-121" class="tocsection" >
+<span class="sectionnumber">2.8</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-128" class="tocsection" >
+<span class="sectionnumber">2.9</span>&#x2003;Рівняння Пуассона та Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-129" class="tocsection" >
+<span class="sectionnumber">2.10</span>&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-134" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-153" class="tocchapter" >
+<span class="sectionnumber">3</span>&#x2003;Електричне поле статичної системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-154" class="tocsection" >
+<span class="sectionnumber">3.1</span>&#x2003;Дипольний момент системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-158" class="tocsection" >
+<span class="sectionnumber">3.2</span>&#x2003;Поле точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-162" class="tocsection" >
+<span class="sectionnumber">3.3</span>&#x2003;Потенціал поля точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-163" class="tocsection" >
+<span class="sectionnumber">3.4</span>&#x2003;Потенціал системи зарядів на далеких відстанях</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-178" class="tocsection" >
+<span class="sectionnumber">3.5</span>&#x2003;Диполь в електричному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-196" class="tocsection" >
+<span class="sectionnumber">3.6</span>&#x2003;Енергія довільної системи зарядів у зовнішньому полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-197" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-200" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-214" class="tocchapter" >
+<span class="sectionnumber">4</span>&#x2003;Електричне поле у провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-215" class="tocsection" >
+<span class="sectionnumber">4.1</span>&#x2003;Структура провідників</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-221" class="tocsection" >
+<span class="sectionnumber">4.2</span>&#x2003;Провідник у полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-244" class="tocsection" >
+<span class="sectionnumber">4.3</span>&#x2003;Електричне поле біля вістря</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-253" class="tocsection" >
+<span class="sectionnumber">4.4</span>&#x2003;Єдиність розв’язку електростатичної задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-263" class="tocsection" >
+<span class="sectionnumber">4.5</span>&#x2003;Металева куля в однорідному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-275" class="tocsection" >
+<span class="sectionnumber">4.6</span>&#x2003;Сили, що діють на поверхню провідника в полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-279" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-280" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-291" class="tocchapter" >
+<span class="sectionnumber">5</span>&#x2003;Основи електростатики діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-292" class="tocsection" >
+<span class="sectionnumber">5.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-294" class="tocsection" >
+<span class="sectionnumber">5.2</span>&#x2003;Структура діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-331" class="tocsection" >
+<span class="sectionnumber">5.3</span>&#x2003;Поляризація діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-358" class="tocsection" >
+<span class="sectionnumber">5.4</span>&#x2003;Вектор поляризації</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-363" class="tocsection" >
+<span class="sectionnumber">5.5</span>&#x2003;Вектор електричної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-370" class="tocsection" >
+<span class="sectionnumber">5.6</span>&#x2003;Граничні умови в&nbsp;присутності діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-383" class="tocsection" >
+<span class="sectionnumber">5.7</span>&#x2003;Мікроскопічна теорія діелектричної проникності</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-390" class="tocsection" >
+<span class="sectionnumber">5.8</span>&#x2003;Типи діелектриків та їх застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-413" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-414" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-423" class="tocchapter" >
+<span class="sectionnumber">6</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-424" class="tocsection" >
+<span class="sectionnumber">6.1</span>&#x2003;Електрична ємність</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-445" class="tocsection" >
+<span class="sectionnumber">6.2</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-458" class="tocsection" >
+<span class="sectionnumber">6.3</span>&#x2003;Пондеромоторні сили</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-468" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-469" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-479" class="tocchapter" >
+<span class="sectionnumber">7</span>&#x2003;Постійний електричний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-480" class="tocsection" >
+<span class="sectionnumber">7.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-487" class="tocsection" >
+<span class="sectionnumber">7.2</span>&#x2003;Природа носіїв заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-489" class="tocsection" >
+<span class="sectionnumber">7.3</span>&#x2003;Закон збереження заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-496" class="tocsection" >
+<span class="sectionnumber">7.4</span>&#x2003;Закон Ома</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-527" class="tocsection" >
+<span class="sectionnumber">7.5</span>&#x2003;Закон Джоуля-Ленца</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-528" class="tocsection" >
+<span class="sectionnumber">7.6</span>&#x2003;Струми в необмежених середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-535" class="tocsection" >
+<span class="sectionnumber">7.7</span>&#x2003;Перехідні процеси в колі з конденсатором</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-548" class="tocsection" >
+<span class="sectionnumber">7.8</span>&#x2003;Максвеллівський час релаксації заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-550" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-562" class="tocchapter" >
+<span class="sectionnumber">8</span>&#x2003;Електричний струм у&nbsp;різних середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-564" class="tocsection" >
+<span class="sectionnumber">8.1</span>&#x2003;Електричний струм у&nbsp;металах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-584" class="tocsection" >
+<span class="sectionnumber">8.2</span>&#x2003;Електричний струм в&nbsp;електролітах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-590" class="tocsection" >
+<span class="sectionnumber">8.3</span>&#x2003;Електричний струм у&nbsp;газах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-601" class="tocsection" >
+<span class="sectionnumber">8.4</span>&#x2003;Електричний струм у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-615" class="tocsection" >
+<span class="sectionnumber">8.5</span>&#x2003;Електричний струм у&nbsp;напівпровідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-636" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-638" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-674" class="tocchapter" >
+<span class="sectionnumber">9</span>&#x2003;Магнітне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-675" class="tocsection" >
+<span class="sectionnumber">9.1</span>&#x2003;Означення</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-679" class="tocsection" >
+<span class="sectionnumber">9.2</span>&#x2003;Характеристика магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-680" class="tocsection" >
+<span class="sectionnumber">9.3</span>&#x2003;Дія магнітного поля на заряджені частинки та струми</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-701" class="tocsection" >
+<span class="sectionnumber">9.4</span>&#x2003;Закон Біо-Савара-Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-714" class="tocsection" >
+<span class="sectionnumber">9.5</span>&#x2003;Вектор-потенціал магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-719" class="tocsection" >
+<span class="sectionnumber">9.6</span>&#x2003;Теореми магнітостатики</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-740" class="tocsection" >
+<span class="sectionnumber">9.7</span>&#x2003;Магнітний момент</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-756" class="tocsection" >
+<span class="sectionnumber">9.8</span>&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-766" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-767" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-775" class="tocchapter" >
+<span class="sectionnumber">10</span>&#x2003;Магнітне поле в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-780" class="tocsection" >
+<span class="sectionnumber">10.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-783" class="tocsection" >
+<span class="sectionnumber">10.2</span>&#x2003;Намагнічування</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-795" class="tocsection" >
+<span class="sectionnumber">10.3</span>&#x2003;Теорема про циркуляцію в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-801" class="tocsection" >
+<span class="sectionnumber">10.4</span>&#x2003;Магнітна сприйнятливість речовини</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-832" class="tocsection" >
+<span class="sectionnumber">10.5</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-847" class="tocsection" >
+<span class="sectionnumber">10.6</span>&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-864" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-865" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-872" class="tocchapter" >
+<span class="sectionnumber">11</span>&#x2003;Рух заряджених частинок</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-873" class="tocsection" >
+<span class="sectionnumber">11.1</span>&#x2003;Рух частинок в&nbsp;однорідних полях</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-891" class="tocsection" >
+<span class="sectionnumber">11.2</span>&#x2003;Застосування схрещених полів</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-899" class="tocsection" >
+<span class="sectionnumber">11.3</span>&#x2003;Методи вимірювання питомого заряду електрона</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-909" class="tocsection" >
+<span class="sectionnumber">11.4</span>&#x2003;Досліди Міллікена</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-911" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-912" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-923" class="tocchapter" >
+<span class="sectionnumber">12</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-924" class="tocsection" >
+<span class="sectionnumber">12.1</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-929" class="tocsection" >
+<span class="sectionnumber">12.2</span>&#x2003;Закон електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-930" class="tocsection" >
+<span class="sectionnumber">12.3</span>&#x2003;Робота, що виконується при переміщенні провідника зі струмом у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-933" class="tocsection" >
+<span class="sectionnumber">12.4</span>&#x2003;Електромагнітна індукція в&nbsp;рухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-940" class="tocsection" >
+<span class="sectionnumber">12.5</span>&#x2003;Електромагнітна індукція в&nbsp;нерухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-959" class="tocsection" >
+<span class="sectionnumber">12.6</span>&#x2003;Явище самоіндукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-979" class="tocsection" >
+<span class="sectionnumber">12.7</span>&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-996" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-997" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1015" class="tocchapter" >
+<span class="sectionnumber">13</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1016" class="tocsection" >
+<span class="sectionnumber">13.1</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1022" class="tocsection" >
+<span class="sectionnumber">13.2</span>&#x2003;Взаємна індукція</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1038" class="tocsection" >
+<span class="sectionnumber">13.3</span>&#x2003;Енергія системи зв’язаних контурів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1041" class="tocsection" >
+<span class="sectionnumber">13.4</span>&#x2003;Потенціальна енергія струмів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1043" class="tocsection" >
+<span class="sectionnumber">13.5</span>&#x2003;Принцип роботи трансформаторів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1047" class="tocsection" >
+<span class="sectionnumber">13.6</span>&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1053" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1054" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1059" class="tocchapter" >
+<span class="sectionnumber">14</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1064" class="tocsection" >
+<span class="sectionnumber">14.1</span>&#x2003;Струм зміщення</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1085" class="tocsection" >
+<span class="sectionnumber">14.2</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1102" class="tocsection" >
+<span class="sectionnumber">14.3</span>&#x2003;Про рівняння Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1104" class="tocsection" >
+<span class="sectionnumber">14.4</span>&#x2003;Енергія електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1118" class="tocsection" >
+<span class="sectionnumber">14.5</span>&#x2003;Скін-ефект</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1140" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1141" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1148" class="tocchapter" >
+<span class="sectionnumber">15</span>&#x2003;Відносність електричного і&nbsp;магнітного полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1150" class="tocsection" >
+<span class="sectionnumber">15.1</span>&#x2003;Нерелятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1153" class="tocsection" >
+<span class="sectionnumber">15.2</span>&#x2003;Релятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1159" class="tocsection" >
+<span class="sectionnumber">15.3</span>&#x2003;Тензор електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1161" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1162" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1171" class="tocchapter" >
+<span class="sectionnumber">16</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1172" class="tocsection" >
+<span class="sectionnumber">16.1</span>&#x2003;Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1188" class="tocsection" >
+<span class="sectionnumber">16.2</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1193" class="tocsection" >
+<span class="sectionnumber">16.3</span>&#x2003;Енергія та вектор Пойнтінга для хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1204" class="tocsection" >
+<span class="sectionnumber">16.4</span>&#x2003;Імпульс і момент імпульсу електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1210" class="tocsection" >
+<span class="sectionnumber">16.5</span>&#x2003;Відбивання хвиль від поверхні двох діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1230" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1231" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1242" class="tocchapter" >
+<span class="sectionnumber">17</span>&#x2003;Випромінювання електромагнітних хвиль</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1243" class="tocsection" >
+<span class="sectionnumber">17.1</span>&#x2003;Історична довідка: досліди Герца</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1246" class="tocsection" >
+<span class="sectionnumber">17.2</span>&#x2003;Елементарна модель випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1259" class="tocsection" >
+<span class="sectionnumber">17.3</span>&#x2003;Дипольне випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1275" class="tocsection" >
+<span class="sectionnumber">17.4</span>&#x2003;Потужність випромінювання осцилятора</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1280" class="tocsection" >
+<span class="sectionnumber">17.5</span>&#x2003;Випромінювання рухомого заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1285" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1286" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1292" class="tocchapter" >
+<span class="sectionnumber">18</span>&#x2003;Коливальні процеси в електричних колах</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1293" class="tocsection" >
+<span class="sectionnumber">18.1</span>&#x2003;Квазістаціонарне наближення</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1294" class="tocsection" >
+<span class="sectionnumber">18.2</span>&#x2003;Вільні коливання в коливальному контурі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1319" class="tocsection" >
+<span class="sectionnumber">18.3</span>&#x2003;Вимушені коливання під дією гармонічної ЕРС</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1333" class="tocsection" >
+<span class="sectionnumber">18.4</span>&#x2003;Змінний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">18.5</span>&#x2003;Трансформатор</a>
+</p>
+<p>
+<a href="ch18.html#autosec-1374" class="tocsection" >
+<span class="sectionnumber">18.6</span>&#x2003;Частотні фільтри</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1390" class="tocsection" >
+<span class="sectionnumber">18.7</span>&#x2003;Трифазний струм: фізичні засади, топології кіл та застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1433" class="tocchapter" >
+<span class="sectionnumber">19</span>&#x2003;Довгі лінії. Телеграфні рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1434" class="tocsection" >
+<span class="sectionnumber">19.1</span>&#x2003;Від зосереджених елементів до розподілених</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1435" class="tocsection" >
+<span class="sectionnumber">19.2</span>&#x2003;Виведення телеграфних рівнянь</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1439" class="tocsection" >
+<span class="sectionnumber">19.3</span>&#x2003;Гармонічний режим. Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1440" class="tocsection" >
+<span class="sectionnumber">19.4</span>&#x2003;Лінія без втрат</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1447" class="tocsection" >
+<span class="sectionnumber">19.5</span>&#x2003;Польова картина. Зв’язок з рівняннями Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1454" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1455" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1461" class="tocchapter" >
+<span class="sectionnumber">20</span>&#x2003;Хвилеводи</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1462" class="tocsection" >
+<span class="sectionnumber">20.1</span>&#x2003;Від довгої лінії до хвилеводу</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1463" class="tocsection" >
+<span class="sectionnumber">20.2</span>&#x2003;Прямокутний хвилевід</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1476" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1479" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1480" class="tocsection" >
+<span class="sectionnumber">А</span>&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1485" class="tocsection" >
+<span class="sectionnumber">Б</span>&#x2003;Основні формули векторного аналізу</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1503" class="tocchapter" >
+Література</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Довгі лінії. Телеграфні рівняння">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Довгі лінії. Телеграфні рівняння ......
+-->
+<h3 id="autosec-1433">Розділ&nbsp;<span class="sectionnumber">19&#x2003;</span>Довгі лінії. Телеграфні рівняння</h3>
+<a id="main-html-autopage-1433"></a>
+<a id="main-html-autofile-19"></a>
+
+<a id="Telegraph"></a>
+
+<p>
+<a id="LWR-ht-Telegraph"></a>
+</p>
+<!--
+...... section Від зосереджених елементів до розподілених ......
+-->
+<h4 id="autosec-1434"><span class="sectionnumber">19.1&#x2003;</span>Від зосереджених елементів до розподілених</h4>
+<a id="main-html-autopage-1434"></a>
+
+
+<p>
+<a id="LWR-ht-lumped-to-distributed-elements"></a>
+</p>
+
+<p>
+У попередньому розділі ми розглядали квазістаціонарні кола, де довжина кола \(l\) набагато менша за довжину хвилі \(\lambda = cT\). Для таких кіл справедливі закон Ома, правила Кірхгофа та метод комплексних амплітуд у тій формі, як ми їх
+виклали. Але вже там, в <span class="textup">(<a href="ch18.html#eq:quasistationary_condition">18.1</a>)</span>, ми бачили межу цього наближення: магістральна лінія електропередачі, кабель зв’язку або доріжка на друкованій платі
+можуть мати довжину, сумірну з довжиною хвилі. Тоді напруга й струм у різних точках лінії зсунуті за фазою, і коло вже не можна описувати скінченним набором зосереджених елементів \(R\), \(L\), \(C\).
+</p>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> Історично першими з цією проблемою зіткнулися не фізики, а інженери-телеграфісти. У 1850-х роках між Англією та Францією було прокладено перший підводний телеграфний кабель, а в 1858 році —
+трансатлантичний. Сигнал у ньому виявився настільки спотвореним, що передавати повідомлення вдавалося лише зі швидкістю кілька слів на хвилину. Причина — саме та, про яку йдеться в цьому розділі: кабель довжиною в тисячі кілометрів
+уже не можна було вважати квазістаціонарним колом. Теорію, яка це описала, розробили Вільям Томсон (лорд Кельвін) та Олівер Гевісайд — і саме вона лягла в основу сучасної теорії ліній передачі.
+</p>
+</div>
+
+<p>
+Коло з розподіленими параметрами описують не скінченним набором \(R\), \(L\), \(C\), а чотирма <em><span
+    class="textcolor"
+    style="color:#990000"
+>погонними параметрами</span></em> — величинами, віднесеними до одиниці довжини лінії:
+</p>
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> \(R_0\) — опір на одиницю довжини;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> \(L_0\) — індуктивність на одиницю довжини;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> \(G_0\) — провідність витоку на одиницю довжини;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> \(C_0\) — ємність на одиницю довжини.
+</p>
+</li>
+</ul>
+
+<p>
+Провідність \(G_0\) описує струми витоку між провідниками лінії — через недосконалість ізоляції. У ідеальному випадку \(G_0 = 0\), але для реальних кабелів цей параметр важливий, особливо на низьких частотах.
+</p>
+<!--
+...... section Виведення телеграфних рівнянь ......
+-->
+<h4 id="autosec-1435"><span class="sectionnumber">19.2&#x2003;</span>Виведення телеграфних рівнянь</h4>
+<a id="main-html-autopage-1435"></a>
+
+
+<p>
+<a id="LWR-ht-telegraph-equations-derivation"></a>
+</p>
+
+<p>
+Розглянемо елементарний відрізок лінії довжиною \(dz\) (рис.&nbsp;<a href="ch19.html#tikz:long_line_element">19.1</a>). На цьому відрізку зосереджені елементи \(R_0\,dz\), \(L_0\,dz\), \(G_0\,dz\) і \(C_0\,dz\). Позначимо напругу і
+струм на вході відрізка як \(u(z,t)\) та \(i(z,t)\), а на виході — як \(u(z+dz,t)\) та \(i(z+dz,t)\).
+</p>
+
+<figure id="autoid-491" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-265"
+    class="lateximagesource"
+><!--
+𝑖(𝑧, 𝑡)                                𝑖(𝑧 + 𝑑𝑧, 𝑡)
+            𝑅0 𝑑𝑧            𝐿0 𝑑𝑧
+
+
+
+
+  𝑢(𝑧, 𝑡)           𝐺 0 𝑑𝑧     𝐶0 𝑑𝑧                  𝑢(𝑧 + 𝑑𝑧, 𝑡)
+--><img
+   src="main-html-images\image-265.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;19.1. Схема заміщення елементарного відрізка довгої лінії як чотириполюсника. Паралельні елементи \(G_0\,dz\) і \(C_0\,dz\) рознесені для наочності.
+
+</div>
+
+<a id="tikz:long_line_element"></a>
+
+</div>
+
+</figure>
+
+<p>
+Застосуємо до цього відрізка <em><span
+    class="textcolor"
+    style="color:#990000"
+>друге правило Кірхгофа</span></em>. Сума спадів напруг уздовж верхньої гілки дорівнює нулю:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{0}\)</span>
+
+<!--
+
+
+                                                                                    𝜕𝑖(𝑧, 𝑡)
+                                                ᵆ(𝑧, 𝑡) − 𝑅0 𝑑𝑧 ⋅ 𝑖(𝑧, 𝑡) − 𝐿0 𝑑𝑧            − ᵆ(𝑧 + 𝑑𝑧, 𝑡) = 0.                                               (19.1)                          --><a id="eq:telegrapher_KVL"></a><!--
+                                                                                      𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:telegrapher_KVL} u(z,t) - R_0\,dz \cdot i(z,t) - L_0\,dz \frac {\partial i(z,t)}{\partial t} - u(z+dz,t) = 0.
+\end{equation}
+
+</p>
+
+<p>
+Переносячи \(u(z+dz,t)\) у праву частину й ділячи на \(dz\), отримуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{1}\)</span>
+
+<!--
+
+                                                                       𝜕ᵆ             𝜕𝑖
+                                                                   −      = 𝑅 0 𝑖 + 𝐿0 .                                                                     (19.2)                          --><a id="eq:telegrapher_first"></a><!--
+                                                                       𝜕𝑧             𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:telegrapher_first} -\frac {\partial u}{\partial z} = R_0 i + L_0 \frac {\partial i}{\partial t}.
+\end{equation}
+
+</p>
+
+<p>
+Тут ми скористалися означенням похідної:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{2}\)</span>
+
+<!--
+
+
+                                                                                                                        ᵆ(𝑧 + 𝑑𝑧, 𝑡) − ᵆ(𝑧, 𝑡) 𝑑𝑧→0 𝜕ᵆ
+                                                                                                                                               −−−−→    .
+                                                                                                                                𝑑𝑧                   𝜕𝑧
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {u(z+dz,t) - u(z,t)}{dz} \xrightarrow {dz \to 0} \frac {\partial u}{\partial z}.
+\end{equation*}
+
+</p>
+
+<p>
+Тепер застосуємо <em><span
+    class="textcolor"
+    style="color:#990000"
+>перше правило Кірхгофа</span></em> до вузла на виході відрізка. Струм, що входить у вузол, дорівнює сумі струмів, що виходять:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{2}\)</span>
+
+<!--
+
+
+                                                                                                   𝜕ᵆ(𝑧 + 𝑑𝑧, 𝑡)
+                                           𝑖(𝑧, 𝑡) − 𝑖(𝑧 + 𝑑𝑧, 𝑡) − 𝐺0 𝑑𝑧 ⋅ ᵆ(𝑧 + 𝑑𝑧, 𝑡) − 𝐶0 𝑑𝑧                 = 0.                                          (19.3)                          --><a id="eq:telegrapher_KCL"></a><!--
+                                                                                                        𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:telegrapher_KCL} i(z,t) - i(z+dz,t) - G_0\,dz \cdot u(z+dz,t) - C_0\,dz \frac {\partial u(z+dz,t)}{\partial t} = 0.
+\end{equation}
+
+</p>
+
+<p>
+Ділячи на \(dz\) і переходячи до границі \(dz \to 0\), отримуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{3}\)</span>
+
+<!--
+
+                                                                     𝜕𝑖              𝜕ᵆ
+                                                                 −      = 𝐺 0 ᵆ + 𝐶0    .                                                                   (19.4)                          --><a id="eq:telegrapher_second"></a><!--
+                                                                     𝜕𝑧              𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:telegrapher_second} -\frac {\partial i}{\partial z} = G_0 u + C_0 \frac {\partial u}{\partial t}.
+\end{equation}
+
+</p>
+
+<p>
+Рівняння <span class="textup">(<a href="ch19.html#eq:telegrapher_first">19.2</a>)</span> і <span class="textup">(<a href="ch19.html#eq:telegrapher_second">19.4</a>)</span> називаються <em><span
+    class="textcolor"
+    style="color:#990000"
+>телеграфними рівняннями</span></em> у часовій формі. Разом вони утворюють систему двох диференціальних рівнянь першого порядку для двох невідомих функцій \(u(z,t)\) і \(i(z,t)\).
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Телеграфні рівняння — це, по суті, закон Ома та правила Кірхгофа, записані для нескінченно малого відрізка лінії. У границі \(dz \to 0\) скінченний набір зосереджених елементів перетворюється на неперервний розподіл параметрів уздовж
+лінії. Саме тому ці рівняння ще називають рівняннями <em><span
+     class="textcolor"
+     style="color:#990000"
+>довгої лінії</span></em>: вони описують коло, довжина якого вже не мала порівняно з довжиною хвилі. Якщо формально покласти \(L_0 = C_0 = 0\), рівняння зводяться до звичайного закону Ома для розподіленого опору — але саме наявність
+\(L_0\) і \(C_0\) робить поведінку лінії хвильовою.
+</p>
+</div>
+<!--
+...... section Гармонічний режим. Хвильове рівняння ......
+-->
+<h4 id="autosec-1439"><span class="sectionnumber">19.3&#x2003;</span>Гармонічний режим. Хвильове рівняння</h4>
+<a id="main-html-autopage-1439"></a>
+
+
+<p>
+<a id="LWR-ht-harmonic-regime-wave-equation"></a>
+</p>
+
+<p>
+Розглянемо випадок гармонічних сигналів, коли напруга й струм змінюються за законом \(e^{i\omega t}\). Перейдемо до комплексних амплітуд:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{4}\)</span>
+
+<!--
+
+
+                                                  ᵆ(𝑧, 𝑡) = Re[𝑉 (𝑧)𝑒𝑖𝜔𝑡 ] ,         𝑖(𝑧, 𝑡) = Re[𝐼(𝑧)𝑒𝑖𝜔𝑡 ] .                                      (19.5)                                         --><a id="eq:harmonic_ansatz"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:harmonic_ansatz} u(z,t) = \operatorname {Re}\!\left [V(z) e^{i\omega t}\right ], \qquad i(z,t) = \operatorname {Re}\!\left [I(z) e^{i\omega t}\right ].
+\end{equation}
+
+</p>
+
+<p>
+Підставляючи ці вирази в <span class="textup">(<a href="ch19.html#eq:telegrapher_first">19.2</a>)</span> і <span class="textup">(<a href="ch19.html#eq:telegrapher_second">19.4</a>)</span> і скорочуючи на \(e^{i\omega
+t}\), отримуємо систему рівнянь для комплексних амплітуд:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{5}\)</span>
+
+<!--
+
+
+                                                     𝑑𝑉                              𝑑𝐼
+                                                 −      = (𝑅0 + 𝑖𝜔𝐿0 )𝐼,         −      = (𝐺0 + 𝑖𝜔𝐶0 )𝑉 .                                        (19.6)                                           --><a id="eq:telegrapher_freq"></a><!--
+                                                     𝑑𝑧                              𝑑𝑧
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:telegrapher_freq} -\frac {dV}{dz} = (R_0 + i\omega L_0) I, \qquad -\frac {dI}{dz} = (G_0 + i\omega C_0) V.
+\end{equation}
+
+</p>
+
+<p>
+Ці рівняння за формою нагадують закон Ома для ділянки кола, але тепер «опір» і «провідність» розподілені вздовж лінії й залежать від частоти.
+</p>
+
+<p>
+Продиференціюємо перше рівняння <span class="textup">(<a href="ch19.html#eq:telegrapher_freq">19.6</a>)</span> по \(z\) і підставимо в нього друге:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{6}\)</span>
+
+<!--
+
+
+                                                             𝑑2 𝑉
+                                                                  = (𝑅0 + 𝑖𝜔𝐿0 )(𝐺0 + 𝑖𝜔𝐶0 )𝑉 .                                                     (19.7)                                         --><a id="eq:wave_equation_V"></a><!--
+                                                             𝑑𝑧2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:wave_equation_V} \frac {d^2 V}{dz^2} = (R_0 + i\omega L_0)(G_0 + i\omega C_0) V.
+\end{equation}
+
+</p>
+
+<p>
+Аналогічно для струму:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{7}\)</span>
+
+<!--
+
+
+                                                             𝑑2 𝐼
+                                                                  = (𝑅0 + 𝑖𝜔𝐿0 )(𝐺0 + 𝑖𝜔𝐶0 )𝐼.                                                      (19.8)                                         --><a id="eq:wave_equation_I"></a><!--
+                                                             𝑑𝑧2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:wave_equation_I} \frac {d^2 I}{dz^2} = (R_0 + i\omega L_0)(G_0 + i\omega C_0) I.
+\end{equation}
+
+</p>
+
+<p>
+Введемо позначення
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{8}\)</span>
+
+<!--
+
+
+
+                                                     𝛾 = √(𝑅0 + 𝑖𝜔𝐿0 )(𝐺0 + 𝑖𝜔𝐶0 ) = 𝛼 + 𝑖𝛽,                                               (19.9)                                             --><a id="eq:propagation_constant"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:propagation_constant} \tcbhighmath { \gamma = \sqrt {(R_0 + i\omega L_0)(G_0 + i\omega C_0)} = \alpha + i\beta , }
+\end{equation}
+
+</p>
+
+<p>
+яке називається <em>сталою поширення</em>. Тоді рівняння <span class="textup">(<a href="ch19.html#eq:wave_equation_V">19.7</a>)</span> і <span class="textup">(<a href="ch19.html#eq:wave_equation_I">19.8</a>)</span>
+набирають вигляду
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{9}\)</span>
+
+<!--
+
+
+                                                                   𝑑2 𝑉                 𝑑2 𝐼
+                                                                        = 𝛾2 𝑉 ,             = 𝛾2 𝐼.                                                         (19.10)                                      --><a id="eq:helmholtz"></a><!--
+                                                                   𝑑𝑧2                  𝑑𝑧2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:helmholtz} \frac {d^2 V}{dz^2} = \gamma ^2 V, \qquad \frac {d^2 I}{dz^2} = \gamma ^2 I.
+\end{equation}
+
+</p>
+
+<p>
+Це — одновимірні рівняння Гельмгольца.
+</p>
+
+<p>
+Загальний розв’язок рівняння для напруги має вигляд
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{10}\)</span>
+
+<!--
+
+
+                                                               𝑉 (𝑧) = 𝑉 + 𝑒−𝛾𝑧 + 𝑉 − 𝑒+𝛾𝑧 ,                                                    (19.11)                                           --><a id="eq:voltage_solution"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:voltage_solution} \tcbhighmath { V(z) = V^+ e^{-\gamma z} + V^- e^{+\gamma z}, }
+\end{equation}
+
+</p>
+
+<p>
+де \(V^+\) і \(V^-\) — комплексні сталі, що визначаються граничними умовами. Перший доданок описує хвилю, що поширюється в напрямку \(+z\) (від генератора до навантаження), другий — хвилю, що поширюється в напрямку \(-z\) (відбиту
+від навантаження). Дійсна частина \(\alpha \) називається <em><span
+    class="textcolor"
+    style="color:#990000"
+>сталою затухання</span></em> і описує зменшення амплітуди хвилі з відстанню; уявна частина \(\beta \) — <em><span
+    class="textcolor"
+    style="color:#990000"
+>фазовою сталою</span></em> і визначає довжину хвилі та фазову швидкість:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{11}\)</span>
+
+<!--
+
+                                                                       2𝜋                𝜔
+                                                                 𝜆=       ,      𝑣ф =      .                                                    (19.12)                                           --><a id="eq:wavelength_phase"></a><!--
+                                                                        𝛽                𝛽
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:wavelength_phase} \lambda = \frac {2\pi }{\beta }, \qquad v_{\text {ф}} = \frac {\omega }{\beta }.
+\end{equation}
+
+</p>
+
+<p>
+Підставляючи <span class="textup">(<a href="ch19.html#eq:voltage_solution">19.11</a>)</span> у перше рівняння <span class="textup">(<a href="ch19.html#eq:telegrapher_freq">19.6</a>)</span>, знаходимо вираз для струму:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{12}\)</span>
+
+<!--
+
+                                                                    𝛾
+                                                       𝐼(𝑧) =             (𝑉 + 𝑒−𝛾𝑧 − 𝑉 − 𝑒+𝛾𝑧 ) .                                              (19.13)                                           --><a id="eq:current_solution"></a><!--
+                                                                𝑅0 + 𝑖𝜔𝐿0
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:current_solution} I(z) = \frac {\gamma }{R_0 + i\omega L_0}\left (V^+ e^{-\gamma z} - V^- e^{+\gamma z}\right ).
+\end{equation}
+
+</p>
+
+<p>
+Величина
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{13}\)</span>
+
+<!--
+
+
+                                                             𝑅0 + 𝑖𝜔𝐿0     𝑅0 + 𝑖𝜔𝐿0
+                                                     𝑍хв =             =                                                             (19.14)                                             --><a id="eq:characteristic_impedance"></a><!--
+                                                                 𝛾       √ 𝐺0 + 𝑖𝜔𝐶0
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:characteristic_impedance} \tcbhighmath { Z_{\text {хв}} = \frac {R_0 + i\omega L_0}{\gamma } = \sqrt {\frac {R_0 + i\omega L_0}{G_0 + i\omega C_0}} }
+\end{equation}
+
+</p>
+
+<p>
+називається <em><span
+    class="textcolor"
+    style="color:#990000"
+>хвильовим опором</span></em> лінії. Через неї вираз для струму записується компактно:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{14}\)</span>
+
+<!--
+
+                                                                        1
+                                                              𝐼(𝑧) =       (𝑉 + 𝑒−𝛾𝑧 − 𝑉 − 𝑒+𝛾𝑧 ) .                                                  (19.15)                                          --><a id="eq:current_via_Z"></a><!--
+                                                                       𝑍хв
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:current_via_Z} I(z) = \frac {1}{Z_{\text {хв}}}\left (V^+ e^{-\gamma z} - V^- e^{+\gamma z}\right ).
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Хвильовий опір — це не опір у звичному розумінні. Це величина, яка показує, у якому відношенні перебувають напруга й струм у <em><span
+     class="textcolor"
+     style="color:#990000"
+>біжучій</span></em> хвилі. Якщо лінія нескінченно довга або навантажена на \(Z_{\text {н}} = Z_{\text {хв}}\), то відбитої хвилі немає (\(V^- = 0\)), і \(V/I = Z_{\text {хв}}\). Саме тому узгодження навантаження з хвильовим опором
+лінії — одна з головних задач радіотехніки та НВЧ-техніки. Для лінії без втрат (\(R_0 = G_0 = 0\)) хвильовий опір дійсний: \(Z_{\text {хв}} = \sqrt {L_0/C_0}\). Для коаксіального кабелю з хвильовим опором \(50\) Ом це означає, що напруга і
+струм у біжучій хвилі збігаються за фазою — так само як на активному опорі.
+</p>
+</div>
+<!--
+...... section Лінія без втрат ......
+-->
+<h4 id="autosec-1440"><span class="sectionnumber">19.4&#x2003;</span>Лінія без втрат</h4>
+<a id="main-html-autopage-1440"></a>
+
+
+<p>
+<a id="LWR-ht-lossless-line"></a>
+</p>
+
+<p>
+Розглянемо важливий граничний випадок, коли втратами в лінії можна знехтувати: \(R_0 = 0\), \(G_0 = 0\). Тоді стала поширення <span class="textup">(<a href="ch19.html#eq:propagation_constant">19.9</a>)</span> стає чисто уявною:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{15}\)</span>
+
+<!--
+
+
+                                                   𝛾 = 𝑖𝜔√𝐿0 𝐶0 = 𝑖𝛽,         𝛽 = 𝜔√𝐿0 𝐶0 ,      𝛼 = 0.                                                (19.16)                                          --><a id="eq:gamma_lossless"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:gamma_lossless} \gamma = i\omega \sqrt {L_0 C_0} = i\beta , \qquad \beta = \omega \sqrt {L_0 C_0}, \qquad \alpha = 0.
+\end{equation}
+
+</p>
+
+<p>
+Затухання відсутнє, хвиля поширюється без зменшення амплітуди. Фазова швидкість і довжина хвилі дорівнюють
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{16}\)</span>
+
+<!--
+
+                                                       𝜔     1                2𝜋     2𝜋
+                                                𝑣ф =     =        ,      𝜆=      =         .                                               (19.17)                                          --><a id="eq:phase_velocity_lossless"></a><!--
+                                                       𝛽   √𝐿0 𝐶0              𝛽   𝜔√𝐿0 𝐶0
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:phase_velocity_lossless} v_{\text {ф}} = \frac {\omega }{\beta } = \frac {1}{\sqrt {L_0 C_0}}, \qquad \lambda = \frac {2\pi }{\beta } = \frac {2\pi }{\omega \sqrt {L_0 C_0}}.
+\end{equation}
+
+</p>
+
+<p>
+У лінії без втрат фазова швидкість \(v_{\text {ф}}\) не залежить від частоти; у реальній лінії з втратами вона від частоти залежить, і це є причиною дисперсійного спотворення сигналу (див. нижче).
+</p>
+
+<p>
+Хвильовий опір стає дійсним:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{17}\)</span>
+
+<!--
+
+
+                                                                          𝐿0
+                                                                𝑍хв =        .                                                             (19.18)                                          --><a id="eq:char_impedance_lossless"></a><!--
+                                                                        √ 𝐶0
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:char_impedance_lossless} \tcbhighmath { Z_{\text {хв}} = \sqrt {\frac {L_0}{C_0}}. }
+\end{equation}
+
+</p>
+
+<p>
+Розв’язок для напруги набирає вигляду
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{18}\)</span>
+
+<!--
+
+
+                                                             𝑉 (𝑧) = 𝑉 + 𝑒−𝑖𝛽𝑧 + 𝑉 − 𝑒+𝑖𝛽𝑧 .                                                         (19.19)                                           --><a id="eq:voltage_lossless"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:voltage_lossless} V(z) = V^+ e^{-i\beta z} + V^- e^{+i\beta z}.
+\end{equation}
+
+</p>
+
+<p>
+Переходячи до часової залежності \(u(z,t) = \operatorname {Re}[V(z)e^{i\omega t}]\), отримуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{19}\)</span>
+
+<!--
+
+
+                                         ᵆ(𝑧, 𝑡) = |𝑉 + | cos(𝜔𝑡 − 𝛽𝑧 + 𝜑+ ) + |𝑉 − | cos(𝜔𝑡 + 𝛽𝑧 + 𝜑− ).                                    (19.20)                                           --><a id="eq:voltage_time_lossless"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:voltage_time_lossless} u(z,t) = |V^+| \cos (\omega t - \beta z + \phi ^+) + |V^-| \cos (\omega t + \beta z + \phi ^-).
+\end{equation}
+
+</p>
+
+<p>
+Перший доданок описує хвилю, що біжить у напрямку \(+z\) з фазовою швидкістю \(v_{\text {ф}}\); другий — хвилю, що біжить у протилежному напрямку. Якщо відбитої хвилі немає (\(V^- = 0\)), напруга і струм у кожній точці лінії
+збігаються за фазою, а їхнє відношення дорівнює \(Z_{\text {хв}}\).
+</p>
+
+<p>
+Якщо ж відбита хвиля присутня, виникає інтерференційна картина — стояча хвиля, показана на рис.&nbsp;<a href="ch19.html#fig:standing_wave">19.2</a>. Амплітуда сумарної напруги періодично змінюється вздовж лінії: максимуми
+дорівнюють \(|V^+|+|V^-|\), мінімуми — \(|V^+|-|V^-|\) (при повному відбитті мінімуми перетворюються на вузли). Глибину модуляції характеризує <em><span
+    class="textcolor"
+    style="color:#990000"
+>коефіцієнт стоячої хвилі</span></em>
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{20}\)</span>
+
+<!--
+
+
+                                                                                                                       |𝑉 + | + |𝑉 − |
+                                                                                                               КСХ =                   .
+                                                                                                                       |𝑉 + | − |𝑉 − |
+
+-->
+
+<p>
+
+\begin{equation*}
+\text {КСХ} = \frac {|V^+|+|V^-|}{|V^+|-|V^-|}.
+\end{equation*}
+
+</p>
+
+<p>
+Для узгодженого навантаження (відбитої хвилі немає) \(\text {КСХ}=1\), при повному відбитті \(\text {КСХ}\to \infty \).
+</p>
+
+<figure id="autoid-492" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-266"
+    class="lateximagesource"
+><!--
+           1
+
+
+
+
+𝑢(𝑧, 𝑡)
+           0
+
+
+
+
+          −1
+
+               0       0.2        0.4    0.6        0.8        1     1.2      1.4      1.6
+                                                 𝑧/𝜆
+
+
+                   |𝑉 + | cos(𝜔𝑡 − 𝛽𝑧)   |𝑉 − | cos(𝜔𝑡 + 𝛽𝑧 + 𝜋)   𝑢(𝑧, 𝑡) — сумарна
+--><img
+   src="main-html-images\image-266.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;19.2. Інтерференція падаючої та відбитої хвиль у лінії без втрат при \(|V^-|/|V^+| = 0.6\). Амплітуда сумарної напруги має максимуми й мінімуми (стояча хвиля). Коефіцієнт стоячої хвилі \(\text {КСХ} = (1+0.6)/(1-0.6) = 4\).
+
+</div>
+
+<a id="fig:standing_wave"></a>
+
+</div>
+
+</figure>
+
+
+<div class="cb-attention">
+
+<p>
+Для лінії без втрат фазова швидкість \(v_{\text {ф}} = 1/\sqrt {L_0 C_0}\) не залежить від частоти. Це означає, що сигнал довільної форми поширюється без спотворень — усі його спектральні складові біжать з однаковою швидкістю. У
+реальних лініях з втратами \(v_{\text {ф}}\) залежить від частоти, що призводить до <em><span
+    class="textcolor"
+    style="color:#990000"
+>дисперсії</span></em>: різні складові сигналу приходять у різний час, і імпульс «розмазується». Саме ця проблема мучила перші трансатлантичні кабелі. Гевісайд у 1890-х роках показав, що спотворень можна позбутися, якщо штучно збільшити
+індуктивність лінії так, щоб виконувалася умова \(R_0/L_0 = G_0/C_0\) — так звана <em>лінія без спотворень</em>. Це відкриття дозволило збільшити швидкість телеграфного зв’язку в кілька разів.
+</p>
+</div>
+
+<p>
+Наочно ефект дисперсійного розмазування показано на рис.&nbsp;<a href="ch19.html#fig:pulse_dispersion">19.3</a>: гауссовий імпульс при поширенні вздовж реальної лінії поступово розширюється і зменшується за амплітудою.
+</p>
+
+<figure id="autoid-493" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-267"
+    class="lateximagesource"
+><!--
+        1                                                   𝑧 = 0 — вхідний
+                                                                𝑧 = 100 км
+                                                                𝑧 = 300 км
+                                                               𝑧 = 1000 км
+
+
+
+𝑢(𝑡)
+       0.5
+
+
+
+
+        0
+
+             −4   −2   0   2   4   6       8     10   12   14   16     18     20
+                                    𝑡, ум. од.
+--><img
+   src="main-html-images\image-267.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;19.3. Дисперсійне спотворення гауссового імпульсу при поширенні в лінії з втратами. З відстанню імпульс розширюється і зменшується за амплітудою — саме ця проблема мучила перші трансатлантичні кабелі.
+
+</div>
+
+<a id="fig:pulse_dispersion"></a>
+
+</div>
+
+</figure>
+<!--
+...... section Польова картина. Зв'язок з рівняннями Максвелла ......
+-->
+<h4 id="autosec-1447"><span class="sectionnumber">19.5&#x2003;</span>Польова картина. Зв’язок з рівняннями Максвелла</h4>
+<a id="main-html-autopage-1447"></a>
+
+
+<p>
+<a id="LWR-ht-field-picture-maxwell"></a>
+</p>
+
+<p>
+Теорія довгих ліній оперує інтегральними величинами — напругою \(u(z,t)\) та струмом \(i(z,t)\), — які описують стан лінії як цілого. Проте самі ці величини є лише зручною мовою для опису глибшого фізичного процесу: у просторі, що оточує
+лінію, існують електричне та магнітне поля, які змінюються з часом і в просторі. Сукупність цих полів і являє собою <em><span
+    class="textcolor"
+    style="color:#990000"
+>електромагнітну хвилю</span></em>. Тому, коли в лінії поширюється біжуча хвиля струму (або напруги), уздовж лінії біжить електромагнітна хвиля; відповідно, відбиття хвилі струму (або напруги) означає відбиття електромагнітної хвилі.
+</p>
+
+<figure id="autoid-494" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-268"
+    class="lateximagesource"
+><!--
+×   ⋅
+--><img
+   src="main-html-images\image-268.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;19.4. Лінії електричного (червоні) та магнітного (сині) полів для біжучої хвилі в перерізі двопровідної лінії<a id="pic:EMWaveInLine"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+На рис.&nbsp;<a href="ch19.html#pic:EMWaveInLine">19.4</a> показано лінії електричного та магнітного полів для біжучої хвилі в деякому перерізі двопровідної лінії у фіксований момент часу. Лінії магнітного поля охоплюють провідники, а
+лінії електричного поля спрямовані від провідника з більшим потенціалом до провідника з меншим потенціалом. Електричне та магнітне поля коливаються у фазі. Обидва вектори лежать у площині поперечного перерізу: поздовжніх складових
+поля в такій хвилі (для ідеальних провідників) немає, тому її називають <em>поперечною</em> (ТЕМ-хвилею). Вектор Пойнтінга
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{20}\)</span>
+
+<!--
+
+                                                                                                                         𝑐
+                                                                                                                   𝐒=      𝐄×𝐇
+                                                                                                                        4𝜋
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect {S} = \frac {c}{4\pi }\,\Efield \times \Hfield
+\end{equation*}
+
+</p>
+
+<p>
+спрямований уздовж проводів від джерела до навантаження — саме він переносить енергію вздовж лінії.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Важливо розрізняти <em><span
+    class="textcolor"
+    style="color:#990000"
+>струм провідності</span></em> в дротах і <em><span
+    class="textcolor"
+    style="color:#990000"
+>струм зміщення</span></em> між ними. Вздовж проводів тече струм провідності \(i(z,t)\); саме він визначає магнітне поле в перерізі за законом Ампера&nbsp;<span class="textup">(<a
+href="ch19.html#eq:field_to_circuit">19.21</a>)</span>. Оскільки напруга \(u\) змінюється в часі, між проводами існує змінне електричне поле, а отже, й струм зміщення, який тече від одного провідника до іншого. Він «замикає» струм, що
+зменшується вздовж лінії: друге телеграфне рівняння \(-\partial i/\partial z=C_0\,\partial u/\partial t\) (при \(G_0=0\)) якраз і виражає, що частина струму провідності «витікає» з проводу в діелектрик у вигляді струму зміщення. У
+самих дротах, внаслідок їхньої високої провідності, поле дуже мале, тому струм зміщення там значно менший за струм провідності; в діелектрику, навпаки, струму провідності практично немає. У стоячій хвилі при повному відбитті коливання
+електричного та магнітного полів зсунуті за фазою на \(\pi /2\).
+</p>
+
+<p>
+Положення вузлів і пучностей полів \(\Efield \) і \(\Hfield \) повторюють положення вузлів і пучностей напруги \(u\) і струму \(i\) відповідно.
+</p>
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+Провідники довгої лінії самі по собі не «проштовхують» енергію. Вони відіграють роль <em>напрямних елементів</em> (напрямної системи): задають граничні умови для електричного й магнітного полів, змушуючи електромагнітну хвилю
+поширюватися вздовж лінії.
+</p>
+</div>
+
+<p>
+Зв’язок між характеристиками поля (\(\Efield , \Hfield \)) та величинами в колі (\(u, i\)) визначається інтегральними співвідношеннями в поперечному перерізі лінії:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{20}\)</span>
+
+<!--
+
+
+                                                               ˆ2                                ˛
+                                                                                             𝑐
+                                                   ᵆ(𝑧, 𝑡) =        𝐄 ⋅ 𝑑𝐫,    𝑖(𝑧, 𝑡) =             𝐇 ⋅ 𝑑𝐫,                                  (19.21)                                           --><a id="eq:field_to_circuit"></a><!--
+                                                                                            4𝜋
+                                                               1                                 𝐶
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:field_to_circuit}u(z,t) = \int \limits _{1}^{2} \Efield \cdot d\vect {r}, \qquad i(z,t) = \frac {c}{4\pi } \oint \limits _{C} \Hfield \cdot d\vect {r},
+\end{equation}
+
+</p>
+
+<p>
+де перший інтеграл береться вздовж довільної лінії між провідниками \(1\) та \(2\), а другий — за замкненим контуром \(C\), що охоплює один із провідників.
+</p>
+
+<p>
+Оскільки структура поля в кожному поперечному перерізі за формою збігається з відповідними задачами електростатики та магнітостатики, погонні параметри визначені суто геометрією провідників та властивостями діелектрика (\(\epsilon \),
+\(\mu \)).
+</p>
+
+<p>
+З фундаментальних рівнянь Максвелла випливає універсальне співвідношення між погонною індуктивністю та ємністю для <em>довільної</em> лінії з двох провідників в однорідному середовищі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{21}\)</span>
+
+<!--
+
+
+                                                                                     𝜀𝜇
+                                                                          𝐿0 𝐶 0 =      .                                                         (19.22)                                         --><a id="eq:L0C0_universal"></a><!--
+                                                                                     𝑐2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:L0C0_universal}\tcbhighmath { L_0 C_0 = \frac {\epsilon \mu }{c^2}. }
+\end{equation}
+
+</p>
+
+<p>
+Тут \(\epsilon \) і \(\mu \) — відносні діелектрична та магнітна проникності середовища (у гауссовій системі \(\epsilon _0 = \mu _0 = 1\)). У СІ це співвідношення має вигляд \(L_0 C_0 = \epsilon _0\epsilon \,\mu _0\mu \).
+</p>
+
+<p>
+Якщо підставити цей результат у формулу для фазової швидкості хвилі в лінії без втрат \(v_{\text {ф}} = 1/\sqrt {L_0 C_0}\), ми отримаємо:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{22}\)</span>
+
+<!--
+
+                                                                                𝑐
+                                                                        𝑣ф =       ,                                                         (19.23)                                           --><a id="eq:phase_vel_maxwell"></a><!--
+                                                                               √𝜀𝜇
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:phase_vel_maxwell}v_{\text {ф}} = \frac {c}{\sqrt {\epsilon \mu }},
+\end{equation}
+
+</p>
+
+<p>
+де \(c\) — швидкість світла у вакуумі.
+</p>
+
+<p>
+Це фундаментальний результат: <em>сигнал у довгій лінії поширюється саме зі швидкістю світла у діелектрику</em>, що оточує провідники.
+</p>
+
+
+<div class="cb-example">
+
+<p>
+<b>Коаксіальний кабель.</b> Як приклад застосування польового підходу, розрахуємо параметри коаксіального кабелю з радіусом внутрішньої жили \(a\), радіусом зовнішнього екрана \(b\) та діелектриком (\(\epsilon \), \(\mu \)).
+</p>
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-269"
+    class="lateximagesource"
+><!--
+                    ×
+        ×
+
+
+
+
+                        𝐄   ×
+
+        𝐇
+×
+
+
+
+
+                𝑎
+                        𝑏       ×
+
+
+
+    ×
+
+
+
+
+                        ×
+            ×
+--><img
+   src="main-html-images\image-269.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+<div class="figurecaption">
+Структура електромагнітного поля в поперечному перерізі довгої лінії (коаксіального кабелю): вектор \(\Efield \) спрямований від внутрішньої жили до зовнішнього екрана, а лінії вектора \(\Hfield \) охоплюють провідник зі струмом.
+</div>
+</div>
+
+<p>
+Застосовуючи теорему Гаусса та закон Ампера для перерізу кабелю в гауссовій системі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{23}\)</span>
+
+<!--
+
+
+                                                                                                                    2𝑞′              2𝑖
+                                                                                                           𝐸(𝑟) =       ,   𝐻(𝑟) =      ,                                                                                               (19.24)
+                                                                                                                     𝜀𝑟              𝑐𝑟
+
+-->
+
+<p>
+
+\begin{equation}
+E(r) = \frac {2q&apos;}{\epsilon r}, \qquad H(r) = \frac {2i}{c r},
+\end{equation}
+
+</p>
+
+<p>
+де \(q&apos;\) — погонний заряд. Знаходячи напругу \(u = \int _a^b E(r)\,dr\) та магнітний потік \(\Phi &apos; = \int _a^b \mu H(r)\,dr\) і вводячи погонні параметри співвідношеннями \(q&apos; = C_0 u\) та \(\Phi &apos; =
+c\,L_0\,i\) (у гауссовій системі потік і струм пов’язані множником \(c\)), отримуємо:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{24}\)</span>
+
+<!--
+
+
+                                                                       𝜀                2𝜇     𝑏
+                                                            𝐶0 =             ,   𝐿0 =      ln ( ) .                                                     (19.25)                                                --><a id="eq:C0L0"></a><!--
+                                                                   2 ln(𝑏/𝑎)            𝑐2     𝑎
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:C0L0}C_0 = \frac {\epsilon }{2\ln (b/a)}, \qquad L_0 = \frac {2\mu }{c^2}\ln \left (\frac {b}{a}\right ).
+\end{equation}
+
+</p>
+
+<p>
+Легко перевірити, що \(L_0 C_0 = \epsilon \mu / c^2\). Хвильовий опір такого кабелю \(Z_{\text {хв}} = \sqrt {L_0/C_0}\) дорівнює:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{25}\)</span>
+
+<!--
+
+
+                                                               2 𝜇      𝑏    2𝜂     𝑏
+                                                       𝑍хв =        ln ( ) =    ln ( ) ,                                                     (19.26)                                                --><a id="eq:coax_impedance"></a><!--
+                                                               𝑐√ 𝜀     𝑎     𝑐     𝑎
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:coax_impedance}Z_{\text {хв}} = \frac {2}{c}\sqrt {\frac {\mu }{\epsilon }}\,\ln \left (\frac {b}{a}\right ) = \frac {2\eta }{c}\,\ln \left (\frac {b}{a}\right ),
+\end{equation}
+
+</p>
+
+<p>
+де \(\eta = \sqrt {\mu /\epsilon }\) – хвильовий опір самого діелектрика (у гауссовій системі для вакууму \(\eta _0 = 1\)).
+</p>
+</div>
+<!--
+...... section Підсумки ......
+-->
+<h4 id="autosec-1454">Підсумки</h4>
+<a id="main-html-autopage-1454"></a>
+
+
+<p>
+Метод зосереджених елементів \(R\), \(L\), \(C\) працює, поки довжина кола \(l\) набагато менша за довжину хвилі \(\lambda =cT\): тоді напруга й струм у всіх точках кола змінюються синхронно. Якщо \(l\) сумірна з&nbsp;\(\lambda \), сигнал
+не встигає «одночасно» охопити все коло, а&nbsp;\(u\) та \(i\) залежать і від часу, і від координати \(z\) вздовж лінії. Тоді коло описують <em><span
+    class="textcolor"
+    style="color:#990000"
+>погонними параметрами</span></em> \(R_0\), \(L_0\), \(G_0\), \(C_0\) (на одиницю довжини), а&nbsp;замість рівнянь для окремих елементів записують рівняння в&nbsp;частинних похідних.
+</p>
+
+<p>
+Усе зводиться до відповідей на три запитання:
+</p>
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> <em>Коли коло слід вважати довгою лінією?</em> Коли час проходження сигналу вздовж кола порівнянний з&nbsp;періодом, тобто \(l\sim \lambda \).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> <em>Як і&nbsp;з&nbsp;якою швидкістю поширюється сигнал?</em> Як хвиля: у&nbsp;лінії без втрат вона біжить зі швидкістю \(1/\sqrt {L_0C_0}=c/\sqrt {\epsilon \mu }\) без спотворень. Втрати
+призводять до затухання й&nbsp;дисперсії, а&nbsp;за умови \(R_0/L_0=G_0/C_0\) дисперсія зникає.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> <em>Що відбувається на кінці лінії?</em> Відношення \(u/i\) у&nbsp;біжучій хвилі дорівнює \(Z_{\text {хв}}\). Якщо опір навантаження \(Z_{\text {н}}=Z_{\text {хв}}\), відбитої хвилі немає; інакше
+виникає відбита хвиля, а&nbsp;вздовж лінії&nbsp;— стояча хвиля з&nbsp;коефіцієнтом \(\text {КСХ}=(|V^+|+|V^-|)/(|V^+|-|V^-|)\).
+</p>
+</li>
+</ul>
+
+<p>
+За рівнянням \(v_{\text {ф}}=c/\sqrt {\epsilon \mu }\) сигнал у&nbsp;лінії поширюється зі швидкістю світла в&nbsp;діелектрику (для поліетиленового кабелю \(v_{\text {ф}}\approx 2\cdot 10^{8}\)&nbsp;м/с), а&nbsp;хвильовий опір
+типових коаксіальних кабелів лежить у&nbsp;межах \(50\)–\(75\)&nbsp;Ом. Напруга й струм&nbsp;— лише зручна мова для опису електромагнітної хвилі, що біжить у&nbsp;діелектрику між провідниками: \(u\) і&nbsp;\(i\) є інтегралами від
+\(\Efield \) та \(\Hfield \) по перерізу лінії, а&nbsp;самі провідники виконують роль напрямної системи й&nbsp;не «проштовхують» енергію. Саме тому теорія довгих ліній є мостом між теорією кіл і&nbsp;електродинамікою хвиль.
+</p>
+<!--
+...... section Задачі ......
+-->
+<h4 id="autosec-1455">Задачі</h4>
+<a id="main-html-autopage-1455"></a>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-495"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 19.1.</span></span> <a id="autoid-496" ></a >Коаксіальний кабель має внутрішню жилу радіусом \(a = 0.5\) мм та зовнішній екран радіусом \(b = 2.0\) мм. Діелектрик
+між ними — поліетилен із відносною діелектричною проникністю \(\epsilon = 2.25\); магнітна проникність \(\mu \approx 1\). Обчисліть:
+</p>
+<ul class="enumerate" style="list-style-type:none">
+
+
+<li>
+<p>
+<span class="listmarker">1.</span> погонну ємність \(C_0\) та погонну індуктивність \(L_0\);
+</p>
+
+
+</li>
+<li>
+
+
+<p>
+<span class="listmarker">2.</span> хвильовий опір \(Z_{\text {хв}}\);
+</p>
+
+
+</li>
+<li>
+
+
+<p>
+<span class="listmarker">3.</span> фазову швидкість \(v_{\text {ф}}\) та показник заломлення \(\sqrt {\epsilon }\).
+</p>
+</li>
+</ul>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Розв’язок.</b> За формулами <span class="textup">(<a href="ch19.html#eq:C0L0">19.25</a>)</span>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                                                  𝜀                  2𝜇     𝑏
+                                                                                                      𝐶0 =              ,     𝐿0 =      ln ( ) .
+                                                                                                              2 ln(𝑏/𝑎)              𝑐2     𝑎
+
+-->
+
+<p>
+
+\begin{equation*}
+C_0 = \frac {\epsilon }{2\ln (b/a)}, \qquad L_0 = \frac {2\mu }{c^2}\ln \left (\frac {b}{a}\right ).
+\end{equation*}
+
+</p>
+
+<p>
+Обчислимо геометричний множник:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                                              𝑏         2.0
+                                                                                                          ln ( ) = ln (     ) = ln 4 ≈ 1.386.
+                                                                                                              𝑎         0.5
+
+-->
+
+<p>
+
+\begin{equation*}
+\ln \left (\frac {b}{a}\right ) = \ln \left (\frac {2.0}{0.5}\right ) = \ln 4 \approx 1.386.
+\end{equation*}
+
+</p>
+
+<p>
+Погонна ємність (СГС):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                             2.25
+                                                                                                   𝐶0 =             ≈ 0.812 (СГС, безрозмірна).
+                                                                                                          2 ⋅ 1.386
+
+-->
+
+<p>
+
+\begin{equation*}
+C_0 = \frac {2.25}{2 \cdot 1.386} \approx 0.812~\text {(СГС, безрозмірна)}.
+\end{equation*}
+
+</p>
+
+<p>
+Перевід у СІ:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                               𝐶0СІ = 4𝜋𝜀0 ⋅ 0.812 ≈ 9.03 × 10−11 Ф/м ≈ 90.3 пФ/м.
+
+-->
+
+<p>
+
+\begin{equation*}
+C_0^{\text {СІ}} = 4\pi \epsilon _0 \cdot 0.812 \approx 9.03\times 10^{-11}~\text {Ф/м} \approx 90.3~\text {пФ/м}.
+\end{equation*}
+
+</p>
+
+<p>
+Погонна індуктивність (СГС):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                              2⋅1
+                                                                                                𝐿СГС
+                                                                                                 0   =                 ⋅ 1.386 ≈ 3.08 × 10−21 с2 /см2 .
+                                                                                                          (3 × 1010 )2
+
+-->
+
+<p>
+
+\begin{equation*}
+L_0^{\text {СГС}} = \frac {2 \cdot 1}{(3\times 10^{10})^2} \cdot 1.386 \approx 3.08\times 10^{-21}~\text {с}^2/\text {см}^2.
+\end{equation*}
+
+</p>
+
+<p>
+Перевід у СІ:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                         𝐿СІ            −21 ⋅ 9 × 1013 ≈ 2.77 × 10−7 Гн/м ≈ 277 нГн/м.
+                                                                                          0 = 3.08 × 10
+
+-->
+
+<p>
+
+\begin{equation*}
+L_0^{\text {СІ}} = 3.08\times 10^{-21} \cdot 9\times 10^{13} \approx 2.77\times 10^{-7}~\text {Гн/м} \approx 277~\text {нГн/м}.
+\end{equation*}
+
+</p>
+
+<p>
+Хвильовий опір (СГС):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                               2 𝜇      𝑏       2      1
+                                                                                       СГС =
+                                                                                      𝑍хв           ln ( ) =         ⋅      ⋅ 1.386 ≈ 6.16 × 10−11 с/см.
+                                                                                               𝑐√ 𝜀     𝑎    3 × 1010 √2.25
+
+-->
+
+<p>
+
+\begin{equation*}
+Z_{\text {хв}}^{\text {СГС}} = \frac {2}{c}\sqrt {\frac {\mu }{\epsilon }}\ln \left (\frac {b}{a}\right ) = \frac {2}{3\times 10^{10}} \cdot \frac {1}{\sqrt {2.25}} \cdot 1.386 \approx 6.16\times 10^{-11}~\text
+{с/см}.
+\end{equation*}
+
+</p>
+
+<p>
+Перевід у СІ:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                      СІ = 6.16 × 10−11 ⋅ 9 × 1011 ≈ 55.4 Ом.
+                                                                                                     𝑍хв
+
+-->
+
+<p>
+
+\begin{equation*}
+Z_{\text {хв}}^{\text {СІ}} = 6.16\times 10^{-11} \cdot 9\times 10^{11} \approx 55.4~\text {Ом}.
+\end{equation*}
+
+</p>
+
+<p>
+Фазова швидкість (СГС):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                                               𝑐       3 × 1010
+                                                                                                     𝑣СГС
+                                                                                                      ф   =        =            = 2 × 1010 см/с.
+                                                                                                              √𝜀          1.5
+
+-->
+
+<p>
+
+\begin{equation*}
+v_{\text {ф}}^{\text {СГС}} = \frac {c}{\sqrt {\epsilon }} = \frac {3\times 10^{10}}{1.5} = 2\times 10^{10}~\text {см/с}.
+\end{equation*}
+
+</p>
+
+<p>
+Перевід у СІ:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                                       𝑣СІ         10 см/с = 2 × 108 м/с.
+                                                                                                        ф = 2 × 10
+
+-->
+
+<p>
+
+\begin{equation*}
+v_{\text {ф}}^{\text {СІ}} = 2\times 10^{10}~\text {см/с} = 2\times 10^{8}~\text {м/с}.
+\end{equation*}
+
+</p>
+
+<p>
+Показник заломлення:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                                                    𝜆0
+                                                                                                                       = √𝜀 = 1.5.
+                                                                                                                    𝜆
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {\lambda _0}{\lambda } = \sqrt {\epsilon } = 1.5.
+\end{equation*}
+
+</p>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-497"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 19.2.</span></span> <a id="autoid-498" ></a >Доведіть, що для довільної лінії з двох провідників в однорідному діелектрику з параметрами \(\epsilon \), \(\mu \)
+виконується універсальне співвідношення \(L_0 C_0 = \epsilon \mu / c^2\) (у СГС), скориставшись енергетичним балансом біжучої хвилі. Як наслідок, покажіть, що фазова швидкість у такій лінії не залежить від геометрії провідників і
+дорівнює \(v_{\text {ф}} = c/\sqrt {\epsilon \mu }\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Розв’язок.</b> Розглянемо біжучий гармонічний сигнал у лінії без втрат. Нехай у перерізі \(z\) миттєві значення напруги та струму дорівнюють \(u\) та \(i\). Запишемо енергію електричного й магнітного полів, що припадає на одиницю
+довжини лінії, двома способами.
+</p>
+
+<p>
+Енергія зарядженого конденсатора та індуктивності на одиницю довжини (у гауссовій СГС, \(L_0\) означено співвідношенням \(\Phi &apos;=c\,L_0\,i\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                     1                         1
+                                                                                                            𝑊𝐸′ =      𝐶 ᵆ2 ,          ′
+                                                                                                                                      𝑊𝐻 =       𝐿 𝑖2 .
+                                                                                                                     2 0                       2 0
+
+-->
+
+<p>
+
+\begin{equation*}
+W_E&apos; = \frac {1}{2} C_0 u^2, \qquad W_H&apos; = \frac {1}{2} L_0 i^2.
+\end{equation*}
+
+</p>
+
+<p>
+З іншого боку, інтегруючи густину енергії по площі поперечного перерізу \(S\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                 ˆ                                ˆ
+                                                                                                             1                                1
+                                                                                                   𝑊𝐸′ =             𝜀𝐸2 𝑑𝑆,          ′
+                                                                                                                                     𝑊𝐻 =              𝜇𝐻 2 𝑑𝑆.
+                                                                                                            8𝜋   𝑆                           8𝜋    𝑆
+
+-->
+
+<p>
+
+\begin{equation*}
+W_E&apos; = \frac {1}{8\pi }\int _S \epsilon E^2 \, dS, \qquad W_H&apos; = \frac {1}{8\pi }\int _S \mu H^2 \, dS.
+\end{equation*}
+
+</p>
+
+<p>
+Для біжучої хвилі в кожній точці перерізу \(\sqrt {\epsilon }\,E(x,y) = \sqrt {\mu }\,H(x,y)\), тому \(\epsilon E^2 = \mu H^2\) і енергії електричного та магнітного полів рівні, \(W_E&apos; = W_H&apos;\). Звідси \(C_0 u^2 = L_0 i^2\),
+тобто \(Z_{\text {хв}} = u/i = \sqrt {L_0/C_0}\).
+</p>
+
+<p>
+Потік енергії через переріз (вектор Пойнтінга) з урахуванням \(H = \sqrt {\epsilon /\mu }\,E\) і \(\int _S E^2\,dS = 8\pi W_E&apos;/\epsilon \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                      ˆ                         ˆ
+                                                                                                  𝑐                   𝑐   𝜀                     2𝑐        𝑐
+                                                                                            𝑃=            𝐸𝐻 𝑑𝑆 =                   𝐸 2 𝑑𝑆 =       𝑊𝐸′ =     𝑊 ′,
+                                                                                                 4𝜋   𝑆              4𝜋 √ 𝜇     𝑆              √𝜀𝜇       √𝜀𝜇
+
+-->
+
+<p>
+
+\begin{equation*}
+P = \frac {c}{4\pi }\int _S E H \, dS = \frac {c}{4\pi }\sqrt {\frac {\epsilon }{\mu }}\int _S E^2 \, dS = \frac {2c}{\sqrt {\epsilon \mu }}\,W_E&apos; = \frac {c}{\sqrt {\epsilon \mu }}\,W&apos;,
+\end{equation*}
+
+</p>
+
+<p>
+де \(W&apos; = W_E&apos; + W_H&apos; = 2W_E&apos;\) — повна енергія хвилі на одиницю довжини лінії. З іншого боку, хвиля переносить цю енергію зі швидкістю \(v_{\text {ф}}\), тож \(P = v_{\text {ф}} W&apos;\). Порівнюючи, маємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                                     𝑐
+                                                                                                                         𝑣ф =           .
+                                                                                                                                    √𝜀𝜇
+
+-->
+
+<p>
+
+\begin{equation*}
+v_{\text {ф}} = \frac {c}{\sqrt {\epsilon \mu }}.
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки для лінії без втрат \(v_{\text {ф}} = 1/\sqrt {L_0 C_0}\), звідси
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                                      𝜀𝜇
+                                                                                                                         𝐿0 𝐶 0 =        ,
+                                                                                                                                      𝑐2
+
+-->
+
+<p>
+
+\begin{equation*}
+L_0 C_0 = \frac {\epsilon \mu }{c^2},
+\end{equation*}
+
+</p>
+
+<p>
+де \(c\) — швидкість світла у вакуумі. Бачимо, що \(v_{\text {ф}}\) залежить лише від властивостей діелектрика й не залежить від геометрії провідників.
+</p>
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-499"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 19.3.</span></span> <a id="autoid-500" ></a >Коаксіальний кабель має внутрішню жилу радіусом \(a\), зовнішній екран радіусом \(b = 3a\) та діелектрик із \(\epsilon =
+2.25\), \(\mu = 1\).
+</p>
+<ul class="enumerate" style="list-style-type:none">
+
+
+<li>
+<p>
+<span class="listmarker">1.</span> Виведіть формули для погонних параметрів \(C_0\) і \(L_0\) через \(a\), \(b\), \(\epsilon \), \(\mu \).
+</p>
+
+
+</li>
+<li>
+
+
+<p>
+<span class="listmarker">2.</span> Перевірте, що \(L_0 C_0 = \epsilon \mu /c^2\) незалежно від \(a\) і \(b\).
+</p>
+
+
+</li>
+<li>
+
+
+<p>
+<span class="listmarker">3.</span> Обчисліть \(Z_{\text {хв}}\) і \(v_{\text {ф}}/c\), якщо \(a = 0.5\) мм.
+</p>
+
+
+</li>
+<li>
+
+
+<p>
+<span class="listmarker">4.</span> Як зміниться \(Z_{\text {хв}}\), якщо збільшити \(b\) удвічі, не змінюючи діелектрика? Чи вплине це на \(v_{\text {ф}}\)?
+</p>
+</li>
+</ul>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Розв’язок.</b> За теоремою Гаусса для циліндричної симетрії (СГС):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                                ˆ 𝑏
+                                                                                                              2𝑞′                                 2𝑞′     𝑏
+                                                                                                    𝐸(𝑟) =        ,       ᵆ=          𝐸(𝑟) 𝑑𝑟 =       ln ( ) .
+                                                                                                               𝜀𝑟                𝑎                 𝜀      𝑎
+
+-->
+
+<p>
+
+\begin{equation*}
+E(r) = \frac {2q&apos;}{\epsilon r}, \qquad u = \int _a^b E(r)\,dr = \frac {2q&apos;}{\epsilon }\ln \left (\frac {b}{a}\right ).
+\end{equation*}
+
+</p>
+
+<p>
+З означення погонної ємності \(q&apos; = C_0 u\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                                    𝜀
+                                                                                                                        𝐶0 =              .
+                                                                                                                                2 ln(𝑏/𝑎)
+
+-->
+
+<p>
+
+\begin{equation*}
+C_0 = \frac {\epsilon }{2\ln (b/a)}.
+\end{equation*}
+
+</p>
+
+<p>
+За теоремою про циркуляцію (СГС):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                               ˆ 𝑏
+                                                                                                             2𝑖                                    2𝜇𝑖     𝑏
+                                                                                                   𝐻(𝑟) =       ,       Φ′ =         𝜇𝐻(𝑟) 𝑑𝑟 =        ln ( ) .
+                                                                                                             𝑐𝑟                 𝑎                   𝑐      𝑎
+
+-->
+
+<p>
+
+\begin{equation*}
+H(r) = \frac {2i}{c r}, \qquad \Phi &apos; = \int _a^b \mu H(r)\,dr = \frac {2\mu i}{c}\ln \left (\frac {b}{a}\right ).
+\end{equation*}
+
+</p>
+
+<p>
+З означення погонної індуктивності \(\Phi &apos; = c\,L_0\,i\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                                2𝜇     𝑏
+                                                                                                                        𝐿0 =       ln ( ) .
+                                                                                                                                𝑐2     𝑎
+
+-->
+
+<p>
+
+\begin{equation*}
+L_0 = \frac {2\mu }{c^2}\ln \left (\frac {b}{a}\right ).
+\end{equation*}
+
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                      2𝜇               𝜀      𝜀𝜇
+                                                                                                         𝐿0 𝐶 0 =        ln(𝑏/𝑎) ⋅           = 2.
+                                                                                                                      𝑐2           2 ln(𝑏/𝑎)   𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+L_0 C_0 = \frac {2\mu }{c^2}\ln (b/a) \cdot \frac {\epsilon }{2\ln (b/a)} = \frac {\epsilon \mu }{c^2}.
+\end{equation*}
+
+</p>
+
+<p>
+Геометричний множник \(\ln (b/a)\) скорочується — співвідношення справді універсальне.
+</p>
+
+<p>
+При \(b/a = 3\), \(\epsilon = 2.25\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                                                          ln 3 ≈ 1.099.
+
+-->
+
+<p>
+
+\begin{equation*}
+\ln 3 \approx 1.099.
+\end{equation*}
+
+</p>
+
+<p>
+Обчислення в СГС:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                 2.25
+                                                                                                    𝐶0СГС =             ≈ 1.024 (СГС, безрозмірна).
+                                                                                                              2 ⋅ 1.099
+
+-->
+
+<p>
+
+\begin{equation*}
+C_0^{\text {СГС}} = \frac {2.25}{2 \cdot 1.099} \approx 1.024~\text {(СГС, безрозмірна)}.
+\end{equation*}
+
+</p>
+
+<p>
+Перевід у СІ:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                                 𝐶0СІ = 4𝜋𝜀0 ⋅ 1.024 ≈ 1.14 × 10−10 Ф/м = 114 пФ/м.
+
+-->
+
+<p>
+
+\begin{equation*}
+C_0^{\text {СІ}} = 4\pi \epsilon _0 \cdot 1.024 \approx 1.14\times 10^{-10}~\text {Ф/м} = 114~\text {пФ/м}.
+\end{equation*}
+
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                2⋅1
+                                                                                                   𝐿СГС
+                                                                                                    0   =                ⋅ 1.099 ≈ 2.44 × 10−21 с2 /см2 .
+                                                                                                            (3 × 1010 )2
+
+-->
+
+<p>
+
+\begin{equation*}
+L_0^{\text {СГС}} = \frac {2 \cdot 1}{(3\times 10^{10})^2} \cdot 1.099 \approx 2.44\times 10^{-21}~\text {с}^2/\text {см}^2.
+\end{equation*}
+
+</p>
+
+<p>
+Перевід у СІ:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                            𝐿СІ            −21 ⋅ 9 × 1013 ≈ 2.20 × 10−7 Гн/м = 220 нГн/м.
+                                                                                             0 = 2.44 × 10
+
+-->
+
+<p>
+
+\begin{equation*}
+L_0^{\text {СІ}} = 2.44\times 10^{-21} \cdot 9\times 10^{13} \approx 2.20\times 10^{-7}~\text {Гн/м} = 220~\text {нГн/м}.
+\end{equation*}
+
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                                   2 𝜇      𝑏       2      1
+                                                                                           СГС =
+                                                                                          𝑍хв           ln ( ) =         ⋅    ⋅ 1.099 ≈ 4.88 × 10−11 с/см.
+                                                                                                   𝑐√ 𝜀     𝑎    3 × 1010 1.5
+
+-->
+
+<p>
+
+\begin{equation*}
+Z_{\text {хв}}^{\text {СГС}} = \frac {2}{c}\sqrt {\frac {\mu }{\epsilon }}\ln \left (\frac {b}{a}\right ) = \frac {2}{3\times 10^{10}} \cdot \frac {1}{1.5} \cdot 1.099 \approx 4.88\times 10^{-11}~\text {с/см}.
+\end{equation*}
+
+</p>
+
+<p>
+Перевід у СІ:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                        СІ = 4.88 × 10−11 ⋅ 9 × 1011 ≈ 43.9 Ом.
+                                                                                                       𝑍хв
+
+-->
+
+<p>
+
+\begin{equation*}
+Z_{\text {хв}}^{\text {СІ}} = 4.88\times 10^{-11} \cdot 9\times 10^{11} \approx 43.9~\text {Ом}.
+\end{equation*}
+
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                    𝑣ф   1     1
+                                                                                                                       =    =     ≈ 0.667.
+                                                                                                                     𝑐   √𝜀   1.5
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {v_{\text {ф}}}{c} = \frac {1}{\sqrt {\epsilon }} = \frac {1}{1.5} \approx 0.667.
+\end{equation*}
+
+</p>
+
+<p>
+Якщо \(b \to 2b\), то \(\ln (b/a) \to \ln (2b/a) = \ln 2 + \ln (b/a)\). Оскільки \(C_0 \propto 1/\ln (b/a)\), а \(L_0 \propto \ln (b/a)\), то:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+
+                                                                                                                                𝐿0       𝑏
+                                                                                                                      𝑍хв =        ∝ ln ( ) .
+                                                                                                                              √ 𝐶0       𝑎
+
+-->
+
+<p>
+
+\begin{equation*}
+Z_{\text {хв}} = \sqrt {\frac {L_0}{C_0}} \propto \ln \left (\frac {b}{a}\right ).
+\end{equation*}
+
+</p>
+
+<p>
+Отже, \(Z_{\text {хв}}\) зросте. Конкретно, при \(b/a = 3 \to 6\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{19.}{26}\)</span>
+
+<!--
+
+                                                                                                                 ′
+                                                                                                                𝑍хв   ln 6   1.792
+                                                                                                                    =      =       ≈ 1.63,
+                                                                                                                𝑍хв   ln 3   1.099
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {Z_{\text {хв}}&apos;}{Z_{\text {хв}}} = \frac {\ln 6}{\ln 3} = \frac {1.792}{1.099} \approx 1.63,
+\end{equation*}
+
+</p>
+
+<p>
+тобто \(Z_{\text {хв}}&apos; \approx 71.6\) Ом. Фазова швидкість не зміниться, бо вона залежить лише від \(\epsilon \) і \(\mu \).
+</p>
+</div>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Чому кола з зосередженими елементами перестають адекватно описувати лінію, довжина якої сумірна з довжиною хвилі сигналу? Наведіть історичний приклад трансатлантичного телеграфного кабелю.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Що таке погонні параметри довгої лінії \(R_0\), \(L_0\), \(G_0\), \(C_0\)? Яку фізичну роль відіграє кожен із них?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Виведіть перше телеграфне рівняння \(-\partial u/\partial z = R_0 i + L_0\,\partial i/\partial t\), застосовуючи друге правило Кірхгофа до елементарного відрізка лінії.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> Виведіть друге телеграфне рівняння \(-\partial i/\partial z = G_0 u + C_0\,\partial u/\partial t\), застосовуючи перше правило Кірхгофа до вузла на виході відрізка.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Перейдіть до комплексних амплітуд у гармонічному режимі й виведіть хвильове рівняння (рівняння Гельмгольца) для напруги \(d^2V/dz^2=\gamma ^2V\). Що таке стала поширення \(\gamma =\alpha
++i\beta \)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> Запишіть загальний розв’язок для напруги \(V(z)=V^+e^{-\gamma z}+V^-e^{+\gamma z}\). Що фізично означають доданки з \(V^+\) і \(V^-\), і що описують стала затухання \(\alpha \) та фазова стала
+\(\beta \)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> Що таке хвильовий опір лінії \(Z_\text {хв}\)? Чому це не опір у звичному розумінні, а відношення напруги до струму саме в біжучій хвилі?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Розгляньте лінію без втрат (\(R_0=G_0=0\)): чому стала поширення стає чисто уявною, а хвильовий опір — дійсним? Виведіть фазову швидкість \(v_\text {ф}=1/\sqrt {L_0C_0}\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> Що таке стояча хвиля в лінії та коефіцієнт стоячої хвилі (КСХ)? За яких умов виникає стояча хвиля замість чистої біжучої?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Що таке дисперсія сигналу в довгій лінії, і чому вона призводить до «розмазування» імпульсу? Яку умову лінії без спотворень знайшов Гевісайд, щоб цього уникнути?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> Як пов’язані напруга й струм у лінії з польовими величинами \(\Efield \) і \(\Hfield \) через інтеграли вздовж перерізу лінії? Чому електричне й магнітне поля в довгій лінії лежать у площині,
+перпендикулярній до осі \(z\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Чому провідники довгої лінії самі по собі не «проштовхують» енергію, а лише напрямляють електромагнітну хвилю? У якому напрямку спрямований вектор Пойнтінга в довгій лінії?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">13.</span> Виведіть універсальне співвідношення \(L_0C_0=\epsilon \mu /c^2\) (у СГС) для довільної лінії з двох провідників, спираючись на енергетичний баланс біжучої хвилі (рівність енергій електричного й
+магнітного полів на одиницю довжини).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">14.</span> Чому з універсального співвідношення \(L_0C_0=\epsilon \mu /c^2\) випливає, що фазова швидкість сигналу в довгій лінії дорівнює швидкості світла в діелектрику лінії, \(v_\text {ф}=c/\sqrt
+{\epsilon \mu }\), незалежно від геометрії провідників?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">15.</span> Виведіть погонні параметри \(C_0\) і \(L_0\) коаксіального кабелю через радіуси \(a\), \(b\) та властивості діелектрика, застосовуючи теорему Гаусса й закон Ампера. Виведіть формулу хвильового опору
+коаксіального кабелю через хвильовий опір діелектрика \(\eta \).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">16.</span> Як зміниться хвильовий опір коаксіального кабелю, якщо збільшити радіус зовнішнього екрана, не змінюючи діелектрика? Чи вплине це на фазову швидкість сигналу?
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>

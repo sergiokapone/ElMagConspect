@@ -1,0 +1,4928 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Явище електромагнітної індукції</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-921"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span>&#x2003;Електричні заряди та їх взаємодія</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span>&#x2003;Сили (взаємодії) в природі</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span>&#x2003;Електричний заряд</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-12" class="tocsection" >
+<span class="sectionnumber">1.3</span>&#x2003;Як заряджають тіла?</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-17" class="tocsection" >
+<span class="sectionnumber">1.4</span>&#x2003;Закон Кулона</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-25" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-32" class="tocchapter" >
+<span class="sectionnumber">2</span>&#x2003;Постійне електричне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocsection" >
+<span class="sectionnumber">2.1</span>&#x2003;Електромагнітне поле</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.2</span>&#x2003;Напруженість поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-46" class="tocsection" >
+<span class="sectionnumber">2.3</span>&#x2003;Силові лінії та математичне поняття поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-62" class="tocsection" >
+<span class="sectionnumber">2.4</span>&#x2003;Теорема Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-88" class="tocsection" >
+<span class="sectionnumber">2.5</span>&#x2003;Зауваження щодо інтегральної та диференціальної форми теореми Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-90" class="tocsection" >
+<span class="sectionnumber">2.6</span>&#x2003;Потенціальність електростатичного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-102" class="tocsection" >
+<span class="sectionnumber">2.7</span>&#x2003;Циркуляція вектора \(\symbf {E}\)</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-121" class="tocsection" >
+<span class="sectionnumber">2.8</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-128" class="tocsection" >
+<span class="sectionnumber">2.9</span>&#x2003;Рівняння Пуассона та Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-129" class="tocsection" >
+<span class="sectionnumber">2.10</span>&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-134" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-153" class="tocchapter" >
+<span class="sectionnumber">3</span>&#x2003;Електричне поле статичної системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-154" class="tocsection" >
+<span class="sectionnumber">3.1</span>&#x2003;Дипольний момент системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-158" class="tocsection" >
+<span class="sectionnumber">3.2</span>&#x2003;Поле точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-162" class="tocsection" >
+<span class="sectionnumber">3.3</span>&#x2003;Потенціал поля точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-163" class="tocsection" >
+<span class="sectionnumber">3.4</span>&#x2003;Потенціал системи зарядів на далеких відстанях</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-178" class="tocsection" >
+<span class="sectionnumber">3.5</span>&#x2003;Диполь в електричному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-196" class="tocsection" >
+<span class="sectionnumber">3.6</span>&#x2003;Енергія довільної системи зарядів у зовнішньому полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-197" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-200" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-214" class="tocchapter" >
+<span class="sectionnumber">4</span>&#x2003;Електричне поле у провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-215" class="tocsection" >
+<span class="sectionnumber">4.1</span>&#x2003;Структура провідників</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-221" class="tocsection" >
+<span class="sectionnumber">4.2</span>&#x2003;Провідник у полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-244" class="tocsection" >
+<span class="sectionnumber">4.3</span>&#x2003;Електричне поле біля вістря</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-253" class="tocsection" >
+<span class="sectionnumber">4.4</span>&#x2003;Єдиність розв’язку електростатичної задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-263" class="tocsection" >
+<span class="sectionnumber">4.5</span>&#x2003;Металева куля в однорідному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-275" class="tocsection" >
+<span class="sectionnumber">4.6</span>&#x2003;Сили, що діють на поверхню провідника в полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-279" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-280" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-291" class="tocchapter" >
+<span class="sectionnumber">5</span>&#x2003;Основи електростатики діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-292" class="tocsection" >
+<span class="sectionnumber">5.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-294" class="tocsection" >
+<span class="sectionnumber">5.2</span>&#x2003;Структура діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-331" class="tocsection" >
+<span class="sectionnumber">5.3</span>&#x2003;Поляризація діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-358" class="tocsection" >
+<span class="sectionnumber">5.4</span>&#x2003;Вектор поляризації</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-363" class="tocsection" >
+<span class="sectionnumber">5.5</span>&#x2003;Вектор електричної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-370" class="tocsection" >
+<span class="sectionnumber">5.6</span>&#x2003;Граничні умови в&nbsp;присутності діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-383" class="tocsection" >
+<span class="sectionnumber">5.7</span>&#x2003;Мікроскопічна теорія діелектричної проникності</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-390" class="tocsection" >
+<span class="sectionnumber">5.8</span>&#x2003;Типи діелектриків та їх застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-413" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-414" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-423" class="tocchapter" >
+<span class="sectionnumber">6</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-424" class="tocsection" >
+<span class="sectionnumber">6.1</span>&#x2003;Електрична ємність</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-445" class="tocsection" >
+<span class="sectionnumber">6.2</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-458" class="tocsection" >
+<span class="sectionnumber">6.3</span>&#x2003;Пондеромоторні сили</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-468" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-469" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-479" class="tocchapter" >
+<span class="sectionnumber">7</span>&#x2003;Постійний електричний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-480" class="tocsection" >
+<span class="sectionnumber">7.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-487" class="tocsection" >
+<span class="sectionnumber">7.2</span>&#x2003;Природа носіїв заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-489" class="tocsection" >
+<span class="sectionnumber">7.3</span>&#x2003;Закон збереження заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-496" class="tocsection" >
+<span class="sectionnumber">7.4</span>&#x2003;Закон Ома</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-527" class="tocsection" >
+<span class="sectionnumber">7.5</span>&#x2003;Закон Джоуля-Ленца</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-528" class="tocsection" >
+<span class="sectionnumber">7.6</span>&#x2003;Струми в необмежених середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-535" class="tocsection" >
+<span class="sectionnumber">7.7</span>&#x2003;Перехідні процеси в колі з конденсатором</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-548" class="tocsection" >
+<span class="sectionnumber">7.8</span>&#x2003;Максвеллівський час релаксації заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-550" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-562" class="tocchapter" >
+<span class="sectionnumber">8</span>&#x2003;Електричний струм у&nbsp;різних середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-564" class="tocsection" >
+<span class="sectionnumber">8.1</span>&#x2003;Електричний струм у&nbsp;металах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-584" class="tocsection" >
+<span class="sectionnumber">8.2</span>&#x2003;Електричний струм в&nbsp;електролітах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-590" class="tocsection" >
+<span class="sectionnumber">8.3</span>&#x2003;Електричний струм у&nbsp;газах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-601" class="tocsection" >
+<span class="sectionnumber">8.4</span>&#x2003;Електричний струм у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-615" class="tocsection" >
+<span class="sectionnumber">8.5</span>&#x2003;Електричний струм у&nbsp;напівпровідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-636" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-638" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-674" class="tocchapter" >
+<span class="sectionnumber">9</span>&#x2003;Магнітне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-675" class="tocsection" >
+<span class="sectionnumber">9.1</span>&#x2003;Означення</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-679" class="tocsection" >
+<span class="sectionnumber">9.2</span>&#x2003;Характеристика магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-680" class="tocsection" >
+<span class="sectionnumber">9.3</span>&#x2003;Дія магнітного поля на заряджені частинки та струми</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-701" class="tocsection" >
+<span class="sectionnumber">9.4</span>&#x2003;Закон Біо-Савара-Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-714" class="tocsection" >
+<span class="sectionnumber">9.5</span>&#x2003;Вектор-потенціал магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-719" class="tocsection" >
+<span class="sectionnumber">9.6</span>&#x2003;Теореми магнітостатики</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-740" class="tocsection" >
+<span class="sectionnumber">9.7</span>&#x2003;Магнітний момент</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-756" class="tocsection" >
+<span class="sectionnumber">9.8</span>&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-766" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-767" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-775" class="tocchapter" >
+<span class="sectionnumber">10</span>&#x2003;Магнітне поле в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-780" class="tocsection" >
+<span class="sectionnumber">10.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-783" class="tocsection" >
+<span class="sectionnumber">10.2</span>&#x2003;Намагнічування</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-795" class="tocsection" >
+<span class="sectionnumber">10.3</span>&#x2003;Теорема про циркуляцію в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-801" class="tocsection" >
+<span class="sectionnumber">10.4</span>&#x2003;Магнітна сприйнятливість речовини</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-832" class="tocsection" >
+<span class="sectionnumber">10.5</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-847" class="tocsection" >
+<span class="sectionnumber">10.6</span>&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-864" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-865" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-872" class="tocchapter" >
+<span class="sectionnumber">11</span>&#x2003;Рух заряджених частинок</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-873" class="tocsection" >
+<span class="sectionnumber">11.1</span>&#x2003;Рух частинок в&nbsp;однорідних полях</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-891" class="tocsection" >
+<span class="sectionnumber">11.2</span>&#x2003;Застосування схрещених полів</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-899" class="tocsection" >
+<span class="sectionnumber">11.3</span>&#x2003;Методи вимірювання питомого заряду електрона</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-909" class="tocsection" >
+<span class="sectionnumber">11.4</span>&#x2003;Досліди Міллікена</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-911" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-912" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-923" class="tocchapter" >
+<span class="sectionnumber">12</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-924" class="tocsection" >
+<span class="sectionnumber">12.1</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-929" class="tocsection" >
+<span class="sectionnumber">12.2</span>&#x2003;Закон електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-930" class="tocsection" >
+<span class="sectionnumber">12.3</span>&#x2003;Робота, що виконується при переміщенні провідника зі струмом у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-933" class="tocsection" >
+<span class="sectionnumber">12.4</span>&#x2003;Електромагнітна індукція в&nbsp;рухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-940" class="tocsection" >
+<span class="sectionnumber">12.5</span>&#x2003;Електромагнітна індукція в&nbsp;нерухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-959" class="tocsection" >
+<span class="sectionnumber">12.6</span>&#x2003;Явище самоіндукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-979" class="tocsection" >
+<span class="sectionnumber">12.7</span>&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-996" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-997" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1015" class="tocchapter" >
+<span class="sectionnumber">13</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1016" class="tocsection" >
+<span class="sectionnumber">13.1</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1022" class="tocsection" >
+<span class="sectionnumber">13.2</span>&#x2003;Взаємна індукція</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1038" class="tocsection" >
+<span class="sectionnumber">13.3</span>&#x2003;Енергія системи зв’язаних контурів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1041" class="tocsection" >
+<span class="sectionnumber">13.4</span>&#x2003;Потенціальна енергія струмів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1043" class="tocsection" >
+<span class="sectionnumber">13.5</span>&#x2003;Принцип роботи трансформаторів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1047" class="tocsection" >
+<span class="sectionnumber">13.6</span>&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1053" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1054" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1059" class="tocchapter" >
+<span class="sectionnumber">14</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1064" class="tocsection" >
+<span class="sectionnumber">14.1</span>&#x2003;Струм зміщення</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1085" class="tocsection" >
+<span class="sectionnumber">14.2</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1102" class="tocsection" >
+<span class="sectionnumber">14.3</span>&#x2003;Про рівняння Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1104" class="tocsection" >
+<span class="sectionnumber">14.4</span>&#x2003;Енергія електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1118" class="tocsection" >
+<span class="sectionnumber">14.5</span>&#x2003;Скін-ефект</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1140" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1141" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1148" class="tocchapter" >
+<span class="sectionnumber">15</span>&#x2003;Відносність електричного і&nbsp;магнітного полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1150" class="tocsection" >
+<span class="sectionnumber">15.1</span>&#x2003;Нерелятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1153" class="tocsection" >
+<span class="sectionnumber">15.2</span>&#x2003;Релятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1159" class="tocsection" >
+<span class="sectionnumber">15.3</span>&#x2003;Тензор електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1161" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1162" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1171" class="tocchapter" >
+<span class="sectionnumber">16</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1172" class="tocsection" >
+<span class="sectionnumber">16.1</span>&#x2003;Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1188" class="tocsection" >
+<span class="sectionnumber">16.2</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1193" class="tocsection" >
+<span class="sectionnumber">16.3</span>&#x2003;Енергія та вектор Пойнтінга для хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1204" class="tocsection" >
+<span class="sectionnumber">16.4</span>&#x2003;Імпульс і момент імпульсу електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1210" class="tocsection" >
+<span class="sectionnumber">16.5</span>&#x2003;Відбивання хвиль від поверхні двох діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1230" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1231" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1242" class="tocchapter" >
+<span class="sectionnumber">17</span>&#x2003;Випромінювання електромагнітних хвиль</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1243" class="tocsection" >
+<span class="sectionnumber">17.1</span>&#x2003;Історична довідка: досліди Герца</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1246" class="tocsection" >
+<span class="sectionnumber">17.2</span>&#x2003;Елементарна модель випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1259" class="tocsection" >
+<span class="sectionnumber">17.3</span>&#x2003;Дипольне випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1275" class="tocsection" >
+<span class="sectionnumber">17.4</span>&#x2003;Потужність випромінювання осцилятора</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1280" class="tocsection" >
+<span class="sectionnumber">17.5</span>&#x2003;Випромінювання рухомого заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1285" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1286" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1292" class="tocchapter" >
+<span class="sectionnumber">18</span>&#x2003;Коливальні процеси в електричних колах</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1293" class="tocsection" >
+<span class="sectionnumber">18.1</span>&#x2003;Квазістаціонарне наближення</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1294" class="tocsection" >
+<span class="sectionnumber">18.2</span>&#x2003;Вільні коливання в коливальному контурі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1319" class="tocsection" >
+<span class="sectionnumber">18.3</span>&#x2003;Вимушені коливання під дією гармонічної ЕРС</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1333" class="tocsection" >
+<span class="sectionnumber">18.4</span>&#x2003;Змінний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">18.5</span>&#x2003;Трансформатор</a>
+</p>
+<p>
+<a href="ch18.html#autosec-1374" class="tocsection" >
+<span class="sectionnumber">18.6</span>&#x2003;Частотні фільтри</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1390" class="tocsection" >
+<span class="sectionnumber">18.7</span>&#x2003;Трифазний струм: фізичні засади, топології кіл та застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1433" class="tocchapter" >
+<span class="sectionnumber">19</span>&#x2003;Довгі лінії. Телеграфні рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1434" class="tocsection" >
+<span class="sectionnumber">19.1</span>&#x2003;Від зосереджених елементів до розподілених</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1435" class="tocsection" >
+<span class="sectionnumber">19.2</span>&#x2003;Виведення телеграфних рівнянь</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1439" class="tocsection" >
+<span class="sectionnumber">19.3</span>&#x2003;Гармонічний режим. Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1440" class="tocsection" >
+<span class="sectionnumber">19.4</span>&#x2003;Лінія без втрат</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1447" class="tocsection" >
+<span class="sectionnumber">19.5</span>&#x2003;Польова картина. Зв’язок з рівняннями Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1454" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1455" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1461" class="tocchapter" >
+<span class="sectionnumber">20</span>&#x2003;Хвилеводи</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1462" class="tocsection" >
+<span class="sectionnumber">20.1</span>&#x2003;Від довгої лінії до хвилеводу</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1463" class="tocsection" >
+<span class="sectionnumber">20.2</span>&#x2003;Прямокутний хвилевід</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1476" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1479" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1480" class="tocsection" >
+<span class="sectionnumber">А</span>&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1485" class="tocsection" >
+<span class="sectionnumber">Б</span>&#x2003;Основні формули векторного аналізу</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1503" class="tocchapter" >
+Література</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Явище електромагнітної індукції">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Явище електромагнітної індукції ......
+-->
+<h3 id="autosec-923">Розділ&nbsp;<span class="sectionnumber">12&#x2003;</span>Явище електромагнітної індукції</h3>
+<a id="main-html-autopage-923"></a>
+<a id="main-html-autofile-12"></a>
+
+<a id="ElMagInduction"></a>
+
+<p>
+<a id="LWR-ht-ElMagInduction"></a>
+</p>
+<div class="epigraph" role="note">
+
+
+<div class="qitem">
+
+<p>
+Магнітне поле не діє на нерухомі заряди&nbsp;— і&nbsp;все ж змінне магнітне поле народжує електричне поле, здатне їх розігнати. У&nbsp;цьому факті криється, мабуть, найглибша ідея класичної електродинаміки: поле не просто
+«обслуговує» заряди, воно живе власним життям і&nbsp;саме породжує інші поля.
+</p>
+
+
+<div class="epigraphsource">
+
+<p>
+Переосмислення ідей сучасної фізики
+</p>
+</div>
+
+</div>
+
+</div>
+<!--
+...... section Явище електромагнітної індукції ......
+-->
+<h4 id="autosec-924"><span class="sectionnumber">12.1&#x2003;</span>Явище електромагнітної індукції</h4>
+<a id="main-html-autopage-924"></a>
+
+
+<p>
+<a id="LWR-ht-induction-phenomenon"></a>
+</p>
+
+<p>
+У&nbsp;1831&nbsp;р. М.&nbsp;Фарадей відкрив <em><span
+    class="textcolor"
+    style="color:#990000"
+>явище електромагнітної індукції</span></em>: воно полягає в&nbsp;тому, що в&nbsp;замкненому провідному контурі при зміні магнітного потоку, охопленого цим контуром, виникає електричний струм, який називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>індукційним</span></em>.
+</p>
+
+<p>
+У&nbsp;низці дослідів Фарадей встановив, що індукційний струм виникає щоразу, коли змінюється магнітний потік крізь контур&nbsp;— незалежно від <em>причини</em> цієї зміни: чи то рухається магніт відносно нерухомого контуру, чи
+рухається сам контур відносно нерухомого магніту, чи змінюється сила струму в&nbsp;сусідньому контурі (рис.&nbsp;<a href="ch12.html#pic:FaradayExperiments">12.1</a>).
+</p>
+
+<p>
+Розглянемо докладніше ці три групи дослідів.
+</p>
+<!--
+...... paragraph Дослід 1. Рух магніту відносно нерухомої котушки. ......
+-->
+
+
+<p>
+<span class="paragraph" id="autosec-925">Дослід 1. Рух магніту відносно нерухомої котушки.</span>
+<a id="main-html-autopage-925"></a>
+
+</p>
+
+<p>
+Котушку, з’єднану з&nbsp;гальванометром, закріплюють нерухомо. До неї наближають або віддаляють постійний магніт. Поки магніт нерухомий, стрілка гальванометра стоїть на нулі. Щойно магніт починає рухатися, стрілка відхиляється&nbsp;—
+у&nbsp;котушці виникає індукційний струм. Під час наближення магніту струм має один напрям, під час віддалення&nbsp;— протилежний. Коли рух припиняється, струм зникає.
+</p>
+<!--
+...... paragraph Дослід 2. Рух котушки відносно нерухомого магніту. ......
+-->
+
+
+<p>
+<span class="paragraph" id="autosec-926">Дослід 2. Рух котушки відносно нерухомого магніту.</span>
+<a id="main-html-autopage-926"></a>
+
+</p>
+
+<p>
+Магніт залишають нерухомим, а&nbsp;рухають котушку, з’єднану з&nbsp;гальванометром. Спостерігається той самий ефект: під час руху виникає індукційний струм, напрям якого залежить від напряму руху котушки. Отже, важливою є не
+абсолютна швидкість магніту чи котушки, а&nbsp;їхня <em>відносна</em> швидкість: саме від неї залежить швидкість зміни магнітного потоку крізь контур.
+</p>
+
+<figure id="autoid-313" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="ElMagInduction/Pictures/Faraday_experiments.png" target="_blank" ><img
+   src="ElMagInduction/Pictures/Faraday_experiments.png"
+   style="
+   width:434pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.1. Схема класичних дослідів Фарадея з&nbsp;електромагнітної індукції: виникнення індукційного струму при русі магніту відносно котушки (верхній лівий та верхній правий), при взаємному переміщенні двох котушок (нижній лівий)
+та при русі провідника в&nbsp;магнітному полі (нижній правий)<a id="pic:FaradayExperiments"></a>
+
+</div>
+
+</div>
+
+</figure>
+<!--
+...... paragraph Дослід 3. Зміна струму в-сусідній котушці. ......
+-->
+
+
+<p>
+<span class="paragraph" id="autosec-928">Дослід 3. Зміна струму в&nbsp;сусідній котушці.</span>
+<a id="main-html-autopage-928"></a>
+
+</p>
+
+<p>
+Дві котушки розміщують поряд: одну (1) приєднують до гальванометра, другу (2)&nbsp;— через ключ до джерела струму. Коли ключ замикають або розмикають, у&nbsp;першій котушці виникає короткочасний індукційний струм. Струм
+спостерігається лише в&nbsp;моменти <em>зміни</em> струму в&nbsp;другій котушці; коли струм сталий, гальванометр нічого не показує. Це явище називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>взаємоіндукцією</span></em>.
+</p>
+
+<p>
+Узагальнюючи результати всіх цих дослідів, Фарадей дійшов висновку (у&nbsp;сучасному формулюванні): <em>індукційний струм у&nbsp;замкненому контурі виникає тоді й&nbsp;лише тоді, коли змінюється магнітний потік, охоплений цим
+контуром</em>. Сама ж причина зміни магнітного потоку&nbsp;— рух магніту, рух контуру чи зміна струму в&nbsp;сусідньому контурі&nbsp;— на існування та напрям індукційного струму принципово не впливає.
+</p>
+<!--
+...... section Закон електромагнітної індукції ......
+-->
+<h4 id="autosec-929"><span class="sectionnumber">12.2&#x2003;</span>Закон електромагнітної індукції</h4>
+<a id="main-html-autopage-929"></a>
+
+
+<p>
+<a id="LWR-ht-induction-law"></a>
+</p>
+
+<p>
+На основі дослідів Фарадея було сформульовано <em><span
+    class="textcolor"
+    style="color:#990000"
+>закон електромагнітної індукції</span></em>: електрорушійна сила (ЕРС), що виникає в&nbsp;контурі, пропорційна швидкості зміни магнітного потоку, який пронизує площу, охоплену цим контуром:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{0}\)</span>
+
+<!--
+
+                                                                                     ˆ
+                                                                      1 𝑑Φ    1 𝑑
+                                                           Eінд = −        =−            𝐁 ⋅ 𝑑𝐒.                                                (12.1)                                           --><a id="eq:FaradayLawInt"></a><!--
+                                                                      𝑐 𝑑𝑡    𝑐 𝑑𝑡
+                                                                                     𝑆
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:FaradayLawInt} \tcbhighmath { \emf _\text {інд} = -\frac 1c\frac {d\Phi }{dt} = -\frac 1c\frac {d}{dt}\iint \limits _S \Bfield \cdot d\vect S. }
+\end{equation}
+
+</p>
+
+<p>
+Знак «мінус» у&nbsp;цьому законі&nbsp;— не формальність, а&nbsp;прояв <em><span
+    class="textcolor"
+    style="color:#990000"
+>правила Ленца</span></em>, з яким ми детальніше познайомимось нижче.
+</p>
+
+<p>
+Магнітний потік \(\Phi \), а&nbsp;отже, і&nbsp;ЕРС індукції, можуть змінюватися трьома способами:
+</p>
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> через зміну <em>площі</em> контуру, що пронизується незмінним магнітним полем;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> через зміну <em>орієнтації</em> контуру відносно поля (наприклад, при обертанні рамки);
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> через зміну самого <em>магнітного поля</em>, що пронизує нерухомий контур.
+</p>
+</li>
+</ul>
+
+<p>
+У&nbsp;перших двох випадках контур рухається, у&nbsp;третьому&nbsp;— нерухомий; ці випадки мають різну фізичну природу, і&nbsp;ми розглянемо їх окремо.
+</p>
+<!--
+...... section Робота, що виконується при переміщенні провідника зі струмом у-магнітному полі ......
+-->
+<h4 id="autosec-930"><span class="sectionnumber">12.3&#x2003;</span>Робота, що виконується при переміщенні провідника зі струмом у&nbsp;магнітному полі</h4>
+<a id="main-html-autopage-930"></a>
+
+
+<a id="sec:Work_current"></a>
+
+<p>
+<a id="LWR-ht-work-of-moving-conductor"></a>
+</p>
+
+<p>
+Візьмемо рамку, по якій може вільно ковзати перемичка, що замикає верхній і&nbsp;нижній проводи (рис.&nbsp;<a href="ch12.html#tikz:frame_with_rod">12.2</a>). Помістимо цю систему в&nbsp;магнітне поле. Будемо вважати спочатку,
+що поле перпендикулярне до площини рамки.
+</p>
+
+<figure id="autoid-314" class="figure ">
+
+<p>
+<span
+    id="lateximage-main-html-188"
+    class="lateximagesource"
+><!--
+                  𝐅А
+
+
+                  𝑢⃗
+        𝐮∥
+
+
+             +
+                 𝐮⟂
+    𝐼
+
+𝐁
+                 𝑑𝑥
+--><img
+   src="main-html-images\image-188.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.2. Рамка з&nbsp;рухомою перемичкою в&nbsp;магнітному полі: показано силу Ампера \(\vect {F}_\text {А}\), що діє на перемичку зі струмом \(I\), зміщення \(dx\) та розклад повної швидкості \(\vect {u}\) носія заряду на
+складові \(\vect {u}_{\perp }\) (рух разом із перемичкою) і&nbsp;\(\vect {u}_{\parallel }\) (рух уздовж провідника)<a id="tikz:frame_with_rod"></a>
+
+</div>
+
+</figure>
+
+<p>
+Якщо по рамці через перемичку тече струм \(I\) (як показано на рис.&nbsp;<a href="ch12.html#tikz:frame_with_rod">12.2</a>), то на перемичку діє сила Ампера:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{1}\)</span>
+
+<!--
+
+                                                                            𝐼
+                                                                   𝐹А =       ℓ𝐵,                                                               (12.2)                                          --><a id="eq:AmpereForceRod"></a><!--
+                                                                            𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+F_\text {А} = \frac {I}{c} \ell B, \label {eq:AmpereForceRod}
+\end{equation}
+
+</p>
+
+<p>
+де \(\ell \)&nbsp;— довжина перемички. При зазначених на рис.&nbsp;<a href="ch12.html#tikz:frame_with_rod">12.2</a> напрямках струму \(I\) і&nbsp;зовнішнього магнітного поля \(\Bfield \) сила \(\vect {F}_\text {А}\)
+напрямлена вправо і&nbsp;при зміщенні перемички на \(dx\) виконує роботу
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{2}\)</span>
+
+<!--
+
+                                                                               𝐼       𝐼
+                                                               𝑑𝐴 = 𝐹А 𝑑𝑥 =      𝐵ℓ𝑑𝑥 = 𝑑Φ.                                                               (12.3)                                        --><a id="eq:work_dx"></a><!--
+                                                                               𝑐       𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+dA = F_\text {А} dx = \frac {I}{c} B \ell dx = \frac {I}{c} d\Phi . \label {eq:work_dx}
+\end{equation}
+
+</p>
+
+<p>
+Площа контуру зі струмом змінюється на \(dS = \ell \,dx\), а&nbsp;магнітний потік&nbsp;— на \(d\Phi = B\,dS\). При зміщенні перемички на кінцеву відстань (за незмінних \(I\) і&nbsp;\(\Bfield \))
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{3}\)</span>
+
+<!--
+
+                                                                                                                    𝐼
+                                                                                                            𝐴12 =     (Φ − Φ1 ).
+                                                                                                                    𝑐 2
+
+-->
+
+<p>
+
+\begin{equation*}
+A_{12} = \frac {I}{c} (\Phi _2 - \Phi _1).
+\end{equation*}
+
+</p>
+
+<p>
+Нехай поле напрямлене під довільним кутом до площини контуру (рамки). Покладемо \(\Bfield = \Bfield _{\perp } + \Bfield _{\parallel }\), де \(\Bfield _{\perp }\)&nbsp;— складова, напрямлена за нормаллю до площі,
+а&nbsp;\(\Bfield _{\parallel }\)&nbsp;— що лежить у&nbsp;площині контуру. Складова \(\Bfield _{\parallel }\) створює силу, перпендикулярну до площини і, отже, перпендикулярну до зміщення перемички, і&nbsp;тому таку, що не
+виконує роботи. З&nbsp;урахуванням цього магнітний потік, що призводить до виконання роботи, визначається тільки компонентою поля \(\Bfield _{\perp }\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{3}\)</span>
+
+<!--
+
+
+                                                                                                             Φ = 𝐵⟂ 𝑆 = 𝐁 ⋅ 𝐒.
+
+-->
+
+<p>
+
+\begin{equation*}
+\Phi = B_{\perp } S = \Bfield \cdot \vect {S}.
+\end{equation*}
+
+</p>
+
+<p>
+У&nbsp;випадку довільно деформованого витка і&nbsp;поля, що змінюється від точки до точки, весь замкнений контур потрібно подумки розбити на нескінченно малі замкнені елементи струму. Оскільки струми на спільних ділянках сусідніх
+витків рівні за величиною і&nbsp;протилежні за напрямком, то струми по всій площі вихідного контуру компенсують один одного, і залишається тільки струм \(I\) у&nbsp;вихідному контурі.
+</p>
+
+<p>
+Вважаючи поле в&nbsp;межах одного елемента однорідним, отримуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{3}\)</span>
+
+<!--
+
+                                                                                                                       𝐼
+                                                                                                               𝑑𝐴 =      𝑑Φ,
+                                                                                                                       𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+dA = \frac {I}{c} d\Phi ,
+\end{equation*}
+
+</p>
+
+<p>
+де магнітний потік тепер визначається формулою
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{3}\)</span>
+
+<!--
+
+                                                                        ˆ
+                                                                   Φ=       𝐁 ⋅ 𝑑𝐒,                                                              (12.4)                                          --><a id="eq:magnetic_flux"></a><!--
+                                                                        𝑆
+
+-->
+
+<p>
+
+\begin{equation}
+\Phi = \int \limits _{S} \Bfield \cdot d\vect {S}, \label {eq:magnetic_flux}
+\end{equation}
+
+</p>
+
+<p>
+в&nbsp;якій інтегрування ведеться по площі, що обмежується контуром зі струмом.
+</p>
+
+<p>
+Зауважимо, що в&nbsp;цьому процесі виконується робота, тоді як саме магнітне поле роботу не може виконувати (сила Лоренца завжди перпендикулярна швидкості руху зарядів). Для розв’язання цієї суперечності врахуємо, що заряди
+в&nbsp;перемичці рухаються не тільки вздовж провідника (\(\vect {u}_{\parallel }\)), а&nbsp;й&nbsp;разом із перемичкою (\(\vect {u}_{\perp }\)): \(\vect {u} = \vect {u}_{\perp } + \vect {u}_{\parallel }\). Складова \(\vect
+{u}_{\parallel }\) породжує силу Лоренца, напрямлену вздовж руху перемички,&nbsp;— це і&nbsp;є сила Ампера \(\vect {F}_\text {А}\), що виконує додатну роботу над перемичкою. Складова \(\vect {u}_{\perp }\) породжує силу
+\(\vect {F}_\text {Л} = q \vect {u}_{\perp } \times \Bfield / c\), що діє проти напрямку струму \(I\) і&nbsp;виконує рівну за модулем від’ємну роботу, так що сумарна робота сили Лоренца дорівнює нулю. Тому для підтримання
+незмінного струму в коло мають бути включені сторонні ЕРС: саме завдяки зовнішнім джерелам енергії виконується робота з&nbsp;переміщення перемички.
+</p>
+<!--
+...... section Електромагнітна індукція в-рухомих провідниках ......
+-->
+<h4 id="autosec-933"><span class="sectionnumber">12.4&#x2003;</span>Електромагнітна індукція в&nbsp;рухомих провідниках</h4>
+<a id="main-html-autopage-933"></a>
+
+
+<p>
+<a id="LWR-ht-induction-in-moving-conductors"></a>
+</p>
+<!--
+...... subsection ЕРС індукції ......
+-->
+<h5 id="autosec-934">ЕРС індукції</h5>
+<a id="main-html-autopage-934"></a>
+
+
+<figure id="autoid-315" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-189"
+    class="lateximagesource"
+><!--
+        +
+                 𝑣⃗
+
+            𝑢⃗
+
+
+𝐁   𝐼
+
+
+                 𝑑𝑥
+--><img
+   src="main-html-images\image-189.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.3. Виникнення ЕРС індукції в&nbsp;рухомій перемичці: на позитивний заряд \(+\) у провіднику, що рухається зі швидкістю \(\vect {v}\), діє сила Лоренца \(\vect {F}_\text {Л}\), спрямована вздовж провідника (швидкість
+\(\vect {u}\)). Ця сила викликає індукційний струм \(I\) у&nbsp;контурі<a id="tikz:move_rod"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+У&nbsp;попередньому параграфі ми розглянули роботу сили Ампера й&nbsp;з’ясували, що рух перемички зі струмом підтримується сторонніми джерелами. Знайдемо тепер саму ЕРС індукції <em>безпосередньо</em>, обчисливши силу, що діє на
+носії заряду: це та сама сила Лоренца \(\vect F_\text {Л}=q\vect u_\perp \times \Bfield /c\), на яку ми вже звертали увагу вище.
+</p>
+
+<p>
+Розглянемо провідну рамку, замкнену рухомою перемичкою (див. рис.&nbsp;<a href="ch12.html#tikz:move_rod">12.3</a>). Нехай рамка поміщена в&nbsp;магнітне поле з&nbsp;індукцією \(\Bfield \), напрямленою перпендикулярно до
+площини. Якщо перемичка рухається зі швидкістю \(\vect {v}\) (у&nbsp;попередніх позначеннях \(\vect v=\vect u_{\perp }\)), то на заряди в&nbsp;перемичці діє сила Лоренца:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{4}\)</span>
+
+<!--
+
+                                                                                                                                𝑞
+                                                                                                                   𝐅Л =           𝐯 × 𝐁.
+                                                                                                                                𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect {F}_\text {Л} = \frac {q}{c} \vect {v} \times \Bfield .
+\end{equation*}
+
+</p>
+
+<p>
+Як видно з&nbsp;рис.&nbsp;<a href="ch12.html#tikz:move_rod">12.3</a>, ця сила приводить заряди в&nbsp;рух, викликаючи індукційний струм у&nbsp;від’ємному напрямку обходу контуру. Вона еквівалентна силі, що створюється
+стороннім електричним полем
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{4}\)</span>
+
+<!--
+
+
+                                                                                                                        𝐅∗  1
+                                                                                                                 𝐄∗ =      = 𝐯×𝐁
+                                                                                                                        𝑞   𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+\Efield ^* = \frac {\vect {F}^*}{q} = \frac {1}{c} \vect {v} \times \Bfield
+\end{equation*}
+
+</p>
+
+<p>
+і&nbsp;викликає в&nbsp;перемичці довжиною \(\ell \) ЕРС індукції, рівну
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{4}\)</span>
+
+<!--
+
+                                                                                                             ˛
+                                                                                                                                       1
+                                                                                                    Eінд =       𝐄∗ ⋅ 𝑑𝓵 = −𝐸стор ℓ = − 𝐵ℓ𝑣.
+                                                                                                                                       𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+\emf _{\text {інд}} = \oint \Efield ^* \cdot d\symbfscr {l} = - E_{\text {стор}} \ell = - \frac {1}{c} B \ell v.
+\end{equation*}
+
+</p>
+
+<p>
+Знак «\(-\)» тут пов’язаний з&nbsp;тим, що \(\mathcal {E}_{\text {інд}}\) створює струм у від’ємному напрямку (додатний напрямок задається вектором \(\Bfield \)).
+</p>
+
+<p>
+Оскільки \(\ell v = dS/dt\), де \(S\)&nbsp;— площа контуру, то
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{4}\)</span>
+
+<!--
+
+
+                                                                        1 𝑑Φ
+                                                             Eінд = −        ,                                                                  (12.5)                                 --><a id="eq:faraday_law_for_moving"></a><!--
+                                                                        𝑐 𝑑𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:faraday_law_for_moving} \emf _{\text {інд}} = - \frac {1}{c} \frac {d\Phi }{dt},
+\end{equation}
+
+</p>
+
+<p>
+де \(\Phi = BS\)&nbsp;— магнітний потік через контур.
+</p>
+
+<p>
+Якщо є складова магнітного поля \(\Bfield _{\parallel }\), паралельна площині контуру, то вона не призводить до появи індукційного струму вздовж контуру, оскільки відповідна складова сили Лоренца \(\vect {F}^{(1)} = \frac {1}{c}
+\vect {v} \times \Bfield _{\parallel }\) перпендикулярна до площини контуру, тобто напрямлена перпендикулярно до провідника. Це означає, що у&nbsp;виразі для потоку \(\Phi \) потрібно врахувати тільки складову \(\Bfield _{\perp
+}\), тобто покласти \(\Phi = B_{\perp } S = \Bfield \cdot \vect {S}\).
+</p>
+
+<p>
+Для контуру довільної форми, що рухається й&nbsp;деформується в&nbsp;стаціонарному, але неоднорідному полі, ЕРС руху знаходимо, підсумовуючи по контуру сторонню силу \([\vect v\times \Bfield ]/c\), де \(\vect v\)&nbsp;—
+швидкість елемента \(d\symbfscr {l}\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{5}\)</span>
+
+<!--
+
+                                                                                                                            ˛
+                                                                                                                        1
+                                                                                                             Eінд =             [𝐯 × 𝐁] ⋅ 𝑑𝓵.
+                                                                                                                        𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+\emf _\text {інд} = \frac 1c\oint [\vect v\times \Bfield ]\cdot d\symbfscr {l}.
+\end{equation*}
+
+</p>
+
+<p>
+За час \(dt\) елемент \(d\symbfscr {l}\) замітає площу \(d\vect S = [\vect v\,dt\times d\symbfscr {l}]\), тому зміна потоку дорівнює \(d\Phi = \oint \Bfield \cdot [\vect v\times d\symbfscr {l}]\,dt = -dt\oint [\vect
+v\times \Bfield ]\cdot d\symbfscr {l}\), і&nbsp;знову \(\emf _\text {інд} = -\dfrac 1c\dfrac {d\Phi }{dt}\), де магнітний потік визначається інтегралом&nbsp;<span class="textup">(<a
+href="ch12.html#eq:magnetic_flux">12.4</a>)</span> по площі, що обмежується контуром.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Отже, у&nbsp;розглянутому випадку <em>безпосередньою фізичною причиною виникнення ЕРС індукції є сила Лоренца</em>, що діє на вільні носії заряду в&nbsp;рухомій перемичці. Саме вона «штовхає» електрони вздовж провідника, створюючи
+індукційний струм.
+</p>
+
+<p>
+Однак тут виникає природне запитання: що буде, якщо перейти в&nbsp;систему відліку, пов’язану з самою перемичкою? Відносно неї провідник нерухомий, і&nbsp;магнітна складова сили Лоренца, яка залежить від швидкості, дорівнює нулю.
+Якщо причина зникла, то чому тоді в&nbsp;контурі все одно тече струм?
+</p>
+
+<p>
+Відповідь вимагає перегляду наших уявлень про електричне та магнітне поля: те, що ми називаємо «причиною» ЕРС, залежить від вибору системи відліку. У&nbsp;системі, де перемичка нерухома, на її заряди діє вже <em>електричне</em> поле
+\(\Efield &apos; = [\vect v\times \Bfield ]/c\) (для \(v\ll c\)), яке з’являється при переході в&nbsp;рухому систему відліку. Так само й&nbsp;у&nbsp;досліді&nbsp;1: коли магніт рухається відносно нерухомого контуру, то в&nbsp;системі
+контуру магнітне поле змінюється, і&nbsp;причиною є <em><span
+    class="textcolor"
+    style="color:#990000"
+>вихрове електричне поле</span></em>, яке ми розглянемо в&nbsp;наступному параграфі. Чому обидва описи дають однаковий результат&nbsp;— питання принципу відносності (гл.&nbsp;<a href="ch15.html#Relativity">15</a>):
+електричне й&nbsp;магнітне поля не є незалежними, а&nbsp;їхній поділ залежить від системи відліку.
+</p>
+</div>
+<!--
+...... subsection Принцип роботи генераторів змінного струму ......
+-->
+<h5 id="autosec-938">Принцип роботи генераторів змінного струму</h5>
+<a id="main-html-autopage-938"></a>
+
+
+<p>
+Явище електромагнітної індукції в&nbsp;рухомих провідниках лежить в&nbsp;основі роботи <em>генераторів електричного струму</em>&nbsp;— пристроїв, без яких неможливо уявити сучасну електроенергетику: у&nbsp;них механічна енергія
+обертання перетворюється на електричну.
+</p>
+
+<figure id="autoid-316" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="ElMagInduction/Pictures/AC-Generator.png" target="_blank" ><img
+   src="ElMagInduction/Pictures/AC-Generator.png"
+   style="
+   width:195pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.4. Схема найпростішого генератора змінного струму<a id="pic:ACGenerator"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Найпростіший генератор складається з&nbsp;рамки, кінці якої закріплені на кільцях, що обертаються разом з&nbsp;нею; до кілець щільно прилягають нерухомі щітки-контакти (рис.&nbsp;<a href="ch12.html#pic:ACGenerator">12.4</a>).
+Якщо рамку площею \(S\) обертати в&nbsp;однорідному полі \(\Bfield \) з&nbsp;кутовою швидкістю \(\omega \), то потік крізь неї
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{5}\)</span>
+
+<!--
+
+
+                                                                                                                     𝑑Φ
+                                                                                                Φ(𝑡) = 𝐵𝑆 cos(𝜔𝑡),      = −𝐵𝑆𝜔 sin(𝜔𝑡),
+                                                                                                                     𝑑𝑡
+
+-->
+
+<p>
+
+\begin{equation*}
+\Phi (t) = BS\cos (\omega t), \qquad \frac {d\Phi }{dt} = -BS\omega \sin (\omega t),
+\end{equation*}
+
+</p>
+
+<p>
+тому в&nbsp;рамці виникає ЕРС індукції
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{5}\)</span>
+
+<!--
+
+                                                                             𝐵𝑆𝜔
+                                                                    Eінд =       sin(𝜔𝑡),                                                         (12.6)                                        --><a id="eq:GeneratorEMF"></a><!--
+                                                                              𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:GeneratorEMF} \emf _\text {інд} = \frac {BS\omega }{c}\sin (\omega t),
+\end{equation}
+
+</p>
+
+<p>
+а&nbsp;якщо на щітки підключити навантаження опором \(R\), у&nbsp;колі потече <em>змінний</em> індукційний струм
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{6}\)</span>
+
+<!--
+
+
+                                                                    Eінд       𝐵𝑆𝜔
+                                                           𝐼(𝑡) =          =       sin(𝜔𝑡),                                                  (12.7)                                         --><a id="eq:GeneratorCurrent"></a><!--
+                                                                     𝑅          𝑐𝑅
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:GeneratorCurrent} I(t) = \frac {\emf _\text {інд}}{R} = \frac {BS\omega }{cR}\sin (\omega t),
+\end{equation}
+
+</p>
+
+<p>
+що змінюється за законом синуса з&nbsp;кутовою частотою \(\omega \), яка дорівнює кутовій швидкості обертання рамки. Якщо рамка має \(N\) витків, ЕРС збільшується в&nbsp;\(N\) разів. Саме такий принцип лежить в&nbsp;основі роботи
+практично всіх електростанцій, що генерують змінний струм.
+</p>
+<!--
+...... section Електромагнітна індукція в-нерухомих провідниках ......
+-->
+<h4 id="autosec-940"><span class="sectionnumber">12.5&#x2003;</span>Електромагнітна індукція в&nbsp;нерухомих провідниках</h4>
+<a id="main-html-autopage-940"></a>
+
+
+<p>
+<a id="LWR-ht-induction-in-stationary-conductors"></a>
+</p>
+<!--
+...... subsection Виникнення ЕРС внаслідок зміни магнітного поля ......
+-->
+<h5 id="autosec-941">Виникнення ЕРС внаслідок зміни магнітного поля</h5>
+<a id="main-html-autopage-941"></a>
+
+
+<p>
+Розглянемо тепер принципово інший випадок: контур нерухомий і&nbsp;незмінний за формою, а змінюється саме магнітне поле, що його пронизує (рис.&nbsp;<a href="ch12.html#pic:FieldChange">12.5</a>):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{7}\)</span>
+
+<!--
+
+                                                                                  ˆ
+                                                                      1 𝑑Φ    1       𝜕𝐁
+                                                           Eінд = −        =−            ⋅ 𝑑𝐒.                                          (12.8)                                        --><a id="eq:FaradayFieldChange"></a><!--
+                                                                      𝑐 𝑑𝑡    𝑐       𝜕𝑡
+                                                                                  𝑆
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:FaradayFieldChange} \emf _\text {інд} = -\frac 1c\frac {d\Phi }{dt} = -\frac 1c\iint \limits _S\parttime {\Bfield }\cdot d\vect S.
+\end{equation}
+
+</p>
+
+<figure id="autoid-317" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="ElMagInduction/Pictures/Field_change.png" target="_blank" ><img
+   src="ElMagInduction/Pictures/Field_change.png"
+   style="
+   width:217pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.5. ЕРС індукції в&nbsp;нерухомому контурі за рахунок зміни поля \(\Bfield \)<a id="pic:FieldChange"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Тут виникає принципове запитання: <em>яка причина виникнення ЕРС</em>? Носії заряду в нерухомому провіднику мають нульову швидкість, а&nbsp;магнітне поле <em>не діє на нерухомі заряди</em> взагалі! То внаслідок чого ж вони
+прискорюються? Відповідь на це запитання — <em><span
+    class="textcolor"
+    style="color:#990000"
+>вихрове електричне поле</span></em>&nbsp;— ми дамо трохи згодом; спершу розглянемо кілька важливих якісних наслідків закону індукції.
+</p>
+<!--
+...... subsection Правило Ленца ......
+-->
+<h5 id="autosec-943">Правило Ленца</h5>
+<a id="main-html-autopage-943"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Правило Ленца</span></em> визначає <em>напрям</em> індукційного струму: індукційний струм завжди має такий напрям, щоб своїм власним магнітним полем <em>протидіяти</em> зміні магнітного потоку, яка його породжує, тобто щоб
+послабити причину, яка збуджує цей струм (рис.&nbsp;<a href="ch12.html#pic:LenzRule">12.6</a>).
+</p>
+
+<figure id="autoid-318" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:232pt ; ">
+
+<a id="main-html-autopage-945"></a>
+
+<p>
+<span
+    id="lateximage-main-html-190"
+    class="lateximagesource"
+><!--
+𝜕𝐁
+     >0
+𝜕𝑡
+--><img
+   src="main-html-images\image-190.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:232pt ; ">
+
+<a id="main-html-autopage-948"></a>
+
+<p>
+<span
+    id="lateximage-main-html-191"
+    class="lateximagesource"
+><!--
+𝜕𝐁
+     <0
+𝜕𝑡
+--><img
+   src="main-html-images\image-191.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.6. Правило Ленца: напрям індукційного струму залежить від знака \(\partial \Bfield /\partial t\)<a id="pic:LenzRule"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+
+<div class="cb-attention">
+
+<p>
+Правило Ленца&nbsp;— не окремий незалежний закон природи, а&nbsp;прямий наслідок знака «мінус» у&nbsp;законі індукції&nbsp;<span class="textup">(<a href="ch12.html#eq:FaradayLawInt">12.1</a>)</span>, який, своєю чергою,
+диктується законом збереження енергії: якби індукційний струм <em>підсилював</em> зміну потоку (а&nbsp;не протидіяв їй), процес наростав би лавиноподібно й&nbsp;необмежено, породжуючи енергію з&nbsp;нічого. Це нагадує загальніший
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>принцип Ле Шательє-Брауна</span></em>: будь-який зовнішній вплив, що намагається вивести систему зі стійкої рівноваги, породжує в&nbsp;ній компенсаційні процеси, спрямовані на послаблення цього впливу.
+</p>
+</div>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> Правило напряму індукційного струму сформулював у&nbsp;1833–1834&nbsp;рр. Е.&nbsp;Х.&nbsp;Ленц, а&nbsp;закон індукції в&nbsp;кількісному вигляді, через зміну магнітного потоку, записав Ф.&nbsp;Нейман
+(1845&nbsp;р.). Сам Фарадей користувався картиною «ліній сили», що перетинаються провідником. Незалежно від Фарадея індукцію спостерігав Дж.&nbsp;Генрі (1832&nbsp;р.), а Г.&nbsp;Гельмгольц (1847&nbsp;р.) показав, що знак «мінус»
+у&nbsp;законі індукції випливає із закону збереження енергії.
+</p>
+</div>
+<!--
+...... subsection Вимірювання індукційного заряду. Балістичний гальванометр ......
+-->
+<h5 id="autosec-951">Вимірювання індукційного заряду. Балістичний гальванометр</h5>
+<a id="main-html-autopage-951"></a>
+
+
+<p>
+Закон електромагнітної індукції дає змогу не лише якісно описати виникнення струму, а й кількісно вимірювати зміну магнітного потоку. Розглянемо котушку опором \(R\), у якій виникає індукційний струм \(I(t) = \emf _\text {інд}/R\).
+Повний заряд \(Q\), що протікає через поперечний переріз провідника за весь час існування індукційного струму, дорівнює:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{8}\)</span>
+
+<!--
+
+                                                       ˆ                   ˆ                      ˆ
+                                                                       1                      1       𝑑Φ        ΔΦ
+                                                  𝑄=       𝐼(𝑡) 𝑑𝑡 =           Eінд 𝑑𝑡 = −               𝑑𝑡 = −    .                              (12.9)                                          --><a id="eq:InducedCharge"></a><!--
+                                                                       𝑅                     𝑐𝑅       𝑑𝑡        𝑐𝑅
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:InducedCharge} Q = \int I(t) \, dt = \frac {1}{R} \int \emf _\text {інд} \, dt = -\frac {1}{cR} \int \frac {d\Phi }{dt} \, dt = -\frac {\Delta \Phi }{cR}.
+\end{equation}
+
+</p>
+
+<p>
+Отже, повний індукований заряд прямо пропорційний <em>зміні магнітного потоку</em> \(\Delta \Phi \) і не залежить від того, як швидко ця зміна відбувалася. Для вимірювання таких короткочасних імпульсів струму (тривалістю мілісекунди)
+використовують спеціальний прилад&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>балістичний гальванометр</span></em> (рис.&nbsp;<a href="ch12.html#pic:Balistic">12.7</a>).
+</p>
+
+<figure id="autoid-319" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="ElMagInduction/Pictures/Balistic.jpg" target="_blank" ><img
+   src="ElMagInduction/Pictures/Balistic.jpg"
+   style="
+   width:434pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.7. Схема балістичного гальванометра
+
+</div>
+
+<a id="pic:Balistic"></a>
+
+</div>
+
+</figure>
+
+<p>
+Як видно з рисунка, чутливий елемент приладу&nbsp;— це легка рамка (котушка), підвішена на пружній нитці в&nbsp;зазорі сильного постійного магніту. На підвісі закріплено маленьке <em>дзеркало</em>, на яке спрямовано промінь
+<em>лазера</em>. Відбиваючись, промінь падає на віддалену <em>вимірювальну шкалу</em>. Така система називається <em>оптичним важелем</em>: вона дозволяє зафіксувати навіть мізерний кут повороту рамки, оскільки зміщення світлового
+зайчика на шкалі \(x\) пов’язане з кутом повороту \(\theta \) співвідношенням \(x = 2L\theta \), де \(L\)&nbsp;— відстань від дзеркала до шкали.
+</p>
+
+<p>
+На відміну від звичайного гальванометра, який показує миттєву силу струму, балістичний гальванометр призначений для вимірювання інтеграла струму за часом, тобто повного заряду. Його конструкція має великий момент інерції \(J\) та мале
+затухання, завдяки чому період власних коливань \(T_0\) становить 10–20&nbsp;с. Час протікання імпульсу струму \(t_\text {імп}\) у дослідах з індукції є набагато меншим за \(T_0\).
+</p>
+
+<p>
+Під час короткого імпульсу на рамку гальванометра діє обертальний момент \(M = BSNI\), внаслідок чого вона набуває початкової кутової швидкості \(\omega _0 = \frac {BSN}{J} \int I \, dt = \frac {BSN}{J} Q\). Після закінчення
+імпульсу рамка продовжує рухатися за інерцією, і максимальний кут відхилення \(\theta _\text {max}\) (перший «відкид» світлового зайчика на шкалі) визначається із закону збереження енергії:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{9}\)</span>
+
+<!--
+
+                                                                                                                     𝐵𝑆𝑁
+                                                                                                            𝜃max =         𝑄 = 𝐶𝑄,
+                                                                                                                     √𝐽𝑘
+
+-->
+
+<p>
+
+\begin{equation*}
+\theta _\text {max} = \frac {BSN}{\sqrt {Jk}} Q = C Q,
+\end{equation*}
+
+</p>
+
+<p>
+де \(C\)&nbsp;— <em>балістична стала гальванометра</em>. Таким чином, максимальне відхилення світлового зайчика прямо пропорційне повному заряду \(Q\).
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Балістичний гальванометр є класичним приладом для вимірювання магнітного потоку та індукції поля. Знаючи балістичну сталу \(C\) (яку визначають градуюванням, наприклад, розряджаючи еталонний конденсатор: \(Q = C_\text {конд}U\)),
+можна за виміряним зміщенням зайчика \(\theta _\text {max}\) знайти зміну магнітного потоку:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{9}\)</span>
+
+<!--
+
+
+                                                                                                           |ΔΦ| = 𝑐𝑅𝑄 = 𝑐𝑅𝐶𝜃max .
+
+-->
+
+<p>
+
+\begin{equation*}
+|\Delta \Phi | = cRQ = cR C \theta _\text {max}.
+\end{equation*}
+
+</p>
+
+</div>
+<!--
+...... subsection Струми Фуко ......
+-->
+<h5 id="autosec-953">Струми Фуко</h5>
+<a id="main-html-autopage-953"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Струмами Фуко</span></em> (вихровими струмами) називають індукційні струми, що виникають не в тонких лінійних провідниках, а&nbsp;в&nbsp;товщі суцільних масивних провідників при зміні магнітного потоку крізь них (рис.&nbsp;<a
+href="ch12.html#pic:FukoCurrents">12.8</a>). Вони підпорядковані тому самому правилу Ленца: їхнє магнітне поле напрямлене так, щоб протидіяти зміні потоку, яка їх породжує.
+</p>
+
+<figure id="autoid-320" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="ElMagInduction/Pictures/Eddy_currents.png" target="_blank" ><img
+   src="ElMagInduction/Pictures/Eddy_currents.png"
+   style="
+   width:195pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.8. Індукування вихрових струмів Фуко в&nbsp;провідній пластині, яка знаходиться в змінному магнітному полі. <a id="pic:FukoCurrents"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+
+<div class="cb-attention">
+
+<p>
+Оскільки струми Фуко течуть у&nbsp;товщі провідника, вони можуть спричиняти <em>значне</em> тепловиділення (закон Джоуля-Ленца, гл.&nbsp;<a href="ch7.html#SteadyCurrent">7</a>)&nbsp;— саме на цьому явищі, зокрема, ґрунтується
+<em>індукційне нагрівання</em> металів. З&nbsp;іншого боку, ті самі струми, взаємодіючи з магнітним полем (сила Ампера), створюють силу, що <em>гальмує</em> рух провідника відносно джерела поля&nbsp;— явище <em>магнітного
+демпфування</em>, яке використовують, наприклад, в&nbsp;електромагнітних гальмах і&nbsp;в&nbsp;заспокоювачах коливань вимірювальних приладів. Швидкозмінні струми Фуко витісняються до поверхні провідника (скін-ефект, гл.&nbsp;<a
+href="ch14.html#MaxwellEqns">14</a>), тому масивні осердя трансформаторів набирають з&nbsp;ізольованих пластин або виготовляють із фериту, щоб зменшити втрати на нагрівання.
+</p>
+</div>
+<!--
+...... subsection Вихрове електричне поле ......
+-->
+<h5 id="autosec-955">Вихрове електричне поле</h5>
+<a id="main-html-autopage-955"></a>
+
+
+<p>
+Повернімося до питання, яке ми залишили відкритим: що саме прискорює нерухомі заряди при зміні \(\Bfield \)? Оскільки \(\Phi = \iint _S \Bfield \cdot d\vect S\), а&nbsp;ЕРС, за означенням&nbsp;<span class="textup">(<a
+href="ch7.html#eq:EMFDef">7.16</a>)</span> (гл.&nbsp;<a href="ch7.html#SteadyCurrent">7</a>), дорівнює \(\emf = \oint _L \Efield \cdot d\symbfscr {l}\), із закону індукції безпосередньо випливає:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{9}\)</span>
+
+<!--
+
+                                                               ˛                    ˆ
+                                                                                1       𝜕𝐁
+                                                                   𝐄 ⋅ 𝑑𝓵 = −              ⋅ 𝑑𝐒.                                                     (12.10)                                         --><a id="eq:CurlEInt"></a><!--
+                                                                                𝑐       𝜕𝑡
+                                                               𝐿                    𝑆
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CurlEInt} \tcbhighmath { \oint \limits _L \Efield \cdot d\symbfscr {l} = -\frac 1c\iint \limits _S \frac {\partial \Bfield }{\partial t}\cdot d\vect S. }
+\end{equation}
+
+</p>
+
+<p>
+Це&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>теорема про циркуляцію</span></em> електричного поля: циркуляція напруженості електричного поля по довільному контуру дорівнює, взятому з&nbsp;протилежним знаком і поділеному на \(c\), потоку вектора \(\partial \Bfield /\partial
+t\) крізь довільну поверхню, натягнуту на цей контур. За теоремою Стокса, цю теорему можна записати й&nbsp;у&nbsp;диференціальній формі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{10}\)</span>
+
+<!--
+
+
+                                                                                    1 𝜕𝐁
+                                                                    𝛁×𝐄=−                .                                                          (12.11)                                         --><a id="eq:CurlEDiff"></a><!--
+                                                                                    𝑐 𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CurlEDiff} \tcbhighmath { \rot \Efield = -\frac 1c\frac {\partial \Bfield }{\partial t}. }
+\end{equation}
+
+</p>
+
+<p>
+Зауважимо, що теорему&nbsp;<span class="textup">(<a href="ch12.html#eq:CurlEInt">12.10</a>)</span> записано для <em>нерухомого</em> контуру. Якщо контур рухається, до \(\Efield \) у&nbsp;формулі для ЕРС слід додати силу
+Лоренца, що припадає на одиницю заряду: \(\emf _\text {інд} = \oint \bigl (\Efield + [\vect v\times \Bfield ]/c\bigr )\cdot d\symbfscr {l} = -\dfrac 1c\dfrac {d\Phi }{dt}\). Це&nbsp;— загальний закон
+індукції&nbsp;<span class="textup">(<a href="ch12.html#eq:FaradayLawInt">12.1</a>)</span>, який охоплює обидва механізми: сила Лоренца відповідає за ЕРС руху (попередній параграф), а&nbsp;вихрове електричне поле&nbsp;— за ЕРС
+у нерухомому контурі.
+</p>
+
+<p>
+За Максвеллом, явище електромагнітної індукції полягає саме в&nbsp;тому, що <em>будь-яке змінне магнітне поле збуджує в&nbsp;просторі електричне поле</em>; провідники для цього взагалі не потрібні&nbsp;— вони лише дають змогу
+побачити це поле через індукційний струм, який воно викликає в&nbsp;них (рис.&nbsp;<a href="ch12.html#pic:VortexField">12.9</a>).
+</p>
+
+<figure id="autoid-321" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-192"
+    class="lateximagesource"
+><!--
+𝜕𝐁
+     >0
+𝜕𝑡
+
+
+
+
+     𝐄
+--><img
+   src="main-html-images\image-192.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.9. Вихрове електричне поле, породжене зростаючим у&nbsp;часі магнітним полем<a id="pic:VortexField"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+
+<div class="cb-attention">
+
+<p>
+На відміну від електростатики, де завжди \(\rot \Efield =0\) (поле потенціальне), у присутності змінного магнітного поля \(\rot \Efield \neq 0\). Це принципово важлива відмінність: індуковане електричне поле не є потенціальним&nbsp;—
+воно <em><span
+    class="textcolor"
+    style="color:#990000"
+>вихрове</span></em>: його силові лінії ніде не починаються й&nbsp;не закінчуються (на відміну від ліній електростатичного поля, які завжди починаються й&nbsp;закінчуються на зарядах), а&nbsp;замкнені самі на себе, подібно до силових ліній
+магнітного поля. Електричне поле, породжене зміною магнітного поля, має <em>зовсім іншу структуру</em>, ніж електростатичне, і&nbsp;не пов’язане безпосередньо з&nbsp;жодними електричними зарядами.
+</p>
+
+<p>
+Чому ж тоді це поле взагалі називають <em>електричним</em>, якщо воно має інше походження й&nbsp;іншу конфігурацію ліній, ніж звичне статичне поле? Відповідь проста й фундаментальна: <em>вихрове поле діє на заряд точнісінько так
+само, як і електростатичне</em>,&nbsp;— а&nbsp;саме це ми з&nbsp;самого початку курсу вважали <em>головною визначальною властивістю</em> електричного поля. Саме на прискоренні заряджених частинок вихровим електричним полем
+ґрунтується робота <em><span
+    class="textcolor"
+    style="color:#990000"
+>бетатрона</span></em>&nbsp;— прискорювача електронів, у&nbsp;якому змінне поле потужного електромагніта породжує вихори електричного поля, здатні розганяти електрони до швидкостей, близьких до швидкості світла, причому розгін
+відбувається безпосередньо у&nbsp;вакуумній камері, без жодних металевих провідників.
+</p>
+</div>
+<!--
+...... section Явище самоіндукції ......
+-->
+<h4 id="autosec-959"><span class="sectionnumber">12.6&#x2003;</span>Явище самоіндукції</h4>
+<a id="main-html-autopage-959"></a>
+
+
+<p>
+<a id="LWR-ht-self-induction"></a>
+</p>
+<!--
+...... subsection Індуктивність контуру ......
+-->
+<h5 id="autosec-960">Індуктивність контуру</h5>
+<a id="main-html-autopage-960"></a>
+
+
+<p>
+Зміна струму в&nbsp;довільному контурі змінює й&nbsp;створюване ним магнітне поле, а&nbsp;отже&nbsp;— і власний магнітний потік крізь цей самий контур; за законом індукції це, своєю чергою, породжує в&nbsp;контурі ЕРС. Це явище
+називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>самоіндукцією</span></em> (рис.&nbsp;<a href="ch12.html#pic:SelfInduction">12.10</a>).
+</p>
+
+<figure id="autoid-322" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-193"
+    class="lateximagesource"
+><!--
+𝐼
+--><img
+   src="main-html-images\image-193.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.10. Контур зі струмом \(I\) і&nbsp;створюване ним власне магнітне поле<a id="pic:SelfInduction"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Якщо поблизу контуру немає феромагнетиків, поле \(\Bfield \), а&nbsp;отже, й&nbsp;повний магнітний потік \(\Phi \) крізь контур пропорційні силі струму \(I\) в&nbsp;ньому:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{11}\)</span>
+
+<!--
+
+
+                                                                       1
+                                                                  Φ=     𝐿𝐼,                                                                (12.12)                                     --><a id="eq:SelfInductionFlux"></a><!--
+                                                                       𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SelfInductionFlux} \tcbhighmath { \Phi = \frac 1c LI, }
+\end{equation}
+
+</p>
+
+<p>
+де коефіцієнт пропорційності \(L\) називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>індуктивністю контуру</span></em>&nbsp;— суто геометричною характеристикою (залежною від форми, розмірів контуру й&nbsp;від магнітних властивостей середовища навколо нього), яка не залежить від сили струму. При зміні струму
+в&nbsp;контурі, за законом Фарадея, виникає <em><span
+    class="textcolor"
+    style="color:#990000"
+>ЕРС самоіндукції</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{12}\)</span>
+
+<!--
+
+
+                                                                        𝐿 𝑑𝐼
+                                                                Eсі = − 2    .                                                               (12.13)                                      --><a id="eq:SelfInductionEMF"></a><!--
+                                                                        𝑐 𝑑𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SelfInductionEMF} \tcbhighmath { \emf _\text {сі} = -\frac {L}{c^2}\frac {dI}{dt}. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Знак «мінус» тут&nbsp;— знову прояв правила Ленца: ЕРС самоіндукції завжди напрямлена так, щоб протидіяти зміні сили струму в&nbsp;контурі&nbsp;— вона гальмує зростання струму й&nbsp;<em>підтримує</em> його спадання. Через цю
+властивість контур з&nbsp;великою індуктивністю поводиться подібно до тіла з&nbsp;великою механічною інерцією (масою): він «опирається» будь-якій швидкій зміні струму.
+</p>
+</div>
+
+
+<div class="cb-example">
+
+<p>
+<b>Приклади обчислення індуктивності.</b>
+</p>
+
+<p>
+<em>Соленоїд.</em> Магнітне поле всередині довгого соленоїда з&nbsp;магнетиком проникності \(\mu \), густиною намотки \(n=N/l\) витків на одиницю довжини (гл.&nbsp;<a href="ch10.html#MagFieldMedia">10</a>), дорівнює \(B = 4\pi
+\mu NI/(cl)\). Повний магнітний потік крізь усі \(N\) витків соленоїда \(\Phi = NBS = \dfrac {4\pi \mu N^2}{cl}IS\); порівнюючи з означенням&nbsp;<span class="textup">(<a
+href="ch12.html#eq:SelfInductionFlux">12.12</a>)</span>, отримуємо індуктивність соленоїда:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{13}\)</span>
+
+<!--
+
+
+                                                                    4𝜋𝜇𝑁 2 𝑆
+                                                               𝐿=            .                                                             (12.14)                                     --><a id="eq:SolenoidInductance"></a><!--
+                                                                       𝑙
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SolenoidInductance} L = \frac {4\pi \mu N^2 S}{l}.
+\end{equation}
+
+</p>
+
+<p>
+
+</p>
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:306pt ; ">
+
+<a id="main-html-autopage-964"></a>
+
+<p>
+<em>Тороїд.</em> Для тороїдальної котушки з&nbsp;\(N\) витками, прямокутним перерізом ширини \(b-a\) (де \(a\) і&nbsp;\(b\)&nbsp;— внутрішній і&nbsp;зовнішній радіуси) і&nbsp;висотою \(d\) (див. рис.) поле за теоремою про циркуляцію
+дорівнює \(B(r)=2\mu NI/(cr)\), а&nbsp;потік крізь один виток — \(\int _a^b B\,d\,dr\); тому індуктивність дорівнює
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{14}\)</span>
+
+<!--
+
+
+                                                                              𝑏
+                                                              𝐿 = 2𝜇𝑁 2 𝑑 ln ( ) .                                                            (12.15)                                          --><a id="eq:ToroidInductance"></a><!--
+                                                                              𝑎
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ToroidInductance} L = 2\mu N^2 d\ln \left (\frac {b}{a}\right ).
+\end{equation}
+
+</p>
+
+</div>
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:176pt ; ">
+
+<a id="main-html-autopage-965"></a>
+
+<p>
+<span
+    id="lateximage-main-html-194"
+    class="lateximagesource"
+><!--
+𝐼   𝐼
+
+
+
+
+    a
+
+        b
+--><img
+   src="main-html-images\image-194.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+</div>
+
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+В&nbsp;гауссовій системі одиниць індуктивність, як неважко переконатись з формул&nbsp;<span class="textup">(<a href="ch12.html#eq:SolenoidInductance">12.14</a>)</span>–<span class="textup">(<a
+href="ch12.html#eq:ToroidInductance">12.15</a>)</span>, вимірюється просто в&nbsp;<em>сантиметрах</em>, \([L]=\text {см}\)&nbsp;— ще одне яскраве підтвердження того, що індуктивність, як і&nbsp;ємність (гл.&nbsp;<a
+href="ch6.html#ElEnergy">6</a>),&nbsp;— суто <em>геометрична</em> характеристика контуру (при сталому \(\mu \)). Для переходу до практичних одиниць: \(1\ \text {Гн}=10^{9}\ \text {см}\).
+</p>
+</div>
+<!--
+...... subsection Перехідні процеси в-колі з-індуктивністю ......
+-->
+<h5 id="autosec-968">Перехідні процеси в&nbsp;колі з&nbsp;індуктивністю</h5>
+<a id="main-html-autopage-968"></a>
+
+
+<p>
+<em>Встановлення струму в&nbsp;\(LR\)-колі.</em> Розглянемо коло з&nbsp;послідовно з’єднаних джерела ЕРС \(\emf \), котушки індуктивності \(L\), резистора \(R\) і&nbsp;ключа \(S\) (рис.&nbsp;<a
+href="ch12.html#pic:LRTurnOn">12.11</a>). Після замикання ключа закон Ома для кола, \(\emf + \emf _\text {сі} = IR\), з&nbsp;урахуванням формули&nbsp;<span class="textup">(<a
+href="ch12.html#eq:SelfInductionEMF">12.13</a>)</span>, набуває вигляду
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{15}\)</span>
+
+<!--
+
+
+                                                                   𝐿 𝑑𝐼
+                                                                         + 𝐼𝑅 = E .                                                                 (12.16)                                         --><a id="eq:LRTurnOnEq"></a><!--
+                                                                   𝑐2 𝑑𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:LRTurnOnEq} \frac {L}{c^2}\frac {dI}{dt} + IR = \emf .
+\end{equation}
+
+</p>
+
+<figure id="autoid-323" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-195"
+    class="lateximagesource"
+><!--
+    E
+
+
+
+
+𝐿       𝑅
+
+
+
+
+    𝑆
+--><img
+   src="main-html-images\image-195.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span> <span
+   id="lateximage-main-html-196"
+   class="lateximagesource"
+><!--
+𝐼
+E
+𝑅
+
+
+
+
+    𝑡
+--><img
+   src="main-html-images\image-196.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.11. Встановлення струму в&nbsp;колі з&nbsp;індуктивністю після замикання ключа<a id="pic:LRTurnOn"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Це рівняння&nbsp;— повний аналог рівняння зарядки конденсатора (гл.&nbsp;<a href="ch7.html#SteadyCurrent">7</a>), і його розв’язок (з&nbsp;початковою умовою \(I(0)=0\))&nbsp;— струм, що асимптотично наближається до
+стаціонарного значення \(\emf /R\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{16}\)</span>
+
+<!--
+
+
+                                                                 E                          𝐿
+                                                        𝐼(𝑡) =       (1 − 𝑒−𝑡/𝜏 ) ,   𝜏=                                                     (12.17)                                          --><a id="eq:LRTurnOnSolution"></a><!--
+                                                                 𝑅                         𝑐2 𝑅
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:LRTurnOnSolution} I(t) = \frac {\emf }{R}\left (1-e^{-t/\tau }\right ), \qquad \tau = \frac {L}{c^2R}
+\end{equation}
+
+</p>
+
+<p>
+— сталу часу \(\tau \) називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>часом релаксації</span></em> \(LR\)-кола.
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Екстраструми при розмиканні.</span></em> Нехай тепер котушка з&nbsp;індуктивністю \(L\) і&nbsp;власним (внутрішнім) опором обмотки \(r\) спочатку під’єднана до джерела ЕРС \(\emf \) через ключ \(S\) і резистор \(R\), під’єднаний
+паралельно котушці (рис.&nbsp;<a href="ch12.html#pic:LRTurnOff">12.12</a>); у&nbsp;сталому режимі через котушку тече струм \(I_0 = \emf /r\).
+</p>
+
+<figure id="autoid-324" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-197"
+    class="lateximagesource"
+><!--
+     𝑅
+
+
+    𝐿, 𝑟
+
+
+
+
+𝑆
+           E
+--><img
+   src="main-html-images\image-197.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span> <span
+   id="lateximage-main-html-198"
+   class="lateximagesource"
+><!--
+ 𝐼
+
+𝐼0
+
+
+
+
+     𝑡
+--><img
+   src="main-html-images\image-198.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.12. Екстраструм розмикання в&nbsp;колі з&nbsp;індуктивністю<a id="pic:LRTurnOff"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Після розмикання ключа \(S\) (відключення джерела) магнітне поле котушки, а&nbsp;отже, і&nbsp;потік крізь неї, починають спадати. Це, за законом Ленца, збуджує ЕРС самоіндукції \(\emf _\text {сі}\) і&nbsp;підтримуваний нею <em><span
+    class="textcolor"
+    style="color:#990000"
+>екстраструм розмикання</span></em>&nbsp;— індукційний струм, що тепер тече вже через резистор \(R\) (замкнене коло \(L\)–\(r\)–\(R\) без джерела). Закон Ома для цього контуру: \(I(R+r) = -\dfrac {L}{c^2}\dfrac {dI}{dt}\), звідки
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{17}\)</span>
+
+<!--
+
+                                                                      ′                𝐿
+                                                       𝐼(𝑡) = 𝐼0 𝑒−𝑡/𝜏 ,   𝜏′ =              .                                             (12.18)                                         --><a id="eq:LRTurnOffSolution"></a><!--
+                                                                                  𝑐2 (𝑅 + 𝑟)
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:LRTurnOffSolution} I(t) = I_0\, e^{-t/\tau &apos;}, \qquad \tau &apos; = \frac {L}{c^2(R+r)}.
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Якщо \(R\gg r\) (типова ситуація, коли навантаження має значно більший опір, ніж провід самої котушки), то в&nbsp;момент розмикання ЕРС самоіндукції досягає значення \(\emf _\text {сі} = \dfrac {R+r}{r}\,\emf \, e^{-t/\tau
+&apos;}\approx \dfrac {R}{r}\,\emf \, e^{-t/\tau &apos;}\), яке при \(R\gg r\) може <em>значно перевищувати</em> ЕРС самого джерела \(\emf \)! Саме тому раптове розмикання кола з&nbsp;великою індуктивністю (наприклад,
+вимкнення потужного електромагніта чи реле) часто супроводжується електричним пробоєм або яскравою іскрою на контактах ключа&nbsp;— індуктивність «чинить опір» різкому зникненню струму настільки завзято, що готова створити на
+короткий час дуже високу напругу.
+</p>
+</div>
+<!--
+...... section Індукція в-надпровідниках. Ефект Мейснера ......
+-->
+<h4 id="autosec-979"><span class="sectionnumber">12.7&#x2003;</span>Індукція в&nbsp;надпровідниках. Ефект Мейснера</h4>
+<a id="main-html-autopage-979"></a>
+
+
+<p>
+<a id="LWR-ht-superconductors-induction"></a>
+</p>
+
+<p>
+В&nbsp;розділі&nbsp;<a href="ch8.html#CurrentsInMedia">8</a> ми вже розглядали явище надпровідності. Для електромагнітної індукції існування надпровідного стану цікаві: стала часу кола \(\tau =L/(c^2R)\) при \(R\to 0\) стає
+нескінченною, а&nbsp;індукційні струми&nbsp;— незгасаючими.
+</p>
+<!--
+...... subsection Замороження потоку ......
+-->
+<h5 id="autosec-980">Замороження потоку</h5>
+<a id="main-html-autopage-980"></a>
+
+
+<p>
+Розглянемо замкнене кільце з&nbsp;індуктивністю \(L\) й&nbsp;опором \(R\) у&nbsp;зовнішньому полі (рис.&nbsp;<a href="ch12.html#tikz:flux-conservation">12.13</a>).
+</p>
+
+<p>
+Сумарний потік крізь кільце складається із зовнішнього \(\Phi _\text {зовн}\) і&nbsp;власного \(LI/c\), а&nbsp;повна ЕРС індукції дорівнює \(IR\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{18}\)</span>
+
+<!--
+
+
+                                                                    1 𝑑           𝐿𝐼
+                                                                −        (Φзовн +    ) = 𝐼𝑅.                                                            (12.19)                                  --><a id="eq:SCFluxLaw"></a><!--
+                                                                    𝑐 𝑑𝑡          𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SCFluxLaw} -\frac 1c\frac {d}{dt}\left (\Phi _\text {зовн}+\frac {LI}{c}\right )=IR.
+\end{equation}
+
+</p>
+
+<p>
+Якщо \(R=0\) (надпровідне кільце), то
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{19}\)</span>
+
+<!--
+
+                                                                           𝐿𝐼
+                                                                 Φзовн +      = const                                                                (12.20)                                  --><a id="eq:SCFluxFrozen"></a><!--
+                                                                           𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SCFluxFrozen} \Phi _\text {зовн}+\frac {LI}{c}=\const
+\end{equation}
+
+</p>
+
+<p>
+— повний магнітний потік крізь кільце <em>зберігається</em> (замороження потоку). Будь-яку зміну зовнішнього потоку кільце компенсує струмом \(\Delta I=-c\,\Delta \Phi _\text {зовн}/L\) (це правило Ленца в&nbsp;найчистішому
+вигляді), а&nbsp;якщо зовнішнє поле зникає, у&nbsp;кільці лишається <em>незгасаючий струм</em> \(I=c\Phi /L\), що підтримує колишній потік.
+</p>
+
+<figure id="autoid-325" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-199"
+    class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-199.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.13. Замороження магнітного потоку в&nbsp;надпровідному кільці при зміні його положення в&nbsp;зовнішньому полі: кільце підтримує колишній потік незгасаючим струмом<a id="tikz:flux-conservation"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+У&nbsp;дослідах зі свинцевими кільцями спаду такого струму не вдавалося виявити протягом року, звідки випливає оцінка часу спаду понад \(10^{5}\) років; для порівняння, стала часу звичайного \(LR\)-кола&nbsp;— частки секунди.
+</p>
+<!--
+...... subsection Ідеальний провідник чи надпровідник? ......
+-->
+<h5 id="autosec-984">Ідеальний провідник чи надпровідник?</h5>
+<a id="main-html-autopage-984"></a>
+
+
+<p>
+У&nbsp;масивному зразку з&nbsp;нескінченною провідністю закон Ома \(\vect j=\lambda \Efield \) дає \(\Efield =0\) (інакше струм був би нескінченним), а&nbsp;тоді з \(\rot \Efield =-\frac 1c\,\partial \Bfield /\partial
+t\)&nbsp;<span class="textup">(<a href="ch12.html#eq:CurlEDiff">12.11</a>)</span> маємо \(\partial \Bfield /\partial t=0\): індукція всередині ідеального провідника <em>не може змінюватися</em>, і&nbsp;зразок зберігає те поле,
+що було в&nbsp;ньому в&nbsp;момент переходу.
+</p>
+
+<p>
+Проте в&nbsp;1933&nbsp;р. В.&nbsp;Мейснер і&nbsp;Р.&nbsp;Оксенфельд виявили, що для справжніх надпровідників це не так: якщо зразок, що перебуває в&nbsp;слабкому полі, охолодити нижче \(T_c\), поле з&nbsp;нього
+<em>виштовхується</em>, і&nbsp;в&nbsp;товщі зразка \(\Bfield =0\) незалежно від того, чи поле було прикладене до переходу, чи після нього (<em><span
+    class="textcolor"
+    style="color:#990000"
+>ефект Мейснера</span></em>). Це не можна пояснити самою лише індукцією при \(R\to 0\), яка, навпаки, заморожувала б поле. Отже, надпровідність — не просто \(R=0\), а&nbsp;особливий стан речовини з&nbsp;\(\Bfield =0\) всередині.
+</p>
+<!--
+...... subsection Надпровідник як ідеальний діамагнетик ......
+-->
+<h5 id="autosec-985">Надпровідник як ідеальний діамагнетик</h5>
+<a id="main-html-autopage-985"></a>
+
+
+<p>
+У&nbsp;надпровіднику \(\Bfield =\Hfield +4\pi \vect M=0\), тому намагніченість \(\vect M=-\Hfield /4\pi \), тобто \(\chi =-1/4\pi \) і&nbsp;\(\mu =0\) (гл.&nbsp;<a href="ch10.html#MagFieldMedia">10</a>). Це найсильніший
+можливий діамагнетизм: у&nbsp;звичайних діамагнетиків \(|\chi |\sim 10^{-6}\)–\(10^{-5}\). Поле виштовхують поверхневі екрануючі струми, які течуть у тонкому шарі, а&nbsp;не строго по поверхні.
+</p>
+
+<p>
+Товщину цього шару можна оцінити з&nbsp;рівнянь Ф.&nbsp;і&nbsp;Г.&nbsp;Лондонів (1935&nbsp;р.). Для носіїв заряду \(q\) і&nbsp;маси \(m\) з&nbsp;концентрацією \(n_s\) без зіткнень \(m\,d\vect v/dt=q\Efield \), тобто \(\partial \vect
+j/\partial t=(n_sq^2/m)\Efield \). Узявши ротор і скориставшись&nbsp;<span class="textup">(<a href="ch12.html#eq:CurlEDiff">12.11</a>)</span>, знаходимо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{20}\)</span>
+
+<!--
+
+
+                                                                                                         𝜕          𝑛 𝑞2
+                                                                                                            [𝛁 × 𝐣 + 𝑠 𝐁] = 0.
+                                                                                                         𝜕𝑡          𝑚𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {\partial }{\partial t}\left [\rot \vect j+\frac {n_sq^2}{mc}\Bfield \right ]=0.
+\end{equation*}
+
+</p>
+
+<p>
+Для ідеального провідника вираз у&nbsp;дужках&nbsp;— стала величина (зберігається початкове поле). Лондони постулювали, що в&nbsp;надпровіднику він дорівнює <em>нулю</em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{20}\)</span>
+
+<!--
+
+
+                                                                            𝑛𝑠 𝑞2
+                                                                 𝛁×𝐣=−            𝐁.                                                             (12.21)                                         --><a id="eq:LondonSecond"></a><!--
+                                                                             𝑚𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:LondonSecond} \rot \vect j=-\frac {n_sq^2}{mc}\Bfield .
+\end{equation}
+
+</p>
+
+<p>
+Разом з&nbsp;\(\rot \Bfield =4\pi \vect j/c\) (гл.&nbsp;<a href="ch9.html#MagFieldVacuum">9</a>) і&nbsp;\(\divg \Bfield =0\) це дає \(\nabla ^2\Bfield =\Bfield /\delta _L^2\), де
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{21}\)</span>
+
+<!--
+
+
+                                                                            𝑚𝑐2
+                                                                  𝛿𝐿 =             .                                                              (12.22)                                         --><a id="eq:LondonDepth"></a><!--
+                                                                         √ 4𝜋𝑛𝑠 𝑞2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:LondonDepth} \tcbhighmath { \delta _L=\sqrt {\frac {mc^2}{4\pi n_sq^2}}. }
+\end{equation}
+
+</p>
+
+<p>
+Поблизу плоскої поверхні розв’язок має вигляд \(B=B_0e^{-x/\delta _L}\): поле проникає лише на <em><span
+    class="textcolor"
+    style="color:#990000"
+>лондонівську глибину</span></em> \(\delta _L\). При \(n_s\sim 10^{22}\)&nbsp;см\(^{-3}\), \(q=e\), \(m=m_e\) маємо \(\delta _L\sim 5\cdot 10^{-6}\)&nbsp;см, тобто десятки нанометрів, що добре узгоджується з дослідами. (Для
+куперівських пар \(q=2e\), \(m\to 2m_e\), \(n_s\to n/2\), а&nbsp;комбінація \(n_sq^2/m\) та сама.)
+</p>
+
+<p>
+Розглянемо тепер надпровідну кулю радіуса \(a\), вміщену в&nbsp;зовнішнє однорідне магнітне поле \(\Bfield _0\) (рис.&nbsp;<a href="ch12.html#pic:BSupercond">12.14</a>). Припустимо, що \(a\gg \delta _L\), тобто лондонівський шар
+проникнення дуже тонкий порівняно з&nbsp;розмірами кулі. Тоді в&nbsp;усьому об’ємі надпровідника, за винятком тонкого приповерхневого шару, можна вважати \(\Bfield =0\).
+</p>
+
+<figure id="autoid-326" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-200"
+    class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-200.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;12.14. Надпровідна куля в&nbsp;зовнішньому магнітному полі: силові лінії обтікають кулю, не проникаючи всередину&nbsp;— поле виштовхується поверхневими екрануючими струмами<a id="pic:BSupercond"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Між поведінкою провідника в&nbsp;електростатичному полі та надпровідника в&nbsp;магнітному полі існує глибока аналогія. В&nbsp;обох випадках матеріал <em>екранує</em> зовнішнє поле: провідник перерозподіляє вільні заряди так, щоб
+усередині нього зникло електричне поле,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{22}\)</span>
+
+<!--
+
+
+                                                                                                                  𝐄in = 0,                                                                                                          (12.23)
+
+-->
+
+<p>
+
+\begin{equation}
+\Efield _{\mathrm {in}}=0,
+\end{equation}
+
+</p>
+
+<p>
+а&nbsp;надпровідник створює екрануючі струми, які виштовхують магнітне поле з&nbsp;його об’єму,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{23}\)</span>
+
+<!--
+
+
+                                                                                                            𝐁in ≃ 0,    𝑎 ≫ 𝛿𝐿 .                                                                                                    (12.24)
+
+-->
+
+<p>
+
+\begin{equation}
+\Bfield _{\mathrm {in}}\simeq 0, \qquad a\gg \delta _L.
+\end{equation}
+
+</p>
+
+<p>
+В&nbsp;обох випадках екранування забезпечується перерозподілом заряджених носіїв: у&nbsp;звичайному провіднику виникає поверхнева густина заряду, а&nbsp;в&nbsp;надпровіднику&nbsp;— поверхневий струм у тонкому шарі
+проникнення. Ці індуковані джерела створюють поле, яке компенсує зовнішнє поле всередині матеріалу. Проте механізми екранування фізично різні: електростатичне екранування є наслідком перерозподілу вільних зарядів до стану рівноваги,
+тоді як магнітне екранування надпровідника є проявом ефекту Мейснера. Тому надпровідник не слід просто ототожнювати з&nbsp;ідеальним провідником.
+</p>
+
+<p>
+Спільним є й&nbsp;математичний апарат. Обидві задачі&nbsp;— про точковий заряд біля провідної поверхні та про магнітний диполь біля надпровідної поверхні&nbsp;— розв’язують <em><span
+    class="textcolor"
+    style="color:#990000"
+>методом зображень</span></em>. Підставою для цього є те, що в&nbsp;обох задачах поле поза матеріалом задовольняє рівняння Лапласа, а&nbsp;на поверхні матеріалу задана гранична умова, яку можна відтворити, замінивши матеріал
+фіктивним джерелом за поверхнею. Для провідника така умова&nbsp;— \(\Efield _\tau =0\), і&nbsp;її забезпечує фіктивний заряд протилежного знака; для надпровідника&nbsp;— \(B_n=0\), і&nbsp;її забезпечує фіктивний диполь
+протилежного напрямку.
+</p>
+<!--
+...... subsection Левітація ......
+-->
+<h5 id="autosec-989">Левітація</h5>
+<a id="main-html-autopage-989"></a>
+
+
+<p>
+Виштовхування поля означає, що на надпровідник діє сила. Скористаймося методом зображень: магніт над плоскою надпровідною пластиною поводиться так, ніби на такій самій глибині під поверхнею лежить його «дзеркальне
+відображення»&nbsp;— диполь, спрямований протилежно. Два співвісні антипаралельні диполі на відстані \(2h\) відштовхуються з&nbsp;енергією \(2p_m^2/(2h)^3\); оскільки відображення уявне, енергія взаємодії вдвічі менша:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{24}\)</span>
+
+<!--
+
+
+                                                                 𝑝2𝑚           𝑑𝑈   3𝑝2𝑚
+                                                            𝑈=       ,   𝐹=−      =      ,                                                    (12.25)                                          --><a id="eq:LevitationForce"></a><!--
+                                                                 8ℎ3           𝑑ℎ   8ℎ4
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:LevitationForce} U=\frac {p_m^2}{8h^3},\qquad F=-\frac {dU}{dh}=\frac {3p_m^2}{8h^4},
+\end{equation}
+
+</p>
+
+<p>
+де \(h\)&nbsp;— висота диполя над поверхнею. Прирівнявши \(F=mg\), знаходимо висоту левітації \(h=(3p_m^2/8mg)^{1/4}\) (задача&nbsp;<a href="ch12.html#prb:MagnetLevitation">12.14</a>).
+</p>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> За легендою, залізна труна пророка Магомета висить у&nbsp;повітрі без опори між магнітами. Для системи, що складається лише зі звичайних постійних магнітів, стійка статична левітація неможлива внаслідок
+теореми Ерншоу (див. розділ&nbsp;<a href="ch2.html#SteadyEfield">2</a>). Надпровідник, однак, дозволяє реалізувати стійку магнітну левітацію: його екрануючі струми не є наперед заданими джерелами, а&nbsp;виникають
+у&nbsp;відповідь на зовнішнє магнітне поле та забезпечують ефект Мейснера. У&nbsp;результаті взаємодія магніту з&nbsp;цими індукованими струмами може створити стійке положення рівноваги. У&nbsp;1945&nbsp;р.
+В.&nbsp;К.&nbsp;Аркадьєв продемонстрував левітацію постійного магніту над надпровідною свинцевою чашею, перетворивши легенду про «труну Магомета» на лабораторний експеримент.
+</p>
+</div>
+<!--
+...... subsection Квантування потоку ......
+-->
+<h5 id="autosec-990">Квантування потоку</h5>
+<a id="main-html-autopage-990"></a>
+
+
+<p>
+У&nbsp;надпровідному кільці потік не лише зберігається, а&nbsp;й&nbsp;<em>квантується</em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{25}\)</span>
+
+<!--
+
+
+                                                                                                                   𝜋ℏ𝑐
+                                                                                                Φ = 𝑛Φ0 ,   Φ0 =        ≈ 2,07 ⋅ 10−7 Гс ⋅ см2 .                                                                                 (12.26)
+                                                                                                                    |𝑒|
+
+-->
+
+<p>
+
+\begin{equation}
+\Phi =n\Phi _0, \qquad \Phi _0=\frac {\pi \hbar c}{|e|} \approx 2{,}07\cdot 10^{-7}~\mathrm {Гс}\cdot \mathrm {см}^2.
+\end{equation}
+
+</p>
+
+<p>
+Квант потоку відповідає заряду носіїв \(2e\) (куперівські пари). Його експериментально виміряли в&nbsp;1961&nbsp;р. (Р.&nbsp;Дівер і&nbsp;У.&nbsp;Фейрбенк; Б.&nbsp;Долл і&nbsp;М.&nbsp;Небауер), а&nbsp;на квантуванні потоку
+ґрунтуються надчутливі магнітометри SQUID.
+</p>
+<!--
+...... subsection Критичні параметри ......
+-->
+<h5 id="autosec-991">Критичні параметри</h5>
+<a id="main-html-autopage-991"></a>
+
+
+<p>
+Надпровідний стан має межі: він існує лише за певних температур, магнітних полів і струмів. Для надпровідників першого роду при \(T\to 0\) критичне поле \(H_c\) становить сотні гаусів: для свинцю \(H_c\approx 800~\mathrm {Гс}\), для
+алюмінію \(H_c\approx 100~\mathrm {Гс}\).
+</p>
+
+<p>
+Надпровідність може бути зруйнована і&nbsp;струмом, якщо його власне магнітне поле біля поверхні досягає критичного значення. Для дроту радіуса \(r\) правило Сілсбі дає
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{12.}{26}\)</span>
+
+<!--
+
+                                                                                                                        𝑐𝑟𝐻𝑐
+                                                                                                                 𝐼𝑐 =        .                                                                                                       (12.27)
+                                                                                                                          2
+
+-->
+
+<p>
+
+\begin{equation}
+I_c=\frac {crH_c}{2}.
+\end{equation}
+
+</p>
+
+<p>
+Надпровідники другого роду поводяться інакше: між нижнім і&nbsp;верхнім критичними полями \(H_{c1}\) та \(H_{c2}\) магнітне поле проникає в&nbsp;надпровідник у&nbsp;вигляді <em><span
+    class="textcolor"
+    style="color:#990000"
+>квантованих вихорів</span></em>. Закріплення вихорів на дефектах кристалічної структури перешкоджає їхньому руху і&nbsp;тому відіграє важливу роль у&nbsp;стійкості левітації.
+</p>
+
+<p>
+Сплави <span
+    id="lateximage-main-html-201"
+    class="lateximagesource"
+><!--
+NbTi
+--><img
+   src="main-html-images\4DC1B1776375E55FCAFD46141BCCB2A9.svg"
+   alt="\ce{NbTi}"
+   style=""
+   class="lateximage"
+></span> та <span
+   id="lateximage-main-html-202"
+   class="lateximagesource"
+><!--
+Nb3 Sn
+--><img
+    src="main-html-images\7BCAD5FDACFA7D9C03FC7AB223C54F68.svg"
+    alt="\ce{Nb3Sn}"
+    style=""
+    class="lateximage"
+></span> здатні витримувати поля понад \(20~\mathrm {Тл}\), тому з них виготовляють обмотки сильних магнітів для магнітно-резонансних томографів і прискорювачів. Високотемпературні керамічні надпровідники, зокрема YBCO з
+\(T_c\approx 93~\mathrm {К}\), дозволяють реалізовувати надпровідний стан при охолодженні рідким азотом.
+</p>
+<!--
+...... section Підсумки ......
+-->
+<h4 id="autosec-996">Підсумки</h4>
+<a id="main-html-autopage-996"></a>
+
+
+<p>
+Явище електромагнітної індукції&nbsp;— виникнення ЕРС у&nbsp;контурі при зміні охоплюваного ним магнітного потоку&nbsp;— остаточно поєднує електрику та магнетизм у&nbsp;єдину теорію. Кількісно воно описується законом \(\emf
+_\text {інд}=-\dfrac 1c\dfrac {d\Phi }{dt}\), а&nbsp;знак «мінус» (правило Ленца) є наслідком закону збереження енергії: індукційний струм завжди протидіє зміні потоку, що його породжує.
+</p>
+
+<p>
+Потік може змінюватися внаслідок <em>руху</em> контуру (зміна площі чи орієнтації) або внаслідок зміни <em>поля</em>. У&nbsp;першому випадку ЕРС створює сила Лоренца, що діє на носії заряду в&nbsp;провіднику, що рухається (ЕРС руху);
+на цьому ґрунтується робота генераторів. У другому випадку носії заряду нерухомі, і&nbsp;їх прискорює <em><span
+    class="textcolor"
+    style="color:#990000"
+>вихрове електричне поле</span></em> \(\rot \Efield =-\dfrac 1c\dfrac {\partial \Bfield }{\partial t}\): воно не є потенціальним, але діє на заряд так само як і&nbsp;електростатичне (бетатрон, індукційне нагрівання, струми Фуко).
+Поділ на ці два механізми залежить від системи відліку, а&nbsp;загальний закон індукції охоплює обидва: \(\emf _\text {інд}=\oint (\Efield +[\vect v\times \Bfield ]/c)\cdot d\symbfscr {l}=-\dfrac 1c\dfrac {d\Phi }{dt}\). Сила
+Лоренца (гл.&nbsp;<a href="ch9.html#MagFieldVacuum">9</a>) демонструє фундаментальний зв’язок магнітного поля з&nbsp;рухом зарядів, а&nbsp;вихрове поле&nbsp;— з&nbsp;тим, що змінне магнітне поле саме породжує електричне.
+</p>
+
+<p>
+Змінний струм у&nbsp;контурі створює змінний власний потік, і&nbsp;тому в&nbsp;ньому виникає ЕРС самоіндукції \(\emf _\text {сі}=-\dfrac {L}{c^2}\dfrac {dI}{dt}\). Індуктивність \(L\) залежить від форми контуру
+й&nbsp;середовища, а&nbsp;не від сили струму; вона відіграє роль «інерції» кола. Унаслідок цього струм у&nbsp;\(LR\)-колі встановлюється за експонентою з&nbsp;часом релаксації \(\tau =L/(c^2R)\), а&nbsp;при розмиканні кола
+з&nbsp;великою індуктивністю виникають екстраструми та ЕРС, що можуть багаторазово перевищувати ЕРС джерела.
+</p>
+
+<p>
+У&nbsp;надпровідників (\(R=0\)) сумарний потік крізь замкнене кільце зберігається, \(\Phi _\text {зовн}+LI/c=\const \), а&nbsp;індукційні струми не згасають. Ефект Мейснера показує, що надпровідник&nbsp;— не просто ідеальний
+провідник: у&nbsp;товщі зразка \(\Bfield =0\) за будь-якої передісторії, тобто це ідеальний діамагнетик (\(\chi =-1/4\pi \), \(\mu =0\)); поле проникає лише на лондонівську глибину \(\delta _L\). Виштовхування поля породжує силу, що
+робить можливою левітацію магніту над надпровідником.
+</p>
+<!--
+...... section Задачі ......
+-->
+<h4 id="autosec-997">Задачі</h4>
+<a id="main-html-autopage-997"></a>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-327"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.1.</span></span> <a id="autoid-328" ></a ><a id="prb:RodOnRails"></a> <em>Перемичка на рейках.</em> Перемичка завдовжки \(\ell =20\)&nbsp;см рівномірно
+ковзає по рейках зі швидкістю \(v=5\)&nbsp;м/с в&nbsp;однорідному полі \(B=500\)&nbsp;Гс, перпендикулярному до площини рейок. Опір замкненого контуру \(R=0{,}1\)&nbsp;Ом. Знайдіть ЕРС індукції, струм, силу Ампера й&nbsp;потужність,
+яку потрібно витрачати на рух перемички. Покажіть, що ця потужність дорівнює тепловій потужності \(I^2R\). (Використайте \(1\)&nbsp;СГСЕ потенціалу \(=300\)&nbsp;В, \(1\)&nbsp;А \(=3\cdot 10^{9}\)&nbsp;СГСЕ струму.)
+<em>Відповідь:</em> \(\emf =B\ell v/c\approx 1{,}7\cdot 10^{-4}\)&nbsp;СГСЕ \(=0{,}05\)&nbsp;В; \(I=0{,}5\)&nbsp;А; \(F=I\ell B/c=500\)&nbsp;дин \(=5\)&nbsp;мН; \(P=Fv=25\)&nbsp;мВт \(=\emf I=I^2R\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-329"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.2.</span></span> <a id="autoid-330" ></a ><a id="prb:FaradayDisk"></a> <em>Диск Фарадея.</em> Мідний диск радіуса \(a=10\)&nbsp;см обертається
+з&nbsp;частотою \(50\)&nbsp;об/с в однорідному полі \(B=1000\)&nbsp;Гс, перпендикулярному до диска. Знайдіть ЕРС між центром і краєм диска, якщо до цих точок дотикаються ковзні контакти. <em>Відповідь:</em> елемент радіуса \(dr\) має
+швидкість \(v=\omega r\), тому \(\emf =\dfrac 1c\int _0^a\omega rB\,dr=\dfrac {\omega Ba^2}{2c}\approx 5{,}2\cdot 10^{-4}\)&nbsp;СГСЕ \(\approx 0{,}16\)&nbsp;В.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-331"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.3.</span></span> <a id="autoid-332" ></a ><a id="prb:GeneratorNumbers"></a> <em>Генератор.</em> Рамка з&nbsp;\(N=100\) витків площею \(S=200\)&nbsp;см\(^2\)
+обертається з&nbsp;частотою \(50\)&nbsp;об/с в&nbsp;однорідному полі \(B=1000\)&nbsp;Гс. Знайдіть амплітуду ЕРС. Якщо рамка замкнена на опір \(R=10\)&nbsp;Ом, знайдіть амплітуду струму й&nbsp;середню потужність, яку потрібно
+витрачати на обертання (втрати на тертя не враховуйте). <em>Відповідь:</em> \(\emf _m=\dfrac {NBS\omega }{c}\approx 0{,}21\)&nbsp;СГСЕ \(\approx 63\)&nbsp;В; \(I_m\approx 6{,}3\)&nbsp;А; \(\langle P\rangle =\dfrac {\emf
+_m^2}{2R}\approx 0{,}2\)&nbsp;кВт (за законом збереження енергії — рівна середній електричній потужності).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-333"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.4.</span></span> <a id="autoid-334" ></a ><a id="prb:BallisticGalvanometerShort"></a> <em>Балістичний гальванометр.</em> Рамка гальванометра
+з&nbsp;\(N=200\) витків площею \(S=1{,}5\)&nbsp;см\(^2\) підвішена на&nbsp;нитці жорсткістю \(k=2\cdot 10^{-4}\)&nbsp;дин\(\cdot \)см/рад у&nbsp;полі \(B=1500\)&nbsp;Гс; момент інерції \(J=5\cdot 10^{-6}\)&nbsp;г\(\cdot
+\)см\(^2\). На&nbsp;дзеркалі підвісу відбивається промінь лазера, і&nbsp;зайчик на&nbsp;шкалі, віддаленій на&nbsp;\(L=3\)&nbsp;м, зміщується на&nbsp;\(x=2L\theta \). При&nbsp;вийманні магніту з&nbsp;котушки (\(R=20\)&nbsp;Ом)
+зайчик відхилився на&nbsp;\(x_\text {max}=12\)&nbsp;см. Знайдіть повний заряд \(Q\) та&nbsp;зміну потоку \(\Delta \Phi \).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-335"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.5.</span></span> <a id="autoid-336" ></a ><a id="prb:VortexCylinder"></a> <em>Вихрове поле.</em> Однорідне магнітне поле \(B(t)\), напрямлене вздовж осі,
+заповнює циліндричну область радіуса \(a\). Знайдіть напруженість вихрового електричного поля на відстані \(r\) від осі при \(r&lt;a\) та \(r&gt;a\). Оцініть її при \(r=a=5\)&nbsp;см і&nbsp;\(\dot {B}=10^{3}\)&nbsp;Гс/с. Чому поле поза
+циліндром відмінне від нуля, хоча там \(B=0\)? <em>Відповідь:</em> із симетрії лінії \(\Efield \)&nbsp;— кола навколо осі; \(2\pi rE=-\dfrac 1c\dot B\pi r^2\) при \(r&lt;a\), тобто \(E=-\dfrac {r}{2c}\dot B\); при \(r&gt;a\) потік
+дорівнює \(\dot B\pi a^2\), тобто \(E=-\dfrac {a^2}{2cr}\dot B\). При \(r=a=5\)&nbsp;см \(|E|\approx 8{,}3\cdot 10^{-8}\)&nbsp;СГСЕ \(\approx 2{,}5\cdot 10^{-5}\)&nbsp;В/см. Циркуляція \(\Efield \) по кільцю поза циліндром
+визначається потоком крізь <em>весь</em> циліндр, тому поле відмінне від нуля й&nbsp;там, де \(B=0\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-337"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.6.</span></span> <a id="autoid-338" ></a ><a id="prb:BetatronTurn"></a> <em>Бетатрон.</em> Електрон рухається в&nbsp;бетатроні по колу радіуса
+\(R=30\)&nbsp;см. Потік магнітного поля крізь орбіту зростає зі сталою швидкістю \(100\)&nbsp;Вб/с (\(=10^{10}\)&nbsp;Гс\(\cdot \)см\(^2\)/с). Яку енергію набуває електрон за один оберт? Скільки обертів і&nbsp;який шлях потрібні, щоб
+набрати енергію \(10\)&nbsp;МеВ (вважайте швидкість електрона близькою до \(c\))? <em>Відповідь:</em> \(\emf =\dfrac 1c\dfrac {d\Phi }{dt}\approx 0{,}33\)&nbsp;СГСЕ \(=100\)&nbsp;В, тому за оберт електрон набуває \(e\emf
+=100\)&nbsp;еВ; для \(10\)&nbsp;МеВ потрібно \(\approx 10^{5}\) обертів, що відповідає шляху \(\approx 2\pi R\cdot 10^5\approx 190\)&nbsp;км.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-339"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.7.</span></span> <a id="autoid-340" ></a ><a id="prb:FallingRod"></a> <em>Падаюча перемичка.</em> Провідна перемичка масою \(m=10\)&nbsp;г
+і&nbsp;довжиною \(\ell =20\)&nbsp;см ковзає без тертя вертикально вниз по двох вертикальних рейках у&nbsp;горизонтальному однорідному полі \(B=1000\)&nbsp;Гс, перпендикулярному до площини рейок. Рейки замкнено вгорі резистором
+опором \(R=0{,}01\)&nbsp;Ом (опором іншого не враховуйте). Знайдіть усталену швидкість падіння та покажіть, що потужність сили тяжіння дорівнює теплу, що виділяється в&nbsp;контурі. (\(1\)&nbsp;Ом \(\approx 1{,}1\cdot
+10^{-12}\)&nbsp;с/см.) <em>Відповідь:</em> \(mg=F_\text {А}=\dfrac {B^2\ell ^2v}{c^2R}\), тому \(v=\dfrac {mgRc^2}{B^2\ell ^2}\approx 2{,}5\)&nbsp;м/с; \(mgv=I^2R\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-341"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.8.</span></span> <a id="autoid-342" ></a ><a id="prb:LenzFromEnergy"></a> <em>Знак «мінус» у&nbsp;законі Фарадея із закону збереження енергії.</em> Замкнений
+контур опором \(R\) перебуває в&nbsp;зовнішньому магнітному полі; потік крізь контур \(\Phi (t)\) змінюється з&nbsp;часом, і&nbsp;в&nbsp;контурі тече індукційний струм \(I\). Припустимо, що закон індукції має вигляд \(\emf = s\,\dfrac
+{d\Phi }{dt}\), де \(s\)&nbsp;— невідомий знак (\(+1\) або \(-1\)). Скориставшись законом збереження енергії, знайдіть \(s\). <em>Вказівка:</em> порівняйте потужність, яку зовнішнє поле передає струму, із потужністю, що виділяється
+в&nbsp;контурі як джоулеве тепло. Розгляньте випадок, коли потік зростає.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-343"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.9.</span></span> <a id="autoid-344" ></a ><a id="prb:LRSwitchOn"></a> <em>Встановлення струму.</em> Котушка з&nbsp;індуктивністю \(L=0{,}5\)&nbsp;Гн
+і&nbsp;опором \(R=50\)&nbsp;Ом підключається до джерела з&nbsp;ЕРС \(\emf =100\)&nbsp;В. Знайдіть сталу часу, стаціонарний струм, струм через \(5\)&nbsp;мс після замикання та час, за який струм досягне \(90\%\) стаціонарного.
+(Розрахунок можна вести в&nbsp;СІ, де \(\tau =L/R\).) <em>Відповідь:</em> \(\tau =L/R=10\)&nbsp;мс; \(I_\infty =\emf /R=2\)&nbsp;А; \(I(5\text {~мс})=I_\infty (1-e^{-0{,}5})\approx 0{,}79\)&nbsp;А; \(t_{90}=\tau \ln 10\approx
+23\)&nbsp;мс.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-345"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.10.</span></span> <a id="autoid-346" ></a ><a id="prb:OpenCircuitEMF"></a> <em>Екстраструм розмикання.</em> Котушка з&nbsp;\(L=1\)&nbsp;Гн і&nbsp;опором
+\(r=1\)&nbsp;Ом підключена через ключ до джерела з&nbsp;\(\emf =10\)&nbsp;В; паралельно котушці ввімкнено резистор \(R=1\)&nbsp;кОм. Знайдіть струм у&nbsp;котушці до розмикання, максимальну ЕРС самоіндукції після розмикання
+ключа та час спаду струму. Порівняйте з&nbsp;\(\emf \). <em>Відповідь:</em> \(I_0=\emf /r=10\)&nbsp;А; \(\emf _\text {сі}(0)=I_0(R+r)\approx 10\)&nbsp;кВ, тобто у&nbsp;\(\sim 10^{3}\) разів більше за \(\emf \); \(\tau
+&apos;=L/(R+r)\approx 1\)&nbsp;мс.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-347"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.11.</span></span> <a id="autoid-348" ></a ><a id="prb:MeissnerSphere"></a> <em>Поле навколо надпровідної кулі.</em> Надпровідна куля радіуса \(a\) вміщена в
+однорідне зовнішнє поле \(\Bfield _0\). У&nbsp;наближенні ідеального діамагнетика (\(\mu =0\)) знайдіть розподіл поля зовні кулі та переконайтеся, що нормальна складова поля на її поверхні дорівнює нулю. <em>Відповідь:</em> \(\Phi = B_0
+r\cos \theta + \dfrac {B_0a^3}{2r^2}\cos \theta \); \(B_r = B_0\cos \theta \left (1-\dfrac {a^3}{r^3}\right )\), \(B_\theta = -B_0\sin \theta \left (1+\dfrac {a^3}{2r^3}\right )\); при \(r=a\) маємо \(B_r=0\), \(B_\theta
+=-\dfrac 32B_0\sin \theta \).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-349"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.12.</span></span> <a id="autoid-350" ></a ><a id="prb:FrozenFlux"></a> <em>Замороження потоку.</em> Надпровідне кільце радіуса \(a=5\)&nbsp;см
+з&nbsp;індуктивністю \(L=250\)&nbsp;см помістили в&nbsp;нормальному стані в&nbsp;однорідне поле \(B_0=100\)&nbsp;Гс, перпендикулярне до площини кільця, охолодили нижче \(T_c\), а&nbsp;потім поле вимкнули. Знайдіть струм
+у&nbsp;кільці. Скільком квантам потоку \(\Phi _0=\pi \hbar c/|e|\approx 2{,}07\cdot 10^{-7}\)&nbsp;Гс\(\cdot \)см\(^2\) відповідає збережений потік? <em>Відповідь:</em> \(\Phi =B_0\pi a^2\approx 7{,}9\cdot
+10^{3}\)&nbsp;Гс\(\cdot \)см\(^2\); за&nbsp;<span class="textup">(<a href="ch12.html#eq:SCFluxFrozen">12.20</a>)</span> \(I=c\Phi /L\approx 9{,}4\cdot 10^{11}\)&nbsp;СГСЕ \(\approx 3\cdot 10^{2}\)&nbsp;А; \(\Phi /\Phi
+_0\approx 4\cdot 10^{10}\) квантів.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-351"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.13.</span></span> <a id="autoid-352" ></a ><a id="prb:SilsbeeCurrent"></a> <em>Критичний струм.</em> Свинцевий дріт радіуса \(r=1\)&nbsp;мм лишається
+надпровідним, поки поле на його поверхні не досягне \(H_c\approx 800\)&nbsp;Гс (правило Сілсбі). Знайдіть максимальний струм без втрати надпровідності. <em>Відповідь:</em> \(H(r)=\dfrac {2I}{cr}\), тому \(I_c=\dfrac
+{crH_c}{2}\approx 1{,}2\cdot 10^{12}\)&nbsp;СГСЕ \(\approx 4\cdot 10^{2}\)&nbsp;А.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-353"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.14.</span></span> <a id="autoid-354" ></a ><a id="prb:MagnetLevitation"></a> <em>Левітація магніту.</em> Малий магніт із магнітним моментом
+\(p_m=10^{3}\)&nbsp;Гс\(\cdot \)см\(^3\) (приблизно \(1\)&nbsp;см\(^3\) неодимового магніту) і&nbsp;масою \(8\)&nbsp;г, зорієнтований вертикально, розташований над плоскою надпровідною пластиною. На якій висоті він левітує?
+Скористайтеся&nbsp;<span class="textup">(<a href="ch12.html#eq:LevitationForce">12.25</a>)</span> і&nbsp;вважайте дипольне наближення прийнятним. <em>Відповідь:</em> \(h=\left (\dfrac {3p_m^2}{8mg}\right
+)^{1/4}\approx 2{,}6\)&nbsp;см.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-355"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 12.15.</span></span> <a id="autoid-356" ></a ><a id="prb:LondonDepth"></a> <em>Глибина проникнення.</em> Оцініть лондонівську глибину проникнення для
+\(n_s=10^{22}\)&nbsp;см\(^{-3}\) (носії&nbsp;— електрони, \(q=e\), \(m=m_e\)). У&nbsp;скільки разів зменшиться поле на відстані \(5\delta _L\) від поверхні надпровідника? <em>Відповідь:</em> \(\delta _L=\sqrt {\dfrac {m_ec^2}{4\pi
+n_se^2}}\approx 5\cdot 10^{-6}\)&nbsp;см \(=50\)&nbsp;нм; \(B(5\delta _L)=B_0e^{-5}\), тобто поле зменшується приблизно у&nbsp;\(150\) разів.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Сформулюйте суть явища електромагнітної індукції. Опишіть три групи дослідів Фарадея (рис.&nbsp;<a href="ch12.html#pic:FaradayExperiments">12.1</a>). Що в&nbsp;них спільного і&nbsp;чому
+важливою є лише відносна швидкість магніту та котушки?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Коли в&nbsp;контурі виникає індукційний струм, а&nbsp;коли ні? Чому сама причина зміни магнітного потоку не впливає на існування струму?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Запишіть закон електромагнітної індукції в&nbsp;інтегральній формі. Що означає знак «мінус» і&nbsp;якими трьома способами може змінюватися магнітний потік крізь контур?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> Виведіть вираз для роботи сили Ампера при зміщенні перемички на \(dx\) (рис.&nbsp;<a href="ch12.html#tikz:frame_with_rod">12.2</a>) і&nbsp;покажіть, що \(dA = \frac {I}{c}\,d\Phi \). Яка
+складова поля \(\Bfield \) виконує роботу, а&nbsp;яка ні?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Магнітне поле не виконує роботи, але при переміщенні перемички зі струмом робота виконується. Як розв’язується ця суперечність? Що таке складові швидкості \(\vect {u}_{\perp }\) та \(\vect
+{u}_{\parallel }\) і&nbsp;яку роль відіграють сторонні ЕРС?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> Що є безпосередньою причиною ЕРС індукції в&nbsp;рухомій перемичці (рис.&nbsp;<a href="ch12.html#tikz:move_rod">12.3</a>)? Виведіть вираз \(\emf _\text {інд} = -B\ell v/c\) і покажіть, що
+він дає закон Фарадея.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> Чому в&nbsp;рухомому провіднику причиною ЕРС є сила Лоренца, а&nbsp;в&nbsp;системі відліку, пов’язаній із самим провідником,&nbsp;— вихрове електричне поле? Про що це свідчить щодо
+співвідношення електричного й&nbsp;магнітного полів?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Поясніть принцип роботи найпростішого генератора змінного струму (рис.&nbsp;<a href="ch12.html#pic:ACGenerator">12.4</a>). Виведіть формулу для ЕРС та струму в&nbsp;рамці, що обертається
+в&nbsp;однорідному полі.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> Яка причина ЕРС індукції в&nbsp;нерухомому контурі, якщо магнітне поле не діє на нерухомі заряди?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Сформулюйте правило Ленца (рис.&nbsp;<a href="ch12.html#pic:LenzRule">12.6</a>). Чому воно є наслідком закону збереження енергії? Що сталося б, якби індукційний струм підсилював зміну потоку?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> Що таке струми Фуко? Наведіть приклади їх корисного (індукційне нагрівання, магнітне демпфування) та шкідливого прояву.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Як записується загальний закон індукції для контуру, що рухається в&nbsp;змінному полі? Який внесок дають сила Лоренца й&nbsp;вихрове електричне поле?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">13.</span> Запишіть теорему про циркуляцію електричного поля в&nbsp;інтегральній та диференціальній формі. У&nbsp;чому принципова відмінність вихрового електричного поля від електростатичного? Чому його
+все ж називають електричним?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">14.</span> Що таке самоіндукція та індуктивність контуру? Від чого вона залежить, а&nbsp;від чого ні? Запишіть ЕРС самоіндукції та поясніть її інерційну роль у&nbsp;колі.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">15.</span> Виведіть індуктивність довгого соленоїда. У&nbsp;яких одиницях вимірюється індуктивність у&nbsp;гауссовій системі і&nbsp;чому це підтверджує її геометричний характер?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">16.</span> Виведіть закон зростання струму в&nbsp;\(LR\)-колі після замикання ключа. Що таке час релаксації \(\tau \) і&nbsp;від чого він залежить?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">17.</span> Що таке екстраструм розмикання? Чому при \(R\gg r\) ЕРС самоіндукції в&nbsp;момент розмикання може значно перевищувати ЕРС джерела і&nbsp;до яких наслідків це призводить?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">18.</span> Що таке замороження потоку в&nbsp;замкненому надпровідному контурі? Запишіть закон збереження потоку і&nbsp;поясніть, чому індукційний струм у&nbsp;ньому не згасає.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">19.</span> Чим надпровідник відрізняється від ідеального провідника? У&nbsp;чому суть ефекту Мейснера?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">20.</span> Чому надпровідник називають ідеальним діамагнетиком? Чому дорівнюють \(\chi \) і \(\mu \)? Що таке лондонівська глибина проникнення?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">21.</span> Поясніть левітацію магніту над надпровідником методом зображень. Чому вона можлива, хоча за теоремою Ірншоу постійні магніти не можуть стійко зависати?
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>

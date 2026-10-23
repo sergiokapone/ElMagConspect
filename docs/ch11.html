@@ -1,0 +1,4775 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Рух заряджених частинок</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-870"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span>&#x2003;Електричні заряди та їх взаємодія</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span>&#x2003;Сили (взаємодії) в природі</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span>&#x2003;Електричний заряд</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-12" class="tocsection" >
+<span class="sectionnumber">1.3</span>&#x2003;Як заряджають тіла?</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-17" class="tocsection" >
+<span class="sectionnumber">1.4</span>&#x2003;Закон Кулона</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-25" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-32" class="tocchapter" >
+<span class="sectionnumber">2</span>&#x2003;Постійне електричне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocsection" >
+<span class="sectionnumber">2.1</span>&#x2003;Електромагнітне поле</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.2</span>&#x2003;Напруженість поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-46" class="tocsection" >
+<span class="sectionnumber">2.3</span>&#x2003;Силові лінії та математичне поняття поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-62" class="tocsection" >
+<span class="sectionnumber">2.4</span>&#x2003;Теорема Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-88" class="tocsection" >
+<span class="sectionnumber">2.5</span>&#x2003;Зауваження щодо інтегральної та диференціальної форми теореми Гаусса</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-90" class="tocsection" >
+<span class="sectionnumber">2.6</span>&#x2003;Потенціальність електростатичного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-102" class="tocsection" >
+<span class="sectionnumber">2.7</span>&#x2003;Циркуляція вектора \(\symbf {E}\)</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-121" class="tocsection" >
+<span class="sectionnumber">2.8</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-128" class="tocsection" >
+<span class="sectionnumber">2.9</span>&#x2003;Рівняння Пуассона та Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-129" class="tocsection" >
+<span class="sectionnumber">2.10</span>&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-134" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-153" class="tocchapter" >
+<span class="sectionnumber">3</span>&#x2003;Електричне поле статичної системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-154" class="tocsection" >
+<span class="sectionnumber">3.1</span>&#x2003;Дипольний момент системи зарядів</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-158" class="tocsection" >
+<span class="sectionnumber">3.2</span>&#x2003;Поле точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-162" class="tocsection" >
+<span class="sectionnumber">3.3</span>&#x2003;Потенціал поля точкового диполя</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-163" class="tocsection" >
+<span class="sectionnumber">3.4</span>&#x2003;Потенціал системи зарядів на далеких відстанях</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-178" class="tocsection" >
+<span class="sectionnumber">3.5</span>&#x2003;Диполь в електричному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-196" class="tocsection" >
+<span class="sectionnumber">3.6</span>&#x2003;Енергія довільної системи зарядів у зовнішньому полі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-197" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-200" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-214" class="tocchapter" >
+<span class="sectionnumber">4</span>&#x2003;Електричне поле у провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-215" class="tocsection" >
+<span class="sectionnumber">4.1</span>&#x2003;Структура провідників</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-221" class="tocsection" >
+<span class="sectionnumber">4.2</span>&#x2003;Провідник у полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-244" class="tocsection" >
+<span class="sectionnumber">4.3</span>&#x2003;Електричне поле біля вістря</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-253" class="tocsection" >
+<span class="sectionnumber">4.4</span>&#x2003;Єдиність розв’язку електростатичної задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-263" class="tocsection" >
+<span class="sectionnumber">4.5</span>&#x2003;Металева куля в однорідному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-275" class="tocsection" >
+<span class="sectionnumber">4.6</span>&#x2003;Сили, що діють на поверхню провідника в полі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-279" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-280" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-291" class="tocchapter" >
+<span class="sectionnumber">5</span>&#x2003;Основи електростатики діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-292" class="tocsection" >
+<span class="sectionnumber">5.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-294" class="tocsection" >
+<span class="sectionnumber">5.2</span>&#x2003;Структура діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-331" class="tocsection" >
+<span class="sectionnumber">5.3</span>&#x2003;Поляризація діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-358" class="tocsection" >
+<span class="sectionnumber">5.4</span>&#x2003;Вектор поляризації</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-363" class="tocsection" >
+<span class="sectionnumber">5.5</span>&#x2003;Вектор електричної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-370" class="tocsection" >
+<span class="sectionnumber">5.6</span>&#x2003;Граничні умови в&nbsp;присутності діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-383" class="tocsection" >
+<span class="sectionnumber">5.7</span>&#x2003;Мікроскопічна теорія діелектричної проникності</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-390" class="tocsection" >
+<span class="sectionnumber">5.8</span>&#x2003;Типи діелектриків та їх застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-413" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-414" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-423" class="tocchapter" >
+<span class="sectionnumber">6</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-424" class="tocsection" >
+<span class="sectionnumber">6.1</span>&#x2003;Електрична ємність</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-445" class="tocsection" >
+<span class="sectionnumber">6.2</span>&#x2003;Енергія електричного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-458" class="tocsection" >
+<span class="sectionnumber">6.3</span>&#x2003;Пондеромоторні сили</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-468" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-469" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-479" class="tocchapter" >
+<span class="sectionnumber">7</span>&#x2003;Постійний електричний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-480" class="tocsection" >
+<span class="sectionnumber">7.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-487" class="tocsection" >
+<span class="sectionnumber">7.2</span>&#x2003;Природа носіїв заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-489" class="tocsection" >
+<span class="sectionnumber">7.3</span>&#x2003;Закон збереження заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-496" class="tocsection" >
+<span class="sectionnumber">7.4</span>&#x2003;Закон Ома</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-527" class="tocsection" >
+<span class="sectionnumber">7.5</span>&#x2003;Закон Джоуля-Ленца</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-528" class="tocsection" >
+<span class="sectionnumber">7.6</span>&#x2003;Струми в необмежених середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-535" class="tocsection" >
+<span class="sectionnumber">7.7</span>&#x2003;Перехідні процеси в колі з конденсатором</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-548" class="tocsection" >
+<span class="sectionnumber">7.8</span>&#x2003;Максвеллівський час релаксації заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-550" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-562" class="tocchapter" >
+<span class="sectionnumber">8</span>&#x2003;Електричний струм у&nbsp;різних середовищах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-564" class="tocsection" >
+<span class="sectionnumber">8.1</span>&#x2003;Електричний струм у&nbsp;металах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-584" class="tocsection" >
+<span class="sectionnumber">8.2</span>&#x2003;Електричний струм в&nbsp;електролітах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-590" class="tocsection" >
+<span class="sectionnumber">8.3</span>&#x2003;Електричний струм у&nbsp;газах</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-601" class="tocsection" >
+<span class="sectionnumber">8.4</span>&#x2003;Електричний струм у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-615" class="tocsection" >
+<span class="sectionnumber">8.5</span>&#x2003;Електричний струм у&nbsp;напівпровідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-636" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-638" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-674" class="tocchapter" >
+<span class="sectionnumber">9</span>&#x2003;Магнітне поле у&nbsp;вакуумі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-675" class="tocsection" >
+<span class="sectionnumber">9.1</span>&#x2003;Означення</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-679" class="tocsection" >
+<span class="sectionnumber">9.2</span>&#x2003;Характеристика магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-680" class="tocsection" >
+<span class="sectionnumber">9.3</span>&#x2003;Дія магнітного поля на заряджені частинки та струми</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-701" class="tocsection" >
+<span class="sectionnumber">9.4</span>&#x2003;Закон Біо-Савара-Лапласа</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-714" class="tocsection" >
+<span class="sectionnumber">9.5</span>&#x2003;Вектор-потенціал магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-719" class="tocsection" >
+<span class="sectionnumber">9.6</span>&#x2003;Теореми магнітостатики</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-740" class="tocsection" >
+<span class="sectionnumber">9.7</span>&#x2003;Магнітний момент</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-756" class="tocsection" >
+<span class="sectionnumber">9.8</span>&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-766" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-767" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-775" class="tocchapter" >
+<span class="sectionnumber">10</span>&#x2003;Магнітне поле в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-780" class="tocsection" >
+<span class="sectionnumber">10.1</span>&#x2003;Основні поняття</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-783" class="tocsection" >
+<span class="sectionnumber">10.2</span>&#x2003;Намагнічування</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-795" class="tocsection" >
+<span class="sectionnumber">10.3</span>&#x2003;Теорема про циркуляцію в речовині</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-801" class="tocsection" >
+<span class="sectionnumber">10.4</span>&#x2003;Магнітна сприйнятливість речовини</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-832" class="tocsection" >
+<span class="sectionnumber">10.5</span>&#x2003;Граничні умови</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-847" class="tocsection" >
+<span class="sectionnumber">10.6</span>&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-864" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-865" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-872" class="tocchapter" >
+<span class="sectionnumber">11</span>&#x2003;Рух заряджених частинок</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-873" class="tocsection" >
+<span class="sectionnumber">11.1</span>&#x2003;Рух частинок в&nbsp;однорідних полях</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-891" class="tocsection" >
+<span class="sectionnumber">11.2</span>&#x2003;Застосування схрещених полів</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-899" class="tocsection" >
+<span class="sectionnumber">11.3</span>&#x2003;Методи вимірювання питомого заряду електрона</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-909" class="tocsection" >
+<span class="sectionnumber">11.4</span>&#x2003;Досліди Міллікена</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-911" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-912" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-923" class="tocchapter" >
+<span class="sectionnumber">12</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-924" class="tocsection" >
+<span class="sectionnumber">12.1</span>&#x2003;Явище електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-929" class="tocsection" >
+<span class="sectionnumber">12.2</span>&#x2003;Закон електромагнітної індукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-930" class="tocsection" >
+<span class="sectionnumber">12.3</span>&#x2003;Робота, що виконується при переміщенні провідника зі струмом у&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-933" class="tocsection" >
+<span class="sectionnumber">12.4</span>&#x2003;Електромагнітна індукція в&nbsp;рухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-940" class="tocsection" >
+<span class="sectionnumber">12.5</span>&#x2003;Електромагнітна індукція в&nbsp;нерухомих провідниках</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-959" class="tocsection" >
+<span class="sectionnumber">12.6</span>&#x2003;Явище самоіндукції</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-979" class="tocsection" >
+<span class="sectionnumber">12.7</span>&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-996" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-997" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1015" class="tocchapter" >
+<span class="sectionnumber">13</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1016" class="tocsection" >
+<span class="sectionnumber">13.1</span>&#x2003;Енергія магнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1022" class="tocsection" >
+<span class="sectionnumber">13.2</span>&#x2003;Взаємна індукція</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1038" class="tocsection" >
+<span class="sectionnumber">13.3</span>&#x2003;Енергія системи зв’язаних контурів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1041" class="tocsection" >
+<span class="sectionnumber">13.4</span>&#x2003;Потенціальна енергія струмів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1043" class="tocsection" >
+<span class="sectionnumber">13.5</span>&#x2003;Принцип роботи трансформаторів</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1047" class="tocsection" >
+<span class="sectionnumber">13.6</span>&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1053" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1054" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1059" class="tocchapter" >
+<span class="sectionnumber">14</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1064" class="tocsection" >
+<span class="sectionnumber">14.1</span>&#x2003;Струм зміщення</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1085" class="tocsection" >
+<span class="sectionnumber">14.2</span>&#x2003;Система рівнянь Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1102" class="tocsection" >
+<span class="sectionnumber">14.3</span>&#x2003;Про рівняння Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1104" class="tocsection" >
+<span class="sectionnumber">14.4</span>&#x2003;Енергія електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1118" class="tocsection" >
+<span class="sectionnumber">14.5</span>&#x2003;Скін-ефект</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1140" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1141" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1148" class="tocchapter" >
+<span class="sectionnumber">15</span>&#x2003;Відносність електричного і&nbsp;магнітного полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1150" class="tocsection" >
+<span class="sectionnumber">15.1</span>&#x2003;Нерелятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1153" class="tocsection" >
+<span class="sectionnumber">15.2</span>&#x2003;Релятивістські закони перетворення полів</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1159" class="tocsection" >
+<span class="sectionnumber">15.3</span>&#x2003;Тензор електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1161" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1162" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1171" class="tocchapter" >
+<span class="sectionnumber">16</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1172" class="tocsection" >
+<span class="sectionnumber">16.1</span>&#x2003;Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1188" class="tocsection" >
+<span class="sectionnumber">16.2</span>&#x2003;Електромагнітні хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1193" class="tocsection" >
+<span class="sectionnumber">16.3</span>&#x2003;Енергія та вектор Пойнтінга для хвилі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1204" class="tocsection" >
+<span class="sectionnumber">16.4</span>&#x2003;Імпульс і момент імпульсу електромагнітного поля</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1210" class="tocsection" >
+<span class="sectionnumber">16.5</span>&#x2003;Відбивання хвиль від поверхні двох діелектриків</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1230" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1231" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1242" class="tocchapter" >
+<span class="sectionnumber">17</span>&#x2003;Випромінювання електромагнітних хвиль</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1243" class="tocsection" >
+<span class="sectionnumber">17.1</span>&#x2003;Історична довідка: досліди Герца</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1246" class="tocsection" >
+<span class="sectionnumber">17.2</span>&#x2003;Елементарна модель випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1259" class="tocsection" >
+<span class="sectionnumber">17.3</span>&#x2003;Дипольне випромінювання</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1275" class="tocsection" >
+<span class="sectionnumber">17.4</span>&#x2003;Потужність випромінювання осцилятора</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1280" class="tocsection" >
+<span class="sectionnumber">17.5</span>&#x2003;Випромінювання рухомого заряду</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1285" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1286" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1292" class="tocchapter" >
+<span class="sectionnumber">18</span>&#x2003;Коливальні процеси в електричних колах</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1293" class="tocsection" >
+<span class="sectionnumber">18.1</span>&#x2003;Квазістаціонарне наближення</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1294" class="tocsection" >
+<span class="sectionnumber">18.2</span>&#x2003;Вільні коливання в коливальному контурі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1319" class="tocsection" >
+<span class="sectionnumber">18.3</span>&#x2003;Вимушені коливання під дією гармонічної ЕРС</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1333" class="tocsection" >
+<span class="sectionnumber">18.4</span>&#x2003;Змінний струм</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">18.5</span>&#x2003;Трансформатор</a>
+</p>
+<p>
+<a href="ch18.html#autosec-1374" class="tocsection" >
+<span class="sectionnumber">18.6</span>&#x2003;Частотні фільтри</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1390" class="tocsection" >
+<span class="sectionnumber">18.7</span>&#x2003;Трифазний струм: фізичні засади, топології кіл та застосування</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1433" class="tocchapter" >
+<span class="sectionnumber">19</span>&#x2003;Довгі лінії. Телеграфні рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1434" class="tocsection" >
+<span class="sectionnumber">19.1</span>&#x2003;Від зосереджених елементів до розподілених</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1435" class="tocsection" >
+<span class="sectionnumber">19.2</span>&#x2003;Виведення телеграфних рівнянь</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1439" class="tocsection" >
+<span class="sectionnumber">19.3</span>&#x2003;Гармонічний режим. Хвильове рівняння</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1440" class="tocsection" >
+<span class="sectionnumber">19.4</span>&#x2003;Лінія без втрат</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1447" class="tocsection" >
+<span class="sectionnumber">19.5</span>&#x2003;Польова картина. Зв’язок з рівняннями Максвелла</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1454" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1455" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1461" class="tocchapter" >
+<span class="sectionnumber">20</span>&#x2003;Хвилеводи</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1462" class="tocsection" >
+<span class="sectionnumber">20.1</span>&#x2003;Від довгої лінії до хвилеводу</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1463" class="tocsection" >
+<span class="sectionnumber">20.2</span>&#x2003;Прямокутний хвилевід</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1476" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1479" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1480" class="tocsection" >
+<span class="sectionnumber">А</span>&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1485" class="tocsection" >
+<span class="sectionnumber">Б</span>&#x2003;Основні формули векторного аналізу</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1503" class="tocchapter" >
+Література</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Рух заряджених частинок">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Рух заряджених частинок ......
+-->
+<h3 id="autosec-872">Розділ&nbsp;<span class="sectionnumber">11&#x2003;</span>Рух заряджених частинок в&nbsp;електричних і&nbsp;магнітних полях</h3>
+<a id="main-html-autopage-872"></a>
+<a id="main-html-autofile-11"></a>
+
+<a id="EBMotion"></a>
+
+<p>
+<a id="LWR-ht-EBMotion"></a>
+</p>
+<div class="epigraph" role="note">
+
+
+<div class="qitem">
+
+<p>
+Я не бачу способу уникнути висновку, що це&nbsp;— заряди негативної електрики, які переносяться частинками речовини. Постає питання: що це за частинки&nbsp;— атоми, молекули чи матерія в&nbsp;ще тоншому стані поділу?
+</p>
+
+
+<div class="epigraphsource">
+
+<p>
+Дж.&nbsp;Дж.&nbsp;Томсон, «Cathode Rays», 1897
+</p>
+</div>
+
+</div>
+
+</div>
+<!--
+...... section Рух частинок в-однорідних полях ......
+-->
+<h4 id="autosec-873"><span class="sectionnumber">11.1&#x2003;</span>Рух частинок в&nbsp;однорідних полях</h4>
+<a id="main-html-autopage-873"></a>
+
+
+<p>
+<a id="LWR-ht-motion-in-uniform-fields"></a>
+</p>
+<!--
+...... subsection Рух в-однорідному електричному полі ......
+-->
+<h5 id="autosec-874">Рух в&nbsp;однорідному електричному полі</h5>
+<a id="main-html-autopage-874"></a>
+
+
+<p>
+Якщо напруженість поля \(\Efield = \const \), то з&nbsp;рівняння руху
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{0}\)</span>
+
+<!--
+
+
+                                                                          𝑚𝐯̇ = 𝑞𝐄                                                      (11.1)                      --><a id="eq:motion_E"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:motion_E} m\dot {\vect {v}} = q\Efield
+\end{equation}
+
+</p>
+
+<p>
+випливає
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{1}\)</span>
+
+<!--
+
+                                                                𝑞𝐄                        𝑞𝐄 2
+                                                     𝐯 = 𝐯0 +      𝑡,   𝐫 = 𝐫0 + 𝐯0 𝑡 +      𝑡 ,                               (11.2)                       --><a id="eq:motion_E_solution"></a><!--
+                                                                𝑚                         2𝑚
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:motion_E_solution} \vect {v} = \vect {v}_0 + \frac {q\Efield }{m}t, \qquad \vect {r} = \vect {r}_0 + \vect {v}_0 t + \frac {q\Efield }{2m}t^2,
+\end{equation}
+
+</p>
+
+<p>
+тобто маємо рівноприскорений рух, де прискорення напрямлене уздовж вектора напруженості поля.
+</p>
+<!--
+...... subsection Рух в-однорідному магнітному полі ......
+-->
+<h5 id="autosec-875">Рух в&nbsp;однорідному магнітному полі</h5>
+<a id="main-html-autopage-875"></a>
+
+
+<p>
+На частинку діє сила Лоренца, так що рівняння руху має вигляд
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{2}\)</span>
+
+<!--
+
+                                                                              𝑞
+                                                                     𝑚𝐯̇ =      𝐯 × 𝐁.                                                     (11.3)                                        --><a id="eq:Lorentz_motion"></a><!--
+                                                                              𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Lorentz_motion} m\dot {\vect {v}} = \frac {q}{c}\vect {v} \times \Bfield .
+\end{equation}
+
+</p>
+
+<p>
+Очевидно, що \(\dot {\vect {v}} \perp \vect {v}\), \(\dot {\vect {v}} \perp \Bfield \). Перша рівність означає, що сила Лоренца не виконує роботи: \(\dfrac {d}{dt}\left (\dfrac {mv^2}{2}\right ) = m\vect {v}\cdot \dot
+{\vect {v}} = 0\), тобто \(|\vect {v}| = \const \)&nbsp;— магнітне поле змінює лише напрямок швидкості. Розкладемо вектор швидкості на складові, паралельну і&nbsp;перпендикулярну полю: \(\vect {v} = \vect {v}_{\parallel } +
+\vect {v}_{\perp }\). Для цих складових маємо рівняння
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{3}\)</span>
+
+<!--
+
+
+                                                                     𝑚𝐯̇ ∥ = 0.                                                         (11.4)                                        --><a id="eq:v_parallel_motion"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:v_parallel_motion} m\dot {\vect {v}}_{\parallel } = 0.
+\end{equation}
+
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{4}\)</span>
+
+<!--
+
+                                                                              𝑞
+                                                                    𝑚𝐯̇ ⟂ =     𝐯 × 𝐁.                                                       (11.5)                                       --><a id="eq:v_perp_motion"></a><!--
+                                                                              𝑐 ⟂
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:v_perp_motion} m\dot {\vect {v}}_{\perp } = \frac {q}{c}\vect {v}_{\perp } \times \Bfield .
+\end{equation}
+
+</p>
+
+<p>
+З&nbsp;рівняння <span class="textup">(<a href="ch11.html#eq:v_parallel_motion">11.4</a>)</span> випливає \(\vect {v}_{\parallel } = \const \).
+</p>
+
+<p>
+Друге рівняння перепишемо у&nbsp;вигляді
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{5}\)</span>
+
+<!--
+
+                                                                                           𝑞𝐵         𝐁
+                                                 𝐯̇ ⟂ = 𝝎 × 𝐯⟂ ,   𝝎 = −𝜔𝑐 𝐛,̂      𝜔𝑐 =      ,   𝐛̂ = .                                  (11.6)                                        --><a id="eq:v_perp_rotation"></a><!--
+                                                                                           𝑚𝑐         𝐵
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:v_perp_rotation} \dot {\vect {v}}_{\perp } = \vect {\omega } \times \vect {v}_{\perp }, \qquad \vect {\omega } = -\omega _c\hat {\vect {b}}, \qquad \omega _c = \frac {qB}{mc}, \quad \hat {\vect {b}}
+= \frac {\Bfield }{B}.
+\end{equation}
+
+</p>
+
+<p>
+Воно описує обертання навколо напрямку магнітного поля з&nbsp;кутовою швидкістю \(|\omega _c| = |q|B/mc\), яка називається <em>циклотронною частотою</em>,&nbsp;— рис.&nbsp;<a href="ch11.html#tikz:cyclotron">11.1</a>.
+Величина \(\omega _c\) є знаковою: для \(q&lt;0\) вона від’ємна, і&nbsp;тоді напрямок обертання змінюється на протилежний.
+</p>
+
+<figure id="autoid-288" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-181"
+    class="lateximagesource"
+><!--
+    𝐁
+
+
+
+
+            𝐯
++
+        𝐅
+--><img
+   src="main-html-images\image-181.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;11.1. Обертальний рух частинки із зарядом \(q &gt; 0\) навколо напрямку магнітного поля.
+
+</div>
+
+<a id="tikz:cyclotron"></a>
+
+</div>
+
+</figure>
+
+<p>
+Якщо в&nbsp;момент потрапляння в&nbsp;область дії поля складова швидкості частинки \(\vect {v}_{\perp }\) дорівнювала (за величиною) \(v_{\perp }\), то радіус кола дорівнює
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{6}\)</span>
+
+<!--
+
+                                                                      𝑣⟂     𝑚𝑐𝑣⟂
+                                                                𝑅=         =      .                                                              (11.7)                                           --><a id="eq:cyclotron_radius"></a><!--
+                                                                     |𝜔𝑐 |   |𝑞|𝐵
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:cyclotron_radius} R = \frac {v_{\perp }}{|\omega _c|} = \frac {mcv_{\perp }}{|q|B}.
+\end{equation}
+
+</p>
+
+<p>
+Величину \(R\) називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>ларморівським радіусом</span></em>. Якщо \(R\) набагато менший за характерний розмір області, де діє поле, то частинка встигає багато разів обернутися навколо силової лінії, і&nbsp;її рух упоперек поля сильно обмежений; такі частинки
+називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>замагніченими</span></em>.
+</p>
+<!--
+...... subsection Рух в-однорідних паралельних електричному та магнітному полях () ......
+-->
+<h5 id="autosec-879">Рух в&nbsp;однорідних паралельних електричному та магнітному полях (\(\Efield \parallel \Bfield \))</h5>
+<a id="main-html-autopage-879"></a>
+
+
+<p>
+У&nbsp;рівнянні руху
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{7}\)</span>
+
+<!--
+
+                                                                        𝑞
+                                                           𝑚𝐯̇ = 𝑞𝐄 +     𝐯×𝐁                                                       (11.8)                                       --><a id="eq:motion_EB_parallel"></a><!--
+                                                                        𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:motion_EB_parallel} m\dot {\vect {v}} = q\Efield + \frac {q}{c}\vect {v} \times \Bfield
+\end{equation}
+
+</p>
+
+<p>
+покладемо \(\vect {v} = \vect {v}_{\parallel } + \vect {v}_{\perp }\), де компоненти швидкості відповідно \(\vect {v}_{\parallel } \parallel \Bfield \) і&nbsp;\(\vect {v}_{\perp } \perp \Bfield \). Для цих компонент
+отримуємо рівняння
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{8}\)</span>
+
+<!--
+
+
+                                                                  𝑚𝐯̇ ∥ = 𝑞𝐄,                                                                (11.9)                                     --><a id="eq:v_parallel_E"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:v_parallel_E} m\dot {\vect {v}}_{\parallel } = q\Efield ,
+\end{equation}
+
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{9}\)</span>
+
+<!--
+
+                                                                           𝑞
+                                                                 𝑚𝐯̇ ⟂ =     𝐯 × 𝐁.                                                             (11.10)                                     --><a id="eq:v_perp_B"></a><!--
+                                                                           𝑐 ⟂
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:v_perp_B} m\dot {\vect {v}}_{\perp } = \frac {q}{c}\vect {v}_{\perp } \times \Bfield .
+\end{equation}
+
+</p>
+
+<figure id="autoid-289" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-182"
+    class="lateximagesource"
+><!--
+          𝑧
+
+
+
+
+𝐯
+     𝐯∥
+
+
+
+𝐯⟂   +
+
+
+
+
+              𝑦
+ 𝑥
+--><img
+   src="main-html-images\image-182.svg"
+   alt="(figure)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;11.2. Траєкторія частинки в&nbsp;паралельних електричному і&nbsp;магнітному полях.
+
+</div>
+
+<a id="tikz:helix"></a>
+
+</div>
+
+</figure>
+
+<p>
+Перше з&nbsp;них описує рівноприскорений рух уздовж напрямку електричного поля, а&nbsp;друге рівняння&nbsp;— обертальний рух навколо напрямку магнітного поля з&nbsp;циклотронною частотою \(|\omega _c| = |q|B/mc\). Траєкторія
+частинки являє собою спіраль зі зростаючим кроком і&nbsp;з&nbsp;віссю, паралельною силовій лінії магнітного поля (рис.&nbsp;<a href="ch11.html#tikz:helix">11.2</a>).
+</p>
+<!--
+...... subsection Рух у-схрещених полях () ......
+-->
+<h5 id="autosec-883">Рух у&nbsp;схрещених полях (\(\Efield \perp \Bfield \))</h5>
+<a id="main-html-autopage-883"></a>
+
+
+<p>
+Як і&nbsp;вище, виділимо компоненти швидкості, паралельну та перпендикулярну вектору магнітного поля: \(\vect {v} = \vect {v}_{\parallel } + \vect {v}_{\perp }\) (рис.&nbsp;<a href="ch11.html#tikz:drift">11.3</a>). Для цих
+компонент маємо рівняння
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{10}\)</span>
+
+<!--
+
+
+                                                                 𝑚𝐯̇ ∥ = 0,                                                          (11.11)                                        --><a id="eq:v_parallel_crossed"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:v_parallel_crossed} m\dot {\vect {v}}_{\parallel } = 0,
+\end{equation}
+
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{11}\)</span>
+
+<!--
+
+                                                                              1
+                                                            𝑚𝐯̇ ⟂ = 𝑞 (𝐄 +      𝐯 × 𝐁) .                                                 (11.12)                                        --><a id="eq:v_perp_crossed"></a><!--
+                                                                              𝑐 ⟂
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:v_perp_crossed} m\dot {\vect {v}}_{\perp } = q\left (\Efield + \frac {1}{c}\vect {v}_{\perp } \times \Bfield \right ).
+\end{equation}
+
+</p>
+
+<p>
+Рівняння <span class="textup">(<a href="ch11.html#eq:v_parallel_crossed">11.11</a>)</span> дає \(\vect {v}_{\parallel } = \const \), що означає рух з&nbsp;постійною швидкістю вздовж вектора \(\Bfield \), яка визначається
+початковими умовами.
+</p>
+
+<figure id="autoid-290" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-183"
+    class="lateximagesource"
+><!--
+            𝑦
+
+
+
+
+        𝐄
+
+
+
+
+                            𝑥
+    𝐁
+
+                      𝐄×𝐁
+𝑧               𝐮=𝑐
+                      𝐵2
+--><img
+   src="main-html-images\image-183.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;11.3. Електричний дрейф додатно (синя крива) та від’ємно (червона крива) заряджених частинок.
+
+</div>
+
+<a id="tikz:drift"></a>
+
+</div>
+
+</figure>
+
+<p>
+Для знаходження компоненти \(\vect {v}_{\perp }\) покладемо \(\vect {v}_{\perp } = \vect {u} + \vect {v}&apos;\) і&nbsp;підберемо вектор \(\vect {u}\) так, щоб виключити електричне поле:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{12}\)</span>
+
+<!--
+
+                                                                                        1
+                                                                                𝐄+        𝐮 × 𝐁 = 0.                                                     (11.13)                                        --><a id="eq:u_condition"></a><!--
+                                                                                        𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:u_condition} \Efield + \frac {1}{c}\vect {u} \times \Bfield = 0.
+\end{equation}
+
+</p>
+
+<p>
+Оскільки \(\vect {u}\times \Bfield \perp \Bfield \), це рівняння має розв’язок лише за умови \(\Efield \perp \Bfield \) (саме такий випадок розглядаємо). Складова \(\vect {u}\), паралельна \(\Bfield \), ні на що не впливає (її можна
+віднести до \(\vect {v}_{\parallel }\)), тому вважаємо \(\vect {u} \perp \Bfield \), тобто \(\vect {u}\cdot \Bfield = 0\). Для знаходження вектора \(\vect {u}\) помножимо почленно рівняння <span class="textup">(<a
+href="ch11.html#eq:u_condition">11.13</a>)</span> векторно зліва на \(\Bfield \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{13}\)</span>
+
+<!--
+
+                                                                                        1
+                                                                           𝐁×𝐄+           𝐁 × (𝐮 × 𝐁) = 0.                                                     (11.14)                                    --><a id="eq:u_cross_B"></a><!--
+                                                                                        𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:u_cross_B} \Bfield \times \Efield + \frac {1}{c}\Bfield \times (\vect {u} \times \Bfield ) = 0.
+\end{equation}
+
+</p>
+
+<p>
+Перетворимо подвійний векторний добуток з&nbsp;урахуванням взаємної ортогональності векторів \(\Bfield \) і&nbsp;\(\vect {u}\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{14}\)</span>
+
+<!--
+
+
+                                                                    𝐁 × (𝐮 × 𝐁) = 𝐮𝐵 2 − 𝐁(𝐮 ⋅ 𝐁) = 𝐮𝐵 2 .                                              (11.15)                                        --><a id="eq:double_cross"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:double_cross} \Bfield \times (\vect {u} \times \Bfield ) = \vect {u}B^2 - \Bfield (\vect {u}\cdot \Bfield ) = \vect {u}B^2.
+\end{equation}
+
+</p>
+
+<p>
+У&nbsp;результаті отримаємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{15}\)</span>
+
+<!--
+
+
+                                                                                         𝐄×𝐁
+                                                                                𝐮=𝑐          .                                                        (11.16)                                       --><a id="eq:drift_velocity"></a><!--
+                                                                                          𝐵2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:drift_velocity} \tcbhighmath { \vect {u} = c\frac {\Efield \times \Bfield }{B^2}. }
+\end{equation}
+
+</p>
+
+<p>
+Цей рух являє собою дрейф (з&nbsp;постійною швидкістю) в&nbsp;напрямку, перпендикулярному обом полям (\(\Efield \) і&nbsp;\(\Bfield \)) (рис.&nbsp;<a href="ch11.html#tikz:drift">11.3</a>). Відповідно для компоненти \(\vect
+{v}&apos;\) отримаємо рівняння
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{16}\)</span>
+
+<!--
+
+                                                                                       𝑞 ′
+                                                                             𝑚𝐯̇ ′ =     𝐯 × 𝐁,                                                  (11.17)                                          --><a id="eq:v_prime_rotation"></a><!--
+                                                                                       𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:v_prime_rotation} m\dot {\vect {v}}&apos; = \frac {q}{c}\vect {v}&apos; \times \Bfield ,
+\end{equation}
+
+</p>
+
+<p>
+яке, як і&nbsp;рівняння <span class="textup">(<a href="ch11.html#eq:v_perp_rotation">11.6</a>)</span>, описує обертальний рух навколо напрямку магнітного поля з&nbsp;циклотронною частотою \(|\omega _c| = |q|B/mc\).
+</p>
+
+<p>
+Сумарний рух являє собою накладення:
+</p>
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> рівномірного руху вздовж вектора \(\Bfield \) зі швидкістю \((\vect {v}_{\parallel })_0\), яка дорівнює компоненті швидкості \(\vect {v}_{\parallel }\) в&nbsp;початковий момент,
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> дрейфового руху зі швидкістю \(\vect {u}\),
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> обертання навколо напрямку \(\Bfield \).
+</p>
+</li>
+</ul>
+
+<p>
+Дрейфова швидкість \(u = cE/B\) можлива лише при \(E &lt; B\) (тоді \(u &lt; c\)). При \(E &gt; B\) системи відліку, в&nbsp;якій електричне поле зникає, не існує, і&nbsp;частинка необмежено прискорюється. Викладений
+нерелятивістський розв’язок справедливий при \(E \ll B\) (і&nbsp;\(|\vect {v}| \ll c\)). Якщо ж \(E\) порівнянне з&nbsp;\(B\), слід розв’язувати релятивістські рівняння руху: швидкість дрейфу \(cE/B\) при \(E&lt;B\) зберігається, але рух
+у&nbsp;системі відліку, що дрейфує, вже не є простим обертанням з&nbsp;частотою \(\omega _c\).
+</p>
+
+<p>
+Знайдемо траєкторію шляхом прямого розв’язання рівнянь <span class="textup">(<a href="ch11.html#eq:v_perp_crossed">11.12</a>)</span>. Для цього запишемо ці рівняння в&nbsp;системі координат, показаній на рис.&nbsp;<a
+href="ch11.html#tikz:drift">11.3</a>. Введемо орти \(\{\vect {i}, \vect {j}, \vect {k}\}\) відповідно вздовж координатних осей \(\{x, y, z\}\). Оскільки в&nbsp;розглянутому випадку \(\vect {v} \times \Bfield = \vect {i}B_z
+v_y - \vect {j}B_z v_x\), то, позначаючи для стислості \(E_y = E\), \(B_z = B\), маємо:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{17}\)</span>
+
+<!--
+
+                                                                                𝑞𝐵                         𝑞    𝑞𝐵
+                                                (а) 𝑣𝑧̇ = 0;              ̇ =
+                                                                     (б) 𝑣𝑥        𝑣 ;         (в) 𝑣𝑦̇ =     𝐸−    𝑣 .                         (11.18)                                           --><a id="eq:system_components"></a><!--
+                                                                                𝑚𝑐 𝑦                       𝑚    𝑚𝑐 𝑥
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:system_components} \text {(а) } \dot {v}_z = 0; \qquad \text {(б) } \dot {v}_x = \frac {qB}{mc}v_y; \qquad \text {(в) } \dot {v}_y = \frac {q}{m}E - \frac {qB}{mc}v_x.
+\end{equation}
+
+</p>
+
+<p>
+Рівняння <span class="textup">(<a href="ch11.html#eq:system_components">11.18</a>)</span>а&nbsp;описує рівномірний рух уздовж вектора магнітного поля:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{18}\)</span>
+
+<!--
+
+
+                                                                       𝑣𝑧 = 𝑣∥ = const,           𝑧 = 𝑧0 + 𝑣∥ 𝑡.                                               (11.19)                                    --><a id="eq:vz_motion"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:vz_motion} v_z = v_{\parallel } = \const , \qquad z = z_0 + v_{\parallel }t.
+\end{equation}
+
+</p>
+
+<p>
+Далі вважаємо \(v_{\parallel } = 0\). Для розв’язання рівнянь <span class="textup">(<a href="ch11.html#eq:system_components">11.18</a>)</span>б і&nbsp;<span class="textup">(<a
+href="ch11.html#eq:system_components">11.18</a>)</span>в&nbsp;покладемо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{19}\)</span>
+
+<!--
+
+
+                                                                       𝑉𝑥 = 𝑣𝑥 − ᵆ,         ᵆ = 𝑐𝐸/𝐵.                                                (11.20)                                       --><a id="eq:Vx_substitution"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Vx_substitution} V_x = v_x - u, \qquad u = cE/B.
+\end{equation}
+
+</p>
+
+<p>
+Після цього рівняння <span class="textup">(<a href="ch11.html#eq:system_components">11.18</a>)</span>б, в&nbsp;набирають вигляду
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{20}\)</span>
+
+<!--
+
+
+                                                                        𝑉̇𝑥 = 𝜔𝑐 𝑣𝑦 ,       𝑣𝑦̇ = −𝜔𝑐 𝑉𝑥 ,                                              (11.21)                                        --><a id="eq:Vx_vy_system"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Vx_vy_system} \dot {V}_x = \omega _c v_y, \qquad \dot {v}_y = -\omega _c V_x,
+\end{equation}
+
+</p>
+
+<p>
+де \(\omega _c = qB/mc\)&nbsp;— циклотронна частота (для \(q&lt;0\) вона від’ємна). Виключаючи звідси змінну \(V_x\), зведемо цю систему до рівняння гармонічного осцилятора:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{21}\)</span>
+
+<!--
+
+
+                                                                             𝑣𝑦̈ = −𝜔2𝑐 𝑣𝑦 ,                                                 (11.22)                                           --><a id="eq:harmonic_oscillator"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:harmonic_oscillator} \ddot {v}_y = -\omega _c^2 v_y,
+\end{equation}
+
+</p>
+
+<p>
+звідки знаходимо:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{22}\)</span>
+
+<!--
+
+                                                                                                       𝑣0
+                                                         𝑣𝑦 = 𝑣0 cos(𝜔𝑐 𝑡 + 𝜑0 ),          𝑦 = 𝑦0 +       sin(𝜔𝑐 𝑡 + 𝜑0 ).                               (11.23)                                        --><a id="eq:vy_solution"></a><!--
+                                                                                                       𝜔𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:vy_solution} v_y = v_0 \cos (\omega _c t + \phi _0), \qquad y = y_0 + \frac {v_0}{\omega _c} \sin (\omega _c t + \phi _0).
+\end{equation}
+
+</p>
+
+<p>
+За допомогою другого рівняння системи <span class="textup">(<a href="ch11.html#eq:Vx_vy_system">11.21</a>)</span> і&nbsp;підстановки <span class="textup">(<a href="ch11.html#eq:Vx_substitution">11.20</a>)</span>
+знаходимо \(v_x(t)\) і&nbsp;\(x(t)\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{23}\)</span>
+
+<!--
+
+                                                                            1
+                                                                  𝑣𝑥 = ᵆ −    𝑣̇ = ᵆ + 𝑣0 sin(𝜔𝑐 𝑡 + 𝜑0 ),
+                                                                           𝜔𝑐 𝑦
+                                                                                                                                                       (11.24)                                       --><a id="eq:vx_x_solution"></a><!--
+                                                                                   𝑣
+                                                                     𝑥 = 𝑥0 + ᵆ𝑡 − 0 cos(𝜔𝑐 𝑡 + 𝜑0 ).
+                                                                                   𝜔𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:vx_x_solution} \begin{gathered} v_x = u - \frac {1}{\omega _c}\dot {v}_y = u + v_0 \sin (\omega _c t + \phi _0), \\ x = x_0 + ut - \frac {v_0}{\omega _c} \cos (\omega _c t + \phi _0). \end {gathered}
+\end{equation}
+
+</p>
+
+<p>
+Формули <span class="textup">(<a href="ch11.html#eq:vy_solution">11.23</a>)</span>, <span class="textup">(<a href="ch11.html#eq:vx_x_solution">11.24</a>)</span> визначають траєкторію частинки за будь-яких початкових
+умов. Виберемо початок координат так, що \(x(0) = 0\), \(y(0) = 0\). Тоді
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{24}\)</span>
+
+<!--
+
+                                                           𝑣0
+                                               𝑥 = ᵆ𝑡 +         [cos 𝜑0 − cos(𝜔𝑐 𝑡 + 𝜑0 )],             𝑣 = ᵆ + 𝑣0 sin(𝜔𝑐 𝑡 + 𝜑0 ),
+                                           {        𝑣0
+                                                           𝜔𝑐
+                                                                                                       { 𝑥                                                      (11.25)                                    --><a id="eq:trochoid"></a><!--
+                                               𝑦=        [sin(𝜔𝑐 𝑡 + 𝜑0 ) − sin 𝜑0 ],                   𝑣𝑦 = 𝑣0 cos(𝜔𝑐 𝑡 + 𝜑0 ).
+                                                    𝜔𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:trochoid} \begin{cases} x = ut + \frac {v_0}{\omega _c}[\cos \phi _0 - \cos (\omega _c t + \phi _0)], \\ y = \frac {v_0}{\omega _c}[\sin (\omega _c t + \phi _0) - \sin \phi _0], \end {cases} \qquad
+\begin{cases} v_x = u + v_0 \sin (\omega _c t + \phi _0), \\ v_y = v_0 \cos (\omega _c t + \phi _0). \end {cases}
+\end{equation}
+
+</p>
+
+<p>
+Крива, що задається рівняннями <span class="textup">(<a href="ch11.html#eq:trochoid">11.25</a>)</span>, називається <em>трохоїдою</em>. Її вигляд залежить від відношення \(|v_0|/|u|\), яке визначається початковими умовами: при
+\(|v_0| &lt; |u|\) це хвиляста крива без петель, при \(|v_0| &gt; |u|\)&nbsp;— крива з&nbsp;петлями, а&nbsp;при \(|v_0| = |u|\)&nbsp;— циклоїда з&nbsp;вістрями, в&nbsp;яких швидкість частинки перетворюється на нуль. Розглянемо
+частинний випадок, коли початкова швидкість частинки дорівнює нулю:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{25}\)</span>
+
+<!--
+
+
+                                                                       𝑣𝑥 (0) = 𝑣𝑦 (0) = 0.                                                (11.26)                                          --><a id="eq:zero_initial_velocity"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:zero_initial_velocity} v_x(0) = v_y(0) = 0.
+\end{equation}
+
+</p>
+
+<p>
+Тоді \(\phi _0 = \pi /2\), \(v_0 = -u\) (тут \(v_0\)&nbsp;— алгебраїчна амплітуда, яка може бути від’ємною), і&nbsp;з&nbsp;<span class="textup">(<a href="ch11.html#eq:trochoid">11.25</a>)</span> знаходимо:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{26}\)</span>
+
+<!--
+
+
+                                                                      𝑣𝑥 = ᵆ(1 − cos 𝜔𝑐 𝑡),    𝑣𝑦 = ᵆ sin 𝜔𝑐 𝑡;
+                                                                            ᵆ                      ᵆ                                                             (11.27)                                    --><a id="eq:cycloid"></a><!--
+                                                                𝑥(𝑡) = ᵆ𝑡 −    sin 𝜔𝑐 𝑡,    𝑦(𝑡) =    (1 − cos 𝜔𝑐 𝑡).
+                                                                            𝜔𝑐                     𝜔𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:cycloid} \begin{gathered} v_x = u(1 - \cos \omega _c t), \qquad v_y = u \sin \omega _c t; \\ x(t) = ut - \frac {u}{\omega _c}\sin \omega _c t, \qquad y(t) = \frac {u}{\omega _c}(1 - \cos \omega _c
+t). \end {gathered}
+\end{equation}
+
+</p>
+
+<p>
+Ця траєкторія являє собою <em>циклоїду</em> (рис.&nbsp;<a href="ch11.html#tikz:drift_cycloide">11.4</a>). Таку траєкторію описує точка на ободі колеса радіуса \(|u/\omega _c|\), що котиться без проковзування по площині зі
+швидкістю \(u\). Відповідно до сказаного траєкторія являє собою суперпозицію дрейфу вздовж осі \(x\) і&nbsp;обертання навколо осі \(z\) з&nbsp;циклотронною частотою \(\omega _c = qB/mc\).
+</p>
+
+<figure id="autoid-291" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-184"
+    class="lateximagesource"
+><!--
+            𝑦
+
+
+
+
+        𝐄
+
+
+
+
+                            𝑥
+    𝐁
+
+                      𝐄×𝐁
+𝑧               𝐮=𝑐
+                      𝐵2
+--><img
+   src="main-html-images\image-184.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;11.4. Траєкторія частинки у&nbsp;взаємно перпендикулярних полях \(\Bfield \) і&nbsp;\(\Efield \) за умови, що початкова швидкість дорівнює нулю.
+
+</div>
+
+<a id="tikz:drift_cycloide"></a>
+
+</div>
+
+</figure>
+<!--
+...... subsection Загальний випадок схрещених полів ......
+-->
+<h5 id="autosec-890">Загальний випадок схрещених полів</h5>
+<a id="main-html-autopage-890"></a>
+
+
+<p>
+У&nbsp;загальному випадку є складова вектора електричного поля, паралельна магнітному полю: \(\Efield _{\parallel } \neq 0\). Тоді для компоненти швидкості \(\vect {v}_{\parallel }\) маємо рівняння
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{27}\)</span>
+
+<!--
+
+
+                                                               𝑚𝐯̇ ∥ = 𝑞𝐄∥ .                                                           (11.28)                                         --><a id="eq:v_parallel_general"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:v_parallel_general} m\dot {\vect {v}}_{\parallel } = q\Efield _{\parallel }.
+\end{equation}
+
+</p>
+
+<p>
+Це означає, що на рух, описаний у&nbsp;попередньому пункті, накладається прискорений рух у&nbsp;напрямку \(\Efield _{\parallel } \parallel \Bfield \). Дрейф зі швидкістю \(\vect {u} = c\Efield \times \Bfield /B^2\)
+зберігається, так само як і&nbsp;обертання з&nbsp;циклотронною частотою \(\omega _c = qB/mc\).
+</p>
+<!--
+...... section Застосування схрещених полів ......
+-->
+<h4 id="autosec-891"><span class="sectionnumber">11.2&#x2003;</span>Застосування схрещених полів</h4>
+<a id="main-html-autopage-891"></a>
+
+
+<p>
+<a id="LWR-ht-crossed-fields-applications"></a>
+</p>
+
+<p>
+Рух у&nbsp;схрещених полях має два важливі застосування: ефект Холла в&nbsp;твердому тілі та холлівські двигуни в&nbsp;космічній техніці.
+</p>
+<!--
+...... subsection Ефект Холла ......
+-->
+<h5 id="autosec-892">Ефект Холла</h5>
+<a id="main-html-autopage-892"></a>
+
+
+<p>
+Класичний приклад руху заряджених частинок у&nbsp;схрещених полях реалізується у&nbsp;твердому провіднику чи напівпровіднику, по якому тече електричний струм і&nbsp;який знаходиться в&nbsp;магнітному полі,&nbsp;— це <em><span
+    class="textcolor"
+    style="color:#990000"
+>ефект Холла</span></em>, відкритий Е.&nbsp;Холлом у&nbsp;1879&nbsp;р.
+</p>
+
+<p>
+Розглянемо провідну пластинку завтовшки \(d\) і&nbsp;завширшки \(w\), вздовж якої (вісь \(x\)) тече струм густиною \(\vect {j}\), а&nbsp;перпендикулярно площині пластинки (вісь \(z\)) прикладене магнітне поле \(\Bfield \) (рис.&nbsp;<a
+href="ch11.html#tikz:hall_effect">11.5</a>). Носії заряду&nbsp;— концентрацією \(n\) і&nbsp;зарядом \(q\)&nbsp;— рухаються вздовж провідника з&nbsp;усередненою (дрейфовою) швидкістю \(\vect {v}_d\), яку підтримує поздовжнє
+електричне поле \(\Efield _x\) (у&nbsp;провіднику носії зазнають зіткнень), так що
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{28}\)</span>
+
+<!--
+
+
+                                                                 𝐣 = 𝑛𝑞𝐯𝑑 .                                                               (11.29)                                          --><a id="eq:hall_current_density"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:hall_current_density} \vect {j} = nq\vect {v}_d.
+\end{equation}
+
+</p>
+
+<figure id="autoid-292" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-185"
+    class="lateximagesource"
+><!--
+                                                      𝑧            𝑦
+
+
+                                                                   𝑥
+
+
+                             𝑉𝐻
+
+𝐵𝑧
+
+
+                         −
+
+                     −           𝐄𝐻                                    𝐼
+                                                  +
+                 −
+
+             −
+                             𝐣            +
+
+                                      +
+         −
+                                  +
+     −           −                            𝐿                    +
+                             +
+𝑑                                                             𝑉𝑥
+                         +
+                                                          −
+
+     ℎ
+--><img
+   src="main-html-images\image-185.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;11.5. Ефект Холла: струм \(\vect {j}\) уздовж пластинки, магнітне поле \(\Bfield \) перпендикулярно їй; сила Лоренца відхиляє носії заряду до одного з&nbsp;країв, у&nbsp;результаті чого встановлюється поперечне холлівське поле
+\(\Efield _H\).
+
+</div>
+
+<a id="tikz:hall_effect"></a>
+
+</div>
+
+</figure>
+
+<p>
+На кожен носій заряду, що рухається з&nbsp;дрейфовою швидкістю \(\vect {v}_d\) в&nbsp;магнітному полі, діє сила Лоренца \(\frac {q}{c}\vect {v}_d \times \Bfield \), яка відхиляє носії до одного з&nbsp;бічних країв пластинки.
+Внаслідок цього на протилежних гранях накопичується нескомпенсований заряд, що створює поперечне (холлівське) електричне поле \(\Efield _H\). У&nbsp;стаціонарному режимі результуюча поперечна сила, що діє на носії, дорівнює нулю,
+тобто виконується та сама умова <span class="textup">(<a href="ch11.html#eq:u_condition">11.13</a>)</span>, яку ми використали для знаходження дрейфової швидкості:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{29}\)</span>
+
+<!--
+
+                                                            𝑞                             1
+                                                   𝑞𝐄𝐻 +      𝐯 ×𝐁=0       ⟹        𝐄𝐻 = − 𝐯𝑑 × 𝐁.                                                 (11.30)                                          --><a id="eq:hall_balance"></a><!--
+                                                            𝑐 𝑑                           𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:hall_balance} q\Efield _H + \frac {q}{c}\vect {v}_d \times \Bfield = 0 \qquad \Longrightarrow \qquad \Efield _H = -\frac {1}{c}\vect {v}_d \times \Bfield .
+\end{equation}
+
+</p>
+
+<p>
+Отже, поперечне поле \(\Efield _H\) визначається тією самою умовою нульової результуючої сили, що й&nbsp;дрейф у&nbsp;схрещених полях <span class="textup">(<a href="ch11.html#eq:drift_velocity">11.16</a>)</span>. Різниця
+в&nbsp;тому, що поздовжній рух носіїв тут підтримується поздовжнім полем \(\Efield _x\) (зі зіткненнями), а&nbsp;поперечне поле виникає самоузгоджено. У&nbsp;сильних полях (\(\omega _c\tau \gg 1\), де \(\tau \)&nbsp;— час між
+зіткненнями) аналогія з&nbsp;\(\Efield \times \Bfield \)-дрейфом буквальна; у&nbsp;слабких (\(\omega _c\tau \ll 1\)) рівність <span class="textup">(<a href="ch11.html#eq:hall_balance">11.30</a>)</span> виражає баланс
+усереднених сил.
+</p>
+
+<p>
+Виразивши дрейфову швидкість через густину струму за формулою <span class="textup">(<a href="ch11.html#eq:hall_current_density">11.29</a>)</span>, \(v_d = j/(nq)\), знаходимо поперечну складову холлівського поля (тут \(j =
+j_x\), \(B = B_z\); знак \(E_H\) збігається зі знаком \(q\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{30}\)</span>
+
+<!--
+
+                                                                            1
+                                                                    𝐸𝐻 =       𝑗𝐵.                                                                       (11.31)                                       --><a id="eq:hall_field"></a><!--
+                                                                           𝑛𝑞𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:hall_field} E_H = \frac {1}{nqc}\,jB.
+\end{equation}
+
+</p>
+
+<p>
+Різниця потенціалів між бічними гранями пластинки (холлівська напруга) дорівнює \(U_H = E_H w\), а&nbsp;оскільки повний струм \(I = jwd\), отримуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{31}\)</span>
+
+<!--
+
+
+                                                                           1 𝐼𝐵
+                                                                   𝑈𝐻 =         .                                                                  (11.32)                                          --><a id="eq:hall_voltage"></a><!--
+                                                                          𝑛𝑞𝑐 𝑑
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:hall_voltage} \tcbhighmath { U_H = \frac {1}{nqc}\,\frac {IB}{d}. }
+\end{equation}
+
+</p>
+
+<p>
+Коефіцієнт
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{32}\)</span>
+
+<!--
+
+                                                                           1
+                                                                   𝑅𝐻 =                                                                        (11.33)                                          --><a id="eq:hall_coefficient"></a><!--
+                                                                          𝑛𝑞𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:hall_coefficient} R_H = \frac {1}{nqc}
+\end{equation}
+
+</p>
+
+<p>
+називається <em><span
+    class="textcolor"
+    style="color:#990000"
+>сталою Холла</span></em>; вона знакова: \(R_H &lt; 0\) для електронів і&nbsp;\(R_H &gt; 0\) для дірок. Ця формула справедлива для одного типу носіїв заряду з&nbsp;однаковим часом релаксації; для напівпровідників з&nbsp;електронами
+й&nbsp;дірками вираз для \(R_H\) складніший.
+</p>
+
+<p>
+Знак холлівської напруги визначається знаком носіїв заряду: він протилежний для провідників з&nbsp;електронною (\(q&lt;0\)) і&nbsp;дірковою (\(q&gt;0\)) провідністю, що дає змогу експериментально встановити тип основних носіїв
+у&nbsp;зразку. За відомими \(I\), \(B\), \(d\) і&nbsp;виміряним \(U_H\) формула <span class="textup">(<a href="ch11.html#eq:hall_voltage">11.32</a>)</span> дає змогу визначити концентрацію носіїв заряду \(n\), а&nbsp;вимірювання
+ефекту Холла широко використовується для характеризації напівпровідників, а&nbsp;також у&nbsp;датчиках магнітного поля (датчиках Холла).
+</p>
+<!--
+...... subsection Дрейф у-плазмі та плазмові двигуни ......
+-->
+<h5 id="autosec-896">Дрейф у&nbsp;плазмі та плазмові двигуни</h5>
+<a id="main-html-autopage-896"></a>
+
+
+<p>
+Розглянутий електричний дрейф має фундаментальне значення для фізики плазми: оскільки швидкість дрейфу не залежить від знаку заряду й&nbsp;маси частинки, замагнічені електрони та іони в&nbsp;схрещених полях дрейфують
+<em>в&nbsp;один і&nbsp;той самий бік</em> з&nbsp;однаковою швидкістю. Це принципово відрізняє \(\Efield \times \Bfield \)-дрейф від руху частинки під дією самого лише електричного поля, який розділяє заряди різного знаку
+і&nbsp;породжує струм.
+</p>
+
+<p>
+Схрещені поля лежать в&nbsp;основі роботи <em>холлівських двигунів</em>, одного з&nbsp;найпоширеніших типів електричних ракетних двигунів для космічних апаратів. Проте тут істотною є не однаковість дрейфу електронів та іонів, а,
+навпаки, різниця в&nbsp;ступені їхнього замагнічення: електрони замагнічені, а&nbsp;іони&nbsp;— ні.
+</p>
+<!--
+...... paragraph Принцип дії холлівського двигуна. ......
+-->
+
+
+<p>
+<span class="paragraph" id="autosec-897">Принцип дії холлівського двигуна.</span>
+<a id="main-html-autopage-897"></a>
+
+</p>
+
+<p>
+У&nbsp;кільцевому каналі двигуна створюється радіальне магнітне поле \(\Bfield \) та осьове електричне поле \(\Efield \), причому \(\Efield \perp \Bfield \). Електрони, інжектовані з&nbsp;катода, потрапляючи в&nbsp;область сильного
+радіального поля, замагнічуються (їхній ларморівський радіус \(R\), див.&nbsp;<span class="textup">(<a href="ch11.html#eq:cyclotron_radius">11.7</a>)</span>, значно менший за розміри каналу) і, згідно з&nbsp;формулою <span
+class="textup">(<a href="ch11.html#eq:drift_velocity">11.16</a>)</span>, здійснюють азимутальний дрейф&nbsp;— це і&nbsp;є «<em><span
+    class="textcolor"
+    style="color:#990000"
+>холлівський струм</span></em>», що дав назву двигуну.
+</p>
+
+<figure id="autoid-293" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="EBMotion/Pictures/Hall_Truster.jpg" target="_blank" ><img
+   src="EBMotion/Pictures/Hall_Truster.jpg"
+   style="
+   height:228pt ;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;11.6. Схема холлівського двигуна.
+
+</div>
+
+<a id="tikz:hall_thruster"></a>
+
+</div>
+
+</figure>
+
+<p>
+Іони ж, маючи значно більший ларморівський радіус (через велику масу), практично не замагнічуються в&nbsp;тому самому полі й&nbsp;вільно прискорюються електричним полем уздовж осі каналу, створюючи тягу. Радіальне магнітне поле,
+замагнічуючи електрони, різко обмежує їхню рухливість упоперек силових ліній, тобто вздовж осі до анода: замагнічений електрон обертається навколо силової лінії і&nbsp;зміщується впоперек неї лише внаслідок зіткнень. Тому основне падіння
+потенціалу зосереджується в&nbsp;зоні прискорення поблизу виходу каналу. Електрони, що дрейфують, одночасно іонізують ударами робочу речовину (зазвичай ксенон), а&nbsp;плазма в&nbsp;каналі в&nbsp;цілому залишається
+квазінейтральною.
+</p>
+<!--
+...... section Методи вимірювання питомого заряду електрона ......
+-->
+<h4 id="autosec-899"><span class="sectionnumber">11.3&#x2003;</span>Методи вимірювання питомого заряду електрона</h4>
+<a id="main-html-autopage-899"></a>
+
+
+<p>
+<a id="LWR-ht-charge-to-mass-ratio"></a>
+</p>
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Питомим зарядом</span></em> називається відношення \(q/m\), де \(m\)&nbsp;— маса частинки.
+</p>
+
+<p>
+Рух частинки за наявності тільки електричних і&nbsp;магнітних полів описується рівнянням
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{33}\)</span>
+
+<!--
+
+
+                                                                   𝑑𝐯         1
+                                                               𝑚      = 𝑞 (𝐄 + 𝐯 × 𝐁) .                                 (11.34)   --><a id="eq:q_m_motion"></a><!--
+                                                                   𝑑𝑡         𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:q_m_motion} m\frac {d\vect {v}}{dt} = q\left (\Efield + \frac {1}{c}\vect {v} \times \Bfield \right ).
+\end{equation}
+
+</p>
+
+<p>
+Звідси видно, що воно повністю визначається питомим зарядом \(q/m\), а&nbsp;не зарядом і&nbsp;масою окремо.
+</p>
+<!--
+...... subsection Вимірювання за відхиленням траєкторії в-електричному полі ......
+-->
+<h5 id="autosec-900">Вимірювання \(q/m\) за відхиленням траєкторії в&nbsp;електричному полі</h5>
+<a id="main-html-autopage-900"></a>
+
+
+<p>
+У&nbsp;цьому методі пучок частинок пропускається між обкладками зарядженого конденсатора, і&nbsp;за виміряним відхиленням траєкторії визначають відношення \(q/m\). Нехай \(l\)&nbsp;— довжина конденсатора вздовж початкової
+швидкості частинок \(\vect {v}_0\), а&nbsp;\(L\)&nbsp;— відстань від краю конденсатора до екрана; швидкість \(v_0\) вважаємо відомою. Схема досліду показана на рис.&nbsp;<a href="ch11.html#tikz:condenser_deflection">11.7</a>.
+</p>
+
+<figure id="autoid-294" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-186"
+    class="lateximagesource"
+><!--
+                 𝑦
+
+
+
+
+v0       𝛼       0
+                     𝑥
+
+
+
+
+     𝑙       𝐿
+--><img
+   src="main-html-images\image-186.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;11.7. Відхилення зарядженої частинки електричним полем конденсатора.
+
+</div>
+
+<a id="tikz:condenser_deflection"></a>
+
+</div>
+
+</figure>
+
+<p>
+У&nbsp;конденсаторі є однорідне електричне поле з&nbsp;напруженістю \(\Efield \), напрямлене перпендикулярно початковій швидкості частинки \(\vect {v}_0\). Це поле викликає рух з&nbsp;прискоренням
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{34}\)</span>
+
+<!--
+
+                                                                               𝑞
+                                                                          𝐚=     𝐄,      𝐚 ⟂ 𝐯0 .                                                             (11.35)                                  --><a id="eq:a_E"></a><!--
+                                                                               𝑚
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:a_E} \vect {a} = \frac {q}{m}\Efield , \qquad \vect {a} \perp \vect {v}_0.
+\end{equation}
+
+</p>
+
+<p>
+Якби поле було відсутнє, то частинки потрапляли б у&nbsp;точку «0» екрана Е (рис.&nbsp;<a href="ch11.html#tikz:condenser_deflection">11.7</a>). Під дією поля відхилення частинки в&nbsp;конденсаторі у&nbsp;вертикальному напрямку
+становить
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{35}\)</span>
+
+<!--
+
+
+                                                                          𝑎𝑡2   𝑞𝐸 2    𝑞  𝑙2
+                                                                   𝑦1 =       =    𝑡 =    𝐸 ,                                                             (11.36)                                      --><a id="eq:y1_E"></a><!--
+                                                                           2    2𝑚     2𝑚 𝑣20
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:y1_E} y_1 = \frac {at^2}{2} = \frac {qE}{2m}t^2 = \frac {q}{2m}E\frac {l^2}{v_0^2},
+\end{equation}
+
+</p>
+
+<p>
+де \(t = l/v_0\)&nbsp;— час прольоту конденсатора. Оскільки поле \(\Efield \) напрямлене вздовж осі \(y\), компонента швидкості \(v_x = \const = v_0\).
+</p>
+
+<p>
+На виході з&nbsp;конденсатора швидкість \(v_y\) становитиме
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{36}\)</span>
+
+<!--
+
+                                                                                       𝑞𝐸 𝑙
+                                                                          𝑣𝑦 = 𝑎𝑡 =         .                                                             (11.37)                                      --><a id="eq:vy_E"></a><!--
+                                                                                       𝑚 𝑣0
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:vy_E} v_y = at = \frac {qE}{m}\frac {l}{v_0}.
+\end{equation}
+
+</p>
+
+<p>
+Далі частинка летить прямолінійно, причому траєкторія утворює кут \(\alpha \) з&nbsp;віссю \(x\) такий, що
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{37}\)</span>
+
+<!--
+
+                                                                      𝑣𝑦   𝑞𝐸 𝑙                 𝑙
+                                                             tg 𝛼 =      =       ;       𝑦1 =     tg 𝛼.                                              (11.38)                                      --><a id="eq:tg_alpha"></a><!--
+                                                                      𝑣𝑥   𝑚 𝑣20                2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:tg_alpha} \tg \alpha = \frac {v_y}{v_x} = \frac {qE}{m}\frac {l}{v_0^2}; \qquad y_1 = \frac {l}{2}\tg \alpha .
+\end{equation}
+
+</p>
+
+<p>
+Долітаючи до екрана, вона набуває додаткового відхилення
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{38}\)</span>
+
+<!--
+
+
+                                                                               𝑦2 = 𝐿 tg 𝛼.                                                               (11.39)                                      --><a id="eq:y2_E"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:y2_E} y_2 = L \tg \alpha .
+\end{equation}
+
+</p>
+
+<p>
+Повне зміщення частинки в&nbsp;результаті становитиме
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{39}\)</span>
+
+<!--
+
+
+                                                                       1              𝑞𝐸     1
+                                                        𝑦 = 𝑦1 + 𝑦2 = ( 𝑙 + 𝐿) tg 𝛼 =     𝑙 ( 𝑙 + 𝐿) .                                              (11.40)                                      --><a id="eq:y_total_E"></a><!--
+                                                                       2              𝑚𝑣20 2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:y_total_E} \tcbhighmath { y = y_1 + y_2 = \left (\frac {1}{2}l + L\right )\tg \alpha = \frac {qE}{mv_0^{2}}l\left (\frac {1}{2}l + L\right ). }
+\end{equation}
+
+</p>
+
+<p>
+Таким чином, за виміряним відхиленням частинки \(y\) за допомогою формули <span class="textup">(<a href="ch11.html#eq:y_total_E">11.40</a>)</span> визначається питомий заряд частинки \(q/m\).
+</p>
+
+<p>
+Швидкість \(v_0\) тут має бути відома окремо. Якщо, наприклад, частинки прискорено напругою \(U\) (\(mv_0^2/2 = qU\)), то \(q/m\) у&nbsp;формулі <span class="textup">(<a href="ch11.html#eq:y_total_E">11.40</a>)</span>
+скорочується: \(y = \dfrac {El(l/2 + L)}{2U}\), тобто відхилення в&nbsp;електричному полі від питомого заряду не залежить.
+</p>
+<!--
+...... subsection Вимірювання за відхиленням траєкторії в-магнітному полі ......
+-->
+<h5 id="autosec-904">Вимірювання \(q/m\) за відхиленням траєкторії в&nbsp;магнітному полі</h5>
+<a id="main-html-autopage-904"></a>
+
+
+<p>
+Для вимірювання питомого заряду можна замість електричного поля використати магнітне, також напрямлене перпендикулярно траєкторії частинки (рис.&nbsp;<a href="ch11.html#tikz:magnetic_deflection">11.8</a>). На частинку діє сила
+Лоренца \(\vect {F} = \frac {q}{c}\vect {v} \times \Bfield \), створюючи прискорення
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{40}\)</span>
+
+<!--
+
+                                                                        𝐅   𝑞
+                                                                   𝐚=     =    𝐯 × 𝐁.                                                                 (11.41)                                         --><a id="eq:a_B"></a><!--
+                                                                        𝑚   𝑚𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:a_B} \vect {a} = \frac {\vect {F}}{m} = \frac {q}{mc}\vect {v} \times \Bfield .
+\end{equation}
+
+</p>
+
+<figure id="autoid-295" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-187"
+    class="lateximagesource"
+><!--
+                                 𝑦
+
+
+
+
+     ⊗   ⊗   ⊗   ⊗   ⊗
+     ⊗   ⊗   ⊗   ⊗   ⊗   𝛽
+v0                               0
+     ⊗   ⊗   ⊗   ⊗   ⊗
+     ⊗   ⊗   ⊗   ⊗   ⊗               𝑥
+     ⊗   ⊗   ⊗   ⊗   ⊗
+     ⊗   ⊗   ⊗   ⊗   ⊗
+
+
+             𝑙               𝐿
+--><img
+   src="main-html-images\image-187.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;11.8. Відхилення зарядженої частинки магнітним полем.
+
+</div>
+
+<a id="tikz:magnetic_deflection"></a>
+
+</div>
+
+</figure>
+
+<p>
+Нехай швидкість частинки достатньо велика, так що радіус кривини траєкторії \(R = mcv_0/(|q|B)\) набагато більший за довжину \(l\) області поля, а&nbsp;відхилення за час прольоту мале. Тоді можна прийняти
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{41}\)</span>
+
+<!--
+
+
+                                                                          𝑞                            |𝑞|
+                                                     𝑣𝑥 ≈ 𝑣0 ,       𝐚≈     𝐯 × 𝐁,        𝑎 = |𝐚| ≈        𝑣 𝐵.                                     (11.42)                                         --><a id="eq:a_B_approx"></a><!--
+                                                                          𝑚𝑐 0                         𝑚𝑐 0
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:a_B_approx} v_x \approx v_0, \qquad \vect {a} \approx \frac {q}{mc}\vect {v}_0 \times \Bfield , \qquad a = |\vect {a}| \approx \frac {|q|}{mc}v_0 B.
+\end{equation}
+
+</p>
+
+<p>
+Відхилення частинки за час прольоту поля \(t = l/v_0\) становитиме
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{42}\)</span>
+
+<!--
+
+
+                                                                                 1 2     𝑞   𝑙2
+                                                                          𝑦1 =     𝑎𝑡 =    𝐵    .                                                             (11.43)                                      --><a id="eq:y1_B"></a><!--
+                                                                                 2      2𝑚 𝑣0 𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:y1_B} y_1 = \frac {1}{2}at^2 = \frac {q}{2m}B\frac {l^2}{v_0 c}.
+\end{equation}
+
+</p>
+
+<p>
+Швидкість \(v_y\) частинки на виході з&nbsp;області дії поля дорівнює
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{43}\)</span>
+
+<!--
+
+
+                                                                                         𝑞𝑙
+                                                                            𝑣𝑦 = 𝑎𝑡 =       𝐵,                                                                (11.44)                                      --><a id="eq:vy_B"></a><!--
+                                                                                         𝑚𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:vy_B} v_y = at = \frac {ql}{mc}B,
+\end{equation}
+
+</p>
+
+<p>
+а&nbsp;кут, який утворює вектор швидкості з&nbsp;віссю \(x\), визначається рівністю
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{44}\)</span>
+
+<!--
+
+                                                                     𝑣𝑦   𝑣𝑦   𝑞𝑙𝐵                     𝑙
+                                                            tg 𝛽 =      ≈    =       ,          𝑦1 =     tg 𝛽.                                         (11.45)                                          --><a id="eq:tg_beta"></a><!--
+                                                                     𝑣𝑥   𝑣0   𝑚𝑣0 𝑐                   2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:tg_beta} \tg \beta = \frac {v_y}{v_x} \approx \frac {v_y}{v_0} = \frac {qlB}{mv_0 c}, \qquad y_1 = \frac {l}{2}\tg \beta .
+\end{equation}
+
+</p>
+
+<p>
+Долітаючи до екрана, частинка отримує додаткове зміщення
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{45}\)</span>
+
+<!--
+
+
+                                                                                 𝑦2 = 𝐿 tg 𝛽.                                                                 (11.46)                                      --><a id="eq:y2_B"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:y2_B} y_2 = L \tg \beta .
+\end{equation}
+
+</p>
+
+<p>
+Повне зміщення частинки становитиме
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{46}\)</span>
+
+<!--
+
+
+                                                                       1               𝑞𝐵     1
+                                                        𝑦 = 𝑦1 + 𝑦2 = ( 𝑙 + 𝐿) tg 𝛽 =      𝑙 ( 𝑙 + 𝐿) .                                              (11.47)                                          --><a id="eq:y_total_B"></a><!--
+                                                                       2              𝑚𝑣0 𝑐 2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:y_total_B} \tcbhighmath { y = y_1 + y_2 = \left (\frac {1}{2}l + L\right )\tg \beta = \frac {qB}{mv_0 c}l\left (\frac {1}{2}l + L\right ). }
+\end{equation}
+
+</p>
+
+<p>
+Вимірюючи це зміщення, можна знайти питомий заряд \(q/m\) частинки.
+</p>
+
+<p>
+Тут теж потрібна відома швидкість \(v_0\). Якщо частинки прискорено напругою \(U\), то \(v_0 = \sqrt {2qU/m}\) і&nbsp;\(y = \sqrt {q/m}\,\dfrac {Bl}{c\sqrt {2U}}\left (\dfrac {l}{2} + L\right )\), тобто магнітне відхилення, на
+відміну від електричного, залежить від \(q/m\).
+</p>
+<!--
+...... subsection Метод Томсона ......
+-->
+<h5 id="autosec-908">Метод Томсона</h5>
+<a id="main-html-autopage-908"></a>
+
+
+<p>
+Дж.&nbsp;Дж.&nbsp;Томсон використав компенсаційну схему, в&nbsp;якій рух частинки визначався як електричним, так і&nbsp;магнітним полем. Ця схема давала змогу не вимірювати попередньо швидкість частинок \(v_0\). Суть методу
+полягає в&nbsp;такому: спочатку вмикають тільки магнітне поле (як описано вище) і&nbsp;вимірюють відхилення пучка заряджених частинок:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{47}\)</span>
+
+<!--
+
+                                                                              𝑞𝐵     1
+                                                                       𝑦=         𝑙 ( 𝑙 + 𝐿) .                                                    (11.48)                                         --><a id="eq:Thomson_B"></a><!--
+                                                                             𝑚𝑣0 𝑐 2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Thomson_B} y = \frac {qB}{mv_0 c}l\left (\frac {1}{2}l + L\right ).
+\end{equation}
+
+</p>
+
+<p>
+Потім додатково вмикають електричне поле, перпендикулярне як до магнітного поля (\(\Efield \perp \Bfield \)), так і&nbsp;до швидкості пучка, і&nbsp;підбирають його величину таким чином, щоб повністю компенсувати відхилення пучка
+і&nbsp;повернути його в&nbsp;точку \(y = 0\). Умовою компенсації є рівність
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{48}\)</span>
+
+<!--
+
+                                                              𝑞                             𝐸
+                                                       𝑞𝐸 =     𝑣 𝐵,        або    𝑣0 = 𝑐     .                                       (11.49)                                         --><a id="eq:Thomson_compensation"></a><!--
+                                                              𝑐 0                           𝐵
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Thomson_compensation} qE = \frac {q}{c}v_0 B, \qquad \text {або} \qquad v_0 = c\frac {E}{B}.
+\end{equation}
+
+</p>
+
+<p>
+Тому наведений вище вираз для зміщення пучка в&nbsp;магнітному полі переписується у&nbsp;вигляді
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{49}\)</span>
+
+<!--
+
+
+                                                                            𝑞 𝐵2     1
+                                                                       𝑦=         𝑙 ( 𝑙 + 𝐿) .                                                    (11.50)                                         --><a id="eq:Thomson_y"></a><!--
+                                                                            𝑚 𝑐2 𝐸 2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Thomson_y} y = \frac {q}{m}\frac {B^2}{c^2 E}l\left (\frac {1}{2}l + L\right ).
+\end{equation}
+
+</p>
+
+<p>
+Звідси за відомими значеннями зміщення \(y\) і&nbsp;полів \(B\) та \(E\) визначається питомий заряд \(q/m\).
+</p>
+
+<p>
+Умова <span class="textup">(<a href="ch11.html#eq:Thomson_compensation">11.49</a>)</span> збігається з&nbsp;умовою <span class="textup">(<a href="ch11.html#eq:u_condition">11.13</a>)</span>: частинки, що не відхиляються,
+рухаються з&nbsp;дрейфовою швидкістю <span class="textup">(<a href="ch11.html#eq:drift_velocity">11.16</a>)</span>, тобто \(v_0 = u\). Схрещені поля відбирають частинки за швидкістю, тому таку конфігурацію називають
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>фільтром швидкостей</span></em>.
+</p>
+
+<p>
+Описаним методом Дж.&nbsp;Дж.&nbsp;Томсон у&nbsp;1897&nbsp;р. при вивченні катодних променів вперше виміряв питомий заряд електрона. Сучасне значення питомого заряду електрона (Томсон отримав величину того ж порядку; тут \(e
+&lt; 0\)&nbsp;— заряд електрона) становить
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{50}\)</span>
+
+<!--
+
+
+                                                 𝑒/𝑚 = −5,273 ⋅ 1017 од. СГСЕ ⋅ г−1 = −1,759 ⋅ 1011 Кл ⋅ кг−1 .                                   (11.51)                                         --><a id="eq:e_m_value"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:e_m_value} e/m = -5{,}273 \cdot 10^{17} \ \text {од.~СГСЕ} \cdot \text {г}^{-1} = -1{,}759 \cdot 10^{11} \ \text {Кл} \cdot \text {кг}^{-1}.
+\end{equation}
+
+</p>
+<!--
+...... section Досліди Міллікена ......
+-->
+<h4 id="autosec-909"><span class="sectionnumber">11.4&#x2003;</span>Досліди Міллікена</h4>
+<a id="main-html-autopage-909"></a>
+
+
+<p>
+<a id="LWR-ht-millikan-experiment"></a>
+</p>
+
+<p>
+У&nbsp;попередніх дослідах вимірювався питомий заряд частинок. Р.&nbsp;Міллікен у&nbsp;1909&nbsp;р. запропонував спосіб безпосереднього вимірювання заряду. Схема його установки показана на рис.&nbsp;<a
+href="ch11.html#tikz:Millikan">11.9</a>.
+</p>
+
+<p>
+У&nbsp;простір між пластинами конденсатора Міллікен вводив за допомогою розпилювача найдрібніші крапельки олії. Краплі електризувалися при розпиленні, а&nbsp;їхній заряд можна було змінювати, опромінюючи повітря в&nbsp;камері
+рентгенівськими променями: утворені іони захоплювалися краплями. Рухом крапель керували, змінюючи величину і&nbsp;знак напруги на пластинах конденсатора.
+</p>
+
+<figure id="autoid-296" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="EBMotion/Pictures/Milliken.jpg" target="_blank" ><img
+   src="EBMotion/Pictures/Milliken.jpg"
+   style="
+   width:325pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;11.9. Схема установки Міллікена для вимірювання заряду електрона (сила \(q\Efield \) вказана для випадку \(q &lt; 0\)).
+
+</div>
+
+<a id="tikz:Millikan"></a>
+
+</div>
+
+</figure>
+
+<p>
+Розглянемо метод докладніше. Будемо для визначеності вважати, що заряд краплі від’ємний, \(q &lt; 0\). У&nbsp;формулах нижче, де йдеться про величини сил і&nbsp;швидкостей, під \(q\) розуміємо \(|q|\).
+</p>
+
+<p>
+На краплю діють такі сили:
+</p>
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> сила з&nbsp;боку електричного поля \(q\Efield \);
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> рівнодійна сили тяжіння і&nbsp;архімедової сили
+</p>
+<span class="hidden"> \(\seteqnumber{0}{11.}{51}\)</span>
+<!--
+                                                                          4𝜋 3
+                                                                   𝐅𝑔 =      𝑟 (𝜌 − 𝜌0 )𝐠,                                                           (11.52)                                       --><a id="eq:gravity_force"></a><!--
+                                                                           3
+-->
+<p>
+
+\begin{equation}
+\label {eq:gravity_force} \vect {F}_{g} = \frac {4\pi }{3}r^3(\rho - \rho _0)\vect {g},
+\end{equation}
+
+</p>
+<p>
+де \(r\)&nbsp;— радіус краплі, \(\rho \) і&nbsp;\(\rho _0\)&nbsp;— густини краплі і&nbsp;повітря відповідно;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> сила в’язкого тертя
+</p>
+<span class="hidden"> \(\seteqnumber{0}{11.}{52}\)</span>
+<!--
+
+                                                                      𝐅𝜂 = −6𝜋𝜂𝑟𝐯.                                                                   (11.53)                                       --><a id="eq:viscous_force"></a><!--
+-->
+<p>
+
+\begin{equation}
+\label {eq:viscous_force} \vect {F}_{\eta } = -6\pi \eta r\vect {v}.
+\end{equation}
+
+</p>
+<p>
+
+</p>
+</li>
+</ul>
+
+<p>
+За відсутності електричного поля крапля падає з&nbsp;постійною швидкістю \(v_0\), яка визначається з&nbsp;умови \(F_g = F_\eta \), або
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{53}\)</span>
+
+<!--
+
+                                                             4𝜋 3
+                                                                𝑟 (𝜌 − 𝜌0 )𝑔 = 6𝜋𝜂𝑟𝑣0 .                                                    (11.54)                                          --><a id="eq:falling_equilibrium"></a><!--
+                                                              3
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:falling_equilibrium} \frac {4\pi }{3}r^3(\rho - \rho _0)g = 6\pi \eta r v_0.
+\end{equation}
+
+</p>
+
+<p>
+Увімкнувши електричне поле, змушують краплю підніматися з&nbsp;невеликою швидкістю \(v_E\), яку можна знайти з&nbsp;рівняння
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{54}\)</span>
+
+<!--
+
+                                                           4𝜋 3
+                                                              𝑟 (𝜌 − 𝜌0 )𝑔 + 6𝜋𝜂𝑟𝑣𝐸 = 𝑞𝐸.                                                   (11.55)                                           --><a id="eq:rising_equilibrium"></a><!--
+                                                            3
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:rising_equilibrium} \frac {4\pi }{3}r^3(\rho - \rho _0)g + 6\pi \eta r v_E = qE.
+\end{equation}
+
+</p>
+
+<p>
+З&nbsp;урахуванням рівності <span class="textup">(<a href="ch11.html#eq:falling_equilibrium">11.54</a>)</span> перепишемо це співвідношення у&nbsp;вигляді
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{55}\)</span>
+
+<!--
+
+
+                                                                  6𝜋𝜂𝑟(𝑣0 + 𝑣𝐸 ) = 𝑞𝐸,                                                           (11.56)                                          --><a id="eq:charge_balance"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:charge_balance} 6\pi \eta r(v_0 + v_E) = qE,
+\end{equation}
+
+</p>
+
+<p>
+звідки можна знайти заряд краплі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{56}\)</span>
+
+<!--
+
+                                                                                𝑣0 + 𝑣𝐸
+                                                                     𝑞 = 6𝜋𝜂𝑟           .                                                              (11.57)                                       --><a id="eq:charge_drop"></a><!--
+                                                                                   𝐸
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:charge_drop} q = 6\pi \eta r\frac {v_0 + v_E}{E}.
+\end{equation}
+
+</p>
+
+<p>
+Практично вимірювання здійснювалося таким способом. За відсутності електричного поля вимірювалася швидкість вільного падіння краплі \(v_0\). Потім із співвідношення <span class="textup">(<a
+href="ch11.html#eq:falling_equilibrium">11.54</a>)</span> визначався радіус краплі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{57}\)</span>
+
+<!--
+
+
+                                                                                9𝜂𝑣0
+                                                                     𝑟=                   .                                                            (11.58)                                       --><a id="eq:drop_radius"></a><!--
+                                                                          √ 2𝑔(𝜌 − 𝜌0 )
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:drop_radius} r = \sqrt {\frac {9\eta v_0}{2g(\rho - \rho _0)}}.
+\end{equation}
+
+</p>
+
+<p>
+Увімкнувши електричне поле і&nbsp;вимірявши швидкість підйому краплі \(v_E\), за формулами <span class="textup">(<a href="ch11.html#eq:charge_drop">11.57</a>)</span>–<span class="textup">(<a
+href="ch11.html#eq:drop_radius">11.58</a>)</span> або
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{58}\)</span>
+
+<!--
+
+
+                                                                9𝜂𝑣0     𝑣0 + 𝑣𝐸          2𝜂3 𝑣0 𝑣0 + 𝑣𝐸
+                                                 𝑞 = 6𝜋𝜂                         = 9𝜋                                                                  (11.59)                                       --><a id="eq:charge_full"></a><!--
+                                                           √ 2𝑔(𝜌 − 𝜌0 )    𝐸         √ 𝑔(𝜌 − 𝜌0 )  𝐸
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:charge_full} q = 6\pi \eta \sqrt {\frac {9\eta v_0}{2g(\rho - \rho _0)}}\frac {v_0 + v_E}{E} = 9\pi \sqrt {\frac {2\eta ^3 v_0}{g(\rho - \rho _0)}}\frac {v_0 + v_E}{E}
+\end{equation}
+
+</p>
+
+<p>
+можна знайти заряд \(q\). Слід мати на увазі, що для крапель мікронних розмірів закон Стокса потребує поправки (Каннінгема) на проковзування газу, оскільки радіус краплі порівнянний з&nbsp;довжиною вільного пробігу молекул повітря;
+Міллікен враховував таку поправку в&nbsp;обробленні результатів.
+</p>
+
+<p>
+Заряд краплі змінювався при захопленні іона, і&nbsp;при цьому стрибком змінювалася швидкість підйому \(v_E\). Згідно з&nbsp;<span class="textup">(<a href="ch11.html#eq:charge_drop">11.57</a>)</span> стрибку \(\Delta v_E\)
+відповідає зміна заряду \(\Delta q = 6\pi \eta r\,\Delta v_E/E\). Аналізуючи результати численних вимірювань, Міллікен встановив, що зміни заряду крапель \(\Delta q\) і&nbsp;сам заряд \(q\) були завжди цілими кратними одній
+і&nbsp;тій же мінімальній величині:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{59}\)</span>
+
+<!--
+
+
+                                                     |𝑒| ≈ 4,80 ⋅ 10−10 Фр = 1,602 ⋅ 10−19 Кл.                                               (11.60)                                           --><a id="eq:elementary_charge"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:elementary_charge} |e| \approx 4{,}80 \cdot 10^{-10} \ \text {Фр} = 1{,}602 \cdot 10^{-19} \ \text {Кл}.
+\end{equation}
+
+</p>
+
+<p>
+За відомими значеннями питомого заряду \(e/m\) і&nbsp;заряду \(e\) електрона можна знайти масу:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{11.}{60}\)</span>
+
+<!--
+
+
+                                                                  |𝑒|
+                                                                      = 𝑚 ≈ 9,11 ⋅ 10−28 г.                                                          (11.61)                                       --><a id="eq:electron_mass"></a><!--
+                                                                |𝑒/𝑚|
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:electron_mass} \frac {|e|}{|e/m|} = m \approx 9{,}11 \cdot 10^{-28} \ \text {г}.
+\end{equation}
+
+</p>
+
+<p>
+Значення досліду Міллікена полягає в&nbsp;тому, що була експериментально доведена дискретність електричного заряду.
+</p>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> Дослід виконано Р.&nbsp;Міллікеном разом із Г.&nbsp;Флетчером у&nbsp;1909–1913&nbsp;рр. Спершу використовували краплі води, але вони швидко випаровувалися, тому перейшли до олії, краплі якої тривалий час
+зберігають розмір. Значення заряду, отримане Міллікеном у&nbsp;1913&nbsp;р. (\(4{,}774\cdot 10^{-10}\)&nbsp;од.&nbsp;СГСЕ), було занижене приблизно на \(0{,}6\,\%\) через неточне значення в’язкості повітря. Результати Міллікена
+оскаржував Ф.&nbsp;Еренгафт, який стверджував, що спостерігав «субелектрони» з&nbsp;меншим зарядом; подальші вимірювання цього не підтвердили. У&nbsp;1923&nbsp;р. Міллікен отримав Нобелівську премію з&nbsp;фізики.
+</p>
+</div>
+<!--
+...... section Підсумки ......
+-->
+<h4 id="autosec-911">Підсумки</h4>
+<a id="main-html-autopage-911"></a>
+
+
+<p>
+Рух зарядженої частинки в&nbsp;електричному й&nbsp;магнітному полях визначається її питомим зарядом \(q/m\) та початковими умовами: саме ця комбінація, а&nbsp;не заряд і&nbsp;маса окремо, входить у&nbsp;рівняння руху. Основні
+результати:
+</p>
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> однорідне \(\Efield \)&nbsp;— рівноприскорений рух <span class="textup">(<a href="ch11.html#eq:motion_E_solution">11.2</a>)</span>;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> однорідне \(\Bfield \)&nbsp;— рівномірний рух уздовж поля й&nbsp;обертання з&nbsp;циклотронною частотою \(|\omega _c| = |q|B/mc\) по колу ларморівського радіуса \(R = mcv_{\perp }/(|q|B)\),
+тобто гвинтова лінія; сила Лоренца не виконує роботи;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> \(\Efield \parallel \Bfield \)&nbsp;— спіраль зі зростаючим кроком;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> \(\Efield \perp \Bfield \), \(E &lt; B\)&nbsp;— до обертання додається дрейф \(\vect {u} = c\,\Efield \times \Bfield /B^2\), що не залежить ні від знака заряду, ні від маси; траєкторія&nbsp;—
+трохоїда, а&nbsp;за \(|v_0| = |u|\) (зокрема з&nbsp;нульовою початковою швидкістю)&nbsp;— циклоїда;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> ефект Холла: \(U_H = \dfrac {1}{nqc}\dfrac {IB}{d}\), \(R_H = \dfrac {1}{nqc}\); знак \(U_H\) визначає тип носіїв заряду;
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> метод Томсона: компенсація відхилення дає \(v_0 = cE/B\) (фільтр швидкостей) і&nbsp;питомий заряд \(q/m\); дослід Міллікена: \(q = 6\pi \eta r\,(v_0 + v_E)/E\), заряд краплі кратний \(e\).
+</p>
+</li>
+</ul>
+
+<p>
+Ці два вимірювання дають змогу знайти й&nbsp;саму масу електрона: \(m = |e|/|e/m| \approx 9{,}11\cdot 10^{-28}\)&nbsp;г.
+</p>
+<!--
+...... section Задачі ......
+-->
+<h4 id="autosec-912">Задачі</h4>
+<a id="main-html-autopage-912"></a>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-297"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 11.1.</span></span> <a id="autoid-298" ></a ><a id="prb:ElectronInField"></a> <em>Електрон в&nbsp;однорідному полі.</em> Електрон влітає зі швидкістю
+\(v=10^{9}\)&nbsp;см/с в&nbsp;однорідне магнітне поле \(B=100\)&nbsp;Гс перпендикулярно до ліній індукції. (а)&nbsp;Покажіть, що траєкторія&nbsp;— коло, і&nbsp;знайдіть його радіус \(R\) та циклотронну частоту \(\omega _c\); чи
+залежить \(\omega _c\) від \(v\)? (б)&nbsp;Обчисліть \(R\) і&nbsp;\(\omega _c\) (\(e=4{,}8\cdot 10^{-10}\)&nbsp;СГСЕ, \(m=9{,}1\cdot 10^{-28}\)&nbsp;г, \(c=3\cdot 10^{10}\)&nbsp;см/с). (в)&nbsp;Яким буде рух, якщо \(\vect {v}\)
+утворює з&nbsp;\(\Bfield \) кут \(\alpha \)?
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-299"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 11.2.</span></span> <a id="autoid-300" ></a ><a id="prb:HelixEB"></a> <em>Спіраль у&nbsp;паралельних полях.</em> Частинка із зарядом \(q\) і&nbsp;масою \(m\)
+починає рух зі швидкістю \(v_0\), перпендикулярною до однорідних паралельних полів \(\Efield \parallel \Bfield \). Знайдіть її траєкторію та зміщення \(\Delta z_n\) вздовж поля за \(n\)-й оберт.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-301"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 11.3.</span></span> <a id="autoid-302" ></a ><a id="prb:CycloidElectron"></a> <em>Електрон у&nbsp;схрещених полях.</em> Електрон стартує зі стану спокою
+в&nbsp;схрещених полях \(E = 0{,}1\)&nbsp;СГСЕ (\(30\)&nbsp;В/см) і&nbsp;\(B = 100\)&nbsp;Гс. Знайдіть (а)&nbsp;швидкість і&nbsp;напрямок дрейфу; (б)&nbsp;максимальну швидкість електрона; (в)&nbsp;максимальне відхилення від осі
+дрейфу; (г)&nbsp;зсув вздовж осі дрейфу за один період обертання. В&nbsp;який бік спершу відхиляється електрон?
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-303"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 11.4.</span></span> <a id="autoid-304" ></a ><a id="prb:HallSensor"></a> <em>Датчик Холла.</em> Напівпровідникова пластинка з&nbsp;електронною провідністю
+має концентрацію носіїв \(n = 10^{16}\)&nbsp;см\(^{-3}\) і&nbsp;товщину \(d = 0{,}5\)&nbsp;мм. Крізь неї тече струм \(I = 1\)&nbsp;мА, а&nbsp;перпендикулярно до пластинки прикладено поле \(B = 1000\)&nbsp;Гс. (а)&nbsp;Обчисліть
+холлівську напругу. (б)&nbsp;Як змінить знак \(U_H\), якщо замінити пластинку діркового типу з&nbsp;тією самою концентрацією? (в)&nbsp;Як за виміряною \(U_H\) знайти \(n\)? (Використайте \(1\)&nbsp;мА \(= 3\cdot 10^{6}\)&nbsp;СГСЕ,
+\(1\)&nbsp;СГСЕ потенціалу \(= 300\)&nbsp;В.) <em>Відповідь:</em> (а)&nbsp;\(U_H = \dfrac {IB}{n|q|cd} \approx 4{,}2\cdot 10^{-7}\)&nbsp;СГСЕ \(\approx 0{,}13\)&nbsp;мВ. (б)&nbsp;Знак змінюється на протилежний (\(R_H&gt;0\)
+для дірок). (в)&nbsp;\(n = \dfrac {IB}{|q|cd\,|U_H|}\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-305"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 11.5.</span></span> <a id="autoid-306" ></a ><a id="prb:HallThrusterMagnetization"></a> <em>Замагніченість у&nbsp;холлівському двигуні.</em> У&nbsp;каналі
+двигуна радіальне поле \(B = 200\)&nbsp;Гс, осьове електричне поле \(E = 200\)&nbsp;В/см. Оцініть (а)&nbsp;ларморівський радіус електрона з&nbsp;енергією \(10\)&nbsp;еВ і&nbsp;іона ксенону (\(M \approx 131\)&nbsp;а.о.м.)
+з&nbsp;енергією \(300\)&nbsp;еВ; (б)&nbsp;швидкість азимутального дрейфу електронів. Чи можна вважати іони замагніченими, якщо розмір каналу становить кілька сантиметрів? <em>Відповідь:</em> (а)&nbsp;\(R_e \approx 0{,}5\)&nbsp;мм,
+\(R_i \approx 1{,}4\)&nbsp;м. (б)&nbsp;\(u = cE/B \approx 10^{8}\)&nbsp;см/с (\(E = 0{,}667\)&nbsp;СГСЕ). Оскільки \(R_i \gg \) розмірів каналу, іони практично не замагнічені, а&nbsp;електрони (\(R_e \ll \) розмірів каналу)
+замагнічені.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-307"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 11.6.</span></span> <a id="autoid-308" ></a ><a id="prb:DeflectionAccelerated"></a> <em>Відхилення після прискорення.</em> Електрони і&nbsp;протони прискорено
+однаковою напругою \(U\) і&nbsp;пропущено крізь відхиляючий конденсатор, а&nbsp;в&nbsp;другому досліді&nbsp;— крізь область магнітного поля (довжини \(l\), відстань до екрана \(L\), відхилення мале). Покажіть, що (а)&nbsp;в
+електричному полі відхилення \(y\) не залежить від \(q/m\), і&nbsp;знайдіть \(y\); (б)&nbsp;у магнітному полі \(|y_e|/|y_p| = \sqrt {m_p/m_e}\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-309"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 11.7.</span></span> <a id="autoid-310" ></a ><a id="prb:ThomsonNumbers"></a> <em>Метод Томсона.</em> У&nbsp;схемі Томсона довжина області полів \(l =
+2\)&nbsp;см, відстань до екрана \(L = 20\)&nbsp;см. При \(B = 3\)&nbsp;Гс пляма на екрані зміщується на \(y = 2{,}2\)&nbsp;см, а&nbsp;електричне поле \(E = 0{,}1\)&nbsp;СГСЕ повертає її в&nbsp;початкове положення. Знайдіть
+швидкість електронів і&nbsp;питомий заряд. <em>Відповідь:</em> \(v_0 = cE/B \approx 10^{9}\)&nbsp;см/с; \(\left |\dfrac {q}{m}\right | = \dfrac {y\,v_0\,c}{B\,l\,(l/2+L)} \approx 5{,}2\cdot
+10^{17}\)&nbsp;од.&nbsp;СГСЕ\(\cdot \)г\(^{-1}\) \(\approx 1{,}7\cdot 10^{11}\)&nbsp;Кл\(\cdot \)кг\(^{-1}\).
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblem">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-311"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 11.8.</span></span> <a id="autoid-312" ></a ><a id="prb:OilDrop"></a> <em>Краплина Міллікена.</em> Крапля олії (\(\rho = 0{,}9\)&nbsp;г/см\(^3\)) у&nbsp;повітрі
+(\(\eta = 1{,}8\cdot 10^{-4}\)&nbsp;г\(\cdot \)см\(^{-1}\cdot \)с\(^{-1}\), густиною повітря знехтуйте) падає зі швидкістю \(v_0 = 0{,}02\)&nbsp;см/с. У&nbsp;полі \(E = 10\)&nbsp;СГСЕ вона піднімається зі швидкістю \(v_E =
+0{,}011\)&nbsp;см/с, а&nbsp;після захоплення іона&nbsp;— зі швидкістю \(v_E&apos; = 0{,}0214\)&nbsp;см/с. Знайдіть радіус краплі, її заряд у&nbsp;першому випадку та зміну заряду. Поправкою Каннінгема знехтуйте.
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Запишіть рівняння руху зарядженої частинки в&nbsp;однорідному електричному полі та його розв’язок. Яким буде рух і&nbsp;куди напрямлене прискорення?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Чому сила Лоренца не виконує роботи і&nbsp;не змінює модуль швидкості частинки? Як розкладають швидкість на складові \(\vect {v}_{\parallel }\) і&nbsp;\(\vect {v}_{\perp }\)
+в&nbsp;магнітному полі та який рух відповідає кожній із них?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Що таке циклотронна частота? Від яких величин вона залежить, а&nbsp;від яких (наприклад, від швидкості частинки)&nbsp;— ні? Запишіть формулу для радіуса кола \(R\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> Якою є траєкторія частинки в&nbsp;однорідних паралельних полях \(\Efield \parallel \Bfield \) (рис.&nbsp;<a href="ch11.html#tikz:helix">11.2</a>)? Чому крок спіралі зростає?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> У&nbsp;схрещених полях \(\Efield \perp \Bfield \) введено швидкість \(\vect {u}\) (рис.&nbsp;<a href="ch11.html#tikz:drift">11.3</a>). З&nbsp;якої умови її знаходять, і&nbsp;чому їй відповідає
+формула \(\vect {u} = c\,\Efield \times \Bfield /B^2\)? Куди напрямлений дрейф відносно \(\Efield \) і&nbsp;\(\Bfield \)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> Чому швидкість електричного дрейфу не залежить від знака заряду й&nbsp;маси частинки? Чому при цьому вона все ж не поділяє заряди різного знака, на відміну від руху під дією самого лише
+електричного поля?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> З&nbsp;яких трьох рухів складається рух у&nbsp;схрещених полях? За якої умови існує дрейфова швидкість, що відбувається при \(E &gt; B\) і&nbsp;коли потрібні релятивістські рівняння?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Що таке трохоїда та циклоїда? За якої початкової умови траєкторія в&nbsp;схрещених полях є циклоїдою (рис.&nbsp;<a href="ch11.html#tikz:drift_cycloide">11.4</a>) і&nbsp;з&nbsp;чим її можна
+порівняти механічно?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> У&nbsp;чому полягає ефект Холла (рис.&nbsp;<a href="ch11.html#tikz:hall_effect">11.5</a>)? Чому в&nbsp;стаціонарному режимі результуюча поперечна сила на носії дорівнює нулю?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Виведіть формулу для холлівської напруги \(U_H\) і&nbsp;сталої Холла \(R_H\). Які величини можна визначити за виміряною \(U_H\) і&nbsp;як за знаком холлівської напруги визначити тип носіїв?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> Поясніть принцип дії холлівського двигуна. Чому електрони в&nbsp;каналі замагнічені, а&nbsp;іони&nbsp;— ні, і&nbsp;як це забезпечує тягу?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Що таке питомий заряд? Чому рух частинки в&nbsp;полях визначається саме відношенням \(q/m\), а&nbsp;не зарядом і&nbsp;масою окремо?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">13.</span> Опишіть метод вимірювання \(q/m\) за відхиленням в&nbsp;електричному полі конденсатора (рис.&nbsp;<a href="ch11.html#tikz:condenser_deflection">11.7</a>). З&nbsp;яких двох частин
+складається повне зміщення \(y = y_1 + y_2\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">14.</span> У&nbsp;чому перевага методу Томсона порівняно з&nbsp;вимірюванням окремо в&nbsp;електричному та магнітному полі? Яка умова компенсації відхилення, що з&nbsp;неї випливає для швидкості
+\(v_0\) і&nbsp;чому таку конфігурацію полів називають фільтром швидкостей?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">15.</span> Опишіть установку Міллікена (рис.&nbsp;<a href="ch11.html#tikz:Millikan">11.9</a>). Які сили діють на краплю і&nbsp;як за швидкостями \(v_0\) та \(v_E\) визначають її радіус і&nbsp;заряд?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">16.</span> Що довели досліди Міллікена і&nbsp;чому саме зміни заряду крапель були кратні одній і&nbsp;тій же величині? За відомими \(e\) та \(e/m\) як знайти масу електрона?
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>
