@@ -85,7 +85,6 @@
     ElEnergy,
 }[]
 
-\addtocontents{toc}{\clearpage}
 %===============================================================================
 \part{Постійний електричний струм}
 \label{part:SteadyCurrent}
@@ -106,7 +105,6 @@
     MagFieldMedia,
 }[]
 
-% \addtocontents{toc}{\clearpage}
 %===============================================================================
 \part{Рух частинок в електричному та магнітному полях}
 \label{part:ChargedParticleMotion}
@@ -129,7 +127,6 @@
 }[]
 
 %===============================================================================
-%\addtocontents{toc}{\protect\clearpage}
 \part{Електромагнітні хвилі}
 \label{part:ElectromagneticWaves}
 \gdef\currentparttitle{Електромагнітні хвилі}
@@ -140,7 +137,6 @@
 }[]
 
 %===============================================================================
-\addtocontents{toc}{\clearpage}
 \part{Електромагнітні коливання та хвилі в колах і хвилеводах}
 \label{part:EMOscillationsAndWaveguides}
 \gdef\currentparttitle{Коливання та хвилі в колах і хвилеводах}
@@ -185,6 +181,7 @@
     purcell2013electricity,
 }
 
+\addtocontents{toc}{\protect\tocnorule}% у змісті під Літературою й покажчиком -- без лінійки
 \printbibliography[heading=bibintoc]
 
 \clearpage\pagestyle{index}
