@@ -1,0 +1,81 @@
+\begin{tikzpicture}[
+>=latex,
+charge+/.style={very thin,top color=red!50,bottom color=red!90!black,shading angle=20},
+charge-/.style={very thin,top color=blue!50,bottom color=blue!80,shading angle=20},
+FieldArrow/.style={orange!80!black,
+        decoration={markings,mark=at position 0.5 with {\arrow[rotate=#1]{latex}}},
+        postaction={decorate}}]
+
+% параметри
+\def\xmax{3}
+\def\ymax{2.5}
+\def\a{1.25}   % заряди в точках y=-a (зображення) і y=+a
+\def\q{-1}     % зображення
+\def\Q{1}      % заряд
+\def\R{1.0}    % масштаб еліпса для стрілок і товщини площини
+\def\N{5}      % кількість міток індукованого заряду
+\def\range{-0.1,-0.4,-0.7,-1.0,-1.3,-1.6,-1.9}
+
+% лінії рівня потоку (gnuplot)
+\def\fieldplot{plot[id=plot,raw gnuplot,smooth] function{
+        f(x,y) = \q*(y+\a)/sqrt((y+\a)**2+x**2) + \Q*(y-\a)/sqrt((y-\a)**2+x**2);
+        set xrange [-\xmax:\xmax];
+        set yrange [-\ymax:\ymax];
+        set view 0,0;
+        set isosample 400,400;
+        set cont base;
+        set cntrparam levels discrete \range;
+        unset surface;
+        splot f(x,y)
+    }}
+
+% лінії поля над площиною + стрілки
+\begin{scope}
+\clip (-\xmax,0) rectangle (\xmax,\ymax);
+\draw[orange!80!black,name path=Elines] \fieldplot;
+
+\path[name path=ellipse1] (0,\a) ellipse ({1.6*\R} and {0.85*\R});
+\path[name intersections={of=Elines and ellipse1,total=\t}]
+\pgfextra{\xdef\Nb{\t}};
+\foreach \i in {1,...,\Nb}{
+        \path let \p1=(intersection-\i) in \pgfextra{\xdef\ptx{\x1}\xdef\pty{\y1}};
+        \pgfkeys{/pgf/fpu,/pgf/fpu/output format=fixed}
+        \pgfmathsetmacro{\px}{\ptx/28.45pt}
+        \pgfmathsetmacro{\py}{\pty/28.45pt}
+        \pgfmathsetmacro{\Fa}{\Q*((\py+\a)^2+(\px)^2)^(3/2)}
+        \pgfmathsetmacro{\Fb}{\q*((\py-\a)^2+(\px)^2)^(3/2)}
+        \pgfmathparse{atan2((\py+\a)*(\Fb)+(\py-\a)*(\Fa),(\px)*(\Fb)+(\px)*(\Fa))}
+        \edef\ang{\pgfmathresult}
+        \pgfkeys{/pgf/fpu=false}
+        \draw[FieldArrow=\ang] (\ptx,\pty);
+    }
+\end{scope}
+
+лінії поля під площиною (пунктир)
+\begin{scope}
+\clip (-\xmax,0) rectangle (\xmax,-\ymax);
+\draw[orange!80!black,dashed] \fieldplot;
+\end{scope}
+
+% заряди
+\draw[charge+] (0, \a) circle (0.2) node[black] {$+$};
+\draw[charge-] (0,-\a) circle (0.2) node[black] {$-$};
+\fill[white,opacity=0.6] (-\xmax,0) rectangle (\xmax,-\ymax);
+
+% площина із заземленням
+\fill[black!20] (-\xmax,-0.05*\R) rectangle (\xmax,0.05*\R);
+\draw[black!50]
+(-\xmax, 0.05*\R) --++ (2*\xmax,0)
+(-\xmax,-0.05*\R) --++ (2*\xmax,0);
+\draw[black!70,line cap=round]
+(-\xmax,-0.05*\R) to[out=180,in=90] ++(-140:0.12*\xmax) coordinate (G);
+\foreach \i [evaluate={\y=0.5*(1-\i)*0.15; \w=0.5*(0.5-\i*0.12);}] in {1,2,3}{
+    \draw[black!70] (G)++(-\w,\y) --++ (2*\w,0);
+}
+
+% індуковані заряди на площині
+\foreach \i [evaluate={\x=0.2+0.7*\xmax/\N*\i+0.55*\i^2/\N^2;}] in {0,...,\N}{
+    \draw[blue!80!black!80,line width=0.8pt] (-\x-0.06,0) --++ (0.12,0);
+    \draw[blue!80!black!80,line width=0.8pt] ( \x-0.06,0) --++ (0.12,0);
+}
+\end{tikzpicture}
