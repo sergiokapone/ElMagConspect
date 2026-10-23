@@ -1,0 +1,16 @@
+% Стиль upmendex для предметного покажчика (ConspectBook.cls, \makeindex[options=-s index-uk.ist]).
+% Сортування за українською абеткою (ICU: а б в г ґ д е є ж з и і ї й ...), латиниця -- перед кирилицею.
+icu_locale "uk"
+
+% літера-заголовок перед кожною групою записів
+headings_flag 1
+heading_prefix "\\par\\pagebreak[2]\\textbf{\\large "
+heading_suffix "}\\par\\nopagebreak\n"
+symhead_positive "Символи"
+numhead_positive "Числа"
+
+% номери сторінок: "Кулона закон, 12, 15--17"
+delim_0 ", "
+delim_1 ", "
+delim_2 ", "
+delim_r "--"

@@ -13,6 +13,13 @@ in Python / PowerShell scripts English: keep that. Commits go straight to `main`
   (a root copy, if newer, would replace it on publish).
 - Preview: `python docs/serve.py` (Pagefind search needs http, not file://). `docs/serve.py` is git-ignored.
 
+- The PDF (`docs/ElMagConspect.pdf`) stays in the repo on purpose: the landing page links into it (`#Charges`) and
+  ElMagLectures/index.html shows it in an iframe via jsDelivr. GitHub Release assets were rejected (served only as
+  downloads). The repo is cleaned of old PDF / docs/ versions periodically with `clean_repo.py` (`--dry-run` first).
+- `elmag.py` is the entry point for everything (pdf, html, serve, clean, purge, size, status, push): an interactive
+  shell or one command; it only calls the scripts. A new script of the project gets a command there.
+  `run.ps1` skips its pause and Clear-Host when `ELMAG_CLI` is set.
+
 ## MathJax
 - lwarp 0.922 hard-codes MathJax 3 (`mathjax@3/es5/tex-svg.js`) with its own `startup.ready()` code that uses v3-internal
   modules; MathJax 4 would need that code ported. MathJax 3 has no line breaking: `book.js` splits long display

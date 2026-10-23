@@ -287,22 +287,19 @@
 \RequirePackage[]{indextools}
 \makeindex[
   program=upmendex,     % використовувати upmendex для сортування
+  options=-s index-uk.ist, % українська абетка (ICU) і літери-заголовки груп
   intoc,                % додати покажчик у зміст
   title={Алфавітний покажчик},
   noautomatic=false     % автоматично генерувати записи через \index{}
 ]
 
-% \emphx{текст} — виділення терміна малиновим курсивом (означення, важливий термін)
-% \NewDocumentCommand{\emphx}{m}{\emph{\textcolor{malina}{#1}}}
-% \NewDocumentCommand{\emphx}{m o}{%
-%   \emph{\textcolor{malina}{#1}}%
-%   \IfNoValueTF{#2}{\index{#1}}{\index{#2}}%
-% }
-
-\NewDocumentCommand{\emphx}{m O{}}{%
-  \emph{\textcolor{malina}{#1}}%
-  \IfBlankTF{#2}{\index{#1}}{\index{#2}}%
-}
+% \emphx{текст} — виділення терміна малиновим курсивом (означення, важливий термін).
+% До покажчика НЕ додає: записи ставляться лише явно, \index{...} одразу після терміна,
+% і лише для того, що читач шукатиме (закони, теореми, ефекти, прилади, означення ключових величин).
+% Форма записів -- за традицією курсів загальної фізики: іменні -- з прізвища
+% (\index{Кулона закон}), решта -- з іменника (\index{Диполь електричний!жорсткий}).
+% Необов'язковий аргумент [..] (колишній ключ покажчика) приймається і ігнорується.
+\NewDocumentCommand{\emphx}{m o}{\emph{\textcolor{malina}{#1}}}
 
 %===============================================================================
 %
@@ -839,6 +836,11 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 
 \newpagestyle{bibliography}{\headrule%
 	\sethead{\ifodd\thepage\relax\else\itshape\small\bibname\fi}{}{\ifodd\thepage\itshape\small\bibname\else\relax\fi}
+	\setfoot{}{\small\thepage}{}}
+
+% предметний покажчик (main.tex: \clearpage\pagestyle{index} перед \printindex)
+\newpagestyle{index}{\headrule%
+	\sethead{\ifodd\thepage\relax\else\itshape\small Алфавітний покажчик\fi}{}{\ifodd\thepage\itshape\small Алфавітний покажчик\else\relax\fi}
 	\setfoot{}{\small\thepage}{}}
 
 % "plain" (стандартний стиль першої сторінки глави у LaTeX) — тут без колонтитула

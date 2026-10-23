@@ -1,5 +1,6 @@
 _minted*/
 .garbage/
+__pycache__
 tmp/
 *.aux
 *.synctex.gz
@@ -58,3 +59,6 @@ test_main.pdf
 
 # local web server for the HTML book (python docs/serve.py): kept in docs/ by publish_html.py, not published
 /docs/serve.py
+
+# history of the elmag.py shell
+/.elmag_history
