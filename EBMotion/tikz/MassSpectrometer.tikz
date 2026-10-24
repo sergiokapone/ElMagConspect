@@ -1,0 +1,30 @@
+\begin{tikzpicture}[>=Stealth, font=\small]
+    \fill[blue!6] (-0.6,0) rectangle (7.2,3.6);
+    \foreach \i in {-0.3,0.3,...,7.0}
+        \foreach \j in {0.3,0.9,...,3.5}
+            \fill[blue!50] (\i,\j) circle (0.035);
+    \node[blue] at (6.9,3.3) {$\Bfield$};
+    % джерело і прискорювальні щілини
+    \draw[thick] (-0.5,-1.9) rectangle (0.5,-1.4);
+    \node at (0,-1.65) {\scriptsize іони};
+    \draw[very thick] (-0.8,-1.0) -- (-0.08,-1.0) (0.08,-1.0) -- (0.8,-1.0);
+    \draw[very thick] (-0.8,-0.15) -- (-0.08,-0.15) (0.08,-0.15) -- (0.8,-0.15);
+    \draw[<->] (-1.0,-1.0) -- node[left] {$U$} (-1.0,-0.15);
+    \node[above] at (-0.5,-0.15) {$S$};
+    % фотопластинка
+    \fill[gray!60] (1.0,-0.12) rectangle (7.2,0);
+    \node[below] at (6.4,-0.12) {$P$};
+    % траєкторії
+    \draw[red, thick] (0,-1.4) -- (0,0);
+    \draw[red, thick, ->] (0,0) arc[start angle=180, end angle=90, radius=2.4];
+    \draw[red, thick] (2.4,2.4) arc[start angle=90, end angle=0, radius=2.4];
+    \draw[blue!70!black, thick, ->] (0,0) arc[start angle=180, end angle=90, radius=2.9];
+    \draw[blue!70!black, thick] (2.9,2.9) arc[start angle=90, end angle=0, radius=2.9];
+    \node[red, below left] at (4.4,1.6) {$m_1$};
+    \node[blue!70!black, above right] at (4.95,1.85) {$m_2$};
+    % 2R
+    \draw[<->] (0,-0.45) -- node[fill=white, inner sep=1pt] {$2R_1$} (4.8,-0.45);
+    \draw[thin] (4.8,-0.12) -- (4.8,-0.6);
+    \draw[thin] (5.8,-0.12) -- (5.8,-0.6);
+    \draw[<->] (4.8,-0.55) -- node[below] {$\Delta$} (5.8,-0.55);
+\end{tikzpicture}

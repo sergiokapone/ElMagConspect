@@ -1,0 +1,68 @@
+\begin{tikzpicture}[>=Stealth, font=\small, scale=0.85]
+    % поле B напрямлене до читача
+    \foreach \i in {-3.4,-2.6,...,3.5}
+        \foreach \j in {-3.4,-2.6,...,3.5}
+            \fill[blue!50] (\i,\j) circle (0.04);
+    % дуанти
+    \filldraw[fill=gray!15, draw=black, thick] (0.15,-3.0) arc[start angle=-90, end angle=90, radius=3.0] -- cycle;
+    \filldraw[fill=gray!15, draw=black, thick] (-0.15,3.0) arc[start angle=90, end angle=270, radius=3.0] -- cycle;
+    \node at (2.2,2.2) {Д$_1$};
+    \node at (-2.2,2.2) {Д$_2$};
+    % траєкторія
+    \begin{scope}[yshift=0.447cm]
+    \draw[red, thick] (0.150,0.000)
+        arc[start angle=90, end angle=-90, radius=0.550]
+        -- (-0.150,-1.100)
+        arc[start angle=-90, end angle=-270, radius=0.778]
+        -- (0.150,0.456)
+        arc[start angle=90, end angle=-90, radius=0.953]
+        -- (-0.150,-1.450)
+        arc[start angle=-90, end angle=-270, radius=1.100]
+        -- (0.150,0.750)
+        arc[start angle=90, end angle=-90, radius=1.230]
+        -- (-0.150,-1.709)
+        arc[start angle=-90, end angle=-270, radius=1.347]
+        -- (0.150,0.985)
+        arc[start angle=90, end angle=-90, radius=1.455]
+        -- (-0.150,-1.925)
+        arc[start angle=-90, end angle=-270, radius=1.556]
+        -- (0.150,1.186)
+        arc[start angle=90, end angle=-90, radius=1.650]
+        -- (-0.150,-2.114)
+        arc[start angle=-90, end angle=-270, radius=1.739]
+        -- (0.150,1.365)
+        arc[start angle=90, end angle=-90, radius=1.824]
+        -- (-0.150,-2.284)
+        arc[start angle=-90, end angle=-270, radius=1.905]
+        -- (0.150,1.527)
+        arc[start angle=90, end angle=-90, radius=1.983]
+        -- (-0.150,-2.439)
+        arc[start angle=-90, end angle=-270, radius=2.058]
+        -- (0.150,1.677)
+        arc[start angle=90, end angle=-90, radius=2.130]
+        -- (-0.150,-2.584)
+        arc[start angle=-90, end angle=-270, radius=2.200]
+        -- (0.150,1.816)
+        arc[start angle=90, end angle=-90, radius=2.268]
+        -- (-0.150,-2.719)
+        arc[start angle=-90, end angle=-270, radius=2.333]
+        -- (0.150,1.948)
+        arc[start angle=90, end angle=-90, radius=2.397]
+        -- (-0.150,-2.847)
+        arc[start angle=-90, end angle=-270, radius=2.460]
+        -- (0.150,2.072)
+        arc[start angle=90, end angle=-90, radius=2.520]
+        -- (-0.150,-2.969)
+        arc[start angle=-90, end angle=-270, radius=2.580]
+        -- (0.150,2.191)
+        arc[start angle=90, end angle=0, radius=2.638];
+    \draw[red, thick, ->] (2.788,-0.447) -- ++(0,-3.4) node[below, text=black] {пучок};
+    \fill (0.15,0) circle (0.06) node[above right=-1pt, font=\scriptsize] {$S$};
+    \end{scope}
+    % генератор
+    \draw (-0.15,3.0) -- (-0.15,3.90) -- (-0.35,3.90);
+    \draw (0.15,3.0) -- (0.15,3.90) -- (0.35,3.90);
+    \node[circle, draw, fill=white, inner sep=0pt, minimum size=14pt] at (0,3.90) {$\sim$};
+    \node[above=6pt] at (0,3.90) {$U\cos\omega_c t$};
+    \node[blue] at (3.75,3.3) {$\Bfield$};
+\end{tikzpicture}
