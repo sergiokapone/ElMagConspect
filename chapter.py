@@ -40,9 +40,11 @@ def main():
         pretex += r'\def\TargetTikz{%s}' % a.tikz
         job += '-' + a.tikz
     os.makedirs(OUT, exist_ok=True)
-    cmd = ['latexmk', '-lualatex', '-interaction=nonstopmode', '-halt-on-error', '-file-line-error',
-           # latexmk runs the indexer inside -outdir: the style of latexmkrc needs its full path there
-           '-e', '$makeindex = q(upmendex -s "%s" %%O -o %%D %%S)' % os.path.join(ROOT, 'index-uk.ist').replace('\\', '/'),
+    if a.tikz:                                  # a picture has no index entries, and upmendex fails on an empty .idx
+        index = '$makeindex = q(perl -e "open F, q(>), $ARGV[0]" %D)'
+    else:                                       # latexmk runs the indexer inside -outdir: the style needs its full path
+        index = '$makeindex = q(upmendex -s "%s" %%O -o %%D %%S)' % os.path.join(ROOT, 'index-uk.ist').replace('\\', '/')
+    cmd = ['latexmk', '-lualatex', '-interaction=nonstopmode', '-halt-on-error', '-file-line-error', '-e', index,
            '-jobname=' + job, '-outdir=' + OUT, '-usepretex=' + pretex, 'test.tex']
     run = subprocess.run(cmd, cwd=ROOT, **({} if a.full else dict(capture_output=True, text=True, encoding='utf-8',
                                                                    errors='replace')))
