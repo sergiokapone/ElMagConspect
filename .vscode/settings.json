@@ -213,5 +213,5 @@
     "boldsymbol"
   ],
   "latex-workshop.hover.ref.enabled": false,
-  "python-envs.defaultEnvManager": "ms-python.python:pipenv"
+  "python-envs.defaultEnvManager": "ms-python.python:system"
 }
