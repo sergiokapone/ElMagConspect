@@ -44,10 +44,16 @@ def main():
         index = '$makeindex = q(perl -e "open F, q(>), $ARGV[0]" %D)'
     else:                                       # latexmk runs the indexer inside -outdir: the style needs its full path
         index = '$makeindex = q(upmendex -s "%s" %%O -o %%D %%S)' % os.path.join(ROOT, 'index-uk.ist').replace('\\', '/')
-    cmd = ['latexmk', '-lualatex', '-interaction=nonstopmode', '-halt-on-error', '-file-line-error', '-e', index,
-           '-jobname=' + job, '-outdir=' + OUT, '-usepretex=' + pretex, 'test.tex']
-    run = subprocess.run(cmd, cwd=ROOT, **({} if a.full else dict(capture_output=True, text=True, encoding='utf-8',
-                                                                   errors='replace')))
+    # gnuplot plots of TikZ (--shell-escape, as in run.ps1): lualatex writes their files into -outdir, but runs
+    # gnuplot in the project root, so the call changes into -outdir first; the table is read back via TEXINPUTS
+    pretex += r'\AtBeginDocument{\pgfkeys{/pgf/plot/gnuplot call={cd %s && gnuplot}}}' % os.path.basename(OUT)
+    # %P = the pre-TeX code of -pretex followed by the source (-usepretex would reset the command to plain lualatex)
+    lualatex = 'lualatex --shell-escape -interaction=nonstopmode -halt-on-error -file-line-error %O %P'
+    cmd = ['latexmk', '-pdflua', '-pretex=' + pretex, '-lualatex=' + lualatex, '-e', index,
+           '-jobname=' + job, '-outdir=' + OUT, 'test.tex']
+    env = {**os.environ, 'TEXINPUTS': OUT + os.pathsep + os.environ.get('TEXINPUTS', '')}
+    run = subprocess.run(cmd, cwd=ROOT, env=env, **({} if a.full else dict(capture_output=True, text=True,
+                                                                            encoding='utf-8', errors='replace')))
     log = os.path.join(OUT, job + '.log')
     pdf = os.path.join(OUT, job + '.pdf')
     if run.returncode:
