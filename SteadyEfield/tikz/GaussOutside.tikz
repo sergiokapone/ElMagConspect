@@ -1,0 +1,36 @@
+% Потік поля зовнішнього заряду: вузький конус перетинає поверхню двічі (dS_1 -- вхід, dS_2 -- вихід).
+% Поверхня -- еліпс з центром (2.6,0.2), півосями 1.7 і 1.25; заряд у (-1.6,-0.6), вісь конуса під 20°.
+% Точки перетину й напрямки зовнішніх нормалей пораховано заздалегідь.
+\begin{tikzpicture}[>=latex]
+	\coordinate (q) at (-1.6,-0.6);
+	\coordinate (P1) at (0.907,0.312);   % вхід: нормаль під 173°, cos(alpha) < 0
+	\coordinate (P2) at (3.505,1.258);   % вихід: нормаль під 65.2°, cos(alpha) > 0
+
+	% силові лінії заряду
+	\foreach \a/\l in {-25/5.4,-10/6.3,5/6.3,35/4.6,50/3.8} {
+			\draw[->, red!40] (q) -- ++(\a:\l);
+		}
+
+	% поверхня S
+	\fill[ball color=gray!40, opacity=0.55] (2.6,0.2) ellipse (1.7 and 1.25);
+	\draw[gray] (2.6,0.2) ellipse (1.7 and 1.25);
+	\node at (3.75,-1.1) {$S$};
+
+	% вузький конус уздовж осі під 20°
+	\draw[dash pattern = {on 1pt off 1pt}] (q) -- ++(16:6.5);
+	\draw[dash pattern = {on 1pt off 1pt}] (q) -- ++(24:6.3);
+	\draw[->, red, thick] (q) -- ++(20:6.4) node[right, text=red] {$\Efield$};
+
+	% площадки, які конус вирізає на поверхні (уздовж дотичної)
+	\draw[line width=2.5pt, blue!70!black] ($(P1)+(83:0.22)$) -- ($(P1)+(263:0.22)$);
+	\draw[line width=2.5pt, blue!70!black] ($(P2)+(155.2:0.54)$) -- ($(P2)+(335.2:0.54)$);
+
+	% зовнішні нормалі
+	\draw[->, thick] (P1) -- ++(173:1.1)
+	node[left, align=center] {$d\vect{S}_1$\\[-1pt]{\small $\cos\alpha_1<0$}};
+	\draw[->, thick] (P2) -- ++(65.2:1.1)
+	node[above, align=center] {$d\vect{S}_2$\\[-1pt]{\small $\cos\alpha_2>0$}};
+
+	\node [circle, ball color=red, inner sep=0pt, text=white, font=\scriptsize] at (q) {$+$};
+	\node[below left] at (q) {$q$};
+\end{tikzpicture}
