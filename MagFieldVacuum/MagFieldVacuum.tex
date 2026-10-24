@@ -5,6 +5,8 @@
 
 
 %=========================================================
+\Opensolutionfile{answer}[\currfilebase/\currfilebase-Answers]
+\Writetofile{answer}{\protect\section*{\nameref*{\currfilebase}}}
 \chapter{Магнітне поле у~вакуумі}\label{\currfilebase}\hypertarget{MagFieldVacuum}{}
 
 
@@ -1447,7 +1449,9 @@ $r_i\,dr_j - r_j\,dr_i = \epsilon_{ijk}(\vect r\times d\vect r)_k$, отриму
 	його центру. Чому дорівнює поле в~центрі витка? Покажіть, що при $z\gg R$ результат
 	збігається з~полем точкового магнітного диполя \eqref{eq:DipoleFieldB} з~моментом
 	$p_m=\pi R^2I/c$.
-	%	\emph{Відповідь:} $B=\dfrac{2\pi R^2I}{c\,(R^2+z^2)^{3/2}}$; у центрі $B=\dfrac{2\pi I}{cR}$. При $z\gg R$ маємо $B\approx\dfrac{2p_m}{z^3}$, що збігається з \eqref{eq:DipoleFieldB} на осі диполя ($\vect r\parallel\vect p_m$).
+	\begin{solution}
+		$B=\dfrac{2\pi R^2I}{c\,(R^2+z^2)^{3/2}}$; у центрі $B=\dfrac{2\pi I}{cR}$. При $z\gg R$ маємо $B\approx\dfrac{2p_m}{z^3}$, що збігається з \eqref{eq:DipoleFieldB} на осі диполя ($\vect r\parallel\vect p_m$).
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:CylinderCavity}
@@ -1456,8 +1460,10 @@ $r_i\,dr_j - r_j\,dr_i = \epsilon_{ijk}(\vect r\times d\vect r)_k$, отриму
 	паралельна осі провідника й~зсунута відносно неї на відстань $d$ (порожнина повністю
 	лежить усередині провідника). Знайдіть магнітне поле в~порожнині. Підказка: подайте
 	порожнину як накладання струмів $+\vect j$ і~$-\vect j$.
-	%Відповідь: $\Bfield=\dfrac{2\pi}{c}\,[\vect j\times\vect a]$, де $\vect a$~--- вектор, проведений від осі провідника до осі порожнини.
-	%    Поле однорідне, $B=\dfrac{2\pi jd}{c}$, перпендикулярне до $\vect j$ і до лінії, що сполучає осі. (Усередині суцільного циліндра $\Bfield=\dfrac{2\pi}{c}[\vect j\times\vect r]$, де $\vect r$ --- відстань від осі.)
+	\begin{solution}
+		$\Bfield=\dfrac{2\pi}{c}\,[\vect j\times\vect a]$, де $\vect a$~--- вектор, проведений від осі провідника до осі порожнини.
+		   Поле однорідне, $B=\dfrac{2\pi jd}{c}$, перпендикулярне до $\vect j$ і до лінії, що сполучає осі. (Усередині суцільного циліндра $\Bfield=\dfrac{2\pi}{c}[\vect j\times\vect r]$, де $\vect r$ --- відстань від осі.)
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:RotatingDiskMoment}
@@ -1468,7 +1474,9 @@ $r_i\,dr_j - r_j\,dr_i = \epsilon_{ijk}(\vect r\times d\vect r)_k$, отриму
 	формулою \eqref{eq:MagMomentViaInertia}. (б)~Електрон рухається по коловій орбіті
 	з~моментом імпульсу $L=\hbar$. Знайдіть його магнітний момент і~взаємну орієнтацію
 	$\vect p_m$ та $\vect L$ ($\hbar=1{,}05\cdot10^{-27}$~ерг$\cdot$с).
-	%	\emph{Відповідь:} (а)~$p_m=\dfrac{QR^2\omega}{4c}$; за формулою \eqref{eq:MagMomentViaInertia} з $J=\tfrac12MR^2$ --- те саме. (б)~$|\vect p_m|=\dfrac{e\hbar}{2mc}\approx9{,}3\cdot10^{-21}$~ерг/Гс (магнетон Бора); оскільки заряд електрона від'ємний, $\vect p_m$ напрямлений \emph{протилежно} до $\vect L$.
+	\begin{solution}
+		(а)~$p_m=\dfrac{QR^2\omega}{4c}$; за формулою \eqref{eq:MagMomentViaInertia} з $J=\tfrac12MR^2$ --- те саме. (б)~$|\vect p_m|=\dfrac{e\hbar}{2mc}\approx9{,}3\cdot10^{-21}$~ерг/Гс (магнетон Бора); оскільки заряд електрона від'ємний, $\vect p_m$ напрямлений \emph{протилежно} до $\vect L$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:DipoleNearWire}
@@ -1479,9 +1487,11 @@ $r_i\,dr_j - r_j\,dr_i = \epsilon_{ijk}(\vect r\times d\vect r)_k$, отриму
 	напрямити протилежно? Перевірте результат, розглянувши виток як квадрат зі стороною
 	$a\ll r$ і~струмом $I'$, у~площині якого лежить провідник, і~підрахувавши сили Ампера
 	на його сторони, паралельні провіднику.
-	%Відповідь: $F=\dfrac{2p_mI}{cr^2}$, виток притягується до провідника (диполь втягується в~область сильнішого поля);
-	%за $\vect p_m\uparrow\downarrow\Bfield$ сила та сама за модулем, але це відштовхування.
-	%Перевірка: $F\approx\dfrac{2II'a}{c^2}\Bigl(\dfrac1r-\dfrac1{r+a}\Bigr)\approx\dfrac{2II'a^2}{c^2r^2}$, що збігається з $\dfrac{2p_mI}{cr^2}$ при $p_m=I'a^2/c$. Сили на сторони, перпендикулярні до провідника, взаємно скорочуються.
+	\begin{solution}
+		$F=\dfrac{2p_mI}{cr^2}$, виток притягується до провідника (диполь втягується в~область сильнішого поля);
+		за $\vect p_m\uparrow\downarrow\Bfield$ сила та сама за модулем, але це відштовхування.
+		Перевірка: $F\approx\dfrac{2II'a}{c^2}\Bigl(\dfrac1r-\dfrac1{r+a}\Bigr)\approx\dfrac{2II'a^2}{c^2r^2}$, що збігається з $\dfrac{2p_mI}{cr^2}$ при $p_m=I'a^2/c$. Сили на сторони, перпендикулярні до провідника, взаємно скорочуються.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:RowlandDisk}
@@ -1490,8 +1500,10 @@ $r_i\,dr_j - r_j\,dr_i = \epsilon_{ijk}(\vect r\times d\vect r)_k$, отриму
 	і~обертається з~частотою $100$~об/с. Знайдіть магнітне поле в~центрі диска та
 	порівняйте його з~полем Землі ($\approx 0{,}5$~Гс). Як зміниться поле при зміні
 	напряму обертання?
-	%Відповідь: $B = \dfrac{2\pi\sigma\omega R}{c} = \dfrac{2Q\omega}{cR} \approx 1{,}3\cdot10^{-5}$~Гс, тобто приблизно в~$4\cdot10^{4}$
-	%разів менше за земне; при зміні напряму обертання напрям $\Bfield$ змінюється на протилежний.
+	\begin{solution}
+		$B = \dfrac{2\pi\sigma\omega R}{c} = \dfrac{2Q\omega}{cR} \approx 1{,}3\cdot10^{-5}$~Гс, тобто приблизно в~$4\cdot10^{4}$
+		разів менше за земне; при зміні напряму обертання напрям $\Bfield$ змінюється на протилежний.
+	\end{solution}
 \end{problem}
 \endgroup
 
@@ -1564,3 +1576,5 @@ $r_i\,dr_j - r_j\,dr_i = \epsilon_{ijk}(\vect r\times d\vect r)_k$, отриму
 		матеріалів до магніту?
 	\end{quizlist}
 \end{Questions}
+
+\Closesolutionfile{answer}

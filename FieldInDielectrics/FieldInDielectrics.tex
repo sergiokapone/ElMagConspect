@@ -5,6 +5,8 @@
 
 
 %=========================================================
+\Opensolutionfile{answer}[\currfilebase/\currfilebase-Answers]
+\Writetofile{answer}{\protect\section*{\nameref*{\currfilebase}}}
 \chapter{Основи електростатики діелектриків}\label{\currfilebase}\hypertarget{FieldInDielectrics}{}
 \graphicspath{{\currfilebase/Pictures}}
 %=========================================================
@@ -1223,7 +1225,9 @@ $\Efield_\text{лок} = \Efield + \frac{4\pi}{3}\vect P$, і~замість н�
 \begin{problem}
 	Куля має однорідну поляризацію $\vect{P}$. Знайдіть напруженість електричного поля
 	$\Efield$, створеного поляризаційними зарядами кулі у~довільній точці всередині неї.
-	%Відповідь: $\Efield = -\frac{4\pi}{3}\vect P$.
+	\begin{solution}
+		$\Efield = -\frac{4\pi}{3}\vect P$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:hole_in_dielectric}
@@ -1232,7 +1236,9 @@ $\Efield_\text{лок} = \Efield + \frac{4\pi}{3}\vect P$, і~замість н�
 	у~центрі сфери напруженість $\Efield'$ поля, створеного поляризаційними зарядами,
 	індукованими на поверхні сфери, вважаючи, що вектор поляризації $\vect{P}$ всюди (за
 	винятком порожнини) має стале значення.
-	%Відповідь: $\Efield' = \frac{4\pi}{3}\vect P = \frac{\epsilon - 1}{3}\Efield$.
+	\begin{solution}
+		$\Efield' = \frac{4\pi}{3}\vect P = \frac{\epsilon - 1}{3}\Efield$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:DielectricSlab}
@@ -1240,8 +1246,10 @@ $\Efield_\text{лок} = \Efield + \frac{4\pi}{3}\vect P$, і~замість н�
 	зовнішнє поле $\Efield_0$: (а)~перпендикулярно до поля; (б)~паралельно полю. Знайдіть
 	$\Efield$, $\Dfield$ і~$\vect P$ усередині пластини та густину зв'язаних зарядів на її
 	великих гранях.
-	%Відповідь: (а) $D = E_0$, $E = E_0/\epsilon$, $P = (\epsilon-1)E_0/(4\pi\epsilon)$, $\sigma' = \pm P$;
-	%(б) $E = E_0$, $D = \epsilon E_0$, $P = (\epsilon-1)E_0/4\pi$, на великих гранях $\sigma' = 0$.
+	\begin{solution}
+		(а) $D = E_0$, $E = E_0/\epsilon$, $P = (\epsilon-1)E_0/(4\pi\epsilon)$, $\sigma' = \pm P$;
+		(б) $E = E_0$, $D = \epsilon E_0$, $P = (\epsilon-1)E_0/4\pi$, на великих гранях $\sigma' = 0$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:BoundAroundQ}
@@ -1249,14 +1257,18 @@ $\Efield_\text{лок} = \Efield + \frac{4\pi}{3}\vect P$, і~замість н�
 	$\epsilon$. Знайдіть зв'язаний заряд на поверхні малої сфери, яка оточує заряд
 	(тобто зв'язаний заряд, що \enquote{прилипає} до заряду $Q$). Чи є в~діелектрику
 	об'ємний зв'язаний заряд?
-	%Відповідь: $q' = -Q(\epsilon-1)/\epsilon$; $\rho' = -\divg\vect P = 0$ при $r > 0$.
+	\begin{solution}
+		$q' = -Q(\epsilon-1)/\epsilon$; $\rho' = -\divg\vect P = 0$ при $r > 0$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}
 	Силова лінія поля виходить зі скла ($\epsilon = 6$) у~повітря, утворюючи в~склі кут
 	$30^\circ$ з~нормаллю до поверхні. Під яким кутом до нормалі вона йде в~повітрі? Вільних
 	зарядів на поверхні немає.
-	%Відповідь: $\tg\alpha_2 = \tg 30^\circ/6 \approx 0{,}096$, $\alpha_2 \approx 5{,}5^\circ$.
+	\begin{solution}
+		$\tg\alpha_2 = \tg 30^\circ/6 \approx 0{,}096$, $\alpha_2 \approx 5{,}5^\circ$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:WaterVapour}
@@ -1264,8 +1276,10 @@ $\Efield_\text{лок} = \Efield + \frac{4\pi}{3}\vect P$, і~замість н�
 	$1$~атм, якщо дипольний момент молекули \ce{H2O} $p_0 = 1{,}84$~Д, а~її електронна
 	поляризовність $\alpha_e \approx 1{,}5\cdot10^{-24}$~см$^3$. Порівняйте орієнтаційний
 	та електронний внески. (Виміряне значення $\epsilon \approx 1{,}0059$.)
-	%Відповідь: $n = p/kT \approx 2\cdot10^{19}$~см$^{-3}$; орієнтаційний внесок $4\pi n p_0^2/3kT \approx 5{,}4\cdot10^{-3}$,
-	%електронний $4\pi n\alpha_e \approx 3{,}7\cdot10^{-4}$; $\epsilon \approx 1{,}0058$.
+	\begin{solution}
+		$n = p/kT \approx 2\cdot10^{19}$~см$^{-3}$; орієнтаційний внесок $4\pi n p_0^2/3kT \approx 5{,}4\cdot10^{-3}$,
+		електронний $4\pi n\alpha_e \approx 3{,}7\cdot10^{-4}$; $\epsilon \approx 1{,}0058$.
+	\end{solution}
 \end{problem}
 \endgroup
 
@@ -1346,3 +1360,5 @@ $\Efield_\text{лок} = \Efield + \frac{4\pi}{3}\vect P$, і~замість н�
 		ґрунтується робота LCD-дисплеїв?
 	\end{quizlist}
 \end{Questions}
+
+\Closesolutionfile{answer}

@@ -4,6 +4,8 @@
 % !TeX root = ../main.tex
 
 %=========================================================
+\Opensolutionfile{answer}[\currfilebase/\currfilebase-Answers]
+\Writetofile{answer}{\protect\section*{\nameref*{\currfilebase}}}
 \chapter{Електромагнітні хвилі}\label{\currfilebase}\hypertarget{\currfilebase}{}
 \graphicspath{{\currfilebase/Pictures}}
 %=========================================================
@@ -705,42 +707,58 @@ $H''_y$ --- \emph{уявний}, а в $H''_x$ --- \emph{дійсний}:
 
 \begin{problem}\label{prb:LightInGlass}
 	\emph{Світло в склі.} Монохроматичне світло з довжиною хвилі $\lambda_0=600$~нм у вакуумі входить у скло з показником заломлення $n=1{,}5$ ($\mu=1$). Знайдіть частоту, швидкість, довжину хвилі й хвильове число в склі, а також $\epsilon$ скла на цій частоті.
-	% \emph{Відповідь:} $\nu=c/\lambda_0=5\cdot10^{14}$~Гц (не змінюється); $v=c/n=2\cdot10^{10}$~см/с; $\lambda=\lambda_0/n=400$~нм; $k=2\pi/\lambda\approx1{,}6\cdot10^{5}$~см$^{-1}$; $\epsilon=n^2=2{,}25$.
+	\begin{solution}
+		$\nu=c/\lambda_0=5\cdot10^{14}$~Гц (не змінюється); $v=c/n=2\cdot10^{10}$~см/с; $\lambda=\lambda_0/n=400$~нм; $k=2\pi/\lambda\approx1{,}6\cdot10^{5}$~см$^{-1}$; $\epsilon=n^2=2{,}25$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:LaserBeam}
 	\emph{Лазерний пучок.} Пучок потужністю $1$~Вт і діаметром $2$~мм падає нормально на поглинальну поверхню. Знайдіть інтенсивність, амплітуди $E_m$ і $B_m$ та тиск світла. Як зміниться тиск для ідеального дзеркала? (Використайте $1$~Вт $=10^{7}$~ерг/с, $1$~СГСЕ напруженості поля $=300$~В/см.)
-	% \emph{Відповідь:} $I=P/S\approx3{,}2\cdot10^{8}$~ерг/(с$\cdot$см$^2$) $\approx32$~Вт/см$^2$; із $I=cE_m^2/8\pi$ маємо $E_m\approx0{,}52$~СГСЕ $\approx1{,}5\cdot10^{2}$~В/см, $B_m=E_m\approx0{,}52$~Гс; $p=I/c\approx1{,}1\cdot10^{-2}$~дин/см$^2\approx1{,}1\cdot10^{-3}$~Па; для дзеркала тиск удвічі більший.
+	\begin{solution}
+		$I=P/S\approx3{,}2\cdot10^{8}$~ерг/(с$\cdot$см$^2$) $\approx32$~Вт/см$^2$; із $I=cE_m^2/8\pi$ маємо $E_m\approx0{,}52$~СГСЕ $\approx1{,}5\cdot10^{2}$~В/см, $B_m=E_m\approx0{,}52$~Гс; $p=I/c\approx1{,}1\cdot10^{-2}$~дин/см$^2\approx1{,}1\cdot10^{-3}$~Па; для дзеркала тиск удвічі більший.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:SolarSail}
 	\emph{Сонячне вітрило.} Вітрило площею $100$~м$^2$ з коефіцієнтом відбивання $\mathcal R=0{,}9$ перпендикулярне до сонячних променів поблизу орбіти Землі (інтенсивність $1{,}37\cdot10^{6}$~ерг/(с$\cdot$см$^2$)). Знайдіть силу тиску світла, прискорення апарата масою $10$~кг та приріст швидкості за рік.
-	% \emph{Відповідь:} $F=(1+\mathcal R)IS/c\approx87$~дин $\approx0{,}87$~мН; $a\approx8{,}7\cdot10^{-5}$~м/с$^2$; $\Delta v\approx a\cdot3{,}15\cdot10^{7}~\text{с}\approx2{,}7$~км/с.
+	\begin{solution}
+		$F=(1+\mathcal R)IS/c\approx87$~дин $\approx0{,}87$~мН; $a\approx8{,}7\cdot10^{-5}$~м/с$^2$; $\Delta v\approx a\cdot3{,}15\cdot10^{7}~\text{с}\approx2{,}7$~км/с.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:DustGrain}
 	\emph{Пилинка в променях Сонця.} Сферична поглинальна пилинка густиною $\rho=1$~г/см$^3$ перебуває на відстані $r$ від Сонця (світність $L=3{,}85\cdot10^{33}$~ерг/с, маса $M=2\cdot10^{33}$~г). Знайдіть радіус $a$, за якого сила тиску світла дорівнює силі гравітації. Чому результат не залежить від $r$?
-	% \emph{Відповідь:} $F_\text{св}=\dfrac{L}{4\pi r^2c}\pi a^2$, $F_\text{гр}=\dfrac{GM}{r^2}\cdot\dfrac43\pi a^3\rho$; звідки $a=\dfrac{3L}{16\pi GMc\rho}\approx6\cdot10^{-5}$~см $\approx0{,}6$~мкм. Обидві сили спадають як $1/r^2$, тому їх відношення від $r$ не залежить; дрібніші пилинки Сонце відштовхує.
+	\begin{solution}
+		$F_\text{св}=\dfrac{L}{4\pi r^2c}\pi a^2$, $F_\text{гр}=\dfrac{GM}{r^2}\cdot\dfrac43\pi a^3\rho$; звідки $a=\dfrac{3L}{16\pi GMc\rho}\approx6\cdot10^{-5}$~см $\approx0{,}6$~мкм. Обидві сили спадають як $1/r^2$, тому їх відношення від $r$ не залежить; дрібніші пилинки Сонце відштовхує.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:FeynmanNumbers}
 	\emph{Парадокс Фейнмана: оцінка.} Циліндричний конденсатор із зарядом $q=3\cdot10^{3}$~СГСЕ ($\approx1$~мкКл), зовнішній радіус якого $R=5$~см, маса $m=10$~г, перебуває у полі $B=10^{4}$~Гс вздовж осі. Знайдіть момент імпульсу поля й кутову швидкість, з якою конденсатор почне обертатися після вимкнення поля.
-	% \emph{Відповідь:} $L=\dfrac{qBR^2}{2c}\approx1{,}3\cdot10^{-2}$~г$\cdot$см$^2$/с; $\omega=\dfrac{qB}{2mc}=5\cdot10^{-5}$~рад/с (один оберт за $\approx35$ год).
+	\begin{solution}
+		$L=\dfrac{qBR^2}{2c}\approx1{,}3\cdot10^{-2}$~г$\cdot$см$^2$/с; $\omega=\dfrac{qB}{2mc}=5\cdot10^{-5}$~рад/с (один оберт за $\approx35$ год).
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:NormalReflectance}
 	\emph{Відбивання від скла.} Знайдіть коефіцієнти відбивання за інтенсивністю при нормальному падінні на межу повітря-скло ($n=1{,}5$) і повітря-вода ($n=1{,}33$). Яка частка енергії проходить крізь скляну пластинку (дві поверхні; поглинання не враховуйте, багаторазові відбивання враховуйте)?
-	% \emph{Відповідь:} $\mathcal R=\left(\dfrac{n-1}{n+1}\right)^2=4\,\%$ для скла, $2\,\%$ для води; для пластинки $T=\dfrac{1-\mathcal R}{1+\mathcal R}\approx92\,\%$.
+	\begin{solution}
+		$\mathcal R=\left(\dfrac{n-1}{n+1}\right)^2=4\,\%$ для скла, $2\,\%$ для води; для пластинки $T=\dfrac{1-\mathcal R}{1+\mathcal R}\approx92\,\%$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:BrewsterAngles}
 	\emph{Кут Брюстера.} Знайдіть кут Брюстера для межі повітря-скло ($n=1{,}5$), повітря-вода ($n=1{,}33$) і для виходу зі скла в повітря. Покажіть, що відбитий і заломлений промені при цьому перпендикулярні.
-	% \emph{Відповідь:} $\tg i_B=n_{21}$: $56{,}3^\circ$, $53{,}1^\circ$ і $33{,}7^\circ$ відповідно. Оскільки $i_B+r=90^\circ$ і $i'=i_B$, кут між відбитим і заломленим променями дорівнює $180^\circ-i'-r=90^\circ$.
+	\begin{solution}
+		$\tg i_B=n_{21}$: $56{,}3^\circ$, $53{,}1^\circ$ і $33{,}7^\circ$ відповідно. Оскільки $i_B+r=90^\circ$ і $i'=i_B$, кут між відбитим і заломленим променями дорівнює $180^\circ-i'-r=90^\circ$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:EvanescentDepth}
 	\emph{Глибина згасаючої хвилі.} Світло з $\lambda_0=600$~нм падає зсередини скла ($n=1{,}5$) на межу з повітрям під кутом $45^\circ$. Знайдіть граничний кут і глибину, на якій амплітуда згасаючої хвилі в повітрі зменшується в $e$ разів.
-	% \emph{Відповідь:} $i_b=\arcsin(1/1{,}5)\approx41{,}8^\circ<45^\circ$; $K=\dfrac{2\pi}{\lambda_0}\sqrt{n^2\sin^2i-1}\approx3{,}7\cdot10^{4}$~см$^{-1}$, глибина $1/K\approx2{,}7\cdot10^{-5}$~см $\approx270$~нм ($\approx0{,}45\lambda_0$).
+	\begin{solution}
+		$i_b=\arcsin(1/1{,}5)\approx41{,}8^\circ<45^\circ$; $K=\dfrac{2\pi}{\lambda_0}\sqrt{n^2\sin^2i-1}\approx3{,}7\cdot10^{4}$~см$^{-1}$, глибина $1/K\approx2{,}7\cdot10^{-5}$~см $\approx270$~нм ($\approx0{,}45\lambda_0$).
+	\end{solution}
 \end{problem}
 \endgroup
 
@@ -777,3 +795,5 @@ $H''_y$ --- \emph{уявний}, а в $H''_x$ --- \emph{дійсний}:
 		\item Що таке порушене повне внутрішнє відбивання? Чому його легше спостерігати для радіохвиль, ніж для видимого світла?
 	\end{quizlist}
 \end{Questions}
+
+\Closesolutionfile{answer}

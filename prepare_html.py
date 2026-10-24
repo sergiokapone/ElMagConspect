@@ -299,6 +299,8 @@ def tblr_to_tabularx(opts, body):
         elif key == 'vlines': vl = True
         elif key == 'row' and len(sels) == 1: rowstyles.append((sels[0], parse_keys(val)))
         elif key == 'cell' and len(sels) == 2: cellstyles.append((sels[0], sels[1], parse_keys(val)))
+        elif key == 'cells' and not sels: cellstyles.append(('-', '-', parse_keys(val)))   # every cell
+        elif key in ('rowhead', 'rowfoot'): pass                    # repeated head/foot rows of longtblr: one HTML table
         else: raise Unsupported(key)
     if not cols: raise Unsupported('no colspec')
     # \hline in the body (tables without 'hlines'): taken off the start of a row and drawn before it
@@ -322,6 +324,17 @@ def tblr_to_tabularx(opts, body):
         for sel, st in rowstyles:
             if ri in parse_selector(sel, nrow): rst.update(st)
         line = ['\\rowcolor{%s}' % rst['bg']] if 'bg' in rst else []
+        # \SetCell[c=N]{opts} text & & ...: one cell spanning N columns (e.g. a group heading inside the table)
+        ms = re.match(r'\\SetCell\s*\[\s*c\s*=\s*(\d+)\s*\]\s*\{([^{}]*)\}\s*(.*)$', cs[0], re.S) if cs else None
+        if ms:
+            n, sst, txt = int(ms.group(1)), parse_keys(ms.group(2)), ms.group(3).strip()
+            t = wrap_ce(txt)[0] if txt else ''
+            if t and sst.get('bg'): t = '\\cellcolor{%s}%s' % (sst['bg'], t)
+            spec = ('|' if vl else '') + sst.get('align', 'c') + ('|' if vl else '')
+            if before[ri - 1] and not hl: out.append('\\hline' * before[ri - 1])
+            out.append(''.join(line) + '\\multicolumn{%d}{%s}{%s}' % (n, spec, t) + ' & '.join([''] * (ncol - n + 1))
+                       + ' \\\\' + (' \\hline' if hl else ''))
+            continue
         parts = []
         for ci, txt in enumerate(cs, 1):
             col = cols[ci - 1]
@@ -353,27 +366,46 @@ def tblr_to_tabularx(opts, body):
 def convert_tables(t):
     """Replace every convertible tblr environment; returns (text, converted, [(reason, line)])."""
     res, pos, conv, skipped = [], 0, 0, []
-    for m in re.finditer(r'\\begin\{tblr\}', t):
+    for m in re.finditer(r'\\begin\{(long)?tblr\}', t):
         if m.start() < pos: continue
+        env = 'longtblr' if m.group(1) else 'tblr'
         ls = t.rfind('\n', 0, m.start()) + 1
         if re.search(r'(?<!\\)%', t[ls:m.start()]): continue                 # commented-out table
         i = m.end()
-        while i < len(t) and (t[i] in ' \t\n' or t[i] == '%'):                 # spaces and comments: \begin{tblr}%
-            if t[i] == '%': i = t.find('\n', i) if '\n' in t[i:] else len(t)
-            else: i += 1
-        if t[i:i+1] == '[':                                                  # [outer, inner] spec of tblr
-            skipped.append(('outer specification [..]', t[:m.start()].count('\n') + 1)); continue
+        def skip_space(i):
+            while i < len(t) and (t[i] in ' \t\n' or t[i] == '%'):             # spaces and comments: \begin{tblr}%
+                if t[i] == '%': i = t.find('\n', i) if '\n' in t[i:] else len(t)
+                else: i += 1
+            return i
+        i = skip_space(i)
+        outer = None
+        if t[i:i+1] == '[':                                                  # [outer, inner] spec
+            if env == 'tblr':
+                skipped.append(('outer specification [..]', t[:m.start()].count('\n') + 1)); continue
+            j, d = i + 1, 1                                                  # longtblr: caption/label are kept
+            while j < len(t) and d:
+                d += (t[j] in '[{') - (t[j] in ']}'); j += 1
+            outer = t[i+1:j-1]; i = skip_space(j)
         if t[i:i+1] != '{': continue
         j, d = i + 1, 1
         while j < len(t) and d:
             d += (t[j] == '{') - (t[j] == '}'); j += 1
-        end = t.find('\\end{tblr}', j)
+        end = t.find('\\end{%s}' % env, j)
         if end < 0: continue
         try:
             new = tblr_to_tabularx(t[i+1:j-1], t[j:end])
         except Unsupported as e:
             skipped.append((str(e), t[:m.start()].count('\n') + 1)); continue
-        res.append(t[pos:m.start()] + new); pos = end + len('\\end{tblr}'); conv += 1
+        if outer is not None:                                                # longtblr -> a table with its caption
+            kv = {}
+            for it in split_commas(strip_comments(outer)):
+                if '=' in it:
+                    k, v = [x.strip() for x in it.split('=', 1)]; kv[k] = strip_braces(v)
+            head = '\\begin{table}[h]\\centering\n'
+            if 'caption' in kv: head += '\\caption{%s}' % kv['caption']
+            if 'label' in kv: head += '\\label{%s}' % kv['label']
+            new = head + '\n' + new + '\n\\end{table}'
+        res.append(t[pos:m.start()] + new); pos = end + len('\\end{%s}' % env); conv += 1
     res.append(t[pos:])
     return ''.join(res), conv, skipped
 

@@ -68,6 +68,7 @@
 \RequirePackage{tabularray}\UseTblrLibrary{booktabs}
 % tabularray is not supported by lwarp -> every tblr becomes an image (like tikzpicture does)
 \AtBeginDocument{\preto\tblr{\begin{lateximage}[table]}\appto\endtblr{\end{lateximage}}}
+\AtBeginDocument{\preto\longtblr{\begin{lateximage}[table]}\appto\endlongtblr{\end{lateximage}}}
 \RequirePackage{booktabs,multirow,array,tabularx,colortbl}   % tabularx: HTML replacement of tblr (prepare_html.py)
 \RequirePackage[justification=centering,labelsep=period]{caption}
 \RequirePackage[outercaption,wide]{sidecap}
@@ -134,12 +135,22 @@
 \setlist[quizlist]{label=\arabic*.}
 \RequirePackage{ntheorem}
 \theoremstyle{plain}\theoremheaderfont{\bfseries}\theorembodyfont{\normalfont}\theoremseparator{.}
-\newtheorem{problem}{}[chapter]
+\newtheorem{problemX}{}[chapter]
+\newcommand{\theproblem}{\theproblemX}   % the problem number (the counter belongs to problemX)
 % wrapstuff (text wrapped around a figure) has no HTML meaning -> a normal figure
 \newenvironment{wrapstuff}[1][]{\begin{figure}[h]}{\end{figure}}
-% answers/solution: kept inline in HTML
-\newenvironment{solution}{\par\noindent\textbf{Розв'язок.}\ }{\par}
+% answers: as in print, the answers package writes them to <Chapter>/<Chapter>-Answers.tex and they are read on
+% a page of their own "Відповіді" (\answers); a problem links to its answer and the answer back to the problem
+\RequirePackage{answers}
+\Newassociation{solution}{Solution}{answer}
+\NewDocumentEnvironment{problem}{o}{\IfNoValueTF{#1}{\begin{problemX}}{\begin{problemX}[#1]}\hypertarget{problem:\theproblem}{}}%
+  {\ifcsname r@solution\theproblem\endcsname\ \hyperlink{solution:\theproblem}{[відповідь]}\fi\end{problemX}}
+\renewenvironment{Solution}[1]{\begin{BlockClass}{cb-answer}%
+  \hypertarget{solution:#1}{}\label{solution#1}\textbf{\hyperlink{problem:#1}{#1.}}\ }{\end{BlockClass}}
 \newenvironment{answerbox}{\begin{BlockClass}{cb-answer}}{\end{BlockClass}}
+% optional material marked "*": smaller font (class cb-extra in conspect.css)
+\newenvironment{Extra}{\begin{BlockClass}{cb-extra}}{\end{BlockClass}}
+\newcommand{\answers}{\schapterpage{Відповіді}}
 
 % ---- macros for MathJax (generated from mathjax-macros.tex by mathjax2lwarp.py) ----
 % tikzmark nodes inside formulas cannot go to MathJax: in HTML they are plain text

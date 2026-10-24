@@ -320,6 +320,9 @@
 %===============================================================================
 % ------------------------------------ Таблиці ---------------------------------
 \RequirePackage{tabularray}       % сучасні таблиці (\begin{tblr})
+% українські підписи для таблиць longtblr, що переходять на наступну сторінку
+\DefTblrTemplate{contfoot-text}{default}{Продовження на наступній сторінці}
+\DefTblrTemplate{conthead-text}{default}{(продовження)}
 \UseTblrLibrary{booktabs}
 \setlength\arrayrulewidth{1pt}
 \RequirePackage{booktabs}         % \toprule/\midrule/\bottomrule для класичних tabular
@@ -742,7 +745,7 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 	\renewcommand{\thesection}{\arabic{section}}
 	\clearpage\pagestyle{answers}
 	\chapter*{Відповіді}%
-	\addcontentsline{toc}{chapter}{Відповіді}
+	\addcontentsline{toc}{part}{Відповіді}   % рівень частини, як і "Додатки": у закладках PDF --- на верхньому рівні
 	\renewcommand{\theequation}{\arabic{equation}}
 	\if@restonecol\twocolumn\fi
 }
@@ -1283,11 +1286,21 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 %									Генеррування відповідей до задач
 %
 %===============================================================================
+% Extra --- додатковий матеріал, позначений "*": набирається дрібнішим шрифтом (див. передмову).
+\newenvironment{Extra}{\par\small}{\par}
+
 % answerbox — той самий візуальний стиль, але для тексту відповіді.
 % \Newassociation{solution}{Solution}{answer} (з пакета answers) прив'язує
 % середовище Solution до problem за номером, щоб відповіді можна було
 % зверстати в окремому розділі книги (див. \answers вище), а не одразу під задачею.
-\newtcolorbox{answerbox}{answersolutionstyle,halign=left}
+% відповідь --- прямим шрифтом, без абзацного відступу і зі знаком "галочка" замість "?"
+\newtcolorbox{answerbox}{answersolutionstyle,halign=left,fontupper=\upshape,before upper={},
+	underlay={%
+			\path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+			\path[draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+			\path[fill=themecolordark,draw=none] (interior.south west) rectangle node[text=white]{\small\faCheck} ([xshift=4mm]interior.north
+			west);
+		}}
 
 \Newassociation{solution}{Solution}{answer}
 \renewenvironment{Solution}[1]{%

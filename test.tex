@@ -39,6 +39,9 @@
 \else
   \pagestyle{main}
   \includechapter{\TargetChapter}
+  % answers of the chapter (written by the answers package on the previous pass)
+  \answers
+  \InputIfFileExists{\TargetChapter/\TargetChapter-Answers}{}{}
 \fi
 
 \end{document}
