@@ -352,7 +352,7 @@ img.lateximage:not([style*="height"]),img.inlineimage:not([style*="height"]){hei
 .cb-questions .listmarker{color:var(--teal)}
 
 /* Відповідь */
-.cb-answer{background:color-mix(in srgb,#e0b400 8%,var(--page));border-left:5px solid #e0b400;font-style:italic}
+.cb-answer{background:color-mix(in srgb,#e0b400 8%,var(--page));border-left:5px solid #e0b400}
 
 /* Рисунок-врізка */
 .cb-pict{border:1px solid var(--rule);background:var(--card);color:var(--card-ink);text-align:center;border-radius:4px}
@@ -673,3 +673,6 @@ figure a[href]>img.inlineimage{cursor:zoom-in}
   border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.55);color:#fff;font:400 1.7rem/1 var(--sans);cursor:pointer}
 .lightbox-close:hover{background:rgba(255,255,255,.2)}
 html.lightbox-open{overflow:hidden}
+
+/* додатковий матеріал, позначений "*": дрібніший шрифт */
+.cb-extra{font-size:.92em}
