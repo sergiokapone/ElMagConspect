@@ -49,7 +49,7 @@
         \draw[<->] ($(A')+(-0.25,0,0)$) -- ($(A)+(-0.25,0,0)$) node[midway, left=-1pt] {$d$};
         \draw (A') -- ++(-0.3,0,0);
         \draw (A)  -- ++(-0.3,0,0);
-        \draw[<->] ($(A')+(0,-0.3,0)$) -- ($(B')+(0,-0.3,0)$) node[midway, fill=white, inner sep=1pt] {$h$};
+        \draw[<->] ($(A')+(0,-0.3,0)$) -- ($(B')+(0,-0.3,0)$) node[midway, fill=white, inner sep=1pt] {$w$};
         \draw[<->] ($(B)+(0.6,-0.2, 0)$) -- ($(C)+(0.6,-0.2,0)$) node[midway, fill=white, inner sep=1pt] {$L$};
 
         % --- зовнішнє коло ---
@@ -65,7 +65,7 @@
 %        \draw (0,\yH,0)   -- ++(-0.6,0,0) -- ++(0,0,\hZ) -- (VHc);
 %        \draw (\pW,\yH,0) -- ++(0.3,0,0)  -- ++(0,0,\hZ) -- (VHc);
           \draw (\pW,\yH,-0.1) -- ++(0.3,0,0)  -- ++(0,0,\hZ) -- ++(-{\pW-0.6},0,0) -- ++(0,0,-\hZ) -- (0,\yH,-0.1);
-        \node[circle, draw, fill=white, inner sep=1pt] (VH) at (VHc) {$V_H$};
+        \node[circle, draw, fill=white, inner sep=1pt] (VH) at (VHc) {$U_H$};
 %        \node[left=1pt of VH]  {$-$};
 %        \node[right=1pt of VH] {$+$};
 
