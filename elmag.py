@@ -43,6 +43,13 @@ def cmd_pdf(args):
     return ps('rename_main.ps1')
 
 
+def cmd_chapter(args):
+    """One chapter with the book class (chapter.py via test.tex) -> _chapters/<name>.pdf: chapter Charges;
+    chapter Charges --png: also the pages as PNG; chapter Charges --tikz Columb: only that picture."""
+    if not args: print('chapter <folder> [--png] [--tikz name] [--full]'); return 1
+    return py('chapter.py', *args)
+
+
 def cmd_html(args):
     """HTML version (lwarp) -> docs/: build-html.ps1 with its flags, e.g.  html -SkipPrepare -NoImages"""
     return ps('build-html.ps1', *args)
@@ -102,6 +109,7 @@ def cmd_push(args):
 
 COMMANDS = {
     'pdf': (cmd_pdf, ['--no-publish', '--full', '--publish-only']),
+    'chapter': (cmd_chapter, ['--png', '--tikz', '--full']),
     'html': (cmd_html, HTML_FLAGS),
     'serve': (cmd_serve, ['8000', '--no-browser']),
     'clean': (cmd_clean, ['aux', 'bak', 'html', 'all']),

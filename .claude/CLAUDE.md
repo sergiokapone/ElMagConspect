@@ -19,6 +19,9 @@ in Python / PowerShell scripts English: keep that. Commits go straight to `main`
 - `elmag.py` is the entry point for everything (pdf, html, serve, clean, purge, size, status, push): an interactive
   shell or one command; it only calls the scripts. A new script of the project gets a command there.
   `run.ps1` skips its pause and Clear-Host when `ELMAG_CLI` is set.
+- One chapter with the book class: `python chapter.py <Folder> --png` (test.tex + latexmk -usepretex) ->
+  `_chapters/<Folder>.pdf` and page PNGs to check the layout (widows, split boxes). Refs to other chapters stay `??`.
+  Do not edit chapter sources while the full book build runs: latexmk then hits "too many passes".
 
 ## MathJax
 - lwarp 0.922 hard-codes MathJax 3 (`mathjax@3/es5/tex-svg.js`) with its own `startup.ready()` code that uses v3-internal

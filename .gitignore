@@ -62,3 +62,6 @@ test_main.pdf
 
 # history of the elmag.py shell
 /.elmag_history
+
+# single chapters built by chapter.py (elmag.py chapter)
+/_chapters/
