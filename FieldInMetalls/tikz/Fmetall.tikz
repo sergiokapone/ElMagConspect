@@ -28,7 +28,7 @@
 	\draw[densely dashed] (A2) -- ++(90:\h);
 
     \draw[->, red] (Es) -- ++(0,+0.75) node[right] {$\Efield_{\sigma}$};
-    \draw[->, red] (E0) -- ++(0,+0.75) node[left] {$\Efield_{0}$};
+    \draw[->, red] (E0) -- ++(0,+0.75) node[left] {$\Efield'$};
 
     \begin{scope}[opacity=0.5]
         \draw[densely dashed] (A1) -- ++(90:-\h);
@@ -36,7 +36,7 @@
         \draw[dashed] (A) ++(90:-\h) circle[x radius =\r, y radius= 0.15];
 
         \draw[->, red] (Es) -- ++(0,-0.75) node[right] {$\Efield_{\sigma}$};
-        \draw[<-, red] (E0) -- ++(0,-0.75) node[left] {$\Efield_{0}$};
+        \draw[<-, red] (E0) -- ++(0,-0.75) node[left] {$\Efield'$};
     \end{scope}
 
 \end{tikzpicture}
