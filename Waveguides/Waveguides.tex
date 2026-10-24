@@ -4,6 +4,8 @@
 % !TeX root = ../main.tex
 
 %=========================================================
+\Opensolutionfile{answer}[\currfilebase/\currfilebase-Answers]
+\Writetofile{answer}{\protect\section*{\nameref*{\currfilebase}}}
 \chapter{Хвилеводи}\label{\currfilebase}\hypertarget{\currfilebase}{}
 \graphicspath{{\currfilebase/Pictures}}
 %=========================================================
@@ -252,22 +254,30 @@ E_y\propto \sin\!\left(\frac{\pi z}{a}\right),
 \begin{problem}\label{prb:WR90}
 	\emph{Стандартний хвилевід.} Прямокутний хвилевід має ширину $a = 2{,}286$~см. Знайдіть граничну частоту моди
 	$\text{TE}_{10}$, а~також фазову й~групову швидкості та довжину хвилі в~хвилеводі $\lambda_\text{в}=2\pi/k_x$ на частоті $10$~ГГц.
-	% \emph{Відповідь:} $\nu_0 = c/(2a) \approx 6{,}56$~ГГц; $\sqrt{1-(\nu_0/\nu)^2} \approx 0{,}755$, тож $v_\text{ф} \approx 1{,}32c$, $v_\text{г} \approx 0{,}76c$, $\lambda_\text{в} = \lambda/0{,}755 \approx 4{,}0$~см (у~вакуумі $\lambda = 3$~см).
+	\begin{solution}
+		$\nu_0 = c/(2a) \approx 6{,}56$~ГГц; $\sqrt{1-(\nu_0/\nu)^2} \approx 0{,}755$, тож $v_\text{ф} \approx 1{,}32c$, $v_\text{г} \approx 0{,}76c$, $\lambda_\text{в} = \lambda/0{,}755 \approx 4{,}0$~см (у~вакуумі $\lambda = 3$~см).
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:WaveguideModes}
 	\emph{Які моди поширюються?} Які моди $\text{TE}_{n0}$ поширюються в~тому самому хвилеводі на частоті $15$~ГГц?
-	% \emph{Відповідь:} умова $\nu > n c/(2a)$ дає $n < 2a\nu/c \approx 2{,}3$, тобто поширюються $\text{TE}_{10}$ і~$\text{TE}_{20}$.
+	\begin{solution}
+		умова $\nu > n c/(2a)$ дає $n < 2a\nu/c \approx 2{,}3$, тобто поширюються $\text{TE}_{10}$ і~$\text{TE}_{20}$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:BelowCutoff}
 	\emph{Нижче граничної частоти.} На якій відстані поле частоти $5$~ГГц слабне в~$e$ разів у~тому самому хвилеводі?
-	% \emph{Відповідь:} $\kappa = \sqrt{(\pi/a)^2 - (\omega/c)^2} \approx \sqrt{137^2 - 105^2} \approx 89$~м$^{-1}$, тобто поле слабне в~$e$ разів на $1/\kappa \approx 1{,}1$~см.
+	\begin{solution}
+		$\kappa = \sqrt{(\pi/a)^2 - (\omega/c)^2} \approx \sqrt{137^2 - 105^2} \approx 89$~м$^{-1}$, тобто поле слабне в~$e$ разів на $1/\kappa \approx 1{,}1$~см.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:WaveguideDelay}
 	\emph{Затримка сигналу.} За який час сигнал частоти $10$~ГГц проходить $1$~м того самого хвилеводу? Порівняйте з~вакуумом.
-	% \emph{Відповідь:} $t = l/v_\text{г} = 1/(0{,}755\cdot3\cdot10^{8})$~с $\approx 4{,}4$~нс проти $3{,}3$~нс у~вакуумі.
+	\begin{solution}
+		$t = l/v_\text{г} = 1/(0{,}755\cdot3\cdot10^{8})$~с $\approx 4{,}4$~нс проти $3{,}3$~нс у~вакуумі.
+	\end{solution}
 \end{problem}
 \endgroup
 
@@ -287,3 +297,5 @@ E_y\propto \sin\!\left(\frac{\pi z}{a}\right),
 		\item Як влаштоване оптичне волокно як діелектричний хвилевід? Поясніть, чому світло утримується в серцевині завдяки повному внутрішньому відбиттю на межі з оболонкою.
 	\end{quizlist}
 \end{Questions}
+
+\Closesolutionfile{answer}

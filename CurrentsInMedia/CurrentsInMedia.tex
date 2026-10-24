@@ -4,6 +4,8 @@
 % !TeX root = ../main.tex
 
 %=========================================================
+\Opensolutionfile{answer}[\currfilebase/\currfilebase-Answers]
+\Writetofile{answer}{\protect\section*{\nameref*{\currfilebase}}}
 \chapter{Електричний струм у~різних середовищах}\label{\currfilebase}\hypertarget{\currfilebase}{}
 \graphicspath{{\currfilebase/Pictures}}
 %=========================================================
@@ -1424,9 +1426,11 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	$T=300$~K ($v_T\approx1{,}2\cdot10^5$~м/с). Порівняйте одержане $\ell$ з~відстанню між
 	іонами ґратки ($\sim0{,}3$~нм), а~також із реальною довжиною вільного пробігу в~міді
 	при кімнатній температурі ($\sim40$~нм).
-	% \emphx{Відповідь:} $\tau=\dfrac{m_e\lambda}{ne^2}\approx2{,}5\cdot10^{-14}$~с; $\ell\approx3$~нм --- це \emphx{класична} оцінка,
-	% лише вдесятеро більша за міжіонну відстань. Експеримент же дає $\sim40$~нм, тобто на порядок більше: саме ця розбіжність і
-	% спонукає до квантової теорії.
+	\begin{solution}
+		\emphx{Відповідь:} $\tau=\dfrac{m_e\lambda}{ne^2}\approx2{,}5\cdot10^{-14}$~с; $\ell\approx3$~нм --- це \emphx{класична} оцінка,
+		лише вдесятеро більша за міжіонну відстань. Експеримент же дає $\sim40$~нм, тобто на порядок більше: саме ця розбіжність і
+		спонукає до квантової теорії.
+	\end{solution}
 \end{problem}
 %=========================================================
 \begin{problem}\label{prb:CopperMobility}
@@ -1436,8 +1440,10 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	швидкість $u=\mu E$. Порівняйте з~результатом задачі~\ref{prb:DriftVelocityCopper}
 	розділу~\ref{SteadyCurrent} і~виразіть $\mu$ через $\tau$ із
 	задачі~\ref{prb:DrudeMeanFreeTime}.
-	%Відповідь: $\mu=\lambda/(en)\approx4{,}3\cdot10^{-3}$~м$^2$/(В$\cdot$с); $E=j/\lambda\approx1{,}7\cdot10^{-2}$~В/м;
-	%$u=\mu E\approx7\cdot10^{-5}$~м/с (збігається з~$u=I/(enS)$); $\mu=e\tau/m_e$ з~$\tau\approx2{,}5\cdot10^{-14}$~с дає те саме.
+	\begin{solution}
+		$\mu=\lambda/(en)\approx4{,}3\cdot10^{-3}$~м$^2$/(В$\cdot$с); $E=j/\lambda\approx1{,}7\cdot10^{-2}$~В/м;
+		$u=\mu E\approx7\cdot10^{-5}$~м/с (збігається з~$u=I/(enS)$); $\mu=e\tau/m_e$ з~$\tau\approx2{,}5\cdot10^{-14}$~с дає те саме.
+	\end{solution}
 \end{problem}
 %=========================================================
 \begin{problem}\label{prb:TempCoefficient}
@@ -1445,7 +1451,9 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	$R_{20}=10$~Ом, а~$\alpha=5{,}0\cdot10^{-3}\,{}^\circ$C$^{-1}$. Яким буде опір при
 	$t=1000\,^\circ$C, якщо вважати лінійну залежність~\eqref{eq:TempDependence2}
 	справедливою? На скільки відсотків він зросте?
-	%Відповідь: $R=R_{20}[1+\alpha(t-20)]\approx59$~Ом; зростання на $\approx490\%$.
+	\begin{solution}
+		$R=R_{20}[1+\alpha(t-20)]\approx59$~Ом; зростання на $\approx490\%$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:WiedemannFranz}
@@ -1455,8 +1463,10 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	і~порівняйте його з~добутком $LT$ для класичного й~квантового значень числа Лоренца
 	(секція~\ref{sec:CurrentInMetals}). Яка з~двох теорій узгоджується з~дослідом?
 	Візьміть $k_B=1{,}38\cdot10^{-23}$~Дж/К, $e=1{,}60\cdot10^{-19}$~Кл.
-	% \emph{Відповідь:} $\kappa/\lambda\approx6{,}8\cdot10^{-6}$~Вт$\cdot$Ом/К; $L_{\text{кл}}T\approx3{,}3\cdot10^{-6}$, $LT\approx7{,}3\cdot10^{-6}$~Вт$\cdot$Ом/К ---
-	% з квантовим значенням збіг у межах $\sim10\%$, класичне вдвічі занижене.
+	\begin{solution}
+		$\kappa/\lambda\approx6{,}8\cdot10^{-6}$~Вт$\cdot$Ом/К; $L_{\text{кл}}T\approx3{,}3\cdot10^{-6}$, $LT\approx7{,}3\cdot10^{-6}$~Вт$\cdot$Ом/К ---
+		з квантовим значенням збіг у межах $\sim10\%$, класичне вдвічі занижене.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:SuperconductingWire}
@@ -1466,8 +1476,10 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	виділялась би на $1$~м довжини в~мідному дроті того самого перерізу при цьому струмі
 	($\rho=1{,}68\cdot10^{-8}$~Ом$\cdot$м)? (в) Які матеріали із~секції про надпровідність
 	можна охолоджувати рідким азотом ($77$~К)?
-	%Відповідь: (а) $I_c=j_cS=1000$~А; (б) $P/\ell=I^2\rho/S\approx3{,}4\cdot10^{4}$~Вт/м (закон Джоуля--Ленца), у~надпровіднику~--- нуль;
-	%(в) ті, у~яких $T_c>77$~К: купрат \ce{YBa2Cu3O7} (\ce{H3S}~--- лише під тиском $\sim150$~ГПа).
+	\begin{solution}
+		(а) $I_c=j_cS=1000$~А; (б) $P/\ell=I^2\rho/S\approx3{,}4\cdot10^{4}$~Вт/м (закон Джоуля--Ленца), у~надпровіднику~--- нуль;
+		(в) ті, у~яких $T_c>77$~К: купрат \ce{YBa2Cu3O7} (\ce{H3S}~--- лише під тиском $\sim150$~ГПа).
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:ElectrolysisCopper}
@@ -1475,7 +1487,9 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	пропускають струм $I=2$~А протягом $t=30$~хв. Яка маса міді виділиться на катоді?
 	Молярна маса міді $\mu=63{,}5$~г/моль, валентність $z=2$, стала Фарадея
 	$F=9{,}65\cdot10^{4}$~Кл/моль.
-	%Відповідь: $m=\dfrac{\mu}{zF}It\approx1{,}18$~г.
+	\begin{solution}
+		$m=\dfrac{\mu}{zF}It\approx1{,}18$~г.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:ElectrolyteConductivity}
@@ -1484,7 +1498,9 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	$\mu_+=5{,}2\cdot10^{-8}$~м$^2$/(В$\cdot$с) для \ce{Na+}
 	і~$\mu_-=7{,}9\cdot10^{-8}$~м$^2$/(В$\cdot$с) для \ce{Cl-}. Знайдіть питому
 	провідність розчину та частку струму, яку переносять катіони.
-	%Відповідь: $\lambda=en(\mu_++\mu_-)\approx1{,}3$~См/м; частка катіонів $\mu_+/(\mu_++\mu_-)\approx0{,}40$.
+	\begin{solution}
+		$\lambda=en(\mu_++\mu_-)\approx1{,}3$~См/м; частка катіонів $\mu_+/(\mu_++\mu_-)\approx0{,}40$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:ElectrolysisPolarization}
@@ -1492,8 +1508,10 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	$\emf_{\text{пол}}=1{,}5$~В, опір розчину $R=0{,}05$~Ом. Знайдіть струм, масу водню за
 	$t=1$~год ($\mu=2{,}016$~г/моль, $z=2$ для молекули \ce{H2}), потужність
 	тепловиділення в~розчині та частку потужності джерела, що йде на хімічну реакцію.
-	%Відповідь: $I=(U-\emf_{\text{пол}})/R=10$~А; $m=\dfrac{\mu}{zF}It\approx0{,}38$~г;
-	%$P_{\text{Дж}}=I^2R=5$~Вт; частка $\emf_{\text{пол}}/U=75\%$.
+	\begin{solution}
+		$I=(U-\emf_{\text{пол}})/R=10$~А; $m=\dfrac{\mu}{zF}It\approx0{,}38$~г;
+		$P_{\text{Дж}}=I^2R=5$~Вт; частка $\emf_{\text{пол}}/U=75\%$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:IonizedAirConductivity}
@@ -1503,8 +1521,10 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	$\mu_-=1{,}9\cdot10^{-4}$~м$^2$/(В$\cdot$с). Знайдіть рівноважну концентрацію іонів
 	і~питому провідність. Оцініть напругу на електродах, розташованих на відстані
 	$d=2$~см, до якої виконується закон Ома.
-	%Відповідь: $n_0=\sqrt{N/\beta}=2{,}5\cdot10^{12}$~м$^{-3}$; $\lambda=en_0(\mu_++\mu_-)\approx1{,}3\cdot10^{-10}$~См/м;
-	%$j_{\text{нас}}=eNd\approx3{,}2\cdot10^{-8}$~А/м$^2$, $E\sim j_{\text{нас}}/\lambda\approx2{,}4\cdot10^{2}$~В/м, $U\sim Ed\approx5$~В.
+	\begin{solution}
+		$n_0=\sqrt{N/\beta}=2{,}5\cdot10^{12}$~м$^{-3}$; $\lambda=en_0(\mu_++\mu_-)\approx1{,}3\cdot10^{-10}$~См/м;
+		$j_{\text{нас}}=eNd\approx3{,}2\cdot10^{-8}$~А/м$^2$, $E\sim j_{\text{нас}}/\lambda\approx2{,}4\cdot10^{2}$~В/м, $U\sim Ed\approx5$~В.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:ImpactIonization}
@@ -1512,7 +1532,9 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	мінімальна напруженість однорідного поля потрібна, щоб електрон, який пролітає без
 	зіткнень відстань $\ell=0{,}1$~мм, набув на ній енергії, достатньої для іонізації?
 	Втратами енергії на цьому шляху знехтуйте.
-	%Відповідь: $E=\dfrac{W_i}{e\ell}\approx1{,}6\cdot10^{5}$~В/м.
+	\begin{solution}
+		$E=\dfrac{W_i}{e\ell}\approx1{,}6\cdot10^{5}$~В/м.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:CoronaOnset}
@@ -1520,7 +1542,9 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	Знайдіть потенціал ізольованої провідної кулі, при якому біля її поверхні починається
 	коронний розряд, для $r=1$~см та $r=0{,}1$~мм (поле біля поверхні $E=\phi/r$). Чому
 	корона виникає біля вістер?
-	%Відповідь: $\phi=E_{\text{пр}}r=30$~кВ і~$300$~В відповідно; на вістрі (малий радіус кривизни) поле при тому самому потенціалі найбільше.
+	\begin{solution}
+		$\phi=E_{\text{пр}}r=30$~кВ і~$300$~В відповідно; на вістрі (малий радіус кривизни) поле при тому самому потенціалі найбільше.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:RichardsonRatio}
@@ -1529,7 +1553,9 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	до $T_2=2500$~К? Скористайтеся законом
 	Річардсона--Дешмана~\eqref{eq:RichardsonDushman}; стала Больцмана
 	$k_B=8{,}62\cdot10^{-5}$~еВ/К.
-	%Відповідь: $\dfrac{j_2}{j_1}=\left(\dfrac{T_2}{T_1}\right)^{2}\exp\!\left[\dfrac{A_{\text{вих}}}{k_B}\left(\dfrac1{T_1}-\dfrac1{T_2}\right)\right]\approx2{,}9\cdot10^{2}$.
+	\begin{solution}
+		$\dfrac{j_2}{j_1}=\left(\dfrac{T_2}{T_1}\right)^{2}\exp\!\left[\dfrac{A_{\text{вих}}}{k_B}\left(\dfrac1{T_1}-\dfrac1{T_2}\right)\right]\approx2{,}9\cdot10^{2}$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:ChildLangmuir}
@@ -1539,8 +1565,10 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	$3/2$~\eqref{eq:ChildLangmuir}. Як зміняться $j$ при подвоєнні $U$ та при подвоєнні
 	$d$? Яка потужність виділяється на аноді? \emph{Вказівка:} у~СІ закон трьох других має
 	вигляд $j=\dfrac{4\epsilon_0}{9}\sqrt{\dfrac{2e}{m_e}}\dfrac{U^{3/2}}{d^2}$.
-	%Відповідь: $j\approx2{,}6\cdot10^{2}$~А/м$^2$; $I=jS\approx26$~мА; $j$ зросте у~$2^{3/2}\approx2{,}8$ рази при $2U$
-	%і~зменшиться вчетверо при $2d$; $P=IU\approx5$~Вт.
+	\begin{solution}
+		$j\approx2{,}6\cdot10^{2}$~А/м$^2$; $I=jS\approx26$~мА; $j$ зросте у~$2^{3/2}\approx2{,}8$ рази при $2U$
+		і~зменшиться вчетверо при $2d$; $P=IU\approx5$~Вт.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:IntrinsicSilicon}
@@ -1548,7 +1576,9 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	$n_i=1{,}5\cdot10^{16}$~м$^{-3}$, а~рухливості електронів і~дірок
 	$\mu_n=0{,}135$~м$^2$/(В$\cdot$с) та $\mu_p=0{,}048$~м$^2$/(В$\cdot$с). Знайдіть
 	питому провідність і~питомий опір власного кремнію.
-	%Відповідь: $\lambda=en_i(\mu_n+\mu_p)\approx4{,}4\cdot10^{-4}$~См/м; $\rho\approx2{,}3\cdot10^{3}$~Ом$\cdot$м.
+	\begin{solution}
+		$\lambda=en_i(\mu_n+\mu_p)\approx4{,}4\cdot10^{-4}$~См/м; $\rho\approx2{,}3\cdot10^{3}$~Ом$\cdot$м.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:IntrinsicTemperature}
@@ -1556,8 +1586,10 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	у~кремнії ($E_g=1{,}12$~еВ) при нагріванні від $T_1=300$~К до $T_2=330$~К? Порівняйте
 	із зміною питомого опору міді ($\alpha=4{,}3\cdot10^{-3}\,{}^\circ$C$^{-1}$) за тієї
 	самої зміни температури. Зміною рухливостей знехтуйте.
-	%Відповідь: $\dfrac{n_i(T_2)}{n_i(T_1)}=\left(\dfrac{T_2}{T_1}\right)^{3/2}\exp\!\left[\dfrac{E_g}{2k_B}\left(\dfrac1{T_1}-\dfrac1{T_2}\right)\right]\approx8$,
-	%тобто опір кремнію \emph{спадає} майже у~$8$ разів, тоді як опір міді \emph{зростає} лише на $\alpha\Delta t\approx13\%$.
+	\begin{solution}
+		$\dfrac{n_i(T_2)}{n_i(T_1)}=\left(\dfrac{T_2}{T_1}\right)^{3/2}\exp\!\left[\dfrac{E_g}{2k_B}\left(\dfrac1{T_1}-\dfrac1{T_2}\right)\right]\approx8$,
+		тобто опір кремнію \emph{спадає} майже у~$8$ разів, тоді як опір міді \emph{зростає} лише на $\alpha\Delta t\approx13\%$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:DopedSilicon}
@@ -1566,8 +1598,10 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	N_d$. Знайдіть питому провідність, концентрацію дірок (закон діючих мас $np=n_i^2$)
 	і~в~скільки разів провідність перевищує провідність власного кремнію (значення $n_i$,
 	$\mu_n$, $\mu_p$ візьміть з задачі~\ref{prb:IntrinsicSilicon}).
-	%Відповідь: $\lambda\approx en\mu_n\approx2{,}2\cdot10^{2}$~См/м; $p=n_i^2/n\approx2\cdot10^{10}$~м$^{-3}$ (дірки~--- неосновні носії);
-	%провідність зросла приблизно в~$5\cdot10^{5}$ разів.
+	\begin{solution}
+		$\lambda\approx en\mu_n\approx2{,}2\cdot10^{2}$~См/м; $p=n_i^2/n\approx2\cdot10^{10}$~м$^{-3}$ (дірки~--- неосновні носії);
+		провідність зросла приблизно в~$5\cdot10^{5}$ разів.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:PNJunction}
@@ -1576,7 +1610,9 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	$N_d=10^{22}$~м$^{-3}$ знайдіть контактну різницю
 	потенціалів~\eqref{eq:ContactPotential}. У~скільки разів прямий струм при $U=+0{,}5$~В
 	перевищує модуль зворотного при $U=-0{,}5$~В (формула Шоклі~\eqref{eq:Shockley})?
-	%Відповідь: $\phi_k=\dfrac{k_BT}{e}\ln\dfrac{N_aN_d}{n_i^2}\approx0{,}75$~В; $\dfrac{I(+0{,}5)}{|I(-0{,}5)|}\approx e^{19{,}3}\approx2{,}5\cdot10^{8}$.
+	\begin{solution}
+		$\phi_k=\dfrac{k_BT}{e}\ln\dfrac{N_aN_d}{n_i^2}\approx0{,}75$~В; $\dfrac{I(+0{,}5)}{|I(-0{,}5)|}\approx e^{19{,}3}\approx2{,}5\cdot10^{8}$.
+	\end{solution}
 \end{problem}
 \endgroup
 
@@ -1627,3 +1663,4 @@ $p$--$n$-переходу нелінійна, отже закон Ома для 
 	\end{quizlist}
 \end{Questions}
 
+\Closesolutionfile{answer}

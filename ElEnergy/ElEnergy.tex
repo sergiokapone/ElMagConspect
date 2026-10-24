@@ -7,6 +7,8 @@
 
 
 %=========================================================
+\Opensolutionfile{answer}[\currfilebase/\currfilebase-Answers]
+\Writetofile{answer}{\protect\section*{\nameref*{\currfilebase}}}
 \chapter{Енергія електричного поля}\label{\currfilebase}\hypertarget{ElEnergy}{}
 \graphicspath{{\currfilebase/Pictures}}
 %=========================================================
@@ -839,8 +841,8 @@ $R^2$. Отже, весь поверхневий інтеграл спадає �
 тягар) та \textit{motor} (той, що рухає). Він виник в~електродинаміці XIX~ст.: так
 називали сили, що діють з~боку поля на \enquote{вагомі} (ponderable) тіла~--- провідники,
 діелектрики, магнетики,~--- на відміну від \emph{електрорушійних} сил, що діють на самі
-заряди. Сьогодні \emphx{пондеромоторними} називають механічні сили, з~якими
-електромагнітне поле діє на макроскопічні тіла.
+заряди (див. історичну довідку в~розділі~\ref{SteadyCurrent}). Сьогодні \emphx{пондеромоторними} називають механічні
+сили, з~якими електромагнітне поле діє на макроскопічні тіла.
 
 
 
@@ -1112,14 +1114,18 @@ $h$, тоді повна площа $S = Lh$ стала, а $S_1 = \left(1 - \df
 \begin{problem}\label{prb:CapacitanceMatrix}
 	\emph{Матриця ємностей.} Для двох куль із попереднього прикладу покладіть $R_1=1$~см,
 	$R_2=2$~см, $b=50$~см і~обчисліть $C_{11}, C_{22}, C_{12}$ чисельно.
-	%Відповідь: $C_{11} \approx 1$~см, $C_{22} \approx 2$~см, $C_{12} \approx -0{,}04$~см (знак від'ємний, оскільки $C_{12} \approx -R_1R_2/b$).
+	\begin{solution}
+		$C_{11} \approx 1$~см, $C_{22} \approx 2$~см, $C_{12} \approx -0{,}04$~см (знак від'ємний, оскільки $C_{12} \approx -R_1R_2/b$).
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:CapacitorBank}
 	\emph{Ємність батареї.} Три конденсатори ємностями $C_1 = 1\ \text{мкФ}$, $C_2 = 2\
 	\text{мкФ}$, $C_3 = 3\ \text{мкФ}$ з'єднано спочатку послідовно, потім паралельно.
 	Обчисліть сумарну ємність у~кожному випадку.
-	%Відповідь: послідовно $\approx 0{,}55\ \text{мкФ}$; паралельно $6\ \text{мкФ}$.
+	\begin{solution}
+		послідовно $\approx 0{,}55\ \text{мкФ}$; паралельно $6\ \text{мкФ}$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:UnequalCharges}
@@ -1128,7 +1134,9 @@ $h$, тоді повна площа $S = Lh$ стала, а $S_1 = \left(1 - \df
 	(стало $q_1'=2q$, $q_2=-q$). У~скільки разів зміниться напруженість поля \emph{між}
 	обкладками? Чи лишається конденсатор при цьому ідеально екранованим? \emph{Вказівка:}
 	скористайтеся розкладом~\eqref{eq:UnequalPlatesField}.
-	%Відповідь: поле між обкладками зросте в~$1{,}5$ раза; екранування порушиться~--- з'явиться поле й~назовні, $E_\text{зовні}=2\pi q/S$.
+	\begin{solution}
+		поле між обкладками зросте в~$1{,}5$ раза; екранування порушиться~--- з'явиться поле й~назовні, $E_\text{зовні}=2\pi q/S$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:SphereEnergy}
@@ -1137,6 +1145,9 @@ $h$, тоді повна площа $S = Lh$ стала, а $S_1 = \left(1 - \df
 	формулу~\eqref{eq:BodyEnergy}, знайшовши потенціал усередині кулі; (б) через інтеграл
 	$\int E^2/(8\pi)\, dV$ за всім простором. Переконайтесь, що результати збігаються. \emph{Вказівка:} поле
 	всередині кулі $E = Qr/R^3$, зовні~--- $E = Q/r^2$.
+	\begin{solution}
+		$W=\dfrac{3Q^2}{5R}$ обома способами.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:ForceConstPhi}
@@ -1146,7 +1157,9 @@ $h$, тоді повна площа $S = Lh$ стала, а $S_1 = \left(1 - \df
 	формулою~\eqref{eq:ForceConstPhiE} (через залежність $C(x)$), не користуючись готовим
 	результатом~\eqref{eq:ForceCapacitorPlates}, і~переконайтесь, що відповідь збігається.
 	\emph{Вказівка:} у~СІ $C=\epsilon_0S/x$.
-	%Відповідь: $F=\epsilon_0SU^2/2d^2\approx 3{,}2\times10^{-3}\ \text{Н}$.
+	\begin{solution}
+		$F=\epsilon_0SU^2/2d^2\approx 3{,}2\times10^{-3}\ \text{Н}$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:DielectricForce}
@@ -1156,7 +1169,9 @@ $h$, тоді повна площа $S = Lh$ стала, а $S_1 = \left(1 - \df
 	Обчисліть силу, що втягує пластину всередину конденсатора. \emph{Вказівка:} у~СІ
 	формула~\eqref{eq:ForceDielectric} має вигляд $F =
 	\dfrac{(\epsilon-1)\epsilon_0E^2}{2}\,hd$.
-	%Відповідь: $F \approx 3{,}3\times 10^{-6}\ \text{Н}$.
+	\begin{solution}
+		$F \approx 3{,}3\times 10^{-6}\ \text{Н}$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:LiquidDielectricRise}
@@ -1182,9 +1197,10 @@ $h$, тоді повна площа $S = Lh$ стала, а $S_1 = \left(1 - \df
 	рівновазі втягувальна сила зрівноважується вагою піднятого стовпа рідини. Теплоту
 	знайдіть із закону збереження енергії \(A_{\text{дж}}=\Delta W+\tfrac12 mgh+Q\), де
 	\(\tfrac12 mgh\)~--- приріст потенціальної енергії піднятої рідини.
-
-	%Відповідь: \(h = \dfrac{(\epsilon-1)U^2}{8\pi\rho_\text{р} g d^2}\); \quad \(Q = \dfrac{1}{2}mgh = \dfrac{(\epsilon-1)^2 l U^4}{128\pi^2\rho_\text{р} g d^3}\),
-	%де \(m=\rho_\text{р} l d h\)~--- маса піднятого стовпа.
+	\begin{solution}
+		\(h = \dfrac{(\epsilon-1)U^2}{8\pi\rho_\text{р} g d^2}\); \quad \(Q = \dfrac{1}{2}mgh = \dfrac{(\epsilon-1)^2 l U^4}{128\pi^2\rho_\text{р} g d^3}\),
+		де \(m=\rho_\text{р} l d h\)~--- маса піднятого стовпа.
+	\end{solution}
 \end{problem}
 \endgroup
 
@@ -1238,3 +1254,5 @@ $h$, тоді повна площа $S = Lh$ стала, а $S_1 = \left(1 - \df
 	  для сили з'являється множник $(\epsilon-1)$ і~що з~цього випливає для вакууму?
 \end{quizlist}
 \end{Questions}
+
+\Closesolutionfile{answer}

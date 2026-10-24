@@ -6,6 +6,8 @@
 
 
 %=========================================================
+\Opensolutionfile{answer}[\currfilebase/\currfilebase-Answers]
+\Writetofile{answer}{\protect\section*{\nameref*{\currfilebase}}}
 \chapter{Випромінювання електромагнітних хвиль}\label{\currfilebase}\hypertarget{Radiation}{}
 \graphicspath{{\currfilebase/Pictures}}
 %=========================================================
@@ -707,46 +709,60 @@ $100$~ГеВ на пучок), тому для вищих енергій еле�
 	Електромагнітна хвиля, що випромінюється диполем, поширюється у~вакуумі так, що у~хвильовій зоні на промені,
 	перпендикулярному до осі диполя, на відстані $r$ від нього середнє значення густини потоку енергії дорівнює
 	$\langle\Pi\rangle$. Знайдіть середню потужність випромінювання диполя.
-	% \emph{Відповідь:} при $\theta=\pi/2$ $\langle\Pi\rangle=\dfrac{\langle\ddot p^2\rangle}{4\pi c^3r^2}$, тому $\left\langle\dfrac{dW}{dt}\right\rangle=\dfrac{2\langle\ddot p^2\rangle}{3c^3}=\dfrac{8\pi r^2}{3}\langle\Pi\rangle$.
+	\begin{solution}
+		при $\theta=\pi/2$ $\langle\Pi\rangle=\dfrac{\langle\ddot p^2\rangle}{4\pi c^3r^2}$, тому $\left\langle\dfrac{dW}{dt}\right\rangle=\dfrac{2\langle\ddot p^2\rangle}{3c^3}=\dfrac{8\pi r^2}{3}\langle\Pi\rangle$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:RotatingDipole}
 	Сталий за модулем електричний дипольний момент $\vect p$ обертають з~кутовою швидкістю $\omega$ навколо осі,
 	перпендикулярної до осі диполя, що проходить через його середину. Знайдіть потужність випромінювання диполя.
-	% \emph{Відповідь:} $p_x=p\cos\omega t$, $p_y=p\sin\omega t$, $\ddot{\vect p}^{\,2}=p^2\omega^4=\const$, тому $\dfrac{dW}{dt}=\dfrac{2p^2\omega^4}{3c^3}$ --- удвічі більше, ніж у~лінійного осцилятора з~тією самою амплітудою, і~стала в~часі: обертовий диполь --- це два лінійні осцилятори, зсунуті за фазою на $90^\circ$, пульсації потужності яких взаємно компенсуються.
+	\begin{solution}
+		$p_x=p\cos\omega t$, $p_y=p\sin\omega t$, $\ddot{\vect p}^{\,2}=p^2\omega^4=\const$, тому $\dfrac{dW}{dt}=\dfrac{2p^2\omega^4}{3c^3}$ --- удвічі більше, ніж у~лінійного осцилятора з~тією самою амплітудою, і~стала в~часі: обертовий диполь --- це два лінійні осцилятори, зсунуті за фазою на $90^\circ$, пульсації потужності яких взаємно компенсуються.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:CoulombOrbitPower}
 	Знайдіть потужність випромінювання нерелятивістської частинки із зарядом $e$ і~масою $m$, що рухається коловою орбітою
 	радіуса $R$ у~полі нерухомого точкового заряду $q$.
-	% \emph{Відповідь:} $\dot v=\dfrac{v^2}{R}=\dfrac{eq}{mR^2}$, тому $\dfrac{dW}{dt}=\dfrac{2e^2}{3c^3}\left(\dfrac{eq}{mR^2}\right)^2=\dfrac{2e^4q^2}{3c^3m^2R^4}$.
+	\begin{solution}
+		$\dot v=\dfrac{v^2}{R}=\dfrac{eq}{mR^2}$, тому $\dfrac{dW}{dt}=\dfrac{2e^2}{3c^3}\left(\dfrac{eq}{mR^2}\right)^2=\dfrac{2e^4q^2}{3c^3m^2R^4}$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:AtomCollapse}
 	\emph{Падіння класичного електрона на ядро.} Електрон рухається навколо протона по коловій орбіті радіуса
 	$a_0=0{,}53\cdot10^{-8}$~см і~через випромінювання поступово втрачає енергію. Вважаючи, що в~кожен момент орбіта колова,
 	оцініть, за який час електрон упав би на ядро.
-	% \emph{Відповідь:} енергія $W=-\dfrac{e^2}{2r}$, втрати $\dfrac{dW}{dt}=-\dfrac{2e^6}{3c^3m^2r^4}$, звідки $\dfrac{dr}{dt}=-\dfrac{4e^4}{3m^2c^3r^2}$ і~$t=\dfrac{m^2c^3a_0^3}{4e^4}\approx1{,}6\cdot10^{-11}$~с.
+	\begin{solution}
+		енергія $W=-\dfrac{e^2}{2r}$, втрати $\dfrac{dW}{dt}=-\dfrac{2e^6}{3c^3m^2r^4}$, звідки $\dfrac{dr}{dt}=-\dfrac{4e^4}{3m^2c^3r^2}$ і~$t=\dfrac{m^2c^3a_0^3}{4e^4}\approx1{,}6\cdot10^{-11}$~с.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:BlueRed}
 	\emph{Синє й~червоне.} У~скільки разів синє світло ($\lambda=450$~нм) розсіюється молекулами повітря сильніше, ніж червоне
 	($\lambda=700$~нм)?
-	% \emph{Відповідь:} інтенсивність розсіяння $\propto\lambda^{-4}$, тому $(700/450)^4\approx6$.
+	\begin{solution}
+		інтенсивність розсіяння $\propto\lambda^{-4}$, тому $(700/450)^4\approx6$.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:ShortAntenna}
 	\emph{Опір випромінювання короткої антени.} Антена~--- прямий провідник довжиною $l=1$~м, по якому тече (майже однаковий
 	уздовж провідника) струм з~амплітудою $I_0=1$~А і~частотою $10$~МГц. Знайдіть опір випромінювання й~потужність випромінювання.
 	\emph{Вказівка:} амплітуда дипольного моменту $p_0=I_0l/\omega$ (бо $\dot p=Il$); $1$~с/см $=9\cdot10^{11}$~Ом.
-	% \emph{Відповідь:} $\langle dW/dt\rangle=\dfrac{\omega^2I_0^2l^2}{3c^3}=\dfrac12I_0^2R_\text{вип}$, тож $R_\text{вип}=\dfrac{2\omega^2l^2}{3c^3}=\dfrac{8\pi^2}{3c}\left(\dfrac l\lambda\right)^2$, у~СІ $R_\text{вип}=80\pi^2(l/\lambda)^2$~Ом $\approx0{,}9$~Ом при $\lambda=30$~м; потужність $\approx0{,}44$~Вт. Коротка антена ($l\ll\lambda$) випромінює погано.
+	\begin{solution}
+		$\langle dW/dt\rangle=\dfrac{\omega^2I_0^2l^2}{3c^3}=\dfrac12I_0^2R_\text{вип}$, тож $R_\text{вип}=\dfrac{2\omega^2l^2}{3c^3}=\dfrac{8\pi^2}{3c}\left(\dfrac l\lambda\right)^2$, у~СІ $R_\text{вип}=80\pi^2(l/\lambda)^2$~Ом $\approx0{,}9$~Ом при $\lambda=30$~м; потужність $\approx0{,}44$~Вт. Коротка антена ($l\ll\lambda$) випромінює погано.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:SynchrotronRatio}
 	\emph{Синхротронні втрати електрона й~протона.} Для ультрарелятивістської частинки на коловій орбіті потужність
 	випромінювання в~$\gamma^4$ разів більша за ларморівську, де $\gamma=W/mc^2$. У~скільки разів потужність випромінювання
 	електрона більша, ніж протона з~тією самою енергією на орбіті того самого радіуса?
-	% \emph{Відповідь:} прискорення $v^2/R\approx c^2/R$ однакові, тож $P\propto\gamma^4\propto m^{-4}$, і~$P_e/P_p=(m_p/m_e)^4\approx1{,}1\cdot10^{13}$.
+	\begin{solution}
+		прискорення $v^2/R\approx c^2/R$ однакові, тож $P\propto\gamma^4\propto m^{-4}$, і~$P_e/P_p=(m_p/m_e)^4\approx1{,}1\cdot10^{13}$.
+	\end{solution}
 \end{problem}
 \endgroup
 
@@ -805,3 +821,5 @@ $100$~ГеВ на пучок), тому для вищих енергій еле�
 	  Який історичний вихід із цієї суперечності запропонував Бор?
 \end{quizlist}
 \end{Questions}
+
+\Closesolutionfile{answer}

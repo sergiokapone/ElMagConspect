@@ -6,6 +6,8 @@
 
 
 %=========================================================
+\Opensolutionfile{answer}[\currfilebase/\currfilebase-Answers]
+\Writetofile{answer}{\protect\section*{\nameref*{\currfilebase}}}
 \chapter{Енергія магнітного поля}\label{\currfilebase}\hypertarget{MagEnergy}{}
 \graphicspath{{\currfilebase/Pictures}}
 %=========================================================
@@ -121,7 +123,7 @@
 	(розділ~\ref{ElEnergy}).
 \end{Attention}
 
-\begin{Example}{Густина енергії в~загальному випадку*}
+\begin{Example}{Густина енергії в~загальному випадку*}\small
 	Покажемо, що формула~\eqref{eq:MagEnergyDensitySolenoid} не обмежується соленоїдом. Обмежимося \emph{квазістаціонарним}
 	наближенням: поля змінюються повільно (розділ~\ref{SteadyCurrent}), тож струмом зміщення нехтуємо, $\divg\vect j=0$
 	і~$\rot\Hfield=\frac{4\pi}{c}\vect j$.
@@ -1031,33 +1033,43 @@ $q^2/2C$),~--- тому варто щоразу з'ясовувати, хто в
 	\emph{Енергія магніту томографа.} Надпровідний магніт томографа створює поле $B=3$~Тл ($3\cdot10^4$~Гс) в~об'ємі близько
 	$1$~м$^3$. Оцініть енергію, запасену в~полі, і~порівняйте з~енергією вибуху $1$~кг тротилу ($4{,}2$~МДж). Чому аварійна втрата
 	надпровідності (\enquote{квенч}) такого магніту небезпечна?
-	% \emph{Відповідь:} $w=\dfrac{B^2}{8\pi}\approx3{,}6\cdot10^{7}$~ерг/см$^3$, $W=wV\approx3{,}6\cdot10^{13}$~ерг $\approx3{,}6$~МДж~--- майже як $1$~кг тротилу. При квенчі ця енергія за секунди виділяється як тепло в~обмотці й~випаровує рідкий гелій.
+	\begin{solution}
+		$w=\dfrac{B^2}{8\pi}\approx3{,}6\cdot10^{7}$~ерг/см$^3$, $W=wV\approx3{,}6\cdot10^{13}$~ерг $\approx3{,}6$~МДж~--- майже як $1$~кг тротилу. При квенчі ця енергія за секунди виділяється як тепло в~обмотці й~випаровує рідкий гелій.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:CoaxInductance}
 	\emph{Індуктивність коаксіального кабелю.} По внутрішньому тонкостінному циліндру радіуса $a$ коаксіального кабелю тече
 	струм $I$, по зовнішньому радіуса $b$~--- зворотний струм. Знайдіть енергію магнітного поля на одиницю довжини кабелю й~звідси
 	індуктивність одиниці довжини. Обчисліть її для $a=0{,}5$~мм, $b=3{,}5$~мм ($1$~Гн $=10^9$~см).
-	% \emph{Відповідь:} поле є лише між циліндрами, $H=\dfrac{2I}{cr}$; $\dfrac{W}{\ell}=\displaystyle\int_a^b\frac{H^2}{8\pi}2\pi r\,dr=\frac{I^2}{c^2}\ln\frac ba$, тому $\dfrac{L}{\ell}=2\ln\dfrac ba\approx3{,}9$ (см на см) $\approx0{,}39$~мкГн/м.
+	\begin{solution}
+		поле є лише між циліндрами, $H=\dfrac{2I}{cr}$; $\dfrac{W}{\ell}=\displaystyle\int_a^b\frac{H^2}{8\pi}2\pi r\,dr=\frac{I^2}{c^2}\ln\frac ba$, тому $\dfrac{L}{\ell}=2\ln\dfrac ba\approx3{,}9$ (см на см) $\approx0{,}39$~мкГн/м.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:CoaxialRingsNumbers}
 	\emph{Взаємна індуктивність кілець.} Для двох концентричних кілець в~одній площині з~радіусами $R_1=10$~см і~$R_2=1$~см
 	(рис.~\ref{pic:CoaxialLoops}) знайдіть взаємну індуктивність у~сантиметрах і~в~генрі. Яка ЕРС наводиться в~малому кільці,
 	якщо струм у~великому змінюється зі швидкістю $10^3$~А/с?
-	% \emph{Відповідь:} $L_{12}=\dfrac{c\Phi_{12}}{I}=\dfrac{2\pi^2R_2^2}{R_1}\approx2$~см $=2$~нГн; $|\emf|=L_{12}\left|\dfrac{dI}{dt}\right|$ (у~СІ) $\approx2$~мкВ.
+	\begin{solution}
+		$L_{12}=\dfrac{c\Phi_{12}}{I}=\dfrac{2\pi^2R_2^2}{R_1}\approx2$~см $=2$~нГн; $|\emf|=L_{12}\left|\dfrac{dI}{dt}\right|$ (у~СІ) $\approx2$~мкВ.
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:ElectromagnetNumbers}
 	\emph{Підйомна сила електромагніта.} Індукція в~зазорі електромагніта (рис.~\ref{pic:ElectromagnetForce}) $B=10$~кГс, площа
 	кожного з~двох полюсів $S=10$~см$^2$. Знайдіть силу притягання якоря.
-	% \emph{Відповідь:} за~\eqref{eq:ElectromagnetForce} $F=\dfrac{B^2S}{4\pi}\approx8\cdot10^{7}$~дин $=800$~Н (близько $80$~кгс).
+	\begin{solution}
+		за~\eqref{eq:ElectromagnetForce} $F=\dfrac{B^2S}{4\pi}\approx8\cdot10^{7}$~дин $=800$~Н (близько $80$~кгс).
+	\end{solution}
 \end{problem}
 
 \begin{problem}\label{prb:MagneticPressure}
 	\emph{Магнітний тиск.} Методом віртуальних переміщень за сталого потоку покажіть, що на обмотку довгого соленоїда з~полем $B$
 	діє тиск $p=B^2/8\pi$, напрямлений назовні. Оцініть його для $B=10$~Тл.
-	% \emph{Відповідь:} $W=\dfrac{B^2}{8\pi}S\ell=\dfrac{\Phi^2\ell}{8\pi S}$ при $\Phi=BS=\const$; при збільшенні площі перерізу $dW=-\dfrac{B^2}{8\pi}\ell\,dS=-p\,dV$, тож $p=\dfrac{B^2}{8\pi}$. Для $B=10^5$~Гс $p\approx4\cdot10^{8}$~дин/см$^2\approx4\cdot10^{7}$~Па, тобто близько $400$~атм.
+	\begin{solution}
+		$W=\dfrac{B^2}{8\pi}S\ell=\dfrac{\Phi^2\ell}{8\pi S}$ при $\Phi=BS=\const$; при збільшенні площі перерізу $dW=-\dfrac{B^2}{8\pi}\ell\,dS=-p\,dV$, тож $p=\dfrac{B^2}{8\pi}$. Для $B=10^5$~Гс $p\approx4\cdot10^{8}$~дин/см$^2\approx4\cdot10^{7}$~Па, тобто близько $400$~атм.
+	\end{solution}
 \end{problem}
 \endgroup
 
@@ -1091,3 +1103,5 @@ $q^2/2C$),~--- тому варто щоразу з'ясовувати, хто в
 		  Чому вона є силою притягання?
 	\end{quizlist}
 \end{Questions}
+
+\Closesolutionfile{answer}

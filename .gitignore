@@ -65,3 +65,6 @@ test_main.pdf
 
 # single chapters built by chapter.py (elmag.py chapter)
 /_chapters/
+
+# answers written by the answers package during the build
+*-Answers.tex

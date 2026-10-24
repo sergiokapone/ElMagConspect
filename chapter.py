@@ -39,7 +39,7 @@ def main():
     if a.tikz:
         pretex += r'\def\TargetTikz{%s}' % a.tikz
         job += '-' + a.tikz
-    os.makedirs(OUT, exist_ok=True)
+    os.makedirs(os.path.join(OUT, a.chapter), exist_ok=True)   # the chapter writes its answers there
     if a.tikz:                                  # a picture has no index entries, and upmendex fails on an empty .idx
         index = '$makeindex = q(perl -e "open F, q(>), $ARGV[0]" %D)'
     else:                                       # latexmk runs the indexer inside -outdir: the style needs its full path
