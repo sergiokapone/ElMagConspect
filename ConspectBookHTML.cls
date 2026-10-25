@@ -151,6 +151,12 @@
 % optional material marked "*": smaller font (class cb-extra in conspect.css)
 \newenvironment{Extra}{\begin{BlockClass}{cb-extra}}{\end{BlockClass}}
 \newcommand{\answers}{\schapterpage{Відповіді}}
+% lwarp's \nameref has no star form: \nameref*{Charges} (headings of the answers) gave "??Charges".
+% The star is dropped, so the heading is the chapter title linked to the chapter.
+\makeatletter
+\AtBeginDocument{\LetLtxMacro\CB@nameref\nameref
+	\renewrobustcmd*{\nameref}{\@ifstar\CB@nameref\CB@nameref}}
+\makeatother
 
 % ---- macros for MathJax (generated from mathjax-macros.tex by mathjax2lwarp.py) ----
 % tikzmark nodes inside formulas cannot go to MathJax: in HTML they are plain text
