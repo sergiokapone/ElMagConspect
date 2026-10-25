@@ -1,6 +1,15 @@
-% Адаптовано з ElEnergy_slides.tex (слайд "Енергія електричного поля в конденсаторі")
-\begin{tikzpicture}[>=latex, scale=1.5]
-	\draw[red, fill=red!50] (0,0) rectangle ++(0.2,2)  node[above left] {$+$};
-	\draw[blue, fill=blue!50] (1,0) rectangle ++(0.2,2) node[above] {$-$};
-	\draw[<-] (0.2, 1) to[bend left] node[above] {$dq$} ++(0.8,0);
+% перенесення заряду dq з однієї обкладки на іншу (обкладки в перспективі)
+\begin{tikzpicture}[>=Stealth, font=\small,
+	face/.style={line width=0.6pt, draw=#1!70!black, left color=#1!55, right color=#1!20},
+	edge/.style={line width=0.6pt, draw=#1!70!black, fill=#1!65},
+	pics/plate/.style={code={
+				\path[edge=#1] (0,0) rectangle (0.15,2.5);
+				\path[face=#1] (0.15,0) -- (0.75,0.4) -- (0.75,2.9) -- (0.15,2.5) -- cycle;
+				\path[edge=#1] (0,2.5) -- (0.15,2.5) -- (0.75,2.9) -- (0.6,2.9) -- cycle;
+			}}]
+	\pic at (0,0) {plate=red};
+	\pic at (2.2,0) {plate=blue};
+	\node[red!70!black, font=\bfseries\large] at (0.4,3.3) {$+$};
+	\node[blue!70!black, font=\bfseries\large] at (2.6,3.3) {$-$};
+	\draw[<-, thick] (0.6,1.8) to[bend left=35] node[above] {$dq$} (2.2,1.8);
 \end{tikzpicture}

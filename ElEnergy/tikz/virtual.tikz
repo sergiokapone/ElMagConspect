@@ -1,12 +1,21 @@
-\begin{tikzpicture}[>=latex, scale=2]
-    \pgfmathsetmacro{\h}{1.5}
-    \pgfmathsetmacro{\d}{1}
-    \pgfmathsetmacro{\D}{0.2}
-	\draw[line width=1pt, red] (0, 0) -- ++(0, \h);
-	\draw[line width=1pt, red, dashed] (\D, 0) -- ++(0, \h);
-	\draw[line width=1pt, blue] (\d, 0) -- ++(0, \h);
-	\draw[->] (-\D, -\D) -- ++({\d + 2*\D},0) node[right] {$x$};
-	\draw[->] (-0.3, 0.1) -- (0, 0.1);
-	\draw[->] (0.5, 0.1) -- (0.2, 0.1);
-	\node[below, font=\tiny, inner sep=0] at (0.1,0) {$dx$};
+% віртуальне зміщення dx обкладки: права обкладка відсувається на dx, відстань x між обкладками зростає
+\begin{tikzpicture}[>=Stealth, font=\small,
+	face/.style={line width=0.6pt, draw=#1!70!black, left color=#1!55, right color=#1!20},
+	edge/.style={line width=0.6pt, draw=#1!70!black, fill=#1!65},
+	pics/plate/.style={code={
+				\path[edge=#1] (0,0) rectangle (0.15,2.5);
+				\path[face=#1] (0.15,0) -- (0.75,0.4) -- (0.75,2.9) -- (0.15,2.5) -- cycle;
+				\path[edge=#1] (0,2.5) -- (0.15,2.5) -- (0.75,2.9) -- (0.6,2.9) -- cycle;
+			}}]
+	\pic at (0,0) {plate=red};
+	\pic at (2.4,0) {plate=blue};
+	% нове положення правої обкладки (штрих)
+	\draw[blue!70!black, dashed, line width=0.7pt]
+	(3.4,0) rectangle (3.55,2.5)
+	(3.55,0) -- (4.15,0.4) -- (4.15,2.9) -- (3.55,2.5)
+	(3.4,2.5) -- (4.0,2.9) -- (4.15,2.9);
+	% вісь x і зміщення
+	\draw[->] (-0.3,-0.5) -- (4.7,-0.5) node[right] {$x$};
+	\draw[|->|, thick] (2.4,-0.22) -- node[below] {$dx$} (3.4,-0.22);
+	\draw[<->] (0.15,3.25) -- node[above] {$x$} (2.4,3.25);
 \end{tikzpicture}
