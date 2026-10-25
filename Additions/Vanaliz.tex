@@ -14,6 +14,85 @@
 % --------------------------------------------------------
 
 %% --------------------------------------------------------
+\subsection{Зміна функції при малому зміщенні}\label{sec:SmallShift}\hypertarget{vector-small-shift}{}
+%% --------------------------------------------------------
+
+
+
+Часто треба знати, як змінюється значення поля (функції координат) в~околі певної точки. Для малих зсувів
+досить лінійного наближення. Для функції однієї змінної воно дається першими двома
+членами ряду Тейлора:
+% ========================================================
+\begin{equation*}
+	f(x + \epsilon) \approx f(x) + \frac{df}{dx}\epsilon, \quad \epsilon \to 0.
+\end{equation*}
+% ========================================================
+
+\begin{SCfigure}[][h!]
+	\centering
+
+	\input{SteadyEfield/tikz/mathinfinitesimal.tikz}
+
+	\caption{Значення поля $f(\vect{r})$ у~двох близьких точках простору.}
+\end{SCfigure}
+
+Це співвідношення легко узагальнюється для випадку скалярної функції кількох просторових
+змінних:
+% ========================================================
+\begin{multline*}
+	f(x + \epsilon_x, y + \epsilon_y, z + \epsilon_z) =
+	f(x, y, z) +
+	\frac{\partial f(x, y, z)}{\partial x} \epsilon_x +
+	\frac{\partial f(x, y, z)}{\partial y} \epsilon_y +
+	\frac{\partial f(x, y, z)}{\partial z} \epsilon_z, \\ \epsilon_x, \epsilon_y,
+	\epsilon_z  \to 0.
+\end{multline*}
+% ========================================================
+
+\emph{Для скалярної функції} $f(\vect{r})$ останнє співвідношення можна записати в~більш
+лаконічному вигляді:
+% ========================================================
+\begin{equation}\label{eq:sc_diff}
+	\tcbhighmath{
+		f(\vect{r} + \vect{\epsilon}) = f(\vect{r}) +
+		\vect{\epsilon}\cdot\vect{\nabla}f(\vect{r}).
+	}
+\end{equation}
+% ========================================================
+
+\emph{Для векторної функції} $\vect{f}(\vect{r})$ формула буде виглядати як:
+% ========================================================
+\begin{multline*}
+	\vect{f}(x + \epsilon_x, y + \epsilon_y, z + \epsilon_z) =
+	\vect{f}(x, y, z) +\left(
+	\epsilon_x \frac{\partial}{\partial x}  +
+	\epsilon_y \frac{\partial}{\partial y}  +
+	\epsilon_z\frac{\partial}{\partial z}\right) \vect{f}(x,y,z), \\ \epsilon_x, \epsilon_y,
+	\epsilon_z  \to 0,
+\end{multline*}
+% ========================================================
+
+або в~більш лаконічному вигляді:
+% ========================================================
+\begin{equation}\label{eq:vec_diff}
+	\tcbhighmath{
+		\vect{f}(\vect{r} + \vect{\epsilon}) = \vect{f}(\vect{r}) +
+		(\vect{\epsilon}\cdot\vect{\nabla})\vect{f}(\vect{r}).
+	}
+\end{equation}
+% ========================================================
+
+У~цих формулах використано векторний оператор \emph{набла}, який у~декартових координатах
+має вигляд
+	% ========================================================
+	\begin{equation*}
+		\vect{\nabla} = \vect{e}_x \frac{\partial}{\partial x} +
+		\vect{e}_y \frac{\partial}{\partial y} + \vect{e}_z
+		\frac{\partial}{\partial z}.
+	\end{equation*}
+	% ========================================================
+
+%% --------------------------------------------------------
 \subsection{Диференціальні операції в різних системах координат}\hypertarget{vector-diff-operations-coordinates}{}
 %% --------------------------------------------------------
 

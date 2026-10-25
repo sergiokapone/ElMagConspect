@@ -1,0 +1,16 @@
+% потенціал між пластинами: без заряду (пряма) і з від'ємним просторовим зарядом (прогин)
+\begin{tikzpicture}[>=latex, font=\small, x=1.2cm, y=1.2cm]
+	\fill[gray!25] (-0.15,-0.2) rectangle (0,2.2);
+	\fill[gray!25] (3,-0.2) rectangle (3.15,2.2);
+	\draw[->] (0,0) -- (3.6,0) node[below] {$x$};
+	\draw[->] (0,0) -- (0,2.5) node[left] {$\phi$};
+	\node[below] at (0,0) {$0$};
+	\node[below] at (3,0) {$d$};
+	\draw[dashed] (3,0) -- (3,1.8);
+	\draw[dashed] (0,1.8) node[left] {$U$} -- (3,1.8);
+	% rho = 0: пряма
+	\draw[thick, blue] (0,0) -- (3,1.8) node[pos=0.45, above left] {$\rho=0$};
+	% rho < 0: парабола phi = U x/d - k x (d - x), k = U/d^2 (поле біля катода = 0)
+	\draw[thick, red, domain=0:3, samples=40] plot (\x, {1.8*\x/3 - 0.6*\x*(3-\x)/3});
+	\node[red, right] at (1.75,0.35) {$\rho<0$};
+\end{tikzpicture}

@@ -114,6 +114,8 @@
   \gdef\thesection{\@Alph\c@section}%
   \@addtoreset{table}{section}\@addtoreset{equation}{section}%
   \renewcommand\thetable{\thesection.\@arabic\c@table}%
+  \@addtoreset{figure}{section}%
+  \renewcommand\thefigure{\thesection.\@arabic\c@figure}%
   \renewcommand\theequation{\thesection.\arabic{equation}}%
   \schapterpage{Додатки}}
 \makeatother

@@ -1,5 +1,5 @@
 \begin{tikzpicture}[
-    scale=1.2,
+    scale=1.15,
     >=Stealth,
     si node/.style={circle, draw=black, fill=white, thick, inner sep=2.5pt, font=\sffamily\bfseries},
     electron/.style={circle, fill=black, inner sep=2.2pt},

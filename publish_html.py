@@ -228,6 +228,13 @@ def wrap_toc_titles(text):
     own and fell to the next row under the number: the whole title goes into one span."""
     return TOC_ENTRY.sub(r'\1<span class="toctitle">\2</span>\3', text)
 
+SECTION_NUMBER = re.compile(r'(<h4\b[^>]*>\s*<span class="sectionnumber">)(\d+\.\d+&#x2003;)')
+
+def mark_sections(text):
+    """Section headings of the chapters get the sign § as in print ("§ 2.3"); appendix sections (letters) do not.
+    Safe to run again: the number then follows "§&#x202F;", not the span."""
+    return SECTION_NUMBER.sub(r'\1&#xA7;&#x202F;\2', text)
+
 n_pages = n_script = 0
 donor = None                                   # a processed chapter page: its side panel goes to the book home page
 pages = sorted((n for n in os.listdir(OUT) if n.endswith('.html') and not is_site_own(n)),
@@ -241,6 +248,7 @@ for name in pages:
     new = add_home_sidebar(new, donor)
     new = add_site_links(name, new)
     new = wrap_toc_titles(new)
+    new = mark_sections(new)
     if 'book.js' not in new and '</body>' in new:
         new = new.replace('</body>', '<script src="%s/book.js" defer></script>\n</body>' % ASSET_DIR, 1); n_script += 1
     if new != text:

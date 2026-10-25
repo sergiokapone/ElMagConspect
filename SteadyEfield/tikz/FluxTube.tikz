@@ -1,0 +1,18 @@
+% силова трубка: лінії поля звужуються від S1 до S2, потік зберігається
+\begin{tikzpicture}[>=latex, font=\small, scale=1.3]
+	% силові лінії, що утворюють трубку (від широкого перерізу до вузького)
+	\foreach \a/\b in {-1.0/-0.45, -0.5/-0.22, 0/0, 0.5/0.22, 1.0/0.45} {
+			\draw[red!70!black, ->] (0,\a) .. controls (2,\a) and (2.6,\b) .. (4.6,\b);
+		}
+	% бічна поверхня трубки (крайні лінії)
+	\draw[blue, dashed] (0,1.15) .. controls (2,1.15) and (2.6,0.52) .. (4.6,0.52);
+	\draw[blue, dashed] (0,-1.15) .. controls (2,-1.15) and (2.6,-0.52) .. (4.6,-0.52);
+	% перерізи
+	\draw[blue, thick, fill=blue!10, fill opacity=0.6] (0.5,0) ellipse (0.25 and 1.15);
+	\draw[blue, thick, fill=blue!10, fill opacity=0.6] (4.1,0) ellipse (0.13 and 0.52);
+	\node[blue, below] at (0.5,-1.2) {$S_1$};
+	\node[blue, below] at (4.1,-0.6) {$S_2$};
+	% вектори поля
+	\draw[->, very thick] (0.5,1.45) -- ++(0.6,0) node[right] {$\Efield_1$};
+	\draw[->, very thick] (4.1,0.85) -- ++(1.3,0) node[right] {$\Efield_2$};
+\end{tikzpicture}

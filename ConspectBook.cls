@@ -330,7 +330,7 @@
 \setlength{\belowrulesep}{0pt}
 \setlength{\extrarowheight}{0.75ex}
 \RequirePackage[justification=centering,labelsep=period, belowskip=1em]{caption}  % "Рис. 1." — крапка, центрування підпису
-\usepackage[outercaption, wide]{sidecap}  % підписи збоку від рисунка (в маргіналії)
+\usepackage[outercaption]{sidecap}  % підписи збоку від рисунка; ширина підпису [k]·(ширина рисунка), але не більше вільного місця в рядку
 \sidecaptionvpos{figure}{c}               % вертикальне вирівнювання бічного підпису — по центру
 \RequirePackage{subcaption}       % підрисунки (a), (b)... в межах одного figure
 \RequirePackage{multirow}         % об'єднання клітинок таблиці по вертикалі
@@ -721,6 +721,9 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 	\@addtoreset{table}{section}
 	\renewcommand\thetable%
 	{\thesection.\@arabic\c@table}
+	\@addtoreset{figure}{section}
+	\renewcommand\thefigure%
+	{\thesection.\@arabic\c@figure}
 	\setcounter{chapter}{0}%
 	\setcounter{section}{0}%
 	\renewcommand{\theequation}{\thesection.\arabic{equation}}
@@ -835,9 +838,9 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 		\hfill{\LARGE#1}\\
 		\rule{\dimexpr\textwidth-\chapnumb\relax}{0.4pt}}}
 
-% Заголовок секції: "N. Назва" жирним
+% Заголовок секції: "§ N. Назва" жирним (у додатках без знака §: "А. Назва")
 \titleformat{\section}
-{\normalsize\bfseries}{\thesection.}{1em}{#1}
+{\normalsize\bfseries}{\ifappendix\else\S\,\fi\thesection.}{1em}{#1}
 
 % Заголовок підсекції: у підбір з текстом ("runin"), закінчується крапкою
 \titleformat{\subsection}[runin]
