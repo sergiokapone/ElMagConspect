@@ -1,0 +1,28 @@
+% силові лінії (r = C sin^2 theta) та еквіпотенціальні лінії (r^2 = K |cos theta|) точкового диполя p || Oy
+\begin{tikzpicture}[>=latex, font=\small, scale=1.15,
+	fl/.style={red!75!black, thick}]
+	% силові лінії: theta від осі y; x = C sin^3, y = C sin^2 cos
+	\foreach \C in {1.3, 2.2, 3.2, 4.4} {
+			\draw[fl, domain=4:176, samples=80, smooth, variable=\t]
+			plot ({\C*sin(\t)^3}, {\C*sin(\t)^2*cos(\t)});
+			\draw[fl, domain=4:176, samples=80, smooth, variable=\t]
+			plot ({-\C*sin(\t)^3}, {\C*sin(\t)^2*cos(\t)});
+			% стрілки в точках theta = 90 (поле там напрямлене проти p)
+			\draw[red!75!black, thick, -{Latex[length=2.5mm]}] (\C,0.15) -- (\C,-0.1);
+			\draw[red!75!black, thick, -{Latex[length=2.5mm]}] (-\C,0.15) -- (-\C,-0.1);
+		}
+	% лінії вздовж осі
+	\draw[red!75!black, thick, ->] (0,0.4) -- (0,2.3);
+	\draw[red!75!black, thick, ->] (0,-2.3) -- (0,-0.4);
+	% еквіпотенціальні лінії (штрихові): r = sqrt(K |cos theta|)
+	\foreach \K in {1, 2.8, 6} {
+			\draw[blue, dashed, domain=-90:90, samples=60, smooth, variable=\t]
+			plot ({sqrt(\K*cos(\t))*sin(\t)}, {sqrt(\K*cos(\t))*cos(\t)});
+			\draw[blue, dashed, domain=-90:90, samples=60, smooth, variable=\t]
+			plot ({sqrt(\K*cos(\t))*sin(\t)}, {-sqrt(\K*cos(\t))*cos(\t)});
+		}
+	% диполь
+	\draw[->, line width=1.6pt] (0,-0.3) -- (0,0.3) node[left] {$\vect p$};
+	\node[blue, right] at (1.5,2.1) {$\phi>0$};
+	\node[blue, right] at (1.5,-2.1) {$\phi<0$};
+\end{tikzpicture}

@@ -1,20 +1,21 @@
 \begin{tikzpicture}[
-	charge/.style={circle, draw, minimum size=8mm, inner sep=0pt, font=\small},
-	>=Latex
+	>=Stealth,
+	chp/.style={circle, ball color=red!85!black, minimum size=5mm, inner sep=0pt, text=white, font=\bfseries\small},
+	% заряд -2q більший за модулем: кулька трохи більша
+	chn2/.style={circle, ball color=blue!85!black, minimum size=6.5mm, inner sep=0pt, text=white, font=\bfseries\small}
 ]
 	% вісь
 	\draw[->] (-3,0) -- (3,0) node[right] {$z$};
 
-	% центр
-	\draw[dashed, gray] (0,-0.3) -- (0,1.2);
-%	\node at (0,1.4) {$O$};
-
-	% заряди
-	\node[charge, fill=red!15] (qL) at (-1.5,0) {$+q$};
-	\node[charge, fill=blue!15] (qC) at (0,0)    {$-2q$};
-	\node[charge, fill=red!15] (qR) at (1.5,0)  {$+q$};
+	% заряди (кульки), підписи під ними
+	\node[chp]  at (-1.5,0) {\mathstrut$+$};
+	\node[chn2] at (0,0)    {\mathstrut$-$};
+	\node[chp]  at (1.5,0)  {\mathstrut$+$};
+	\node[below=2pt] at (-1.5,-0.25) {$+q$};
+	\node[below=2pt] at (0,-0.3)     {$-2q$};
+	\node[below=2pt] at (1.5,-0.25)  {$+q$};
 
 	% позначення відстаней
-	\draw[<->] (-1.5,-0.8) -- (0,-0.8) node[midway, below] {$a$};
-	\draw[<->] (0,-0.8) -- (1.5,-0.8) node[midway, below] {$a$};
+	\draw[<->] (-1.5,0.5) -- (0,0.5) node[midway, above] {$a$};
+	\draw[<->] (0,0.5) -- (1.5,0.5) node[midway, above] {$a$};
 \end{tikzpicture}

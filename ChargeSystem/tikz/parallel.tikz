@@ -1,16 +1,13 @@
-\begin{tikzpicture}[>=latex,
-		scale=2
-	]
-
+\begin{tikzpicture}[>=Stealth, scale=2,
+	field/.style={line width=0.5pt, red!60, midarrow},
+	chp/.style={circle, ball color=red!85!black, minimum size=5mm, inner sep=0pt, text=white, font=\bfseries\small},
+	chn/.style={circle, ball color=blue!85!black, minimum size=5mm, inner sep=0pt, text=white, font=\bfseries\small},
+	pvec/.style={->, line width=1.2pt, black}]
 	\foreach \y in {-2,...,2}{
-			\draw[red, midarrow] plot[domain=1:4] (\x, 0.2*\y);
+			\draw[field] plot[domain=1:4] (\x, 0.2*\y);
 		}
-
-	\node [circle, ball color=blue, inner sep=0pt, text=white, font=\scriptsize]
-	(qn) at (2,0) {\mathstrut$-$};
-
-	\node [circle, ball color=red, inner sep=0pt, text=white,
-		font=\scriptsize] (qp) at (3,0) {\mathstrut$+$};
-
-	\draw[->, ultra thick, cyan] (qn) --  node[anchor=north, circle, inner sep=1pt, fill=white] {$\vect{p}$} (qp);
+	\node[right, font=\small] at (4, 0.4) {$\Efield$};
+	\node[chn] (qn) at (2,0) {\mathstrut$-$};
+	\node[chp] (qp) at (3,0) {\mathstrut$+$};
+	\draw[pvec] (qn) -- node[anchor=north, inner sep=3pt, fill=white] {$\vect{p}$} (qp);
 \end{tikzpicture}
