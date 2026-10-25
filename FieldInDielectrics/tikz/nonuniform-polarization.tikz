@@ -1,11 +1,23 @@
-\begin{tikzpicture}[>=latex]
-	\pgfmathsetseed{1}
-	\draw[fill=gray!5, line width=1pt, draw=gray!40] (0, 0) circle (2);
-	\foreach \a in {10,20,...,360} {
-			\draw[thick, ->, brown] (\a:{0.2 + 0.1*rnd}) -- (\a:1.8);
-			\node[text=red]  at (\a:2) {$+$};
-			\node[text=blue] at (\a:1) {$-$};
+% неоднорідна поляризація: P зростає від центру, об'ємний заряд rho' < 0 усередині, sigma' = P_n > 0 на поверхні
+\begin{tikzpicture}[>=Stealth, font=\small,
+	pvec/.style={->, thick, brown!80!black}]
+	% об'єм V, обмежений поверхнею S
+	\draw[fill=gray!8, line width=0.9pt, draw=gray!60!black]
+	plot[smooth cycle, tension=0.8] coordinates {(2,0) (1.5,1.4) (0,1.9) (-1.5,1.3) (-2,0) (-1.4,-1.5) (0.2,-1.8) (1.6,-1.2)};
+	% вектори P: радіальні, довшають від центру (div P > 0)
+	\foreach \a in {0,30,...,330} {
+			\draw[pvec] (\a:0.45) -- (\a:0.75);
+			\draw[pvec] (\a:1.05) -- (\a:1.55);
 		}
-	\node at (-1.4,-1.4) {$V$};
-	\draw[->] (2.3,0.6) -- ++(0.9,0.4) node[right] {$dS$};
+	% об'ємний зв'язаний заряд rho' < 0
+	\foreach \a in {15,75,...,315} \node[blue] at (\a:0.9) {$-$};
+	\foreach \a in {45,135,...,315} \node[blue] at (\a:0.3) {$-$};
+	% поверхневий заряд sigma' > 0
+	\foreach \p in {(2.15,0), (1.65,1.5), (0,2.05), (-1.65,1.45), (-2.15,0), (-1.55,-1.62), (0.2,-1.95), (1.75,-1.3)}
+	\node[red] at \p {$+$};
+	% елемент поверхні з нормаллю
+	\coordinate (A) at (1.5,1.4);
+	\draw[->, thick] (A) -- ++(45:0.9) node[above right=-2pt] {$d\vect S = \vect n\,dS$};
+	\node at (-0.9,-0.75) {$V$};
+	\node at (2.1,-1.55) {$S$};
 \end{tikzpicture}
