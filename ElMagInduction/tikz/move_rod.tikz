@@ -24,7 +24,7 @@
 
 	% ---- Магнітне поле ----
 	\foreach \x in {\xMinField, \xSecondField, ..., \xMaxField} { \foreach \y in
-	{\yMinField, \ySecondField, ..., \yMaxField} { \fill[blue!40] (\x,\y) circle (1.2pt);
+	{\yMinField, \ySecondField, ..., \yMaxField} { \fill[bfield!50] (\x,\y) circle (1.2pt);
 	} }
 
 	% ---- Рейки та ліва сторона ----
@@ -59,19 +59,19 @@
 %	\draw[->, very thick, green!50! black] (\xRod, \yF) -- ++(0.9, 0) node[right] {\(\vect{F}\)};
 
 	% ---- J ----
-	\draw[->, very thick, red] (\xJ, 0) -- ++(-0.5, 0) node[above] {\(I\)};
+	\draw[->, very thick, jfield] (\xJ, 0) -- ++(-0.5, 0) node[above] {\(I\)};
 
 	% ---- B ----
-	\draw[->, very thick, blue] ({\xRod/2},{\railH/2}) -- ++(-1.1, -1.5) node[below left]
+	\draw[->, very thick, bfield] ({\xRod/2},{\railH/2}) -- ++(-1.1, -1.5) node[below left]
 	{\(\Bfield\)};
 
     % charge
-    \node[circle, draw, ball color= red!50, minimum size=0.1cm, inner sep=1,
+    \node[circle, draw, ball color= efield!50, minimum size=0.1cm, inner sep=1,
     font=\scriptsize\bfseries, text=white] (e) at (\xRod, 2.5) {$+$};
 
-    \draw[->, ultra thick] (e) -- ++(1, 0) node[below] {$\vec{v}$}; \draw[->, ultra thick]
-    (e) -- ++(0, -1) node[right] {$\vec{u}$};
+    \draw[->, ultra thick, vfield] (e) -- ++(1, 0) node[below, text=black] {$\vect{v}$}; \draw[->, ultra thick, vfield]
+    (e) -- ++(0, -1) node[right, text=black] {$\vect{u}$};
 
-    \draw[thick, ->, red] ({\xRod/2},{\railH/2}) [partial ellipse=45:{270+45}:1];
+    \draw[thick, ->, jfield] ({\xRod/2},{\railH/2}) [partial ellipse=45:{270+45}:1];
 
 \end{tikzpicture}

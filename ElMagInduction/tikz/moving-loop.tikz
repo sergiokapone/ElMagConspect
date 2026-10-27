@@ -1,0 +1,80 @@
+\begin{tikzpicture}[>=latex, thick, scale=1.3]
+
+	% ==================== ПАРАМЕТРИ ====================
+	\pgfmathsetmacro{\rx}{1.8}     % півосі контуру (еліпс у перспективі)
+	\pgfmathsetmacro{\ry}{0.55}
+	\pgfmathsetmacro{\s}{0.9}      % зміщення v dt (перебільшено)
+	\pgfmathsetmacro{\dep}{1.6}    % «висота» поверхонь, натягнутих на контури
+	\pgfmathsetmacro{\ta}{-66}     % елемент dl: від кута \ta до кута \tb на еліпсі
+	\pgfmathsetmacro{\tb}{-40}     % (ближче до правого краю — смужку видно під кутом)
+	\pgfmathsetmacro{\tm}{(\ta+\tb)/2}
+	\pgfmathsetmacro{\xa}{\rx*cos(\ta)} \pgfmathsetmacro{\ya}{\ry*sin(\ta)}
+	\pgfmathsetmacro{\xb}{\rx*cos(\tb)} \pgfmathsetmacro{\yb}{\ry*sin(\tb)}
+	\pgfmathsetmacro{\xm}{\rx*cos(\tm)} \pgfmathsetmacro{\ym}{\ry*sin(\tm)}
+	\pgfmathsetmacro{\nrm}{sqrt(\xm*\xm+\ym*\ym)}
+	\pgfmathsetmacro{\ux}{-\xm/\nrm} \pgfmathsetmacro{\uy}{-\ym/\nrm}  % одиничний напрям до осі
+	\pgfmathsetmacro{\lenS}{0.8}   % довжина стрілки dS
+	\pgfmathsetmacro{\yTop}{\s+0.75*\dep}  % вершина S(t+dt)
+	\pgfmathsetmacro{\yBot}{-0.75*\dep}    % вершина S(t)
+	% ===================================================
+
+	% ---- S(t): поверхня, опукла вниз ----
+	\shade[top color=bfield!22, bottom color=bfield!6, fill opacity=0.9]
+	(-\rx,0) .. controls (-\rx,-\dep) and (\rx,-\dep) .. (\rx,0)
+	arc[start angle=0, end angle=-180, x radius=\rx, y radius=\ry] -- cycle;
+
+	% ---- задня половина L(t) (крізь смужку) ----
+	\draw[wirecolor!60, thin, dashed] (\rx,0) arc[start angle=0, end angle=180, x radius=\rx, y radius=\ry];
+
+	% ---- бічна смужка σ (передня частина), «циліндричне» затінення ----
+	\shade[left color=bfield!55, right color=bfield!55, middle color=bfield!22, fill opacity=0.9]
+	(-\rx,0) arc[start angle=180, end angle=360, x radius=\rx, y radius=\ry]
+	-- (\rx,\s) arc[start angle=0, end angle=-180, x radius=\rx, y radius=\ry] -- cycle;
+
+	% ---- S(t+dt): поверхня, опукла вгору ----
+	\shade[top color=bfield!6, bottom color=bfield!22, fill opacity=0.9]
+	(-\rx,\s) .. controls (-\rx,{\s+\dep}) and (\rx,{\s+\dep}) .. (\rx,\s)
+	arc[start angle=0, end angle=-180, x radius=\rx, y radius=\ry] -- cycle;
+
+	% ---- вісь (до неї напрямлений dS) ----
+	\draw[wirecolor!70, thin, dash dot] (0,{\yBot-0.05}) -- (0,{\yTop+0.05});
+
+	% ---- контури L(t), L(t+dt) і обриси поверхонь ----
+	\draw[wirecolor] (-\rx,0) arc[start angle=180, end angle=360, x radius=\rx, y radius=\ry];
+	\draw[wirecolor] (-\rx,\s) arc[start angle=180, end angle=360, x radius=\rx, y radius=\ry];
+	\draw[wirecolor!60, thin, dashed] (\rx,\s) arc[start angle=0, end angle=180, x radius=\rx, y radius=\ry];
+	\draw[wirecolor, thin] (-\rx,0) -- (-\rx,\s)  (\rx,0) -- (\rx,\s);
+	\draw[wirecolor] (-\rx,0) .. controls (-\rx,-\dep) and (\rx,-\dep) .. (\rx,0)
+	coordinate[pos=0.2] (B1) coordinate[pos=0.21] (B1t);
+	\draw[wirecolor] (-\rx,\s) .. controls (-\rx,{\s+\dep}) and (\rx,{\s+\dep}) .. (\rx,\s)
+	coordinate[pos=0.2] (T1) coordinate[pos=0.21] (T1t);
+
+	% ---- елемент смужки, обмежений дугами еліпсів ----
+	\fill[bfield!80, fill opacity=0.85] (\xa,\ya)
+	arc[start angle=\ta, end angle=\tb, x radius=\rx, y radius=\ry] -- ++(0,\s)
+	arc[start angle=\tb, end angle=\ta, x radius=\rx, y radius=\ry] -- cycle;
+
+	% ---- dl (уздовж контуру), v dt, dS (до осі, ⟂ смужці) ----
+	\draw[->, very thick, wirecolor] (\xa,\ya) arc[start angle=\ta, end angle=\tb, x radius=\rx, y radius=\ry];
+	\node[below right=-2pt] at (\xm,\ym) {\(d\symbfscr{l}\)};
+	\draw[->, very thick, black] (\xb,\yb) -- ++(0,\s) node[pos=1, above right=-2pt] {\(\vect v\,dt\)};
+	\coordinate (P) at (\xm,{\ym+\s/2});
+	\draw[thin] ($(P)+(0,0.13)$) -- ++({0.13*\ux},{0.13*\uy}) -- ++(0,-0.13);  % прямий кут
+	\draw[->, very thick, black] (P) -- ++({\lenS*\ux},{\lenS*\uy}) node[above=-1pt] {\(d\vect S\)};
+	\fill (P) circle (1.2pt);
+
+	% ---- нормалі до S(t+dt) і S(t): n — узгоджена з обходом, зовнішня на S(t) — це −n ----
+	\draw[->, thick] (0,\yTop) -- ++(0,0.55) node[right] {\(\vect n\)};
+	\draw[->, thick] (T1) -- ($(T1)!0.55cm!90:(T1t)$) node[above left=-2pt] {\(\vect n\)};
+	\draw[->, thick] (0,\yBot) -- ++(0,-0.55) node[right] {\(-\vect n\)};
+	\draw[->, thick] (B1) -- ($(B1)!0.55cm!-90:(B1t)$) node[below left=-2pt] {\(-\vect n\)};
+	\fill (0,\yTop) circle (1pt) (0,\yBot) circle (1pt) (T1) circle (1pt) (B1) circle (1pt);
+
+	% ---- підписи ----
+	\node at (-0.95,{\s/2-0.22}) {\(\sigma\)};
+	\draw[thin] (-2.45,-0.45) node[left] {\(L(t)\)} -- ({\rx*cos(-165)},{\ry*sin(-165)});
+	\draw[thin] (-2.45,{\s+0.35}) node[left] {\(L(t+dt)\)} -- ({\rx*cos(-165)},{\s+\ry*sin(-165)});
+	\draw[thin] (2.75,{\yBot+0.05}) node[right] {\(S(t)\)} -- (1.45,-0.98);
+	\draw[thin] (2.75,{\yTop-0.05}) node[right] {\(S(t+dt)\)} -- (1.35,{\s+0.68});
+
+\end{tikzpicture}

@@ -20,17 +20,17 @@
 	% СТИЛІ
 	\tikzset{
 		wire/.style={
-				draw=black,
+				draw=wirecolor,
 				double=white,
 				double distance=2.6pt,
 				line width=0.8pt,
 				line cap=round
 			},
 		redarrow/.style={
-				->, red!80!black, line width=2.2pt
+				->, jfield, line width=2.2pt
 			},
 		bluearrow/.style={
-				->, blue!80!black, ultra thick
+				->, bfield, ultra thick
 			}
 	}
 
@@ -46,7 +46,7 @@
 		top color=gray!30,
 		bottom color=gray!75,
 		middle color=gray!45,
-		draw=black,
+		draw=wirecolor,
 		thick]
 	(0,0) circle (\R + \a)
 	(0,0) circle (\R - \a);
@@ -55,7 +55,7 @@
 	\draw[black, thick] (0,0) circle (\R + \a);
 
 	% 3. ОСЬОВА СИНЯ ПУНКТИРНА ЛІНІЯ
-	\draw[blue!80!black, dotted, line width=1.8pt] (0,0) circle (\R);
+	\draw[bfield, dotted, line width=1.8pt] (0,0) circle (\R);
 
 	% 4. ПЕРЕДНЯ ЧАСТИНА ВИТКІВ (починаючи з 1-го витка)
 	\foreach \i in {1,...,\NminusOne} {
@@ -78,17 +78,17 @@
 	% 6. СТРІЛКИ СТРУМУ I (РОЗМІЩЕНІ НАД СЕРДЕЧНИКОМ)
 	% Правий провідник (струм I заходить вниз)
 	\draw[redarrow] ($(L_end)!0.95!(L_start)$) -- ($(L_end)!0.62!(L_start)$)
-	node[right=4pt, pos=0, color=red!80!black, font=\bfseries] {$I$};
+	node[right=4pt, pos=0, color=jfield, font=\bfseries] {$I$};
 
 	% Лівий провідник (струм I виходить вгору)
 	\draw[redarrow] ($(R_start)!0.18!(R_end)$) -- ($(R_start)!0.85!(R_end)$)
-	node[left=4pt, pos=1, color=red!80!black, font=\bfseries] {$I$};
+	node[left=4pt, pos=1, color=jfield, font=\bfseries] {$I$};
 
 	% 7. ВЕКТОР B
 	\draw[bluearrow] (-172:\R) arc (-172:-188:\R);
-	% \node[blue!80!black, font=\bfseries] at (-163:\R) {B};
+	% \node[bfield, font=\bfseries] at (-163:\R) {B};
 
-	% \node[blue!80!black, font=\bfseries] at (16:\R) {B};
+	% \node[bfield, font=\bfseries] at (16:\R) {B};
 	\draw[bluearrow] (8:\R) arc (8:-8:\R);
 
 	% 8. РАДІУСИ r ТА b

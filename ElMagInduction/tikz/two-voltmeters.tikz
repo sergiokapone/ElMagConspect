@@ -1,0 +1,44 @@
+% Кільце з двома резисторами навколо соленоїда зі змінним потоком і два вольтметри на точках M, N
+\begin{tikzpicture}[>=latex, scale=0.9,
+		circuit loop/.style={very thick, wirecolor},
+		vm wire/.style={thick, dashed, wirecolor!60},
+		res/.style={draw, fill=white, thick, minimum width=0.7cm, minimum height=0.25cm, inner sep=0pt},
+		vm/.style={circle, draw=wirecolor, fill=white, thick, inner sep=1.5pt, font=\small\bfseries}]
+
+	% 1. Соленоїд: поле B на нас, зростає
+	\fill[bfield!10] (0,0) circle (0.9);
+	\draw[bfield!30, thin] (0,0) circle (0.9);
+	\foreach \r in {0.25,0.6} \foreach \a in {0,60,...,300}
+		{\fill[bfield] (\a+\r*40:\r) circle (1.2pt);}
+	\node[bfield, font=\small] at (0,0) {$\Bfield$};
+
+	% 2. Основне кільце (контур)
+	\draw[circuit loop] (-1.7,0) arc (180:0:1.7);
+	\draw[circuit loop] (1.7,0) arc (0:-180:1.7);
+
+	% Стрілки струму I прямо по дугах контуру (за годинниковою стрілкою)
+	\draw[jfield, very thick, ->] (165:1.7) arc (165:115:1.7) node[above left, font=\small] {$I$};
+	\draw[jfield, very thick, ->] (-15:1.7) arc (-15:-65:1.7) node[below right, font=\small] {$I$};
+
+	% Резистори R1 та R2
+	\node[res] at (0,1.7) {};
+	\node[res] at (0,-1.7) {};
+	\node[font=\small] at (0,1.25) {$R_1$};
+	\node[font=\small] at (0,-1.25) {$R_2$};
+
+	% 3. Провідники вольтметрів (штрихова сіра лінія)
+	% Вольтметр V1 (верхній)
+	\draw[vm wire] (-1.7,0) .. controls (-2.5,1.2) and (-2.5,2.9) .. (-1.2,2.9) -- (-0.3,2.9);
+	\draw[vm wire] (1.7,0) .. controls (2.5,1.2) and (2.5,2.9) .. (1.2,2.9) -- (0.3,2.9);
+	\node[vm] at (0,2.9) {$V_1$};
+
+	% Вольтметр V2 (нижній)
+	\draw[vm wire] (-1.7,0) .. controls (-2.5,-1.2) and (-2.5,-2.9) .. (-1.2,-2.9) -- (-0.3,-2.9);
+	\draw[vm wire] (1.7,0) .. controls (2.5,-1.2) and (2.5,-2.9) .. (1.2,-2.9) -- (0.3,-2.9);
+	\node[vm] at (0,-2.9) {$V_2$};
+
+	% 4. Зафарбовані вузли M та N
+	\fill (-1.7,0) circle (2.5pt) node[left=4pt, font=\small\bfseries] {$M$};
+	\fill (1.7,0) circle (2.5pt) node[right=4pt, font=\small\bfseries] {$N$};
+
+\end{tikzpicture}

@@ -1,0 +1,17 @@
+% Бетатрон: електрон на орбіті радіуса r у зростаючому магнітному полі, вихрове поле E
+\begin{tikzpicture}[>=latex, scale=1, thick]
+	\fill[bfield!8] (0,0) circle (2.1);
+	\foreach \r in {0.5,1.1,1.8} \foreach \a in {0,40,...,320}
+		{\fill[bfield!60] (\a+\r*20:\r) circle (1pt);}
+	% орбіта і вихрове поле (за годинниковою стрілкою)
+	\draw[dashed, wirecolor] (0,0) circle (1.45);
+	\draw[efield, arrowpos={0.30}{2pt}{6pt}, arrowpos={0.80}{2pt}{6pt}]
+		(90:1.45) arc (90:-270:1.45);
+	\node[efield, font=\small] at (-35:1.8) {$\Efield$};
+	% електрон: рухається проти годинникової стрілки, сила -eE
+	\fill (90:1.45) circle (2.2pt) node[above=2pt] {$e^-$};
+	\draw[->, very thick, vfield] (90:1.45) -- ++(-0.9,0) node[below left, text=black] {$\vect v$};
+	\draw[<->] (0,0) -- (215:1.45) node[midway, above=1pt, font=\small] {$r$};
+	\node[bfield, font=\small] at (0,0.2) {$\Bfield$};
+	\node[bfield, font=\small, anchor=north] at (0,-2.15) {$\Bfield$ на нас, $\partial B/\partial t>0$};
+\end{tikzpicture}

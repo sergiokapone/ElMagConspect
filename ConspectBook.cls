@@ -164,7 +164,7 @@
 %===============================================================================
 % Загальна палітра книги: акцентні кольори тексту/боксів (themecolor*),
 % кольори секцій титульних сторінок (titlebg*) та кольори для фізичних рисунків
-% (efield/dfield/jfield — використовуються у tikz-ілюстраціях полів).
+% (efield/dfield/jfield/bfield/vfield/wirecolor — використовуються у tikz-ілюстраціях полів).
 \definecolor{malina}{RGB}{153,0.0,0.0}
 %\definecolor{lighbluecolor}{RGB}{0,163,243}
 %\definecolor{iptgreen}{RGB}{34,102,101}
@@ -184,6 +184,10 @@
 \definecolor{efield}{rgb}{1, 0, 0}   % колір вектора E на рисунках
 \definecolor{dfield}{rgb}{0, 0, 1}   % колір вектора D на рисунках
 \definecolor{jfield}{named}{teal}    % колір густини струму j на рисунках
+\definecolor{bfield}{RGB}{30,80,200}  % колір індукції B на рисунках
+\colorlet{vfield}{jfield}              % колір швидкості v (як і струму)
+\definecolor{ffield}{RGB}{200,110,0}   % колір сили F на рисунках
+\definecolor{wirecolor}{gray}{0.25}  % провідники й контури на рисунках
 % Цвет для тетрадных клеточек (бледно-голубой)
 \definecolor{gridcolor}{rgb}{0.8, 0.88, 0.95}
 

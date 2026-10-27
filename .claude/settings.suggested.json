@@ -1,42 +1,15 @@
 {
-  "model": "opus",
-  "env": {
-    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
-  },
   "permissions": {
-    "allow": [
-      "Bash(python elmag.py:*)",
-      "Bash(python chapter.py:*)",
-      "Bash(git status:*)",
-      "Bash(git diff:*)",
-      "Bash(git log:*)",
-      "Bash(grep:*)",
-      "Bash(rg:*)"
-    ],
-    "ask": [
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(python clean_repo.py:*)"
-    ],
     "deny": [
       "Read(./**/*.bak*)",
-      "Read(./**/*.cut)",
       "Read(./**/*-SAVE-ERROR)",
       "Read(./**/__pycache__/**)",
-      "Read(./.garbage/**)",
       "Read(./_html/**)",
-      "Read(./_chapters/**/*.log)",
-      "Read(./lwarp*)",
-      "Read(./docs/**/*.pdf)",
-      "Read(./docs/pagefind/**)",
+      "Read(./_chapters/**)",
       "Read(./main.synctex.gz)",
       "Read(./main.fdb_latexmk)",
       "Read(./main.fls)",
-      "Read(./main.bcf)",
-      "Read(./main.log)",
-      "Read(./main.aux)",
-      "Read(./main.bbl)"
+      "Read(./main.bcf)"
     ]
   }
 }

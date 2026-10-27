@@ -24,7 +24,7 @@
 
 	% ---- Магнітне поле ----
 	\foreach \x in {\xMinField, \xSecondField, ..., \xMaxField} { \foreach \y in
-	{\yMinField, \ySecondField, ..., \yMaxField} { \fill[blue!20] (\x,\y) circle (1.2pt);
+	{\yMinField, \ySecondField, ..., \yMaxField} { \fill[bfield!30] (\x,\y) circle (1.2pt);
 	} }
 
 	% ---- Рейки та ліва сторона ----
@@ -54,26 +54,26 @@
 	{\(dx\)};
 
 	% ---- F ----
-	\draw[->, very thick, green!50! black] (\xRod, \yF) -- ++(0.9, 0) node[right]
+	\draw[->, very thick, ffield] (\xRod, \yF) -- ++(0.9, 0) node[right]
 	{\(\vect{F}_\text{А}\)};
 
 	% ---- J ----
-	\draw[->, very thick, red] (\xJ, 0) -- ++(0.5, 0) node[above] {\(I\)};
+	\draw[->, very thick, jfield] (\xJ, 0) -- ++(0.5, 0) node[above] {\(I\)};
 
 	% ---- B ----
-	\draw[->, very thick, blue] (0.8, 1.2) -- ++(-1.1, -1.5) node[below left]
+	\draw[->, very thick, bfield] (0.8, 1.2) -- ++(-1.1, -1.5) node[below left]
 	{\(\Bfield\)};
 
     % charge
-    \node[circle, draw, ball color= red!50, minimum size=0.1cm, inner sep=1,
+    \node[circle, draw, ball color= efield!50, minimum size=0.1cm, inner sep=1,
     font=\scriptsize\bfseries, text=white] (e) at (\xRod, 1) {$+$};
 
-    \draw[->, ultra thick] (e) -- ++(1, 0) node[below] {$\vect{u}_{\perp}$}; \draw[->,
-    ultra thick] (e) -- ++(0, 1) node[left] {$\vect{u}_{\parallel}$};
+    \draw[->, ultra thick, vfield] (e) -- ++(1, 0) node[below, text=black] {$\vect{v}$}; \draw[->,
+    ultra thick, vfield] (e) -- ++(0, 1) node[left, text=black] {$\vect{u}$};
 
   % Використовуємо let для обчислення кінцевої точки
-    \draw[->, ultra thick, red] let \p1 = (e), \p2 = ($(e) + (1, 1)$) in % (1,-1) - це сума векторів v та u
-        (e) -- (\p2) node[above right] {\(\vec{u}\)};
+    \draw[->, ultra thick, vfield] let \p1 = (e), \p2 = ($(e) + (1, 1)$) in % (1,-1) - це сума векторів v та u
+        (e) -- (\p2) node[above right, text=black] {\(\vect{w}\)};
 
     % Для наочності - пунктирні лінії паралелограма
     \draw[dashed, gray] ($(e) + (1,0)$) -- ++(0,-1); \draw[dashed, gray] ($(e) + (0,1)$)

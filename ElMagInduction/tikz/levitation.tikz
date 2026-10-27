@@ -1,0 +1,29 @@
+% Левітація магніту над надпровідною пластиною: метод зображень
+\begin{tikzpicture}[>=latex, scale=1.1]
+	% Надпровідник
+	\fill[gray!15] (-2.6,-2.4) rectangle (2.6,0);
+	\foreach \x in {-2.4,-2.1,...,2.5}
+		\draw[gray!60, thin] (\x,0) -- ++(-0.22,-0.22);
+	\draw[very thick, wirecolor] (-2.6,0) -- (2.6,0);
+	\node[gray!70!black, font=\small, anchor=south east] at (2.55,-2.38) {надпровідник};
+
+	% Магніт (диполь) на висоті h
+	\draw[fill=bfield!15, draw=bfield!70, thick] (-0.2,1.1) rectangle (0.2,1.9);
+	\draw[->, ultra thick] (0,1.15) -- (0,1.85);
+	\node[anchor=west] at (0.28,1.5) {$\vect p_m$};
+
+	% Уявне зображення на глибині h
+	\draw[dashed, gray!70] (-0.2,-1.9) rectangle (0.2,-1.1);
+	\draw[->, ultra thick, gray!70] (0,-1.15) -- (0,-1.85);
+	\node[anchor=west, gray!70!black] at (0.28,-1.5) {$\vect p_m'$};
+
+	% Відстані
+	\draw[dotted] (-1.6,1.5) -- (-0.25,1.5);
+	\draw[dotted] (-1.6,-1.5) -- (-0.25,-1.5);
+	\draw[<->] (-1.0,0) -- (-1.0,1.5) node[midway, left] {$h$};
+	\draw[<->] (-1.6,-1.5) -- (-1.6,1.5) node[pos=0.5, left, fill=white, inner sep=1pt] {$2h$};
+
+	% Сили, що діють на магніт: F від верхнього краю вгору, mg від нижнього вниз
+	\draw[->, very thick, ffield] (0,1.9) -- (0,2.8) node[right] {$\vect F$};
+	\draw[->, very thick, gray!60!black] (0,1.1) -- (0,0.3) node[right] {$m\vect g$};
+\end{tikzpicture}

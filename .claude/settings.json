@@ -1,8 +1,7 @@
 {
-  "model": "sonnet",
+  "model": "opus",
   "env": {
-    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1"
   },
   "permissions": {
     "allow": [
@@ -26,6 +25,9 @@
       "Read(./**/__pycache__/**)",
       "Read(./.garbage/**)",
       "Read(./_html/**)",
+      "Read(./.archive/**)",
+      "Read(./docs/_html/**)",
+      "Read(./docs/main-html-images/**)",
       "Read(./_chapters/**/*.log)",
       "Read(./lwarp*)",
       "Read(./docs/**/*.pdf)",
