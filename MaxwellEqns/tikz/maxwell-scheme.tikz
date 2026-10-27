@@ -1,0 +1,24 @@
+% Структура рівнянь Максвелла: хто що породжує
+\begin{tikzpicture}[>=latex, font=\small, scale=0.9, transform shape,
+		fbox/.style={rounded corners=5pt, minimum width=4cm, minimum height=1.4cm, thick, align=center, inner sep=4pt},
+		src/.style={circle, minimum size=0.95cm, inner sep=1pt, thick}]
+	% поля: об'ємні "плитки" з градієнтом і тінню
+	\node[fbox, draw=efield, top color=efield!4, bottom color=efield!28] (E) at (0, 3.4) {\textbf{Електричне поле}\\ $\Efield$, $\Dfield$};
+	\node[fbox, draw=bfield, top color=bfield!4, bottom color=bfield!28] (B) at (0, -0.4) {\textbf{Магнітне поле}\\ $\Bfield$, $\Hfield$};
+	\begin{scope}[on background layer]
+		\fill[gray!35, rounded corners=5pt] ($(E.south west)+(0.09,-0.09)$) rectangle ($(E.north east)+(0.09,-0.09)$);
+		\fill[gray!35, rounded corners=5pt] ($(B.south west)+(0.09,-0.09)$) rectangle ($(B.north east)+(0.09,-0.09)$);
+	\end{scope}
+	% джерела: заряди й струми
+	\node[src, ball color=efield!55, draw=efield] (rho) at (-5.6, 3.4) {$\rho$};
+	\node[src, ball color=jfield!55, draw=jfield] (j) at (-5.6, -0.4) {$\vect j$};
+	\draw[->, thick, efield] (rho) -- node[above, text=black] {$\divg\Dfield=4\pi\rho$} (E.west);
+	\draw[->, thick, jfield] (j) -- node[above, text=black, font=\footnotesize] {$\rot\Hfield=\frac{4\pi}{c}\vect j+\dots$} (B.west);
+	% взаємне породження полів
+	\draw[->, very thick, bfield] ([xshift=-1.3cm]B.north) -- node[left, text=black] {$\rot\Efield=-\frac1c\parttime{\Bfield}$} ([xshift=-1.3cm]E.south);
+	\draw[->, very thick, efield] ([xshift=1.3cm]E.south) -- node[right, text=black] {$\dots+\frac1c\parttime{\Dfield}$} ([xshift=1.3cm]B.north);
+	% магнітних зарядів немає
+	\node[draw=gray, dashed, ellipse, align=center, inner sep=2pt, font=\footnotesize, text=gray!60!black] (mc) at (6.6, -0.4) {магнітних\\ зарядів\\ немає};
+	\draw[->, thick, dashed, gray] (mc) -- node[below, text=black] {$\divg\Bfield=0$} (B.east);
+	\node[efield, font=\Large\bfseries] at ($(mc.west)!0.5!(B.east)$) {$\times$};
+\end{tikzpicture}

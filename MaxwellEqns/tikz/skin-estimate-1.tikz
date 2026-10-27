@@ -30,7 +30,7 @@
 	\draw (0, \h/2) circle ({\R} and {\Ry});
 
 	% Зелений контур
-	\draw[green!70!black, thick,
+	\draw[wirecolor, thick,
 		arrowpos={0.15}{2pt}{3pt},
 		arrowpos={0.40}{2pt}{3pt},
 		arrowpos={0.70}{2pt}{3pt},
@@ -40,17 +40,17 @@
 	% Вектори поля Е
 	\def\fLarge{0.95}
 	\foreach \x in {0,0.1,...,0.5}{
-		\draw[->, red, ultra thin] ({\x-1},-0.5) -- ++(0, {1-2*\x});
+		\draw[->, efield, ultra thin] ({\x-1},-0.5) -- ++(0, {1-2*\x});
 	}
 
 	% Сині витки
 	\foreach \y in {-0.4,0,0.4} {
-		\draw[arrowpos={0.5}{0}{2pt}, blue, ultra thin] (0,{\fLarge*\y})
+		\draw[arrowpos={0.5}{0}{2pt}, bfield, ultra thin] (0,{\fLarge*\y})
 		[partial ellipse=91:{360+89}:{\fLarge*\R} and {\fLarge*0.1*\R}];
 	}
 
 	% Підписи
-	\node[left, font=\scriptsize, text=red] at (-1, 0.5) {$\Efield$};
+	\node[left, font=\scriptsize, text=efield] at (-1, 0.5) {$\Efield$};
 	\node[below, font=\scriptsize] at (-0.75, -0.5) {$\delta$};
 	\node[left, font=\scriptsize] at (-1, 0) {$h$};
 \end{tikzpicture}

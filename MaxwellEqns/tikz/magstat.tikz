@@ -1,18 +1,22 @@
-\begin{tikzpicture}[>=latex]
-	\draw [in=-105, out=75, looseness=1.25, line width=0.1cm, gray!50] (-1, -1) coordinate (A)
-	to (1, 1.5) coordinate (B);
-	\draw[fill=gray!50, ultra thin, rotate around={-10:(B)}] (B) circle(0.05 and 0.015);
-	\draw[fill=gray!50, ultra thin, rotate around={-10:(A)}] (A) circle(0.05 and 0.015);
-	\draw[thin, blue, rotate around={-15:(-0.25:0)}, arrowpos={0.85}{2pt}{4pt}] (-0.25, 0)
-	circle(0.5 and 0.15);
-	\draw[thin, blue, rotate around={-15:(-0.25:0)}, arrowpos={0.85}{2pt}{4pt}] (-0.25, 0)
-	circle(2 and 0.7);
-	\draw[thin, blue, rotate around={-15:(-0.25:0)}, arrowpos={0.85}{2pt}{4pt}] (-0.25, 0)
-	circle(1 and 0.3);
-	\begin{scope}
-		\clip (-1,0) rectangle (1,1);
-		\draw [in=-105, out=75, looseness=1.25, line width=0.1cm, gray!50] (A) to (B) ;
-	\end{scope}
-	\draw [in=-105, out=75, looseness=1.25, gray, arrowpos={0.85}{2pt}{4pt}] (-1, -1)
-	coordinate (A) to (1, 1.5) coordinate (B);
+% Магнітостатика: поле прямого провідника зі струмом (об'ємний вигляд)
+\begin{tikzpicture}[>=latex, scale=0.8]
+	\def\Ht{3.4}      % півдовжина дроту
+	\def\rw{0.2}      % радіус дроту
+	\def\ryw{0.07}
+	% задня половина магнітних ліній (за дротом)
+	\foreach \z/\a in {-1.2/0.8, 0.2/1.2, 1.6/1.7} {
+		\draw[bfield!45, dash pattern=on 2pt off 0.8pt] (\a, \z) arc[start angle=0, end angle=180, x radius=\a, y radius={0.3*\a}];
+	}
+	% дріт: циліндр з градієнтом
+	\shade[left color=gray!55, right color=gray!15] (-\rw, -\Ht) rectangle (0, \Ht);
+	\shade[left color=gray!15, right color=gray!78] (0, -\Ht) rectangle (\rw, \Ht);
+	\shade[ball color=gray!25] (0, \Ht) ellipse ({\rw} and {\ryw});
+	\draw[wirecolor, thin] (0, \Ht) ellipse ({\rw} and {\ryw});
+	% напрямок струму
+	\draw[->, jfield, ultra thick] (0, -2.9) -- (0, -1.9) node[right, pos=0.5, text=black] {$I$};
+	% передня половина магнітних ліній (стрілки)
+	\foreach \z/\a in {-1.2/0.8, 0.2/1.2, 1.6/1.7} {
+		\draw[bfield, thin, arrowpos={0.5}{2pt}{3pt}] (\a, \z) arc[start angle=0, end angle=-180, x radius=\a, y radius={0.3*\a}];
+	}
+	\node[bfield, font=\small] at (1.9, 0.25) {$\Bfield$};
 \end{tikzpicture}

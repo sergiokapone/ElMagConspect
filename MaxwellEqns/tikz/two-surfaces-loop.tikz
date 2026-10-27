@@ -1,30 +1,52 @@
-% Адаптовано з MaxwellEqns.tex (слайд "Струм зміщення в конденсаторі")
+% Дві різні поверхні, натягнуті на один контур (об'ємний вигляд)
+\tikzset{
+	cyl/.style={line width=3.2pt, wirecolor!70, line cap=round},
+	cylhl/.style={line width=1.1pt, white, opacity=0.55, line cap=round},
+}
+\newcommand{\twosurfacescap}{%
+	% нижній провід, нижня обкладка (+), верхня обкладка (-), верхній провід
+	\draw[cyl] (0, -2.9) -- (0, 0);
+	\draw[cylhl] (-0.03, -2.9) -- (-0.03, 0);
+	\draw[cyl] (0, 0.8) -- (0, 2.9);
+	\draw[cylhl] (-0.03, 0.8) -- (-0.03, 2.9);
+	% зовнішнє коло (замикання)
+	\draw[wirecolor!70, line width=3.2pt, line cap=round] (0, 2.9) to[out=10, in=-10, looseness=1.7] (0, -2.9);
+	\draw[jfield, ->, very thick] (-0.5, -2.7) -- ++(0, 0.6) node[left, pos=0.5, text=black] {$I$};
+	% обкладки: диски з товщиною та градієнтом
+	\shade[left color=efield!35, right color=efield!80] (-1.4, 0) -- ++(0, 0.14) arc[start angle=180, end angle=360, x radius=1.4, y radius=0.42] -- ++(0, -0.14) arc[start angle=360, end angle=180, x radius=1.4, y radius=0.42];
+	\fill[efield!25] (0, 0.14) ellipse (1.4 and 0.42);
+	\draw[efield!80!black, thin] (0, 0.14) ellipse (1.4 and 0.42);
+	\shade[left color=bfield!35, right color=bfield!80] (-1.4, 0.8) -- ++(0, 0.14) arc[start angle=180, end angle=360, x radius=1.4, y radius=0.42] -- ++(0, -0.14) arc[start angle=360, end angle=180, x radius=1.4, y radius=0.42];
+	\fill[bfield!25] (0, 0.94) ellipse (1.4 and 0.42);
+	\draw[bfield!80!black, thin] (0, 0.94) ellipse (1.4 and 0.42);
+	\node[efield, font=\small\bfseries] at (1.85, 0.05) {$+$};
+	\node[bfield, font=\small\bfseries] at (1.85, 0.9) {$-$};
+}
 \begin{minipage}[t]{0.48\linewidth}\centering
-	\begin{tikzpicture}[scale=0.7]
-		\clip (-1.5, -2.5) rectangle ++(4, 5.5);
-		\draw[line width=2pt, gray!50, arrowpos={0.7}{0pt}{7pt}] (0, -2) coordinate (A) -- ++(0, 2);
-		\draw[line width=3pt, red!50] (-1, 0) -- (1, 0);
-		\draw[line width=2pt, gray!50, arrowpos={0.7}{0pt}{7pt}] (0, 0.5) -- ++(0, 2) coordinate (B);
-		\draw[line width=3pt, blue!50] (-1, 0.5) -- (1, 0.5)  ;
-		\draw [arrowpos={0.5}{4pt}{4pt}, bend left=120, looseness=2] (B) to (A);
-		\draw[fill=red!50, opacity=0.5] (0, -1.5) circle[x radius=1 cm, y radius= 0.3 cm];
-		\draw[line width=2pt, gray!50] (0, -1.5) -- ++(0, 0.4);
+	\begin{tikzpicture}[scale=0.7, >=latex]
+		\twosurfacescap
+		% контур L: еліпс навколо проводу; поверхня S: диск, що його пронизує провід
+		\fill[bfield!22, opacity=0.7] (0, -1.5) ellipse (1.4 and 0.42);
+		\draw[wirecolor, thick, arrowpos={0.75}{3pt}{4pt}] (0, -1.5) ellipse (1.4 and 0.42);
+		\node[wirecolor, font=\small] at (-1.85, -1.5) {$L$};
+		\node[bfield!80!black, font=\small] at (1.2, -1.05) {$S$};
 	\end{tikzpicture}\\
 	\footnotesize Площа $S$ пронизується лише струмом провідності
 \end{minipage}\hfill
 \begin{minipage}[t]{0.48\linewidth}\centering
-	\begin{tikzpicture}[scale=0.7]
-		\clip (-1.5, -2.5) rectangle ++(4, 5.5);
-		\draw[line width=2pt, gray!50, arrowpos={0.7}{0pt}{7pt}] (0, -2) coordinate (A) -- ++(0, 2);
-		\draw[line width=3pt, red!50] (-1, 0) -- (1, 0);
-		\draw[line width=2pt, gray!50, arrowpos={0.7}{0pt}{7pt}] (0, 0.5) -- ++(0, 2) coordinate (B);
-		\draw[line width=3pt, blue!50] (-1, 0.5) -- (1, 0.5)  ;
-		\draw [arrowpos={0.5}{4pt}{4pt}, bend left=120, looseness=2] (B) to (A);
-		\draw[fill=red!50, opacity=0.6] (0, -1.5) circle[x radius=1 cm, y radius= 0.3 cm];
-		\draw[in=55, out=125, looseness=3.9, fill=red!50, opacity=0.5] (-1, -1.5) to (+1, -1.5)
-		arc[x radius=1 cm, y radius= 0.3 cm, start
-				angle=0,
-				delta angle=180] --cycle;
+	\begin{tikzpicture}[scale=0.7, >=latex]
+		\twosurfacescap
+		% поверхня S: "мішок", що проходить між обкладками
+		\shade[top color=bfield!8, bottom color=bfield!40, opacity=0.8] (-1.4, -1.5) .. controls (-1.55, 0.2) and (-1.2, 0.55) .. (0, 0.5) .. controls (1.2, 0.55) and (1.55, 0.2) .. (1.4, -1.5) arc[start angle=0, end angle=-180, x radius=1.4, y radius=0.42] -- cycle;
+		\draw[bfield!60, thin] (-1.4, -1.5) .. controls (-1.55, 0.2) and (-1.2, 0.55) .. (0, 0.5) .. controls (1.2, 0.55) and (1.55, 0.2) .. (1.4, -1.5);
+		\draw[bfield!60, thin, dashed] (-1.4, -1.5) arc[start angle=180, end angle=0, x radius=1.4, y radius=0.42];
+		\draw[wirecolor, thick, arrowpos={0.75}{3pt}{4pt}] (0, -1.5) ellipse (1.4 and 0.42);
+		% струм зміщення між обкладками
+		\foreach \x in {-0.6, 0, 0.6}
+			\draw[efield, ->, thick] (\x, 0.2) -- ++(0, 0.5);
+		\node[efield, font=\footnotesize, anchor=east] at (-1.75, 0.45) {$\parttime\Dfield$};
+		\node[wirecolor, font=\small] at (-1.85, -1.5) {$L$};
+		\node[bfield!80!black, font=\small] at (1.3, -0.8) {$S$};
 	\end{tikzpicture}\\
 	\footnotesize Площа $S$ пронизується лише струмом зміщення
 \end{minipage}

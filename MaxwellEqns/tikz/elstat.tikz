@@ -1,7 +1,18 @@
-\begin{tikzpicture}[>=latex, scale=0.75]
-	\foreach \i in {20,40,...,360}
-		{
-			\draw[->, red!50] (0,0)  ++(\i:0.1) -- ++(\i:2);
+% Електростатика: поле точкового заряду (об'ємний вигляд)
+\begin{tikzpicture}[>=latex, scale=0.8]
+	\def\T{24}
+	% сферична симетрія: екватор і меридіан
+	\draw[gray!55, dashed] (0, 0) ellipse ({2.1} and {2.1*sin(\T)});
+	\draw[gray!55, dashed] (0, 0) circle (2.1);
+	% силові лінії в усіх напрямках (ортогональна проєкція; задні напівпрозорі)
+	\foreach \lat in {-60, -30, 0, 30, 60} {
+		\foreach \lon in {0, 45, ..., 315} {
+			\pgfmathsetmacro\sx{cos(\lat)*cos(\lon)}
+			\pgfmathsetmacro\sy{sin(\lat)*cos(\T)-cos(\lat)*sin(\lon)*sin(\T)}
+			\pgfmathsetmacro\dz{sin(\lat)*sin(\T)+cos(\lat)*sin(\lon)*cos(\T)}
+			\ifdim\dz pt>-0.02pt\def\op{0.95}\else\def\op{0.28}\fi
+			\draw[->, efield, opacity=\op] ({0.28*\sx},{0.28*\sy}) -- ({1.85*\sx},{1.85*\sy});
 		}
-	\node[circle, inner sep=1pt, ball color=red, text=white] at (0, 0) {$+$};
+	}
+	\node[circle, inner sep=2pt, ball color=efield, text=white] at (0, 0) {$+$};
 \end{tikzpicture}

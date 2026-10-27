@@ -1,26 +1,36 @@
+% Скін-ефект: розподіл струму в перерізі провідника при різних частотах (об'ємний вигляд)
 \begin{tikzpicture}[scale=1]
+	\def\r{1}
+	\def\vx{0.55}\def\vy{0.42}       % зсув задньої основи (косокутна проєкція)
+	\def\tx{0.607}\def\ty{0.795}     % дотична точка до бічної поверхні
+	\coordinate (A) at (0,0);
+	\coordinate (B) at (2.9,0);
+	\coordinate (C) at (5.8,0);
+	\coordinate (D) at (8.7,0);
 
-    \coordinate (A) at (0,0);
-    \coordinate (B) at (2.5,0);
-    \coordinate (C) at (5,0);
-    \coordinate (D) at (7.5,0);
+	\node[font=\normalsize] at ([yshift=2.3cm, xshift=0.25cm]A) {$50$~Гц};
+	\node[font=\normalsize] at ([yshift=2.3cm, xshift=0.25cm]B) {$50$~кГц};
+	\node[font=\normalsize] at ([yshift=2.3cm, xshift=0.25cm]C) {$1$~МГц};
+	\node[font=\normalsize] at ([yshift=2.3cm, xshift=0.25cm]D) {$50$~МГц};
 
-    \node[font=\normalsize] at ([yshift=1.75cm]A) {$50$~Гц};
-    \node[font=\normalsize] at ([yshift=1.75cm]B) {$50$~кГц};
-    \node[font=\normalsize] at ([yshift=1.75cm]C) {$1$~МГц};
-    \node[font=\normalsize] at ([yshift=1.75cm]D) {$50$~МГц};
+	% циліндри: задня основа та бічна поверхня
+	\foreach \P in {A,B,C,D} {
+		\begin{scope}[shift={(\P)}]
+			\fill[gray!30] (\vx, \vy) circle (\r);
+			\shade[left color=gray!62, right color=gray!14] (-\tx, \ty) -- (\tx, -\ty) -- ({\tx+\vx}, {-\ty+\vy}) -- ({-\tx+\vx}, {\ty+\vy}) -- cycle;
+			\draw[wirecolor!50, thin] (-\tx, \ty) -- ({-\tx+\vx}, {\ty+\vy}) (\tx, -\ty) -- ({\tx+\vx}, {-\ty+\vy});
+		\end{scope}
+	}
+	% передні основи: густина струму (глибина проникнення зменшується з частотою)
+	\fill[inner color=jfield!55, outer color=jfield] (A) circle (\r);
+	\fill[inner color=gray!12, outer color=jfield] (B) circle (\r);
+	\fill[gray!12] (B) circle (0.5);
+	\fill[inner color=gray!12, outer color=jfield] (C) circle (\r);
+	\fill[gray!12] (C) circle (0.8);
+	\fill[inner color=gray!12, outer color=jfield] (D) circle (\r);
+	\fill[gray!12] (D) circle (0.95);
+	\foreach \P in {A,B,C,D}
+		\draw[wirecolor!70, thin] (\P) circle (\r);
 
-    \node[align=center, font=\normalsize] at ({(5+2.5)/2},-1.5) {Для провідника діаметром $0.5$~мм};
-
-    \fill[even odd rule,inner color=red!50,outer color=red] (A) circle(1);
-
-    \fill[even odd rule,inner color=white,outer color=red] (B) circle(1);
-    \fill[white] (B) circle(0.5);
-
-    \fill[even odd rule,inner color=white,outer color=red] (C) circle(1);
-    \fill[white] (C) circle(0.8);
-
-    \fill[even odd rule,inner color=white,outer color=red] (D) circle(1);
-    \fill[white] (D) circle(0.95);
-
+	\node[align=center, font=\normalsize] at ({(5.8+2.9)/2},-1.7) {Для провідника діаметром $0.5$~мм};
 \end{tikzpicture}

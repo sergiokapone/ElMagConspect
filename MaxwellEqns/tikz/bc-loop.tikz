@@ -1,0 +1,32 @@
+% Контур циркуляції на межі розділу двох середовищ (об'ємний вигляд)
+\begin{tikzpicture}[>=latex, line width=0.8pt, font=\small]
+	\def\hw{2.0}\def\yt{1.05}\def\yb{-0.85}
+	% підписи середовищ
+	\node[anchor=west, text=gray!60!black] at (-5.0, 2.0) {середовище $2$: $\epsilon_2$, $\mu_2$};
+	\node[anchor=west, text=gray!60!black] at (-5.0, -1.95) {середовище $1$: $\epsilon_1$, $\mu_1$};
+	% межа розділу
+	\path[fill=gray!14, draw=gray!55] (-3.6, -0.45) -- (2.4, -0.45) -- (3.9, 0.7) -- (-2.1, 0.7) -- cycle;
+	\node[anchor=west, font=\footnotesize, text=gray!60!black] at (2.35, -0.78) {межа розділу};
+	% поверхневий струм: стрічки вздовж глибини (крізь контур)
+	\foreach \x in {-2.2,-1.5,...,1.0}
+		\draw[jfield, thick, ->] (\x, -0.3) -- ++(1.0, 0.82);
+	\node[jfield] at (3.35, 0.55) {$\vect i$};
+	% контур: вертикальна напівпрозора прямокутна поверхня
+	\shade[left color=bfield!6, right color=bfield!30, opacity=0.6] (-\hw, \yb) rectangle (\hw, \yt);
+	\draw[wirecolor, thick] (-\hw, \yb) rectangle (\hw, \yt);
+	\draw[wirecolor, dashed, thin] (-\hw, 0.1) -- (\hw, 0.1);
+	\draw[->, thick, wirecolor] (-0.3, \yt) -- (0.5, \yt);
+	\draw[->, thick, wirecolor] (0.3, \yb) -- (-0.5, \yb);
+	\node[above] at (0.1, \yt) {$d\vect r_2=\vect\tau\,d\ell$};
+	\node[below] at (0.1, \yb) {$d\vect r_1=-\vect\tau\,d\ell$};
+	% поле H з обох боків
+	\draw[->, ultra thick, bfield] (-1.5, 0.66) -- ++(1.1, 0) node[above, pos=0.5] {$\Hfield_2$};
+	\draw[<-, ultra thick, bfield] (0.6, -0.55) -- ++(1.1, 0) node[above, pos=0.5] {$\Hfield_1$};
+	% висота контуру
+	\draw[|-|, thin] (\hw+0.25, \yb) -- node[right] {$h$} (\hw+0.25, \yt);
+	% орти
+	\coordinate (O) at (-4.4, 0.0);
+	\draw[->, thick] (O) -- ++(0, 0.9) node[above] {$\vect n$};
+	\draw[->, thick, jfield] (O) -- ++(0.82, 0.68) node[right, text=black] {$\vect b$};
+	\draw[->, thick] (O) -- ++(0.9, -0.12) node[right] {$\vect\tau$};
+\end{tikzpicture}

@@ -24,8 +24,8 @@
 	\shade[ball color=gray!20] (\cylR, \cylH) circle (\cylR{} and \cylRy);
 	\draw (\cylR, \cylH) circle (\cylR{} and \cylRy);
 
-	\draw[blue, arrowpos={0.5}{2pt}{4pt}] (\cylR, \cylH/2) [partial ellipse=155:385:{\fieldR} and \cylRy]
+	\draw[bfield, arrowpos={0.5}{2pt}{4pt}] (\cylR, \cylH/2) [partial ellipse=155:385:{\fieldR} and \cylRy]
 	node[pos=0.5, below] {$\Hfield$};
-	\draw[->, red, thick] (\cylR, \cylH/2) -- ++(0, 0.5) node[left] {$\Efield$};
-	\draw[->, orange!60!black, thick] (\cylD/2+\fieldR, \cylH/2) -- ++(-0.5, 0) node[above] {$\vect{\Pi}$};
+	\draw[->, efield, thick] (\cylR, \cylH/2) -- ++(0, 0.5) node[left] {$\Efield$};
+	\draw[->, ffield, thick] (\cylD/2+\fieldR, \cylH/2) -- ++(-0.5, 0) node[above] {$\vect{\Pi}$};
 \end{tikzpicture}

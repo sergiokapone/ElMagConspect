@@ -42,12 +42,12 @@
         \begin{scope}[opacity=\t]
 
             % Великий виток
-            \draw[arrowpos={0.4}{0}{3pt}, blue] (0,{0.8*\y})
+            \draw[arrowpos={0.4}{0}{3pt}, jfield] (0,{0.8*\y})
             [partial ellipse=91:{360+89}:{\fLarge*\R} and {\fLarge*0.2*\R}];
 
-            \draw[arrowpos={0.5}{2pt}{3pt}, arrowpos={1}{2pt}{3pt}, red, yscale=-1] (0,{0.8*\y})
+            \draw[arrowpos={0.5}{2pt}{3pt}, arrowpos={1}{2pt}{3pt}, efield, yscale=-1] (0,{0.8*\y})
             ++(180:{\fLarge*\R}) circle(0.2);
-            \draw[arrowpos={0}{2pt}{3pt}, arrowpos={0.5}{2pt}{3pt}, red] (0,{0.8*\y})
+            \draw[arrowpos={0}{2pt}{3pt}, arrowpos={0.5}{2pt}{3pt}, efield] (0,{0.8*\y})
             ++(0:{\fLarge*\R}) circle(0.2);
 
             % Маленький виток

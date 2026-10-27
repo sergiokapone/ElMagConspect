@@ -1,30 +1,38 @@
-% Адаптовано з MaxwellEqns.tex (слайд "Струм зміщення в конденсаторі та магнітне поле")
+% Магнітне поле струму зміщення всередині конденсатора, що заряджається (об'ємний вигляд)
 \begin{tikzpicture}[>=latex, scale=2]
-	\draw[thick, red] (-1.5, 0) --  (-0.6, 0) node[pos=0.1, below] {$+$};
-	\draw[fill=red!50] (-0.6, -1) -- (-0.6, 0.4) -- (-0.1, 0.9) -- (-0.1, -0.5) -- cycle;
-	\foreach \x in {-1, 0, +1} {
-			\begin{scope}[xshift=\x cm]
-				\draw[dash pattern=on 2pt off 0.7pt, blue, arrowpos={0.4}{2pt}{2pt}] (0,0) circle
-				(0.2 and 0.6);
-				\draw[dash pattern=on 2pt off 0.7pt, blue, arrowpos={0.4}{2pt}{2pt}] (0,0) circle
-				(0.14 and 0.4);
-				\draw[dash pattern=on 2pt off 0.7pt, blue, arrowpos={0.4}{2pt}{2pt}] (0,0) circle
-				(0.05 and 0.2);
-			\end{scope}
-		}
-	\draw[thick, red] (-1, 0) --  (-0.6, 0) ;
-	\foreach \y in {0, -0.5, -1} {
-			\begin{scope}[yshift=\y cm]
-				\draw[arrowpos={0.4}{2pt}{2pt}, red, thin] (-0.2, 0.6) -- ++(0.8,0);
-				\draw[arrowpos={0.4}{2pt}{2pt}, red, thin] (-0.3, 0.5) -- ++(0.8,0);
-				\draw[arrowpos={0.4}{2pt}{2pt}, red, thin] (-0.4, 0.4) -- ++(0.8,0);
-			\end{scope}
-		}
-	\begin{scope}[xshift=0.83cm]
-		\draw[fill=blue!50] (-0.6, -1) -- (-0.6, 0.4) -- (-0.1, 0.9) -- (-0.1, -0.5) -- cycle;
+	\tikzset{cylh/.style={line width=3pt, wirecolor!70, line cap=round},
+		cylhl/.style={line width=1pt, white, opacity=0.55, line cap=round}}
+	% підвідні дроти як циліндри
+	\draw[cylh] (-1.7, 0) -- (-0.62, 0);
+	\draw[cylhl] (-1.7, 0.02) -- (-0.62, 0.02);
+	\draw[cylh] (0.62, 0) -- (1.7, 0);
+	\draw[cylhl] (0.62, 0.02) -- (1.7, 0.02);
+	% задня половина магнітних ліній (за віссю)
+	\foreach \x/\a/\b in {-1.25/0.18/0.55, 0/0.2/0.62, 1.25/0.18/0.55, 0/0.12/0.4}
+		\draw[bfield!45, dash pattern=on 2pt off 0.8pt] (\x, 0) ++(90:{\a} and {\b}) arc[start angle=90, end angle=-90, x radius=\a, y radius=\b];
+	% позитивна обкладка (диск з товщиною)
+	\begin{scope}[xshift=-0.62cm]
+		\shade[top color=efield!40, bottom color=efield!85] (0, 0.9) arc[start angle=90, end angle=270, x radius=0.26, y radius=0.9] -- ++(0.1, 0) arc[start angle=270, end angle=90, x radius=0.26, y radius=0.9] -- cycle;
+		\fill[efield!30] (0.1, 0) ellipse (0.26 and 0.9);
+		\draw[efield!80!black, thin] (0.1, 0) ellipse (0.26 and 0.9);
 	\end{scope}
-	\draw[thick, blue] (0.5, 0) --  (1.5, 0) node[pos=0.9, below] {$-$};
-	\draw[->] (-1.4, -1.2) -- node[below] {$I$} ++(0.6, 0);
-	\draw[->] (-0.4, -1.2) -- node[below] {$\parttime\Dfield$} ++(0.6, 0);
-	\draw[->] (1, -1.2) -- node[below] {$I$} ++(0.6, 0);
+	% електричне поле між обкладками
+	\foreach \y in {-0.6, -0.3, 0, 0.3, 0.6}
+		\draw[efield, thin, arrowpos={0.5}{2pt}{2pt}] (-0.5, \y) -- (0.5, \y);
+	% від'ємна обкладка
+	\begin{scope}[xshift=0.52cm]
+		\shade[top color=bfield!40, bottom color=bfield!85] (0, 0.9) arc[start angle=90, end angle=270, x radius=0.26, y radius=0.9] -- ++(0.1, 0) arc[start angle=270, end angle=90, x radius=0.26, y radius=0.9] -- cycle;
+		\fill[bfield!30] (0.1, 0) ellipse (0.26 and 0.9);
+		\draw[bfield!80!black, thin] (0.1, 0) ellipse (0.26 and 0.9);
+	\end{scope}
+	\node[efield, font=\footnotesize\bfseries] at (-0.95, 0.2) {$+$};
+	\node[bfield, font=\footnotesize\bfseries] at (1.05, 0.2) {$-$};
+	% передня половина магнітних ліній (стрілки)
+	\foreach \x/\a/\b in {-1.25/0.18/0.55, 0/0.2/0.62, 1.25/0.18/0.55, 0/0.12/0.4}
+		\draw[bfield, semithick, arrowpos={0.5}{2pt}{2.5pt}] (\x, 0) ++(90:{\a} and {\b}) arc[start angle=90, end angle=270, x radius=\a, y radius=\b];
+	\node[bfield] at (-1.25, 0.8) {$\Bfield$};
+	% позначки струмів
+	\draw[->, jfield, thick] (-1.6, -1.1) -- node[below, text=black] {$I$} ++(0.6, 0);
+	\draw[->, efield, thick] (-0.3, -1.1) -- node[below, text=black] {$\parttime\Dfield$} ++(0.6, 0);
+	\draw[->, jfield, thick] (1.0, -1.1) -- node[below, text=black] {$I$} ++(0.6, 0);
 \end{tikzpicture}

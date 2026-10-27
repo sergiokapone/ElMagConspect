@@ -5,7 +5,7 @@
 	\draw (0,0) circle(1.5);
 
 	% Зелений контур
-	\draw[green!60!black, thick,
+	\draw[wirecolor, thick,
 		arrowpos={0.15}{2pt}{4pt},
 		arrowpos={0.4}{2pt}{4pt},
 		arrowpos={0.7}{2pt}{4pt},
@@ -17,7 +17,7 @@
 
 	% Вектори поля H
 	\foreach[count=\c] \x in {0,0.1,...,0.5}{
-			\draw[->, blue, ultra thin] ({\x-1.5},0.25) -- ++(0, {-(1-2*\x)})
+			\draw[->, bfield, ultra thin] ({\x-1.5},0.25) -- ++(0, {-(1-2*\x)})
 			\ifnum\c=1 node[pos=1, left] {$\Hfield$}\fi;
 		}
 
@@ -27,7 +27,7 @@
 			\fill[] (\a:1.25) circle(0.025);
 			\pgfmathparse{\a==90 ? 1 : 0}
 			\ifnum\pgfmathresult=1
-				\node[below, font=\scriptsize, red] at (\a:1.3){$\vect{j}$};
+				\node[below, font=\scriptsize, jfield] at (\a:1.3){$\vect{j}$};
 			\fi
 		}
 \end{tikzpicture}

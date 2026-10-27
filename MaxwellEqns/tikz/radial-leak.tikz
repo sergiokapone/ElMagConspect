@@ -1,10 +1,31 @@
-% Адаптовано з MaxwellEqns.tex (слайд "Радіальне стікання заряду з кулі")
-\begin{tikzpicture}[>=latex, scale=1.5]
-	\draw[ball color=red!50] (0, 0) circle[radius=0.5cm];
-	\draw[dashed] (0, 0) circle[radius=0.75cm];
-	\foreach \a in {0,45,...,340}{
-			\draw[brown, ->] (0,0) ++(\a:0.75) -- ++(\a:0.25) node[anchor={180+\a}] {$I$};
-			\draw[orange, <-] (0,0) ++({\a+45/2}:0.75) -- ++({\a+45/2}:0.25)
-			node[anchor={180+\a+45/2}] {$I_\text{зм}$};
+% Радіальне стікання заряду з кулі (об'ємний вигляд)
+\begin{tikzpicture}[>=latex, scale=1.6]
+	\def\T{22}
+	\shade[ball color=red!55] (0, 0) circle (0.42);
+	\node[font=\footnotesize\bfseries, text=white] at (0, 0) {$+$};
+	% концентрична сфера (екватор і контур)
+	\draw[gray!60, dashed] (0, 0) circle (0.98);
+	\draw[gray!60, dashed] (0, 0) ellipse ({0.98} and {0.98*sin(\T)});
+	% струм провідності: радіально назовні (сфера з тривимірним розподілом напрямків)
+	\foreach \lat in {-55, 0, 55} {
+		\foreach \lon in {0, 60, ..., 300} {
+			\pgfmathsetmacro\sx{cos(\lat)*cos(\lon)}
+			\pgfmathsetmacro\sy{sin(\lat)*cos(\T)-cos(\lat)*sin(\lon)*sin(\T)}
+			\pgfmathsetmacro\dz{sin(\lat)*sin(\T)+cos(\lat)*sin(\lon)*cos(\T)}
+			\ifdim\dz pt>-0.02pt\def\op{0.95}\else\def\op{0.3}\fi
+			\draw[jfield, ->, opacity=\op] ({0.55*\sx},{0.55*\sy}) -- ({0.9*\sx},{0.9*\sy});
 		}
+	}
+	% струм зміщення: радіально всередину (протилежно)
+	\foreach \lat in {-28, 28, 78} {
+		\foreach \lon in {30, 90, ..., 330} {
+			\pgfmathsetmacro\sx{cos(\lat)*cos(\lon)}
+			\pgfmathsetmacro\sy{sin(\lat)*cos(\T)-cos(\lat)*sin(\lon)*sin(\T)}
+			\pgfmathsetmacro\dz{sin(\lat)*sin(\T)+cos(\lat)*sin(\lon)*cos(\T)}
+			\ifdim\dz pt>-0.02pt\def\op{0.95}\else\def\op{0.3}\fi
+			\draw[jfield!50!black, <-, dash pattern=on 2pt off 1pt, opacity=\op] ({1.0*\sx},{1.0*\sy}) -- ({1.38*\sx},{1.38*\sy});
+		}
+	}
+	\node[jfield, anchor=west] at (0.62, 0.62) {$I$};
+	\node[jfield!50!black, anchor=west] at (1.35, -0.2) {$I_\text{зм}$};
 \end{tikzpicture}
