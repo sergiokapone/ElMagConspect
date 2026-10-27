@@ -1,6 +1,6 @@
 \begin{tikzpicture}[
         >=Stealth,
-        font=\sffamily\small,
+        font=\small,
         filled/.style={fill=blue!25},
         empty/.style={fill=blue!5},
         fermi/.style={dashed, red!80!black, thick},
@@ -25,7 +25,7 @@
         \pgfmathsetmacro{\boxRight}{\boxLeft + \boxWidth}
         \pgfmathsetmacro{\EF}{\Ecenter}           % Рівень Фермі рівно посередині
 
-        \node[font=\sffamily\bfseries, align=center] at ({(\boxLeft+\boxRight)/2}, 6.25) {Метал\\[-2pt]\footnotesize(Частково заповнена зона)};
+        \node[align=center] at ({(\boxLeft+\boxRight)/2}, 6.25) {Метал\\[-2pt]\footnotesize(частково заповнена зона)};
         \draw[axis] (0,0) -- (0,\yAxisMax) node[above] {$E$};
 
         % Заповнена та вільна частини (симетричні)
@@ -34,7 +34,7 @@
         \draw[thick]  (\boxLeft, \Ebot) rectangle (\boxRight, \Etop);
 
         % Рівень Фермі
-        \draw[fermi] (-0.2, \EF) -- (\boxRight+0.3, \EF) node[right, font=\footnotesize\bfseries, red!80!black] {$E_F$};
+        \draw[fermi] (-0.2, \EF) -- (\boxRight+0.3, \EF) node[right, font=\footnotesize, red!80!black] {$E_F$};
 
         % Підписи точно по центрах заповненої та вільної частин
         \node[align=center] at ({(\boxLeft+\boxRight)/2}, {(\Ebot+\EF)/2}) {\footnotesize Заповнені\\ стани};
@@ -56,7 +56,7 @@
         \pgfmathsetmacro{\EcBot}{\Ecenter + \Eg/2} % Низ ЗП
         \pgfmathsetmacro{\EF}{\Ecenter}           % Рівень Фермі строго в центрі Eg
 
-        \node[font=\sffamily\bfseries, align=center] at ({(\boxLeft+\boxRight)/2}, 6.25) {Напівпровідник\\[-2pt]\footnotesize(Мала $E_g \approx 1\,\text{еВ}$)};
+        \node[align=center] at ({(\boxLeft+\boxRight)/2}, 6.25) {Напівпровідник\\[-2pt]\footnotesize(мала $E_g \approx 1\,\text{еВ}$)};
         \draw[axis] (0,0) -- (0,\yAxisMax) node[above] {$E$};
 
         % Валентна зона
@@ -70,7 +70,7 @@
         \node[align=center] at ({(\boxLeft+\boxRight)/2}, {(\EcBot+\Etop)/2}) {\footnotesize Зона\\ провідності};
 
         % Рівень Фермі
-        \draw[fermi] (-0.2, \EF) -- (\boxRight+0.3, \EF) node[right, font=\footnotesize\bfseries, red!80!black] {$E_F$};
+        \draw[fermi] (-0.2, \EF) -- (\boxRight+0.3, \EF) node[right, font=\footnotesize, red!80!black] {$E_F$};
 
         % Заборонена зона Eg
         \draw[<->, thick] (\boxRight-0.3, \EvTop) -- (\boxRight-0.3, \EcBot);
@@ -92,7 +92,7 @@
         \pgfmathsetmacro{\EcBot}{\Ecenter + \Eg/2} % Низ ЗП
         \pgfmathsetmacro{\EF}{\Ecenter}           % Рівень Фермі строго в центрі Eg
 
-        \node[font=\sffamily\bfseries, align=center] at ({(\boxLeft+\boxRight)/2}, 6.25) {Діелектрик\\[-2pt]\footnotesize(Велика $E_g > 3\text{--}4\,\text{еВ}$)};
+        \node[align=center] at ({(\boxLeft+\boxRight)/2}, 6.25) {Діелектрик\\[-2pt]\footnotesize(велика $E_g\gtrsim 5\,\text{еВ}$)};
         \draw[axis] (0,0) -- (0,\yAxisMax) node[above] {$E$};
 
         % Валентна зона
@@ -106,7 +106,7 @@
         \node[align=center] at ({(\boxLeft+\boxRight)/2}, {(\EcBot+\Etop)/2}) {\footnotesize Зона\\ провідності};
 
         % Рівень Фермі
-        \draw[fermi] (-0.2, \EF) -- (\boxRight+0.3, \EF) node[right, font=\footnotesize\bfseries, red!80!black] {$E_F$};
+        \draw[fermi] (-0.2, \EF) -- (\boxRight+0.3, \EF) node[right, font=\footnotesize, red!80!black] {$E_F$};
 
         % Заборонена зона Eg
         \draw[<->, thick] (\boxRight-0.3, \EvTop) -- (\boxRight-0.3, \EcBot);

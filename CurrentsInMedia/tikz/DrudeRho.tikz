@@ -1,5 +1,8 @@
-\begin{tikzpicture}[>=latex, scale=2]
-	\draw[->] (0,0) -- ++(2, 0) node[below] {$T$};
-	\draw[->] (0,0) -- ++(0, 2) node[left] {$\rho$};
-	\draw[domain=0:2, red, thick, samples=50] plot (\x, {sqrt(\x)});
+% Передбачення найпростішої теорії Друде: питомий опір зростає як корінь з температури
+\begin{tikzpicture}
+\begin{axis}[conspect graph, width=0.45\linewidth, height=0.36\linewidth,
+		xlabel={$T$}, ylabel={$\varrho$}, xmin=0, xmax=2.1, ymin=0, ymax=1.7]
+	\addplot[main curve, domain=0:2, samples=100] {sqrt(x)};
+	\node[below left] at (axis cs:0,0) {$0$};
+\end{axis}
 \end{tikzpicture}

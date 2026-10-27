@@ -1,66 +1,19 @@
+% Надпровідний перехід: вище T_c опір як у нормального металу, при T_c стрибком падає до нуля;
+% пунктир --- як ішов би опір без переходу (вийшов би на залишковий опір)
 \begin{tikzpicture}
-\begin{axis}[
-    width=0.8\linewidth,
-    height=0.55\linewidth,
-    axis lines=left,
-    axis line style={->, >=stealth, thick},
-    xlabel={$T$},
-    ylabel={$\rho$},
-    xlabel style={at={(ticklabel* cs:1)}, anchor=west},
-    ylabel style={at={(ticklabel* cs:1)}, anchor=south, rotate=-90},
-    xmin=0, xmax=2.0,
-    ymin=0, ymax=1.8,
-    ytick={0.4},
-    yticklabels={$\rho_0$},
-    xtick={0.85},
-    xticklabels={$T_c$},
-    % Налаштування легенди
-    legend pos=north west,
-    legend style={
-        font=\small,
-        cells={anchor=west},
-        draw=gray!50,
-        fill=white,
-        fill opacity=0.9,
-        text opacity=1,
-        inner sep=5pt,
-        row sep=2pt
-    },
-    clip=false
-]
-
-    % 1. Нормальний стан (пунктирне продовження до T = 0)
-    \addplot [
-        domain=0:1.8, 
-        samples=100, 
-        blue!70!black, 
-        thick,
-        dashed
-    ] {0.4 + 0.35*x^2};
-    \addlegendentry{Нормальний метал};
-
-    % 2. Надпровідний стан при T > Tc
-    \addplot [
-        red,
-        domain=0.85:1.8, 
-        samples=100, 
-        very thick
-    ] {0.4 + 0.35*x^2};
-    \addlegendentry{Надпровідник};
-
-    % Лінія нульового опору при T < Tc та стрибок при T = Tc
-    \draw[red, ultra thick] 
-        (axis cs:0, 0) -- (axis cs:0.85, 0) -- (axis cs:0.85, {0.4 + 0.35*0.85^2});
-
-    % Пунктир залишкового опору rho_0
-    \draw[dotted, gray!70, thick] (axis cs:0, 0.4) -- (axis cs:0.85, 0.4);
-
-    % Пунктирна лінія критичної температури Tc
-    \draw[dashed, gray!60, thick] 
-        (axis cs:0.85, 0) -- (axis cs:0.85, 1.5);
-
-    % Анотація надпровідної фази
-    \node[teal!80!black, font=\small\bfseries] at (axis cs:0.42, 0.15) {$\rho = 0$};
-
+\begin{axis}[conspect graph,
+		xlabel={$T$}, ylabel={$\varrho$},
+		xmin=0, xmax=2.1, ymin=0, ymax=1.7,
+		xtick={0.7}, xticklabels={$T_c$},
+		ytick={0.3}, yticklabels={$\varrho_{\text{зал}}$}]
+	\addplot[guide line, thick, domain=0:0.7, samples=60] {0.3 + 0.65*x*(1 - exp(-(x/0.8)^4))};
+	\addplot[main curve, domain=0.7:2, samples=80] {0.3 + 0.65*x*(1 - exp(-(x/0.8)^4))};
+	\draw[main curve] (axis cs:0,0) -- (axis cs:0.7,0)
+		-- (axis cs:0.7,{0.3 + 0.65*0.7*(1 - exp(-(0.7/0.8)^4))});
+	\draw[guide line] (axis cs:0,0.3) -- (axis cs:0.2,0.3);
+	\node[above] at (axis cs:0.35,0) {$\varrho = 0$};
+	\node[anchor=west, font=\footnotesize] at (axis cs:0.75,0.15) {без переходу};
+	\draw[->, >=Stealth, thin] (axis cs:0.76,0.17) -- (axis cs:0.5,{0.3 + 0.65*0.5*(1 - exp(-(0.5/0.8)^4))-0.02});
+	\node[below left] at (axis cs:0,0) {$0$};
 \end{axis}
 \end{tikzpicture}

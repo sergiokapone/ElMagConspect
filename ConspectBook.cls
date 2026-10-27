@@ -448,6 +448,24 @@
 	every axis label/.append style={font=\small},
 	compat=newest,
 }
+% Єдиний вигляд якісних графіків (ВАХ, залежності від температури): осі зі стрілками,
+% підписи осей на їхніх кінцях, без поділок (потрібні позначки задають xtick/ytick після стилю).
+% main curve --- основна крива, second curve --- друга, guide line --- допоміжні пунктири.
+\pgfplotsset{
+	conspect graph/.style={
+			width=0.62\linewidth, height=0.42\linewidth,
+			axis lines=left, axis line style={-Stealth},
+			xlabel style={at={(ticklabel* cs:1)}, anchor=west},
+			ylabel style={at={(ticklabel* cs:1)}, anchor=south, rotate=-90},
+			xtick=\empty, ytick=\empty, clip=false,
+			legend style={font=\footnotesize, draw=gray!50, cells={anchor=west}},
+		},
+}
+\tikzset{
+	main curve/.style={blue!70!black, line width=1.2pt},
+	second curve/.style={red!75!black, line width=1.2pt},
+	guide line/.style={dashed, gray},
+}
 \tikzset{every picture/.style={font=\small}}   % єдиний розмір шрифту в усіх tikzpicture
 
 % ------------------------------- Загальні стилі --------------------------------
