@@ -1,0 +1,189 @@
+% Дослід Толмена і Стюарта: котушка на вертикальній осі, ковзні кільця на колонці, щітки на стійці, гальванометр.
+% Кольори й градієнти оголошено всередині рисунка, щоб вони не виходили за межі SCfigure.
+\begin{tikzpicture}[>=Stealth, scale=0.6, font=\scriptsize]
+\definecolor{copperlight}{RGB}{240,176,120}
+\definecolor{copperdark}{RGB}{105,56,22}
+% багатоступеневий металевий відблиск (хром/сталь)
+\pgfdeclarehorizontalshading{metalshine}{1.6cm}{
+  color(0cm)=(gray!70);
+  color(0.19cm)=(gray!35);
+  color(0.38cm)=(white);
+  color(0.58cm)=(gray!35);
+  color(0.88cm)=(gray!75);
+  color(1.15cm)=(gray!90);
+  color(1.38cm)=(gray!40);
+  color(1.6cm)=(gray!75)
+}
+\tikzset{
+    metal gradient/.style={left color=gray!70, right color=gray!90, middle color=gray!30},
+    wire style/.style={draw=gray!70!black, line width=1.2pt, line cap=round}
+}
+
+% ===== 1. ОСНОВА ШТАТИВА (тонка плита) =====
+% передня грань
+\filldraw[fill=gray!85!black, draw=black, thick, rounded corners=1pt] (0.2,0.3) rectangle (4.4,0.5);
+% права грань
+\filldraw[fill=gray!95!black, draw=black, thick] (4.4,0.5) -- (5.0,1.1) -- (5.0,0.9) -- (4.4,0.3) -- cycle;
+% верхня грань (світла)
+\filldraw[fill=gray!30, draw=black, thick, rounded corners=1pt] (0.2,0.5) -- (4.4,0.5) -- (5.0,1.1) -- (0.8,1.1) -- cycle;
+% посадкові еліпси під колонкою та штативом
+\filldraw[fill=gray!55, draw=black, thick] (1.4,0.78) ellipse (0.3 and 0.09);
+\filldraw[fill=gray!55, draw=black, thick] (3.5,0.78) ellipse (0.2 and 0.07);
+
+% ===== 2. ЦЕНТРАЛЬНА КОЛОНА З КОТУШКОЮ =====
+\shade[metal gradient] (1.1,0.78) rectangle (1.7,4.9);
+\draw[thick] (1.1,0.78) -- (1.1,4.9) (1.7,0.78) -- (1.7,4.9);
+
+% фланці (кільця колектора): тонкі диски, діаметр ~2 діаметри колонки
+\foreach \y in {2.65, 3.8} {
+    \fill[gray!60] (0.77,{\y+0.2}) -- (0.77,\y) arc (180:360:0.63 and 0.2) -- (2.03,{\y+0.2}) -- cycle;
+    \shade[shading=metalshine] (0.77,{\y+0.2}) -- (0.77,\y) arc (180:360:0.63 and 0.2) -- (2.03,{\y+0.2}) -- cycle;
+    \draw[thick] (0.77,{\y+0.2}) -- (0.77,\y) arc (180:360:0.63 and 0.2) -- (2.03,{\y+0.2});
+    \filldraw[top color=gray!35, bottom color=gray!55, draw=black, thick] (1.4,{\y+0.2}) ellipse (0.63 and 0.2);
+    \draw[white, line width=1pt, line cap=round] ($(1.4,{\y+0.2})+(200:0.55 and 0.17)$) arc (200:245:0.55 and 0.17);
+    % порожнина між колонкою і отвором кільця
+    \filldraw[fill=gray!40!black, draw=black, thick] (1.4,{\y+0.2}) ellipse (0.35 and 0.115);
+    \shade[metal gradient] (1.1,{\y+0.8}) -- (1.1,{\y+0.2}) arc (180:360:0.3 and 0.09) -- (1.7,{\y+0.8}) -- cycle;
+    \draw[thick] (1.1,{\y+0.8}) -- (1.1,{\y+0.2}) arc (180:360:0.3 and 0.09) -- (1.7,{\y+0.8});
+}
+
+% виводи обмотки вздовж колонки до ковзних кілець
+\draw[copperdark, line width=1pt] (1.55,4.9) -- (1.55,4.02);
+\draw[copperdark, line width=1pt] (1.25,4.9) -- (1.25,4.02) (1.25,3.62) -- (1.25,2.87);
+
+% нижній диск котушки
+\filldraw[fill=gray!40, draw=black, thick] (1.4,4.9) ellipse (1.3 and 0.28);
+\shade[metal gradient] (0.1,4.9) rectangle (2.7,5.15);
+\draw[thick] (0.1,4.9) -- (0.1,5.15) (2.7,4.9) -- (2.7,5.15);
+\filldraw[fill=gray!30, draw=black, thick] (1.4,5.15) ellipse (1.3 and 0.28);
+
+% намотка: тіло котушки обмежене знизу та зверху еліптичними дугами
+\begin{scope}
+  \clip (0.2,5.15) arc (180:360:1.2 and 0.22) -- (2.6,6.95) -- (0.2,6.95) -- cycle;
+  \shade[shading=axis, left color=copperdark, right color=copperdark, middle color=copperlight]
+      (0.2,4.8) rectangle (2.6,7.0);
+  \foreach \y in {4.85,4.94,...,7.0} {
+      \draw[copperdark, line width=0.7pt]
+        (0.2,\y) .. controls (0.2,{\y-0.12}) and (0.74,{\y-0.22}) .. (1.4,{\y-0.17})
+                 .. controls (2.06,{\y-0.12}) and (2.6,{\y-0.02}) .. (2.6,{\y+0.1});
+  }
+\end{scope}
+\draw[thick] (0.2,5.15) -- (0.2,6.85) (2.6,5.15) -- (2.6,6.85);
+\draw[thick] (0.2,5.15) arc (180:360:1.2 and 0.22);
+
+% обертання котушки
+\draw[->, blue!70!black, very thick]
+    ($(1.4,6.0)+(205:1.5 and 0.38)$) arc (205:335:1.5 and 0.38);
+\node[blue!70!black, left, font=\small] at (0.0,5.9) {$\omega$};
+
+% верхній диск котушки
+\filldraw[fill=gray!40, draw=black, thick] (1.4,6.85) ellipse (1.3 and 0.28);
+\shade[metal gradient] (0.1,6.85) rectangle (2.7,7.1);
+\draw[thick] (0.1,6.85) -- (0.1,7.1) (2.7,6.85) -- (2.7,7.1);
+\filldraw[fill=gray!30, draw=black, thick] (1.4,7.1) ellipse (1.3 and 0.28);
+
+% ковпачок (низький і широкий)
+\shade[left color=gray!55, right color=gray!85, middle color=gray!20] (0.95,7.1) rectangle (1.85,7.4);
+\draw[thick] (0.95,7.1) -- (0.95,7.4) (1.85,7.1) -- (1.85,7.4);
+\draw[thick] (0.95,7.1) arc (180:360:0.45 and 0.12);
+\filldraw[fill=gray!45, draw=black, thick] (1.4,7.4) ellipse (0.45 and 0.12);
+
+% ===== 3. ВЕРТИКАЛЬНА ОПОРА І ЗАТИСКАЧІ =====
+\begin{scope}[xshift=0.3cm]
+\shade[metal gradient] (3.05,0.78) rectangle (3.35,6.2);
+\draw[thick] (3.05,0.78) -- (3.05,6.2) (3.35,0.78) -- (3.35,6.2);
+\filldraw[fill=gray!40, draw=black, thick] (3.2,6.2) ellipse (0.15 and 0.06);
+
+% перемички від кілець до затискачів
+\foreach \xs/\ys/\yc in {1.73/2.9/3.73, 1.73/4.05/4.88} {
+    \draw[black, line width=3.6pt, line cap=round] (\xs,\ys) -- (2.95,\yc);
+    \draw[gray!30, line width=2.0pt, line cap=round] (\xs,\ys) -- (2.95,\yc);
+}
+
+% затискачі: плоскі кільця навколо стійки
+\foreach \y in {3.65, 4.8} {
+    \fill[gray!60] (2.87,{\y+0.16}) -- (2.87,\y) arc (180:360:0.33 and 0.11) -- (3.53,{\y+0.16}) -- cycle;
+    \begin{scope}
+      \clip (2.87,{\y+0.16}) -- (2.87,\y) arc (180:360:0.33 and 0.11) -- (3.53,{\y+0.16}) -- cycle;
+      \fill[gray!75] (2.87,{\y-0.2}) rectangle (3.0,{\y+0.2});
+      \fill[gray!35] (3.0,{\y-0.2}) rectangle (3.12,{\y+0.2});
+      \fill[gray!15] (3.12,{\y-0.2}) rectangle (3.22,{\y+0.2});
+      \fill[gray!45] (3.22,{\y-0.2}) rectangle (3.34,{\y+0.2});
+      \fill[gray!80] (3.34,{\y-0.2}) rectangle (3.46,{\y+0.2});
+      \fill[gray!55] (3.46,{\y-0.2}) rectangle (3.53,{\y+0.2});
+    \end{scope}
+    \draw[thick] (2.87,{\y+0.16}) -- (2.87,\y) arc (180:360:0.33 and 0.11) -- (3.53,{\y+0.16});
+    \filldraw[top color=gray!35, bottom color=gray!55, draw=black, thick] (3.2,{\y+0.16}) ellipse (0.33 and 0.11);
+    \filldraw[fill=gray!40!black, draw=black, thick] (3.2,{\y+0.16}) ellipse (0.2 and 0.07);
+    \shade[metal gradient] (3.05,{\y+0.5}) -- (3.05,{\y+0.16}) arc (180:360:0.15 and 0.05) -- (3.35,{\y+0.5}) -- cycle;
+    \draw[thick] (3.05,{\y+0.5}) -- (3.05,{\y+0.16}) arc (180:360:0.15 and 0.05) -- (3.35,{\y+0.5});
+    \filldraw[fill=gray!40, draw=black, thick] (3.55,{\y+0.1}) circle (0.06);
+}
+\end{scope}
+
+% ===== 4. ГАЛЬВАНОМЕТР =====
+% нижня плита
+\filldraw[fill=gray!75!black, draw=black, thick] (5.6,0.2) rectangle (9.2,0.6);
+\filldraw[fill=gray!60!black, draw=black, thick] (9.2,0.2) -- (9.7,0.6) -- (9.7,1.0) -- (9.2,0.6) -- cycle;
+\filldraw[fill=gray!70!black, draw=black, thick] (5.6,0.6) -- (6.1,1.0) -- (9.7,1.0) -- (9.2,0.6) -- cycle;
+
+% верхній ступінь з клемами
+\filldraw[fill=gray!85!black, draw=black, thick] (5.8,0.6) rectangle (9.0,1.6);
+\filldraw[fill=gray!70!black, draw=black, thick] (9.0,0.6) -- (9.5,1.0) -- (9.5,2.0) -- (9.0,1.6) -- cycle;
+\filldraw[fill=gray!75!black, draw=black, thick] (5.8,1.6) -- (6.3,2.0) -- (9.5,2.0) -- (9.0,1.6) -- cycle;
+
+% клеми
+\foreach \x/\y in {6.3/1.1, 8.1/1.0} {
+    \filldraw[fill=gray!30, draw=black, thick] (\x,\y) circle (0.12);
+    \filldraw[fill=gray!60, draw=black, thick] (\x,\y) circle (0.07);
+}
+
+% корпус
+\filldraw[fill=gray!80!black, draw=black, thick] (5.9,1.6) rectangle (8.9,5.5);
+\filldraw[fill=gray!65!black, draw=black, thick] (8.9,1.6) -- (9.4,2.0) -- (9.4,5.9) -- (8.9,5.5) -- cycle;
+
+% кришка
+\filldraw[fill=gray!75!black, draw=black, thick] (5.7,5.5) rectangle (9.1,5.9);
+\filldraw[fill=gray!50!black, draw=black, thick] (9.1,5.5) -- (9.6,5.9) -- (9.6,6.2) -- (9.1,5.9) -- cycle;
+\filldraw[fill=gray!65!black, draw=black, thick] (5.7,5.9) -- (6.2,6.2) -- (9.6,6.2) -- (9.1,5.9) -- cycle;
+
+% вікно
+\filldraw[fill=cyan!6!white, draw=black, thick] (6.1,1.8) rectangle (8.7,5.3);
+
+\begin{scope}
+    \clip (6.1,1.8) rectangle (8.7,5.3);
+
+    % біла смуга шкали між двома дугами
+    \fill[white] ($(7.4,2.3)+(120:1.8)$) arc (120:60:1.8)
+        -- ($(7.4,2.3)+(60:2.0)$) arc (60:120:2.0) -- cycle;
+    \draw[thick] ($(7.4,2.3)+(120:2.0)$) arc (120:60:2.0);
+    \draw[thick] ($(7.4,2.3)+(120:1.8)$) arc (120:60:1.8);
+
+    % великі поділки та цифри
+    \foreach \ang/\lbl in {120/2, 105/1, 90/0, 75/1, 60/2} {
+        \draw[thick] ($(7.4,2.3)+(\ang:1.8)$) -- ($(7.4,2.3)+(\ang:2.0)$);
+        \node at ($(7.4,2.3)+(\ang:2.35)$) {\lbl};
+    }
+    % проміжні поділки
+    \foreach \ang in {112.5, 97.5, 82.5, 67.5} {
+        \draw[thin] ($(7.4,2.3)+(\ang:1.8)$) -- ($(7.4,2.3)+(\ang:1.93)$);
+    }
+
+    % нижній щиток
+    \filldraw[fill=gray!30, draw=black, thick] (6.3,1.8) rectangle (8.5,3.1);
+    \filldraw[fill=white, draw=black, thick] (7.1,2.1) rectangle (7.7,3.1);
+    \draw[thick] (7.25,2.8) -- (7.55,2.8);
+
+    % стрілка
+    \draw[->, magenta!90!black, ultra thick] (7.4,2.3) -- (7.4,4.45);
+    \fill[magenta!90!black] (7.4,2.3) circle (0.07);
+\end{scope}
+
+% позначення гальванометра на кришці
+\node[white, font=\small] at (7.4,5.75) {$G$};
+
+% ===== 5. ПРОВОДИ (малюються поверх усього) =====
+\draw[wire style] (3.88,4.9) .. controls (4.8,4.8) and (5.2,2.0) .. (6.3,1.17);
+\draw[wire style] (3.88,3.75) .. controls (4.2,1.2) and (4.5,-0.4) .. (6.0,-0.4)
+                          .. controls (7.5,-0.4) and (8.1,-0.1) .. (8.1,0.88);
+\end{tikzpicture}
