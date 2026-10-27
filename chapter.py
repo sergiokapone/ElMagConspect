@@ -8,10 +8,45 @@
 test.tex takes the chapter from \\TargetChapter (and the picture from \\TargetTikz); they are passed with
 latexmk -usepretex. References to other chapters stay '??': the chapter is built alone.
 After the build the overfull/underfull boxes of the log are listed with their source lines."""
-import argparse, glob, os, re, subprocess, sys
+import argparse, glob, os, queue, re, subprocess, sys, threading, time
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(ROOT, '_chapters')
+
+# Список папок-винятків, які не є розділами книги
+EXCLUDED_DIRS = {
+    '_chapters',
+    '.git',
+    '.github',
+    '__pycache__',
+    '.idea',
+    '.vscode',
+    'venv',
+    'env',
+    'build',
+    ".archive",
+    ".claude",
+    "_html",
+    "docs",
+    "Documents",
+    "Bibliography",
+    "Tensions",
+    "Plasma"
+}
+
+
+def get_available_chapters():
+    """Знаходить усі папки розділів, перевіряючи наявність <folder>/<folder>.tex."""
+    chapters = []
+    if not os.path.exists(ROOT):
+        return chapters
+    for name in sorted(os.listdir(ROOT)):
+        path = os.path.join(ROOT, name)
+        if os.path.isdir(path) and name not in EXCLUDED_DIRS:
+            tex_file = os.path.join(path, f"{name}.tex")
+            if os.path.isfile(tex_file):
+                chapters.append(name)
+    return chapters
 
 
 def boxes(log):
@@ -24,16 +59,89 @@ def boxes(log):
     return found
 
 
+def run_with_progress(cmd, cwd, env, label="Building", is_full=False):
+    """Запускає команду із виводом спінера та поточного стану компіляції."""
+    if is_full:
+        return subprocess.run(cmd, cwd=cwd, env=env)
+
+    proc = subprocess.Popen(
+        cmd, cwd=cwd, env=env,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        text=True, encoding='utf-8', errors='replace', bufsize=1
+    )
+
+    q = queue.Queue()
+
+    def enqueue_output(out, q):
+        while True:
+            char = out.read(1)
+            if not char:
+                break
+            q.put(char)
+        out.close()
+
+    t = threading.Thread(target=enqueue_output, args=(proc.stdout, q))
+    t.daemon = True
+    t.start()
+
+    # Спінер з автоперевіркою підтримки юнікоду в консолі
+    try:
+        sys.stdout.write('⠋')
+        sys.stdout.flush()
+        sys.stdout.write('\r \r')
+        frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
+    except Exception:
+        frames = ['|', '/', '-', '\\']
+
+    idx = 0
+    buffer = ""
+    current_page = None
+
+    while proc.poll() is None or not q.empty():
+        while not q.empty():
+            c = q.get_nowait()
+            buffer += c
+            # Шукаємо відкомпільовані сторінки у виводі LaTeX (наприклад [1], [2])
+            pages = re.findall(r'\[(\d+)\]', buffer)
+            if pages:
+                current_page = pages[-1]
+            if len(buffer) > 2000:
+                buffer = buffer[-1000:]
+
+        page_info = f" (page {current_page})" if current_page else ""
+        spinner = frames[idx % len(frames)]
+        msg = f"\r{spinner} {label}{page_info}..."
+        sys.stdout.write(msg.ljust(60))
+        sys.stdout.flush()
+
+        idx += 1
+        time.sleep(0.08)
+
+    # Очищаємо рядок після завершення
+    sys.stdout.write('\r' + ' ' * 60 + '\r')
+    sys.stdout.flush()
+
+    return proc
+
+
 def main():
+    available_chapters = get_available_chapters()
+    chapters_str = ", ".join(available_chapters) if available_chapters else "none"
+
     ap = argparse.ArgumentParser(description='Build one chapter of the book with the book class (test.tex).')
-    ap.add_argument('chapter', help='chapter folder, e.g. Charges')
+    ap.add_argument('chapter', help=f'chapter folder (available: {chapters_str})')
     ap.add_argument('--tikz', help='build only this picture of <chapter>/tikz/ (name without .tikz)')
     ap.add_argument('--png', action='store_true', help='render the pages to PNG (pdftoppm, 110 dpi)')
     ap.add_argument('--full', action='store_true', help='whole latexmk output')
     a = ap.parse_args()
 
     src = os.path.join(ROOT, a.chapter, a.chapter + '.tex')
-    if not os.path.isfile(src): print('No %s' % os.path.relpath(src, ROOT)); return 1
+    if not os.path.isfile(src):
+        print('No %s' % os.path.relpath(src, ROOT))
+        if available_chapters:
+            print('Available chapters: %s' % chapters_str)
+        return 1
+
     pretex = r'\def\TargetChapter{%s}' % a.chapter
     job = a.chapter
     if a.tikz:
@@ -52,8 +160,9 @@ def main():
     cmd = ['latexmk', '-pdflua', '-pretex=' + pretex, '-lualatex=' + lualatex, '-e', index,
            '-jobname=' + job, '-outdir=' + OUT, 'test.tex']
     env = {**os.environ, 'TEXINPUTS': OUT + os.pathsep + os.environ.get('TEXINPUTS', '')}
-    run = subprocess.run(cmd, cwd=ROOT, env=env, **({} if a.full else dict(capture_output=True, text=True,
-                                                                            encoding='utf-8', errors='replace')))
+
+    run = run_with_progress(cmd, cwd=ROOT, env=env, label=f"Building {job}", is_full=a.full)
+
     log = os.path.join(OUT, job + '.log')
     pdf = os.path.join(OUT, job + '.pdf')
     if run.returncode:
@@ -74,7 +183,8 @@ def main():
         pngdir = os.path.join(OUT, job)
         os.makedirs(pngdir, exist_ok=True)
         for old in glob.glob(os.path.join(pngdir, 'page-*.png')): os.remove(old)
-        subprocess.run(['pdftoppm', '-r', '110', '-png', pdf, os.path.join(pngdir, 'page')], check=True)
+        run_with_progress(['pdftoppm', '-r', '110', '-png', pdf, os.path.join(pngdir, 'page')],
+                          cwd=ROOT, env=env, label="Rendering PNGs", is_full=a.full)
         print('PNG: %s (%d pages)' % (os.path.relpath(pngdir, ROOT), len(glob.glob(os.path.join(pngdir, '*.png')))))
     return 0
 
