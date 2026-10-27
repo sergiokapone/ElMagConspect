@@ -9,7 +9,7 @@ paths:
 These are decisions already made. Follow them; if you think one is wrong, say so to the author instead of silently changing it.
 
 ## Audience and depth
-- 2nd-year applied physicists. Proofs are explained visually; stricter derivations go into starred boxes (`Example` with «*»).
+- 2nd-year applied physicists. Proofs are explained visually; stricter derivations go into `Extra` (small font, no box) under a starred `subsection*{...*}`, never into an `Example` box.
 - Units: Gaussian in parts I-VI; SI in part VII (ElMagOscillations, Telegraph, Waveguides), deliberately. The Preface explains it.
   The Preface treats the ampere (since 2019: fixed `e`) and `ε₀, μ₀` as conversion coefficients: keep that wording.
 

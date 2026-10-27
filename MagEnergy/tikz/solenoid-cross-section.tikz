@@ -20,21 +20,21 @@
 
     % === СИЛОВІ ЛІНІЇ (сині стрілки) ===
     \foreach \x in {4.5, 5.0, ..., 7.5} {
-        \draw[->, blue!50, thick] (\x, \yB - 1.5) -- ++(0, 7);
+        \draw[->, bfield!60, thick] (\x, \yB - 1.5) -- ++(0, 7);
     }
 
     % === ВИТКИ СОЛЕНОЇДА ===
     % Задня пунктирна дуга верхнього витка
-    \draw[dashed, red!50, line width=2] (\xR, \yT) arc (0:180: \R\space and \ry);
+    \draw[dashed, wirecolor!50, line width=2] (\xR, \yT) arc (0:180: \R\space and \ry);
 
     % Передні червоні дуги зі стрілками струму
     \foreach \i in {0,1,...,\N} {
         \pgfmathsetmacro{\y}{\yT - \i*\dy}
         \ifnum\i=\N
             % На останньому витку садимо підпис струму I безпосередньо на шлях
-            \draw[red, line width=1, midarrow] (\xL, \y) arc (180:360: \R\space and \ry) node[midway, below] {$I$};
+            \draw[wirecolor, line width=1, midarrow] (\xL, \y) arc (180:360: \R\space and \ry) node[midway, below] {$I$};
         \else
-            \draw[red, line width=1, midarrow] (\xL, \y) arc (180:360: \R\space and \ry);
+            \draw[wirecolor, line width=1, midarrow] (\xL, \y) arc (180:360: \R\space and \ry);
         \fi
     }
 

@@ -67,7 +67,7 @@
   % =====================================================================
   %  ВИДИМИЙ КОНТУР C1 (+ стрілка напрямку обходу)
   % =====================================================================
-  \draw[red, curveA, postaction={decorate},
+  \draw[wirecolor, curveA, postaction={decorate},
         decoration={markings, mark=at position 0.3 with {
             \node[text=black, above, inner sep=5pt] {$I_1$};
             \arrow{Stealth}
@@ -77,7 +77,7 @@
   % =====================================================================
   %  ВИДИМИЙ КОНТУР C2 (+ стрілка напрямку обходу)
   % =====================================================================
-  \draw[red, curveB, postaction={decorate},
+  \draw[wirecolor, curveB, postaction={decorate},
         decoration={markings, mark=at position 0.68 with {
             \node[text=black, below, inner sep=5pt] {$I_2$};
              \arrow{Stealth}

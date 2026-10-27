@@ -50,9 +50,9 @@
  \colorlet{coretop}{gray!60}
  \colorlet{coreright}{gray!70}
  \colorlet{coreinner}{gray!55}
- \colorlet{terminalgreen}{green!20!white}
- \def\rcol{red!85!black}
- \def\bcol{blue!85!black}
+ \colorlet{terminalgreen}{gray!15}
+ \def\rcol{wirecolor}
+ \def\bcol{wirecolor!60}
 
  % ====================================================
  % 1. ШАР 1: ЗАДНІ НАПІВВИТКИ (Малюються під осердям)
