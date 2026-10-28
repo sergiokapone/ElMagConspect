@@ -1,4 +1,6 @@
 % Адаптовано з Radiation.tex (слайд "Випромінювання заряду")
+% Зламані силові лінії поля заряду, що коротко прискорився (модель Дж. Дж. Томсона).
+% Усередині оболонки лінії виходять із нового положення заряду, ззовні~--- зі старого.
 \begin{tikzpicture}[
         scale=1.5,
 		>=latex,
@@ -10,17 +12,18 @@
 				text=white,
 				inner sep=0pt
 			},
-		mydash/.style = {
-				dash pattern={on 1pt off 0.5pt}
+		fline/.style = {
+				red!80!black,
+				line width=0.9pt
 			},
 		myarrow/.style = {
 				->,
-				red
+				red!80!black,
+				line width=0.9pt
 			},
 		mytext/.style = {
 				align=center,
-				text width=#1,
-				font=\scriptsize\itshape,
+				font=\small,
 				inner sep=0
 			}
 	]
@@ -30,34 +33,41 @@
 	\def\arrowLength{1}
 	\def\angles{0,22.5,...,340}
 
-	\node[chp, opacity=0.5] (q) at (0,0) {$+$};
-	\node[chp] (q') at (0,\d) {$+$};
+	% оболонка випромінювання (шар завтовшки c\tau)
+	\fill[even odd rule, yellow!45] (0,0) circle(\R) (0,0) circle(\r);
+	\draw[gray!70!black, thin] (0,0) circle(\r);
+	\draw[gray!70!black, thin] (0,0) circle(\R);
 
-	\draw[gray, mydash, name path=innerCircle] (q) circle(\r);
-	\draw[gray, mydash] (q) circle(\R);
+	\coordinate (q)  at (0,0);
+	\coordinate (q') at (0,\d);
 
 	\begin{scope}
 		\clip (q) circle(\r);
 		\foreach[count=\i] \angle in \angles {
-				\draw[red, opacity=0.5, name path global=line\i] (q') -- ++(\angle:{\R + \d});
+				\draw[fline, name path global=line\i] (q') -- ++(\angle:{\R + \d});
 			}
 	\end{scope}
+	\path[name path=innerCircle] (q) circle(\r);
 
 	\foreach[count=\i] \angle in \angles {
 			\draw[myarrow] (q) ++(\angle:\R) coordinate (endOfLine\i) -- ++(\angle:\arrowLength);
-			\draw[red, name intersections={of=innerCircle and line\i}] (intersection-1) -- (endOfLine\i);
+			\draw[fline, name intersections={of=innerCircle and line\i}] (intersection-1) -- (endOfLine\i);
 		}
+
+	% заряд: старе (напівпрозоре) і нове положення
+	\node[chp, opacity=0.45] at (q) {$+$};
+	\node[chp, minimum size=3.5mm] at (q') {$+$};
 
 	\coordinate (innerViewer) at (-40:{\r-0.5});
 	\coordinate (outerViewer) at (220:{\R+0.5});
 	\coordinate (accRegion) at (265:{(\R+\r)/2});
 
-	\node[mytext=1.2cm] (textOuterViewer) at (220:{\R+1.5}) {Зовнішній\\ спостерігач};
-	\draw[->, gray!80] (textOuterViewer) to[bend left] (outerViewer);
+	\node[mytext] (textOuterViewer) at (200:{\R+1.7}) {Зовнішній\\ спостерігач};
+	\draw[->, black!60] (textOuterViewer) to[bend left] (outerViewer);
 
-	\node[mytext=1.2cm] (textInnerViewer) at (-45:{\R+1.5}) {Внутрішній\\ спостерігач};
-	\draw[->,  gray!80] (textInnerViewer)  to[bend left] (innerViewer);
+	\node[mytext] (textInnerViewer) at (-35:{\R+1.7}) {Внутрішній\\ спостерігач};
+	\draw[->, black!60] (textInnerViewer) to[bend left] (innerViewer);
 
-	\node[mytext=3cm] (textAccRegionViewer) at (-90:{\R+1.6}) {Область випромінювання \\ під час прискорення};
-	\draw[->,  gray!80] (textAccRegionViewer)  to[bend right] (accRegion);
+	\node[mytext, anchor=north] (textAccRegionViewer) at (0,{-\R-1.15}) {Область випромінювання\\ (оболонка завтовшки $c\tau$)};
+	\draw[->, black!60] (textAccRegionViewer.north west) to[bend left] (accRegion);
 \end{tikzpicture}

@@ -1,16 +1,51 @@
-% Адаптовано з Radiation.tex (слайд "Поля диполя", хвильова зона)
-\begin{tikzpicture}[>=stealth, scale=1.5]
-	\draw[thick,color=blue,domain=0:2*pi,samples=200,smooth, name path=leaf] plot (xy polar cs:angle=\x r,radius= {1.5*abs(cos(\x r))});
-	\draw[->, red, ultra thick] (0,-1) -- (0,1) node[left] {$\vect{p}$};
-
-	\def\a{20}
-	\draw (0,0) ++ (0,0.5) arc[start angle=90, end angle=\a, radius=0.5] node[pos=0.6, anchor=south west] {$\theta$};
-	\draw[name path=rule] (0,0) -- (\a:2);
-
-	\node[text width=2cm, font=\tiny, align=center, inner sep=0, gray] (TEXT) at (0.5,-1.6) {Довжина відрізка\\ дорівнює\\ величині поля};
-
-	\path[name intersections={of=leaf and rule}] (intersection-1) coordinate (E);
-
-	\draw[->, gray] (TEXT.100) to[out=90, in=-15] (0,0);
-	\draw[->, gray] (TEXT.80) to[out=90, in=270] (E);
+% Діаграма спрямованості електричного диполя: поле E ~ sin(theta).
+% Ліворуч~--- переріз площиною, що містить вісь диполя (два кола), праворуч~--- просторова поверхня
+% r(theta) = sin(theta) ("бублик" без отвору): екранні координати X = x, Y = z cos(eps) + y sin(eps).
+\begin{tikzpicture}[>=Stealth, line cap=round, line join=round]
+	\pgfmathsetmacro{\S}{2.3}
+	\pgfmathsetmacro{\sE}{0.3}
+	\pgfmathsetmacro{\cE}{0.954}
+	\colorlet{pat}{blue!70!black}
+	%%% (а) переріз
+	\begin{scope}
+		\fill[pat!12] plot[domain=0:180, samples=60, variable=\t] ({\S*sin(\t)*sin(\t)},{\S*sin(\t)*cos(\t)}) -- cycle;
+		\fill[pat!12] plot[domain=0:180, samples=60, variable=\t] ({-\S*sin(\t)*sin(\t)},{\S*sin(\t)*cos(\t)}) -- cycle;
+		\draw[pat, thick] plot[domain=0:180, samples=60, variable=\t] ({\S*sin(\t)*sin(\t)},{\S*sin(\t)*cos(\t)});
+		\draw[pat, thick] plot[domain=0:180, samples=60, variable=\t] ({-\S*sin(\t)*sin(\t)},{\S*sin(\t)*cos(\t)});
+		\draw[dashed, black!60] (0,-1.5) -- (0,1.8);
+		\draw[-{Stealth[length=7pt]}, very thick, efield] (0,-0.5) -- (0,0.5) node[left, font=\small] {$\vect p$};
+		% промінь у напрямку theta і кут
+		\def\th{40}
+		\draw[black!80] (0,0) -- ({\S*sin(\th)*sin(\th)},{\S*sin(\th)*cos(\th)}) coordinate (Q);
+		\fill (Q) circle (1.6pt);
+		\draw[black!80] (0,0.75) arc[start angle=90, end angle={90-\th}, radius=0.75];
+		\node[font=\small] at ({90-\th/2}:1.0) {$\theta$};
+		\node[font=\small, anchor=south west, inner sep=1pt] at ($(Q)+(0.05,0.05)$) {$E(\theta)\propto\sin\theta$};
+		\node[font=\small, pat, align=center] at (0,-2.05) {довжина відрізка\\[-2pt] від $O$ до кривої\\[-2pt] $=$ величина поля};
+	\end{scope}
+	%%% (б) просторова поверхня
+	\begin{scope}[xshift=7.2cm]
+		\pgfmathsetmacro{\Sp}{2.3}
+		% задня половина (y>0): світліше
+		\foreach \ph in {45,90,135}{
+			\draw[pat!40, line width=0.3pt] plot[domain=0:180, samples=40, variable=\t]
+				({\Sp*sin(\t)*sin(\t)*cos(\ph)},{\Sp*(sin(\t)*cos(\t)*\cE + sin(\t)*sin(\t)*sin(\ph)*\sE)});
+		}
+		\foreach \th in {30,50,...,150}{
+			\draw[pat!40, line width=0.3pt] plot[domain=0:180, samples=40, variable=\t]
+				({\Sp*sin(\th)*sin(\th)*cos(\t)},{\Sp*(sin(\th)*cos(\th)*\cE + sin(\th)*sin(\th)*sin(\t)*\sE)});
+		}
+		\draw[dashed, black!60] (0,-1.5) -- (0,1.8);
+		% передня половина (y<0): темніше
+		\foreach \th in {30,50,...,150}{
+			\draw[pat, line width=0.55pt] plot[domain=180:360, samples=40, variable=\t]
+				({\Sp*sin(\th)*sin(\th)*cos(\t)},{\Sp*(sin(\th)*cos(\th)*\cE + sin(\th)*sin(\th)*sin(\t)*\sE)});
+		}
+		\foreach \ph in {0,180,225,270,315}{
+			\draw[pat, line width=0.55pt] plot[domain=0:180, samples=40, variable=\t]
+				({\Sp*sin(\t)*sin(\t)*cos(\ph)},{\Sp*(sin(\t)*cos(\t)*\cE + sin(\t)*sin(\t)*sin(\ph)*\sE)});
+		}
+		\draw[-{Stealth[length=7pt]}, very thick, efield] (0,-0.5) -- (0,0.5) node[left, font=\small] {$\vect p$};
+		\node[font=\small, pat] at (0,-1.95) {просторова діаграма};
+	\end{scope}
 \end{tikzpicture}
