@@ -27,6 +27,7 @@ These are decisions already made. Follow them; if you think one is wrong, say so
 - Polarization: α is *поляризовність* (of an atom or molecule only); χ is *діелектрична сприйнятливість* (χ_m magnetic, in
   MagFieldMedia); **P** is the *вектор поляризації* (поляризованість). Do not mix these.
 - Vectors are bold; moduli are plain. Coulomb force: **F**₁₂ acts on q₂, **r**₁₂ points from q₁ to q₂.
+- Unit vectors: `\vect e_k`, `\vect e_z`, `\vect e_b` (no hat `\hat{...}`: that is a foreign-textbook tradition, not Ukrainian). Basis vectors i, j, k stay `\vect i` etc.; `\hat{q}` for a complex amplitude is a different thing and stays.
 - Symbols used for several quantities are listed in `Additions/Notations.tex`; add new ones there. ρ is overloaded
   (charge density / resistivity / ρ_m): resistivity is `\varrho` where it is touched.
 - Greek stays in math mode (the Bookman font has no polytonic Greek).

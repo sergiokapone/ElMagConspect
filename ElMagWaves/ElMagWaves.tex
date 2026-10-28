@@ -56,9 +56,7 @@ $u = f(x-vt)$ (для хвилі, що біжить у~додатному нап
 (і~аналогічно для доданка $g(x+vt)$, з~тим самим кінцевим результатом через парність других похідних за знаком швидкості). Порівнюючи другі
 похідні, знаходимо \emph{хвильове рівняння}:
 \begin{equation}\label{eq:WaveEquation1D}
-	\tcbhighmath{
-		\frac{\partial^2 u}{\partial x^2} = \frac1{v^2}\frac{\partial^2u}{\partial t^2}.
-	}
+	\frac{\partial^2 u}{\partial x^2} = \frac1{v^2}\frac{\partial^2u}{\partial t^2}.
 \end{equation}
 У~тривимірному випадку, коли збурення поширюється в~довільних напрямках, хвильове рівняння узагальнюють, замінюючи другу похідну за $x$ на
 лапласіан $\nabla^2 = \dfrac{\partial^2}{\partial x^2}+\dfrac{\partial^2}{\partial y^2}+\dfrac{\partial^2}{\partial z^2}$:
@@ -80,9 +78,7 @@ $u = f(x-vt)$ (для хвилі, що біжить у~додатному нап
 (\emphx{хвильової площини}, рис.~\ref{pic:WavevectorGeometry}). Хвилю називають \emphx{монохроматичною}\index{Хвиля!монохроматична}, якщо $u$ змінюється з~часом за
 гармонічним законом з~певною частотою. Для плоскої монохроматичної хвилі:
 \begin{equation}\label{eq:PlaneWaveDef}
-	\tcbhighmath{
-		u = u_m\cos(\omega t - \vect k\cdot\vect r).
-	}
+	u = u_m\cos(\omega t - \vect k\cdot\vect r).
 \end{equation}
 
 \begin{figure}[h!]
@@ -119,9 +115,7 @@ $u = f(x-vt)$ (для хвилі, що біжить у~додатному нап
 \emphx{періодом}. Нарешті, \emphx{фазовою швидкістю}\index{Фазова швидкість} хвилі називають швидкість, з~якою в~просторі переміщується точка з~фіксованою фазою
 $\omega t - \vect k\cdot\vect r = \const$:
 \begin{equation}\label{eq:PhaseVelocity}
-	\tcbhighmath{
-		v = \frac\omega k, \qquad \vect v = \frac\omega k\,\frac{\vect k}k.
-	}
+	v = \frac\omega k, \qquad \vect v = \frac\omega k\,\frac{\vect k}k.
 \end{equation}
 
 %% --------------------------------------------------------
@@ -165,10 +159,9 @@ $\divg\Dfield=0$): $\rot\rot\Efield = \grad(\divg\Efield)-\nabla^2\Efield = -\na
 У~вакуумі ($\epsilon=\mu=1$) швидкість поширення дорівнює електродинамічній сталій $c\approx3\cdot10^{10}$~см/с~--- \emphx{швидкості світла}. У
 середовищі з~$\epsilon,\mu\geqslant1$ швидкість поширення менша, $v=c/n<c$, де
 \begin{equation}\label{eq:RefractiveIndex}
-	\tcbhighmath{
-		n = \sqrt{\epsilon\mu},
-	}
-\end{equation}~--- \emphx{абсолютний показник заломлення}\index{Показник заломлення} середовища.
+	n = \sqrt{\epsilon\mu},
+\end{equation}
+--- \emphx{абсолютний показник заломлення}\index{Показник заломлення} середовища.
 
 \begin{Historical}
 	Швидкість, що випливає з~рівнянь Максвелла, у~вакуумі дорівнює відношенню електромагнітної й~електростатичної одиниць заряду. Цю величину виміряли В.~Вебер і~Р.~Кольрауш (1856~р.): вона становила близько $3{,}1\cdot10^{10}$~см/с і~майже збігалася зі швидкістю світла, виміряною А.~Фізо ($\approx3{,}15\cdot10^{10}$~см/с). Помітивши цей збіг, Максвелл (1861--1865~рр.) висунув гіпотезу, що \emph{світло~--- це електромагнітна хвиля}, а~оптика~--- розділ електродинаміки. Це один із найграндіозніших результатів класичної фізики: рівняння, сформульовані на основі дослідів з~електрикою й~магнетизмом, \emph{самі собою} описують світло. Експериментально електромагнітні хвилі отримав Г.~Герц у 1886--1888~рр., уже після смерті Максвелла (1879~р.); його досліди описано в~розділі~\ref{Radiation}.
@@ -196,9 +189,7 @@ $\divg\Dfield=0$): $\rot\rot\Efield = \grad(\divg\Efield)-\nabla^2\Efield = -\na
 
 Перші два рівняння системи~\eqref{eq:MaxwellPlaneWave} показують, що
 \begin{equation}\label{eq:Transversality}
-	\tcbhighmath{
-		\Efield \perp \vect k, \qquad \Hfield \perp \vect k:
-	}
+	\Efield \perp \vect k, \qquad \Hfield \perp \vect k:
 \end{equation}
 вектори $\Efield$ і~$\Hfield$ перпендикулярні до напряму поширення хвилі. Цю властивість називають \emphx{поперечністю}\index{Електромагнітні хвилі!поперечність} електромагнітних хвиль.
 Два інші рівняння дають співвідношення для амплітуд (і~показують, що $\Efield\perp\Hfield$, тобто $\Efield$, $\Hfield$, $\vect k$ утворюють
@@ -353,7 +344,8 @@ $d\vect F = \tfrac1c[\vect j\times\Bfield]\,dV$, спрямована вздов
 Звідси $d\vect g = \dfrac{dw}{c}\vect n$, тобто за весь час дії хвилі
 \begin{equation}\label{eq:MomentumDerivation}
 	\vect g = \frac{w}c\vect n = \frac{\vect\Pi}{c^2}
-\end{equation}~--- прямий розрахунок підтверджує результат~\eqref{eq:MomentumDensityDef}, отриманий раніше з~релятивістської аналогії.
+\end{equation}
+--- прямий розрахунок підтверджує результат~\eqref{eq:MomentumDensityDef}, отриманий раніше з~релятивістської аналогії.
 
 %% --------------------------------------------------------
 \subsection*{Приклад: момент імпульсу поля циліндричного конденсатора (парадокс Фейнмана)}
@@ -364,11 +356,11 @@ $\Bfield$, напрямлене вздовж його осі; конденсат
 (рис.~\ref{pic:CapacitorAngularMomentum}). Знайдемо момент імпульсу поля конденсатора та кутову швидкість, з~якою конденсатор почне обертатися
 після вимкнення поля $\Bfield$.
 
-\begin{SCfigure}[2][h!]\centering
+\begin{figure}[h!]\centering
 	\localinput{capacitor-angular-momentum.tikz}
-	\caption{Циліндричний конденсатор в~аксіальному магнітному полі: зображено поля $\Efield$, $\Bfield$ і
-		вектор Пойнтінга $\vect\Pi$, що циркулює навколо осі\label{pic:CapacitorAngularMomentum}}
-\end{SCfigure}
+	\caption{Циліндричний конденсатор: стрижень (внутрішня обкладка, $+q$) усередині труби (зовнішня обкладка, $-q$) в~аксіальному
+		магнітному полі $\Bfield$. Радіальне поле $\Efield$ між обкладками і~поле $\Bfield$ дають вектор Пойнтінга $\vect\Pi$, що циркулює навколо осі\label{pic:CapacitorAngularMomentum}}
+\end{figure}
 
 Густина моменту імпульсу поля відносно осі:
 \begin{equation}\label{eq:AngularMomentumDensity}
@@ -378,18 +370,14 @@ $\Bfield$, напрямлене вздовж його осі; конденсат
 (тут скористались тотожністю подвійного векторного добутку й~тим, що $\Bfield\perp\vect r$). Поле між обкладками конденсатора, за теоремою
 Гаусса, $E = 2q/(rh)$, де $h$~--- висота циліндра. Інтегруючи модуль~\eqref{eq:AngularMomentumDensity} за об'ємом між обкладками:
 \begin{equation}\label{eq:CapacitorAngularMomentum}
-	\tcbhighmath{
-		L = \iiint\limits_V \mathcal L\, dV = \frac1{4\pi c}B\,\frac{2q}h\,\pi R^2 h = \frac{qBR^2}{2c}, \qquad \vect L = -\frac{qR^2}{2c}\Bfield.
-	}
+	L = \iiint\limits_V \mathcal L\, dV = \frac1{4\pi c}B\,\frac{2q}h\,\pi R^2 h = \frac{qBR^2}{2c}, \qquad \vect L = -\frac{qR^2}{2c}\Bfield.
 \end{equation}
 
 При вимкненні магнітного поля момент імпульсу, який раніше \enquote{зберігався} в~самому електромагнітному полі, нікуди не зникає~--- за законом
 збереження моменту імпульсу він переходить у~механічне обертання самого конденсатора, $L = mR^2\omega$ (наближено вважаючи всю масу
 розподіленою на радіусі $R$), звідки
 \begin{equation}\label{eq:CapacitorOmega}
-	\tcbhighmath{
-		\vect\omega = -\frac{q}{2mc}\Bfield.
-	}
+	\vect\omega = -\frac{q}{2mc}\Bfield.
 \end{equation}
 
 Це варіант відомого \emph{парадоксу Фейнмана}: до вимкнення поля конденсатор \emph{нерухомий}, і
@@ -454,15 +442,15 @@ $B$ до $0$, знаходимо момент імпульсу, який наб�
 чи заломленні. З~рівності $k_y = k'_y$ (з~огляду на те, що падаюча й~відбита хвилі перебувають в~одному середовищі, $k=k'=n_1\omega/c$, а
 $k_y = k\sin i$, $k'_y=k'\sin i'$):
 \begin{equation}\label{eq:SnellReflection}
-	\tcbhighmath{
-		i = i'
-	}
-\end{equation}~--- \emphx{закон відбивання}\index{Відбивання закон}, добре відомий з~геометричної оптики. З~рівності $k'_y=k''_y$ (тепер $k'=n_1\omega/c$, $k''=n_2\omega/c$):
+	i = i'
+\end{equation}
+--- \emphx{закон відбивання}\index{Відбивання закон}, добре відомий з~геометричної оптики. З~рівності $k'_y=k''_y$ (тепер $k'=n_1\omega/c$, $k''=n_2\omega/c$):
 \begin{equation}\label{eq:SnellRefraction}
 	\tcbhighmath{
 		n_1\sin i = n_2\sin r, \qquad \frac{\sin i}{\sin r} = \frac{n_2}{n_1} = n_{21}
 	}
-\end{equation}~--- \emphx{закон заломлення}\index{Заломлення закон} (закон Снелла), де $n_{21}$~--- відносний показник заломлення другого середовища відносно першого. Оскільки
+\end{equation}
+--- \emphx{закон заломлення}\index{Заломлення закон} (закон Снелла), де $n_{21}$~--- відносний показник заломлення другого середовища відносно першого. Оскільки
 більшість діелектриків не проявляють магнітних властивостей ($\mu_1=\mu_2\approx1$),
 \begin{equation}\label{eq:RelativeIndex}
 	n_{21} = \sqrt{\frac{\epsilon_2}{\epsilon_1}} = \frac{v_1}{v_2}.
@@ -478,9 +466,9 @@ $k_y = k\sin i$, $k'_y=k'\sin i'$):
 
 Крім уже отриманої граничної умови для $\Efield$ (яка звелась до $E_m+E'_m=E''_m$), потрібна ще одна~--- гранична умова для $\Hfield$. Для
 $s$-поляризованої хвилі $\Efield=E\vect e_z$ напрямлений уздовж осі $z$ (перпендикулярно до площини падіння $xy$); амплітуда й~напрям
-магнітного поля плоскої хвилі в~середовищі з~показником заломлення $n$ зв'язані з~електричним співвідношенням $\Bfield=n(\hat{\vect	k}\times\Efield)$, де $\hat{\vect k}=\vect k/k$~--- одиничний вектор напрямку поширення хвилі (сам хвильовий вектор $\vect k=k\hat{\vect k}$ має
-модуль $k=n\omega/c$), звідки, зокрема, $B_m=nE_m$. Оскільки одиничні вектори напрямку поширення падаючої, відбитої й~заломленої хвиль дорівнюють $\hat{\vect k}=(\cos i,\sin i,0)$, $\hat{\vect k}'=(-\cos i,\sin i,0)$, $\hat{\vect k}''=(\cos r,\sin r,0)$ (вісь $x$~--- нормаль до межі, $y$~--- уздовж
-межі в~площині падіння), безпосереднє обчислення $\hat{\vect k}\times\vect e_z$ дає для тангенціальної (уздовж $y$) складової $\Bfield=\Hfield$
+магнітного поля плоскої хвилі в~середовищі з~показником заломлення $n$ зв'язані з~електричним співвідношенням $\Bfield=n(\vect e_k\times\Efield)$, де $\vect e_k=\vect k/k$~--- одиничний вектор напрямку поширення хвилі (сам хвильовий вектор $\vect k=k\vect e_k$ має
+модуль $k=n\omega/c$), звідки, зокрема, $B_m=nE_m$. Оскільки одиничні вектори напрямку поширення падаючої, відбитої й~заломленої хвиль дорівнюють $\vect e_k=(\cos i,\sin i,0)$, $\vect e_k'=(-\cos i,\sin i,0)$, $\vect e_k''=(\cos r,\sin r,0)$ (вісь $x$~--- нормаль до межі, $y$~--- уздовж
+межі в~площині падіння), безпосереднє обчислення $\vect e_k\times\vect e_z$ дає для тангенціальної (уздовж $y$) складової $\Bfield=\Hfield$
 (з~огляду на $\mu_1=\mu_2\approx1$):
 \begin{equation*}
 	H_y = -n_1E_m\cos i, \qquad H'_y = n_1E'_m\cos i, \qquad H''_y = -n_2E''_m\cos r.
@@ -501,9 +489,7 @@ $\sin(i+r)-\sin(i-r)=2\cos i\sin r$, остаточно дістаємо \emphx{
 	}
 \end{equation}
 \begin{equation}\label{eq:FresnelSTransmission}
-	\tcbhighmath{
-		E''_\perp = \frac{2\sin r\cos i}{\sin(i+r)}\, E_\perp.
-	}
+	E''_\perp = \frac{2\sin r\cos i}{\sin(i+r)}\, E_\perp.
 \end{equation}
 
 %% --------------------------------------------------------
@@ -511,9 +497,8 @@ $\sin(i+r)-\sin(i-r)=2\cos i\sin r$, остаточно дістаємо \emphx{
 %% --------------------------------------------------------
 
 Для $p$-поляризованої хвилі (рис.~\ref{pic:PPolarization}), навпаки, у~площині падіння $xy$ лежить вектор $\Efield$, а~$\Bfield=B\vect e_z$
-напрямлений уздовж осі $z$. Обираючи напрям $\Efield$ так, щоб трійка $\Efield,\Bfield,\hat{\vect k}$ лишалась правою (тобто за тим самим
-правилом $\Bfield=n(\hat{\vect k}\times\Efield)$, як і~для $s$-поляризації), одиничний вектор $\Efield$ дорівнює $\hat{\vect e}_E=\vect
-	z\times\hat{\vect k}$, що для падаючої, відбитої й~заломленої хвиль дає тангенціальні (уздовж $y$) складові
+напрямлений уздовж осі $z$. Обираючи напрям $\Efield$ так, щоб трійка $\Efield,\Bfield,\vect e_k$ лишалась правою (тобто за тим самим
+правилом $\Bfield=n(\vect e_k\times\Efield)$, як і~для $s$-поляризації), одиничний вектор $\Efield$ дорівнює $\vect e_E=\vect e_z\times\vect e_k$, що для падаючої, відбитої й~заломленої хвиль дає тангенціальні (уздовж $y$) складові
 \begin{multline*}
 	E_y = E_m\cos i,\quad E'_y=-E'_m\cos i,\quad E''_y=E''_m\cos r; \\ B_z=n_1E_m,\quad B'_z=n_1E'_m,\quad B''_z=n_2E''_m
 \end{multline*}
@@ -535,11 +520,9 @@ $\Hfield=\Bfield$ дає систему двох рівнянь
 	}
 \end{equation}
 \begin{equation}\label{eq:FresnelPTransmission}
-	\tcbhighmath{
-		E''_\parallel = \frac{2\sin r\cos i}{\sin(i+r)\cos(i-r)}\, E_\parallel.
-	}
+	E''_\parallel = \frac{2\sin r\cos i}{\sin(i+r)\cos(i-r)}\, E_\parallel.
 \end{equation}
-Знаки амплітуд $s$- і~$p$-хвилі порівнювати не можна: вони залежать від вибору напряму $\Efield$ (для $p$-хвилі ми взяли $\hat{\vect e}_E=\vect z\times\hat{\vect k}$,
+Знаки амплітуд $s$- і~$p$-хвилі порівнювати не можна: вони залежать від вибору напряму $\Efield$ (для $p$-хвилі ми взяли $\vect e_E=\vect e_z\times\vect e_k$,
 і~у~відбитої хвилі цей орт змінює напрям). Через це при нормальному падінні виходить $E'_\perp=-\dfrac{n_2-n_1}{n_2+n_1}E_\perp$, але $E'_\parallel=+\dfrac{n_2-n_1}{n_2+n_1}E_\parallel$,
 хоча фізична ситуація однакова; коефіцієнт відбивання від знака не залежить.
 
@@ -643,9 +626,7 @@ $s$-поляризації ($\Efield''=E''_z\vect e_z$) магнітне пол�
 Усереднений за період вектор Пойнтінга для комплексних амплітуд дорівнює $\langle\vect\Pi\rangle=\dfrac{c}{8\pi}\,\mathrm{Re}\,(\Efield''\times\Hfield''^{*})$, звідки $\langle\Pi_x\rangle=-\dfrac{c}{8\pi}\mathrm{Re}(E''_z{H''_y}^{\!*})$, $\langle\Pi_y\rangle=\dfrac{c}{8\pi}\mathrm{Re}(E''_z{H''_x}^{\!*})$. Оскільки коефіцієнт при $E''_z$ у
 $H''_y$~--- \emph{уявний}, а~в~$H''_x$~--- \emph{дійсний}:
 \begin{equation}\label{eq:NormalFluxZero}
-	\tcbhighmath{
-		\langle\Pi_x\rangle = 0,
-	} \qquad
+	\langle\Pi_x\rangle = 0, \qquad
 	\langle\Pi_y\rangle = \frac{c^2k''_y}{8\pi\omega}\,|E''_m|^2\,e^{-2Kx} \neq 0.
 \end{equation}
 
