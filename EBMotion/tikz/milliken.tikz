@@ -1,0 +1,180 @@
+% Схема установки Міллікена: крапля з q<0 піднімається в полі конденсатора.
+% Сили: q E (вгору), F_g = сила тяжіння мінус сила Архімеда (вниз), F_eta = в'язке тертя (вниз, бо крапля рухається вгору).
+% Довжини стрілок узгоджені: qE = F_g + F_eta.
+\definecolor{mkInk}{HTML}{3A4756}      % контури установки
+\definecolor{mkGlass}{HTML}{EEF2F6}    % скло
+\definecolor{mkMetal}{HTML}{C9D0D8}    % пластини, корпуси
+\definecolor{mkMetalD}{HTML}{98A3AF}   % бічні грані
+\definecolor{mkFE}{HTML}{1F5FA8}
+\definecolor{mkFg}{HTML}{B3261E}
+\definecolor{mkFeta}{HTML}{2E7D32}
+\definecolor{mkOil}{HTML}{E08A1E}
+\definecolor{mkPlus}{HTML}{B3261E}
+\definecolor{mkMinus}{HTML}{1F5FA8}
+\begin{tikzpicture}[
+  >=Stealth, scale=0.65,
+  font=\small,
+  wall/.style={draw=mkInk, line width=1pt},
+  thinl/.style={draw=mkInk, line width=0.6pt},
+  wire/.style={draw=mkInk, line width=0.8pt, rounded corners=2pt},
+  force/.style={-{Triangle[length=2.4mm,width=2.6mm]}, line width=1.6pt},
+  lab/.style={align=center, inner sep=1pt, font=\footnotesize}
+]
+
+% --- параметри ---
+\def\R{3.2}      % півширина циліндра
+\def\ry{0.65}    % вертикальна піввісь еліпсів
+\def\H{6.2}      % рівень верхньої пластини
+\def\yb{0.5}     % рівень нижньої пластини
+\def\yc{-0.8}    % рівень дна
+
+% --- скляна посудина ---
+\fill[mkGlass] (-\R,\yc) -- (-\R,\H) -- (\R,\H) -- (\R,\yc)
+  arc (0:-180:{\R} and {\ry}) -- cycle;
+\fill[mkInk!12] (0,\yc) ellipse ({\R} and {\ry});
+\draw[mkInk, line width=0.5pt] (0,\yc) ellipse ({\R} and {\ry});
+\draw[wall] (-\R,\yc) -- (-\R,\H);
+\draw[wall] (-\R,\yc) arc (180:360:{\R} and {\ry});
+
+% --- нижня пластина (від'ємна) ---
+\def\dt{0.22}  % товщина диска
+\fill[mkMetalD] (-\R,\yb) -- (-\R,{\yb-\dt})
+  arc (180:360:{\R} and {\ry}) -- (\R,\yb)
+  arc (0:-180:{\R} and {\ry}) -- cycle;
+\fill[mkMetal] (0,\yb) ellipse ({\R} and {\ry});
+\begin{scope}
+  \clip (0,\yb) ellipse ({\R} and {\ry});
+  \foreach \i in {-8,...,8}
+    \draw[mkInk!45, very thin] ({\i*0.45-0.6},\yb-1) -- ({\i*0.45+0.6},\yb+1);
+  \foreach \j in {-4,...,4}
+    \draw[mkInk!45, very thin] (-\R,{\yb+\j*0.14}) -- (\R,{\yb+\j*0.14});
+\end{scope}
+\draw[mkInk, line width=0.7pt] (-\R,\yb) -- (-\R,{\yb-\dt})
+  arc (180:360:{\R} and {\ry}) -- (\R,\yb);
+\draw[mkInk, line width=0.7pt] (0,\yb) ellipse ({\R} and {\ry});
+\foreach \a in {190,205,...,350}
+  \node[mkMinus, inner sep=0pt, font=\scriptsize]
+    at ({\R*cos(\a)*0.97},{\yb-0.13+\ry*sin(\a)}) {$\boldsymbol{-}$};
+
+% --- права стінка з отвором для розпилювача ---
+\draw[wall] (\R,\yc) -- (\R,0.7);
+\draw[wall] (\R,1.4) -- (\R,\H);
+\fill[mkGlass] (\R-0.02,0.7) rectangle (\R+0.2,1.4);
+\draw[wall, line cap=round] (\R,0.7) -- (\R+0.2,0.7);
+\draw[wall, line cap=round] (\R,1.4) -- (\R+0.2,1.4);
+
+% --- верхня пластина (кільце, додатна) ---
+\def\rt{0.3}  % товщина
+\fill[mkMetalD] (-\R-0.1,\H) -- (-\R-0.1,\H-\rt)
+  arc (180:360:{\R+0.1} and {\ry}) -- (\R+0.1,\H) -- cycle;
+\fill[mkMetal] (0,\H) ellipse ({\R+0.1} and {\ry});
+\fill[mkInk!8] (0,\H) ellipse ({\R-0.35} and {\ry-0.2});
+\draw[mkInk] (0,\H) ellipse ({\R+0.1} and {\ry});
+\draw[mkInk] (0,\H) ellipse ({\R-0.35} and {\ry-0.2});
+\draw[mkInk] (-\R-0.1,\H) -- (-\R-0.1,\H-\rt)
+  arc (180:360:{\R+0.1} and {\ry}) -- (\R+0.1,\H);
+\foreach \a in {193,206,...,347}
+  \node[mkPlus, inner sep=0pt, font=\scriptsize]
+    at ({(\R+0.1)*cos(\a)*0.97},{\H-0.5*\rt+\ry*sin(\a)}) {$\boldsymbol{+}$};
+
+% --- відстань між пластинами d ---
+\draw[<->, line width=0.6pt] (-\R-0.7,\H) -- (-\R-0.7,\yb);
+\draw[very thin] (-\R-0.9,\H) -- (-\R-0.5,\H);
+\draw[very thin] (-\R-0.9,\yb) -- (-\R-0.5,\yb);
+\node at (-\R-1.0,1.4) {$d$};
+
+% --- джерело напруги U ---
+\def\yu{7.7}
+\draw[wire] (-\R,{\yb-0.11}) -- (-\R-0.3,{\yb-0.11}) -- (-\R-0.3,\yu) -- (0.5,\yu);
+\draw[wire] (0.8,\yu) -- (1.4,\yu) -- (1.4,6.79);
+\fill[mkInk] (1.4,6.79) circle (0.05);
+\draw[mkInk, line width=1.8pt] (0.5,{\yu-0.14}) -- (0.5,{\yu+0.14});
+\draw[mkInk, line width=0.8pt] (0.8,{\yu-0.3})  -- (0.8,{\yu+0.3});
+\node[mkPlus, inner sep=0pt, font=\scriptsize] at (1.05,{\yu+0.4}) {$\boldsymbol{+}$};
+\node[mkMinus, inner sep=0pt, font=\scriptsize] at (0.25,{\yu+0.4}) {$\boldsymbol{-}$};
+\node at (0.65,{\yu+0.8}) {$U$};
+
+% --- електричне поле (від + до -) ---
+\foreach \x in {-2.5,-1.8}
+  \draw[-{Stealth[length=2mm]}, mkInk!70, line width=0.7pt] (\x,2.8) -- (\x,1.4);
+\node[mkInk] at (-2.95,2.1) {$\Efield$};
+
+% --- крапля ---
+\def\yd{3.1}
+\fill[mkOil] (0,\yd) circle (0.36);
+\fill[white, opacity=0.35] (-0.12,\yd+0.14) circle (0.1);
+\draw[mkInk, line width=0.6pt] (0,\yd) circle (0.36);
+\draw[white, line width=1.2pt] (-0.15,\yd-0.04) -- (0.15,\yd-0.04);
+\node at (-0.6,\yd+0.45) {$q$};
+
+% --- сили (qE = F_g + F_eta) ---
+\draw[force, mkFE] (0,{\yd+0.4}) -- (0,5.6);
+\draw[force, mkFg] (0,{\yd-0.4}) -- (0,1.3);
+\draw[force, mkFeta] (0.55,\yd) -- (0.55,2.2);
+\node[lab, mkFE] at (-0.6,5.0) {$q\Efield$};
+\node[lab, mkFg] at (-0.6,1.75) {$\vect{F}_g$};
+\node[lab, mkFeta] at (1.1,2.45) {$\vect{F}_\eta$};
+
+% --- мікроскоп із сіткою ---
+\def\ym{3.9}
+\draw[fill=mkMetal, draw=mkInk, line width=0.7pt] (\R,\ym) ellipse (0.22 and 0.62);
+\begin{scope}
+  \clip (\R,\ym) ellipse (0.18 and 0.58);
+  \foreach \k in {-5,...,5} {
+    \draw[mkInk!60, very thin] (\R-0.3,{\ym+\k*0.12}) -- (\R+0.4,{\ym+\k*0.12});
+    \draw[mkInk!60, very thin] ({\R+\k*0.05},\ym-0.7) -- ({\R+\k*0.05},\ym+0.7);
+  }
+\end{scope}
+\filldraw[fill=mkMetal, draw=mkInk, line width=0.6pt] (\R+0.2,3.65) rectangle (4.3,4.15);
+\filldraw[fill=mkMetalD, draw=mkInk, line width=0.6pt] (4.3,3.5) rectangle (5.7,4.3);
+\fill[mkInk] (\R+0.2,3.9) ellipse (0.08 and 0.25);
+\fill[mkFE!60!white] (\R+0.2,3.9) ellipse (0.045 and 0.18);
+\node[lab, anchor=south] (mic) at (5.6,4.9) {Мікроскоп\\ із сіткою};
+\draw[thinl] (mic.south) -- (5.2,4.3);
+
+% --- освітлювач (навпроти мікроскопа) ---
+\def\xl{-6.2}   % лівий край корпусу лампи
+\filldraw[fill=mkMetalD, draw=mkInk, line width=0.6pt] (\xl,3.55) rectangle (\xl+0.7,4.25);
+\filldraw[fill=mkMetal, draw=mkInk, line width=0.6pt]
+  (\xl+0.7,3.62) -- (\xl+1.15,3.45) -- (\xl+1.15,4.35) -- (\xl+0.7,4.18) -- cycle;
+\foreach \dy in {-0.18,0,0.18}
+  \draw[mkOil!80!yellow, dashed, line width=0.7pt] (\xl+1.2,{3.9+\dy}) -- (-\R+0.5,{3.9+\dy});
+\node[lab, anchor=south east] at (\xl+1.15,4.4) {Освітлювач};
+
+% --- підпис краплі ---
+\node[lab, anchor=north east] (drop) at (\xl+1.15,3.25) {Олійна\\ краплина};
+\draw[thinl] (drop.north east) -- (-0.36,\yd-0.05);
+
+% --- розпилювач ---
+\def\xr{4.7}
+\def\yr{0.6}   % плечі пляшки; носик на рівні \yr+0.45
+\filldraw[fill=mkMetal, draw=mkInk, line width=0.6pt]
+  (\xr-0.4,\yr-1.15) arc (180:270:0.15) -- (\xr+0.25,\yr-1.3) arc (270:360:0.15)
+  -- (\xr+0.4,\yr-0.2) .. controls (\xr+0.4,\yr-0.05) and (\xr+0.2,\yr-0.02) .. (\xr+0.17,\yr+0.08)
+  -- (\xr-0.17,\yr+0.08) .. controls (\xr-0.2,\yr-0.02) and (\xr-0.4,\yr-0.05) .. (\xr-0.4,\yr-0.2)
+  -- cycle;
+\fill[mkOil!70, opacity=0.8] (\xr-0.32,\yr-1.15) rectangle (\xr+0.32,\yr-0.5);   % олія в пляшці
+\draw[mkInk, line width=0.6pt]
+  (\xr-0.4,\yr-1.15) arc (180:270:0.15) -- (\xr+0.25,\yr-1.3) arc (270:360:0.15)
+  -- (\xr+0.4,\yr-0.2) .. controls (\xr+0.4,\yr-0.05) and (\xr+0.2,\yr-0.02) .. (\xr+0.17,\yr+0.08)
+  -- (\xr-0.17,\yr+0.08) .. controls (\xr-0.2,\yr-0.02) and (\xr-0.4,\yr-0.05) .. (\xr-0.4,\yr-0.2)
+  -- cycle;
+\filldraw[fill=mkMetalD, draw=mkInk, line width=0.6pt] (\xr-0.17,\yr+0.08) rectangle (\xr+0.17,\yr+0.22);
+\filldraw[fill=mkMetal, draw=mkInk, line width=0.6pt] (\xr-0.26,\yr+0.22) rectangle (\xr+0.26,\yr+0.32);
+\filldraw[fill=mkMetalD, draw=mkInk, line width=0.6pt] (\xr-0.2,\yr+0.32) rectangle (\xr+0.2,\yr+0.62);
+\filldraw[fill=mkMetal, draw=mkInk, line width=0.6pt]
+  (\xr-0.2,\yr+0.42) -- (\xr-0.75,\yr+0.40) -- (\xr-0.75,\yr+0.50) -- (\xr-0.2,\yr+0.55) -- cycle;
+
+% струмінь крапельок (розширюється конусом)
+\foreach \x/\y/\s in {
+  3.85/1.07/0.03, 3.7/1.02/0.035, 3.65/1.12/0.03, 3.5/1.05/0.035, 3.45/0.98/0.03,
+  3.35/1.12/0.04, 3.25/1.02/0.035, 3.15/1.1/0.03, 3.05/0.95/0.035, 2.95/1.15/0.04,
+  2.85/1.0/0.03, 2.75/1.2/0.035, 2.65/0.9/0.04, 2.55/1.1/0.03, 2.45/1.27/0.035,
+  2.4/0.88/0.03, 2.3/1.05/0.04, 2.2/1.2/0.03, 3.4/1.2/0.025, 3.0/1.03/0.03
+}
+  \fill[mkOil] (\x,\y) circle (\s*1.4);
+
+\node[lab, anchor=west, align=left] (atom) at (5.4,0.0) {Розпилювач};
+\draw[thinl] (atom.west) -- (\xr+0.4,0.0);
+
+\end{tikzpicture}
