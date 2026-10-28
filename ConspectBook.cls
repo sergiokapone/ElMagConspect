@@ -146,6 +146,7 @@
 \pagenumbering{arabic}
 \RequirePackage{microtype}   % мікротипографія (protrusion, expansion) — акуратніші рядки
 % ВИМКНЕНО (28.10.2026): зменшує вдови (45 → 36 знахідок лінтера), але в ElEnergy дало порожнечу 90 мм перед «Контрольними питаннями».
+\RequirePackage{needspace}   % \Needspace{9\baselineskip} перед «Задачі»: заголовок не лишається сам унизу сторінки (після нього рамка, а не абзац)
 \RequirePackage[balanced]{lua-widow-control}   % сироти й вдови: подовжує абзац на рядок (\looseness), без розтягування сторінок; не діє всередині tcolorbox. Режими: default (штраф 1), balanced (500, м'якший), strict; \lwcsetup{draft} підсвічує змінені абзаци. Перевірка: python elmag.py lint
 %\RequirePackage[nosingleletter, hyphenation, lastparline]{impnattypo}
 %\usepackage[defaultlines=4,all]{nowidow}

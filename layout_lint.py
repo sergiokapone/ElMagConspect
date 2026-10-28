@@ -10,6 +10,8 @@ What is reported (page numbers are PDF pages, 1-based):
   gap-bottom   the content ends far above the bottom of the text area (an unbreakable box or a float did not fit);
                not reported before a chapter/part start, where this is normal
   gap-inside   a big empty band between two pieces of content in the middle of a page
+  heading-bottom
+               a heading is the last thing on a page, its text/problems start on the next one
   widow        the last line of a paragraph alone at the top of a page
   orphan       the first line of a paragraph alone at the bottom of a page
   box-top / box-bottom
@@ -34,7 +36,8 @@ def lines_of(page, header_bottom, footer_top):
             x0, y0, x1, y1 = l['bbox']
             if y1 < header_bottom or y0 > footer_top: continue
             size = max((s['size'] for s in l['spans']), default=0)
-            out.append(dict(text=text, x0=x0, y0=y0, x1=x1, y1=y1, size=size))
+            bold = all(s['flags'] & 16 or 'Bold' in s['font'] for s in l['spans'] if s['text'].strip())
+            out.append(dict(text=text, x0=x0, y0=y0, x1=x1, y1=y1, size=size, bold=bold))
     out.sort(key=lambda l: (round(l['y0']), l['x0']))
     return out
 
@@ -143,6 +146,13 @@ def main():
             inner = max(((b[0] - merged[i][1], merged[i][1]) for i, b in enumerate(merged[1:])), default=(0, 0))
             if inner[0] > a.max_inside:
                 items.append(('gap-inside', '%.0f pt (%.0f mm) empty band at y=%.0f' % (inner[0], inner[0] * 0.3528, inner[1])))
+
+        # a heading alone at the bottom of the page (a bold short line, nothing under it)
+        tail = max(ls, key=lambda l: l['y1'])
+        if tail['bold'] and 4 <= len(tail['text']) < 70 and sum(c.isalpha() for c in tail['text']) >= 4 \
+                and tail['text'][-1] not in TERMINAL and tail['y1'] > body_bottom - 70 \
+                and not opening and pn + 1 not in starts:
+            items.append(('heading-bottom', '"%s"' % tail['text']))
 
         # widow: single last line of a paragraph at the top of the page
         first = ls[0]

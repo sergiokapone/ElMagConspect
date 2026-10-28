@@ -126,6 +126,7 @@
 %===============================================================================
 % Chapters set print-only tcolorbox options (e.g. unbreakable problems); no tcolorbox here, so ignore them
 \providecommand{\tcbset}[1]{}
+\providecommand{\Needspace}[1]{}   % print only (needspace): in HTML there are no pages
 \newenvironment{Theory}[1][]{\begin{BlockClass}{cb-theory}\textbf{Теоретичні відомості}\ #1\par}{\end{BlockClass}}
 \newenvironment{Attention}[1][]{\begin{BlockClass}{cb-attention}}{\end{BlockClass}}
 \newenvironment{Example}[2][]{\begin{BlockClass}{cb-example}\textbf{#2.}\ }{\end{BlockClass}}
