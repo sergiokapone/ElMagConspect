@@ -16,8 +16,8 @@ Commits go straight to `main`; commit and push only when asked.
 - `.claude/rules/conventions.md`: agreed terminology, notation, references, layout rules (loads when you touch `.tex` / `.cls`).
 - `/review-chapter <Folder>`: the review protocol (remarks -> agree with the author -> edits -> layout check).
 - `REVIEW.md` (in git): history of the review, chapter by chapter, with commit hashes. An archive: do not load it whole.
-- `review-remarks.md` (local, not in git, ~47 KB): numbered remarks per chapter. Markers: [+] done, [~] done partly or
-  differently, [-] author kept as is, [?] open. Never read it whole: `grep -n '^## ' review-remarks.md`, then open one section.
+- `review/<Folder>.md` (local, not in git): numbered remarks, one small file per chapter (`review/_README.md`: markers [+] done, [~] done partly or
+  differently, [-] author kept as is, [?] open; `_main-tex.md`, `_general.md`: remarks outside chapters). Open only the file of the chapter in hand.
 
 ## Project map
 - `main.tex`: front matter, `Preface.tex`, then 7 parts via `\multiinclude{...}`:
@@ -50,35 +50,10 @@ Commits go straight to `main`; commit and push only when asked.
   shell or one command; it only calls the scripts. A new script of the project gets a command there.
   `run.ps1` skips its pause and Clear-Host when `ELMAG_CLI` is set.
 
-## HTML build (details: README-html.md)
-`build-html.ps1` -> lwarp (`ConspectBookHTML.cls`) -> `prepare_html.py` (chapter copies) -> `publish_html.py` (moves the site to `docs/`, GitHub Pages).
+## HTML build, MathJax, lwarp
+Details are in `.claude/rules/html-build.md` (loads when you touch the HTML scripts, `ConspectBookHTML.cls`, `docs/assets/`) and in `README-html.md`.
+The one rule to remember: `docs/` is wiped on every publish, so a fix to generated pages goes into `publish_html.py` / `prepare_html.py`, never into `docs/*.html` by hand.
 
-- `docs/` is wiped on every publish except `SITE_OWN` in `publish_html.py` (`index.html`, `google*.html`, `assets/`, `serve.py`).
-  So a fix to the generated pages goes into `publish_html.py` / `prepare_html.py`, never into `docs/*.html` by hand
-  (patching `docs/` directly is fine only as a preview of the same change).
-- The source of `book.js` and `conspect.css` is `docs/assets/`; there is no copy in the project root
-  (a root copy, if newer, would replace it on publish).
-- Preview: `python docs/serve.py` (Pagefind search needs http, not file://). `docs/serve.py` is git-ignored.
-- The PDF (`docs/ElMagConspect.pdf`) stays in the repo on purpose: the landing page links into it (`#Charges`) and
-  ElMagLectures/index.html shows it in an iframe via jsDelivr. GitHub Release assets were rejected (served only as
-  downloads). The repo is cleaned of old PDF / docs/ versions periodically with `clean_repo.py` (`--dry-run` first).
-
-## MathJax
-- `mathjax-macros.tex` is generated (TSS Workflow, from `ConspectBook.cls`) and can silently lose entries when the class changes
-  (`\tcbhighmath` was lost this way: no boxes in the HTML). Macros that must always reach MathJax go to `ALWAYS` in `mathjax2lwarp.py`.
-  `npm i` in the project root installs `mathjax-full@3`; then `build-html.ps1` runs `check-mathjax-html.js` (every formula of the
-  page through MathJax with the macros from `lwarp-mathjax.tex`) and reports undefined macros. Run it by hand:
-  `node check-mathjax-html.js docs/ch*.html`.
-- lwarp 0.922 hard-codes MathJax 3 (`mathjax@3/es5/tex-svg.js`) with its own `startup.ready()` code that uses v3-internal
-  modules; MathJax 4 would need that code ported. MathJax 3 has no line breaking: `book.js` splits long display
-  formulas itself (top-level TeX break points -> `aligned`).
-- For numbered equations MathJax 3 SVG sets `min-width` on the `mjx-container` itself: measure the column by the parent.
-- Macros for MathJax: `mathjax-macros.tex` -> `mathjax2lwarp.py` -> `lwarp-mathjax.tex`.
-
-## lwarp quirks
-- Contents entries (`a.tocchapter`, `a.tocsection`) are CSS grids (number | title); `publish_html.py` wraps the title
-  in `span.toctitle` so inline math stays in the title column.
-
-## Testing JS that uses MathJax
-Install `mathjax-full@3` in the scratchpad and run the functions in node with liteAdaptor. Define macros with
-`\newcommand` through `doc.convert(...)`: macros given in the TeX config that expand to `\boxed`/`\fbox` crash in node.
+## Compact instructions
+When compacting, keep: the task in progress, decisions agreed with the author, file paths and line anchors of the places being edited, the list of uncommitted changes.
+Drop: contents of files read earlier, build logs, rejected options.
