@@ -1,45 +1,73 @@
-\begin{tikzpicture}[scale=1.2, >=Stealth]
-  % Початковий вектор швидкості v0
-  \draw[thick, ->] (-0.8, 0) -- (-0.1, 0) node[above=2pt] {$\mathbf{v}_0$};
+\begin{tikzpicture}[scale=1.2, >=Stealth, line join=round, line cap=round]
+  % Косокутна проєкція: глибина (вісь z) йде вгору-вліво на вектор (-0.3,0.18);
+  % поле B напрямлене від читача (вглиб), пучок лежить у серединній площині z=0.
+  \def\hx{-0.3}
+  \def\hy{0.18}
+  \def\cx{2}   % центр області поля
+  \def\R{1}    % радіус області поля, l = 2R
+
+  % --- електронна гармата ---
+  \shadedraw[top color=gray!10, bottom color=gray!70, draw=gray!70!black] (-1.7,-0.25) rectangle (-0.95,0.25);
+  \filldraw[fill=gray!80!black, draw=gray!70!black] (-0.95,0) ellipse (0.07 and 0.25);
+
+  % --- пунктирна вісь x ---
+  \draw[dashed, ->] (1, 0) -- (7.1, 0) node[below] {$x$};
+  \draw[dashed, gray] (7.1, 0) -- (7.5, 0);
+
+  % --- екран ---
+  \filldraw[fill=gray!15, draw=gray!60!black]
+    ($(6.5,-0.8)-(\hx,\hy)$) -- ($(6.5,-0.8)+(\hx,\hy)$) -- ($(6.5,2.4)+(\hx,\hy)$) -- ($(6.5,2.4)-(\hx,\hy)$) -- cycle;
+  \filldraw[fill=gray!35, draw=gray!60!black]
+    ($(6.5,2.4)-(\hx,\hy)$) -- ($(6.5,2.4)+(\hx,\hy)$) -- ($(6.62,2.4)+(\hx,\hy)$) -- ($(6.62,2.4)-(\hx,\hy)$) -- cycle;
+
+  % --- область магнітного поля: циліндр з віссю вздовж z (півглибина k) ---
+  \def\kx{-0.4}
+  \def\ky{0.24}
+  \def\nx{0.514}  % одиничний вектор, перпендикулярний до (kx,ky): точки дотику силуету
+  \def\ny{0.857}
+  \path[fill=blue!8]
+    ($(\cx,0)+(\nx*\R,\ny*\R)-(\kx,\ky)$) -- ($(\cx,0)+(\nx*\R,\ny*\R)+(\kx,\ky)$) --
+    ($(\cx,0)-(\nx*\R,\ny*\R)+(\kx,\ky)$) -- ($(\cx,0)-(\nx*\R,\ny*\R)-(\kx,\ky)$) -- cycle;
+  \path[fill=blue!8] ($(\cx,0)+(\kx,\ky)$) circle (\R);
+  \draw[blue!60!black, dashed, thin] ($(\cx,0)+(\kx,\ky)$) circle (\R);
+  \draw[blue!60!black] ($(\cx,0)+(\nx*\R,\ny*\R)-(\kx,\ky)$) -- ($(\cx,0)+(\nx*\R,\ny*\R)+(\kx,\ky)$);
+  \draw[blue!60!black] ($(\cx,0)-(\nx*\R,\ny*\R)-(\kx,\ky)$) -- ($(\cx,0)-(\nx*\R,\ny*\R)+(\kx,\ky)$);
+  \filldraw[fill=blue!12, fill opacity=0.6, draw=blue!60!black, thick] ($(\cx,0)-(\kx,\ky)$) circle (\R);
+
+  % --- лінії поля B: від читача вглиб ---
+  \foreach \px/\py in {1.75/-0.5, 2.4/-0.5, 1.65/0.45, 2.3/0.5} {
+    \draw[blue!70!black, ->] ($(\px,\py)-0.9*(\kx,\ky)$) -- ($(\px,\py)+0.9*(\kx,\ky)$);
+  }
+  \node[blue!70!black] at ($(\cx,0)+(-0.45,1.1)+(\kx,\ky)$) {$\Bfield$};
+  % --- траєкторія: коловий арк у полі + пряма ділянка до екрана ---
+  \draw[thick] (1, 0) arc[start angle=-90, end angle=-67.4, radius=5] coordinate (A);
+  \draw[thick, decoration={markings, mark=at position 0.55 with {\arrow{>}}}, postaction={decorate}]
+    (A) -- (6.5, 1.874);
+  % продовження прямої назад до осі: перетин у центрі області поля
+  \draw[dashed, gray] (2, 0) -- (A);
+  % пучок до області поля
+  \draw[thick, ->] (-0.9, 0) -- (-0.1, 0) node[above=2pt] {$\vect{v}_0$};
   \draw[thick] (-0.1, 0) -- (1, 0);
 
-  % Пунктирна вісь x
-  \draw[dashed, ->] (1, 0) -- (7.2, 0) node[below] {$x$};
+  % частинка (q>0) і пляма на екрані
+  \node[circle, ball color=red!60, inner sep=0pt, minimum size=7pt] at (0.5, 0) {};
+  \shade[inner color=orange!80!yellow, outer color=orange!0] (6.5, 1.874) circle (0.17);
+  \fill[red!70!black] (6.5, 1.874) circle (0.04);
+  \fill (6.5, 0) circle (0.035);
+  \node[font=\small, below right=-1pt] at (6.5, 0) {$0$};
 
-  % Кругова область магнітного поля M
-  \draw[thick, blue] (2, 0) circle (1);
-%  \node at (2.3, 1.25) {\Large M};
+  % --- кут beta ---
+  \draw (4.2, 0) arc (0:22.6:2.2) node[midway, right=2pt] {$\beta$};
 
-  % Магнітне поле (хрестики B "за лист")
-  \begin{scope}
-    \clip (2, 0) circle (0.97);
-    \foreach \x in {1.15, 1.55, ..., 2.95} {
-      \foreach \y in {-0.8, -0.5, ..., 0.8} {
-        \node[font=\small, scale=0.75, blue] at (\x,\y) {$\otimes$};
-      }
-    }
-  \end{scope}
+  % --- зміщення y на екрані ---
+  \draw[dashed, gray] (6.5, 1.874) -- (7.5, 1.874);
+  \draw[<->] (7.5, 0) -- (7.5, 1.874) node[midway, right] {$y$};
 
+  % --- розмірні лінії знизу (l та L) ---
+  \draw[dashed, gray] (1, -1.3) -- (1, -1.75);
+  \draw[dashed, gray] (3, -1.3) -- (3, -1.75);
+  \draw[dashed, gray] (6.5, -1.3) -- (6.5, -1.75);
 
-
-  % Траєкторія: коловий арк у полі + прямолінійна ділянка до екрана
-  \draw[thick] (1, 0) arc[start angle=-90, end angle=-68, radius=5] coordinate (A);
-  \draw[thick, decoration={markings, mark=at position 0.55 with {\arrow{>}}}, postaction={decorate}]
-    (A) -- (6.5, 1.76);
-
-  % Дуга кута відхилення
-  \draw (4.3, 0) arc (0:39:1.3) node[pos=0.5, anchor=west] {$\beta$};
-
-  % Екран (вісь y)
-  \draw[thick, ->] (6.5, -0.8) -- (6.5, 2.2) node[right] {$y$};
-  \node[right] at (6.5, 0.3) {$0$};
-%  \node[below right] at (6.5, -0.8) {\Large Э};
-
-  % Виносні лінії та розміри (l, L)
-  \draw[dashed, gray] (1, 0)    -- (1, -1.5);
-  \draw[dashed, gray] (3, 0.35) -- (3, -1.5);
-  \draw[dashed, gray] (6.5, 0)  -- (6.5, -1.5);
-
-  \draw[<->] (1, -1.3) -- (3, -1.3) node[midway, below] {$l$};
-  \draw[<->] (3, -1.3) -- (6.5, -1.3) node[midway, below] {$L$};
+  \draw[<->] (1, -1.6) -- (3, -1.6) node[midway, below] {$l$};
+  \draw[<->] (3, -1.6) -- (6.5, -1.6) node[midway, below] {$L$};
 \end{tikzpicture}

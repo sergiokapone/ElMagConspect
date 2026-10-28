@@ -41,9 +41,10 @@
 
         % --- поле, електрон, j ---
         \draw[->, thick] (0.8,1.2,0) -- (0.2,1.2,0) node[midway, above=-1pt] {$\Efield_H$};
-        \node[circle, ball color=blue!50, inner sep=.5pt, minimum size=10pt, text=white] (e) at (0.5,0.3,0) {$-$};
-        \draw[<-] (e) -- ++(0,0.6,0) node[right=1pt] {$\vect{j}$};
-        \draw[->, thick] (e) to[out=40, in=-80] (0.02,1,0);
+        \draw[->, thick] (0.8,0.95,0) -- (0.8,0.25,0) node[pos=0.1, left=1pt] {$\vect{j}$};
+        \node[circle, ball color=blue!50, inner sep=.5pt, minimum size=10pt, text=white] (e) at (0.4,0.3,0) {$-$};
+        \draw[->, densely dashed] (e) to[out=100, in=-45] (0.06,0.62,0);
+        \draw[->] (e) -- ++(0,0.35,0) node[right=-1pt, pos=1] {$\vect v_d$};
 
         % --- розміри ---
         \draw[<->] ($(A')+(-0.25,0,0)$) -- ($(A)+(-0.25,0,0)$) node[midway, left=-1pt] {$d$};
@@ -56,7 +57,7 @@
         \draw (Pb) -- ++(0,\wire,0) -- ++(2.1,0,0) coordinate (LoopR);
         \draw (Pf) -- ++(0,-\wire,0) -- ++(2.1,0,0) coordinate (LoopF);
         \draw (LoopR) -- (LoopF);
-        \node[circle, draw, fill=white, inner sep=1pt] (Vx) at ($(LoopR)!.5!(LoopF)$) {$V_x$};
+        \node[circle, draw, fill=white, inner sep=1pt] (Vx) at ($(LoopR)!.5!(LoopF)$) {$U_y$};
         \node[above right=1pt of Vx] {$+$};
         \node[below left=1pt of Vx] {$-$};
         \draw[<-, red] ($(LoopR)!0.15!(LoopF)$) -- ++(0,-0.15,0) node[above=2pt] {$I$};
@@ -66,11 +67,12 @@
 %        \draw (\pW,\yH,0) -- ++(0.3,0,0)  -- ++(0,0,\hZ) -- (VHc);
           \draw (\pW,\yH,-0.1) -- ++(0.3,0,0)  -- ++(0,0,\hZ) -- ++(-{\pW-0.6},0,0) -- ++(0,0,-\hZ) -- (0,\yH,-0.1);
         \node[circle, draw, fill=white, inner sep=1pt] (VH) at (VHc) {$U_H$};
-%        \node[left=1pt of VH]  {$-$};
-%        \node[right=1pt of VH] {$+$};
+        \fill (\pW,\yH,-0.1) circle (0.8pt) (0,\yH,-0.1) circle (0.8pt) (Pb) circle (0.8pt) (Pf) circle (0.8pt);
+        \node[right=0pt] at (\pW+0.3,\yH,0.9*\hZ) {$+$};
+        \node[left=0pt] at (-0.3,\yH,0.9*\hZ) {$-$};
 
         % --- B_z і осі ---
-        \draw[->, thick] (-0.9,0.8,0.2) -- ++(0,0,1.2) node[midway, left] {$B_z$};
+        \draw[->, thick] (-0.9,0.8,0.2) -- ++(0,0,1.2) node[midway, left] {$\Bfield$};
         \begin{scope}[shift={(C)}, shift={(0,0.4,1.2)}]
             \draw[->] (0,0,0) -- (0.5,0,0) node[right=-2pt] {$x$};
             \draw[->] (0,0,0) -- (0,0.5,0) node[above right=-2pt] {$y$};
