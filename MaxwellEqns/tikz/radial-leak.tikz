@@ -1,31 +1,18 @@
-% Радіальне стікання заряду з кулі (об'ємний вигляд)
+% Радіальне стікання заряду з кулі: у кожній точці j і j_зм рівні й протилежні
 \begin{tikzpicture}[>=latex, scale=1.6]
-	\def\T{22}
-	\shade[ball color=red!55] (0, 0) circle (0.42);
-	\node[font=\footnotesize\bfseries, text=white] at (0, 0) {$+$};
-	% концентрична сфера (екватор і контур)
-	\draw[gray!60, dashed] (0, 0) circle (0.98);
-	\draw[gray!60, dashed] (0, 0) ellipse ({0.98} and {0.98*sin(\T)});
-	% струм провідності: радіально назовні (сфера з тривимірним розподілом напрямків)
-	\foreach \lat in {-55, 0, 55} {
-		\foreach \lon in {0, 60, ..., 300} {
-			\pgfmathsetmacro\sx{cos(\lat)*cos(\lon)}
-			\pgfmathsetmacro\sy{sin(\lat)*cos(\T)-cos(\lat)*sin(\lon)*sin(\T)}
-			\pgfmathsetmacro\dz{sin(\lat)*sin(\T)+cos(\lat)*sin(\lon)*cos(\T)}
-			\ifdim\dz pt>-0.02pt\def\op{0.95}\else\def\op{0.3}\fi
-			\draw[jfield, ->, opacity=\op] ({0.55*\sx},{0.55*\sy}) -- ({0.9*\sx},{0.9*\sy});
-		}
+	\def\T{18}
+	% сфера S радіуса r>R (на неї натягнуто контур L)
+	\draw[gray!60, dashed] (0, 0) circle (1.25);
+	\draw[gray!60, dashed] (0, 0) ellipse ({1.25} and {1.25*sin(\T)});
+	\node[gray!60!black, font=\footnotesize] at (128:1.4) {$S$};
+	% заряджена куля
+	\shade[ball color=gray!35] (0, 0) circle (0.42);
+	\node[font=\footnotesize\bfseries] at (0, 0) {$+Q$};
+	% пари векторів у тих самих точках: j назовні, j_зм усередину
+	\foreach \a in {0, 36, ..., 324} {
+		\draw[jfield, thick, ->] ($(\a:0.6)+(\a+90:0.055)$) -- ($(\a:1.12)+(\a+90:0.055)$);
+		\draw[efield, thick, ->, dash pattern=on 2.5pt off 1.2pt] ($(\a:1.12)+(\a-90:0.055)$) -- ($(\a:0.6)+(\a-90:0.055)$);
 	}
-	% струм зміщення: радіально всередину (протилежно)
-	\foreach \lat in {-28, 28, 78} {
-		\foreach \lon in {30, 90, ..., 330} {
-			\pgfmathsetmacro\sx{cos(\lat)*cos(\lon)}
-			\pgfmathsetmacro\sy{sin(\lat)*cos(\T)-cos(\lat)*sin(\lon)*sin(\T)}
-			\pgfmathsetmacro\dz{sin(\lat)*sin(\T)+cos(\lat)*sin(\lon)*cos(\T)}
-			\ifdim\dz pt>-0.02pt\def\op{0.95}\else\def\op{0.3}\fi
-			\draw[jfield!50!black, <-, dash pattern=on 2pt off 1pt, opacity=\op] ({1.0*\sx},{1.0*\sy}) -- ({1.38*\sx},{1.38*\sy});
-		}
-	}
-	\node[jfield, anchor=west] at (0.62, 0.62) {$I$};
-	\node[jfield!50!black, anchor=west] at (1.35, -0.2) {$I_\text{зм}$};
+	\node[jfield, anchor=south west, inner sep=1pt] at (36:1.12) {$\vect j$};
+	\node[efield, anchor=north west, inner sep=1pt] at (0:1.08) {$\vect j_\text{зм}$};
 \end{tikzpicture}

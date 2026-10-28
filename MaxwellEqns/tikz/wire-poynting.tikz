@@ -1,31 +1,49 @@
-\begin{tikzpicture}[>=latex, scale=2]
-	% --- параметри циліндра ---
-	\def\cylR{1}      % радіус циліндра
-	\def\cylH{2}      % висота циліндра
-	\def\cylRy{0.3}   % стиснення еліпса основи (перспектива)
-	\pgfmathsetmacro{\cylD}{2*\cylR}        % діаметр
-	\pgfmathsetmacro{\cylHL}{0.9*\cylD/2.0} % положення межі відблиску (частка діаметра)
-	\pgfmathsetmacro{\fieldR}{1.1*\cylR}    % радіус контуру поля H (трохи більший за циліндр)
-
-	% бічна поверхня циліндра: тінь -- відблиск -- тінь (як у освітленого зліва циліндра)
+% Провідник зі струмом: E вздовж дроту (всередині), H навколо, Π = E×H радіально входить у дріт крізь бічну поверхню
+\begin{tikzpicture}[>=latex, scale=1.5]
+	\def\R{0.55}   % радіус дроту
+	\def\Ry{0.27}  % стиснення еліпса (погляд трохи згори, щоб було видно радіальність Π)
+	\def\L{3.2}    % довжина ділянки
+	\def\F{1.05}   % радіус кола H
+	\pgfmathsetmacro{\k}{\Ry/\R}
+	\pgfmathsetmacro{\hy}{0.5*\L}
+	\pgfmathsetmacro{\hry}{\F*\k}
+	% радіальна стрілка Π під азимутом #1 на висоті #2 (sin<0 -- передній бік)
+	\newcommand{\wpPi}[2]{%
+		\draw[->, ffield, very thick] ({2.3*\R*cos(#1)}, {#2+2.3*\R*\k*sin(#1)}) -- ({1.03*\R*cos(#1)}, {#2+1.03*\R*\k*sin(#1)});
+	}
+	\def\Pilevels{0.7, 2.55}
+	% задні стрілки Π і задня половина кола H (ховаються за дротом)
+	\foreach \y in \Pilevels
+		\foreach \a in {40, 140}
+			\wpPi{\a}{\y}
+	\draw[bfield, thick, dashed, opacity=0.7] (\F, \hy) arc[start angle=0, end angle=180, x radius=\F, y radius=\hry];
+	% бічна поверхня: тінь -- відблиск -- тінь
 	\begin{scope}
-		\clip (0, 0) -- ++(0,\cylH) arc(180:360:\cylR{} and \cylRy) -- ++(0, -\cylH) arc(0:-180:\cylR{} and \cylRy);
-		\shade[left color=gray!55, right color=gray!12]
-			(-0.1,-\cylRy-0.1) rectangle (\cylHL, \cylH+0.1);
-		\shade[left color=gray!12, right color=gray!78]
-			(\cylHL,-\cylRy-0.1) rectangle (\cylD+0.1, \cylH+0.1);
+		\clip (-\R, 0) -- (-\R, \L) arc[start angle=180, end angle=360, x radius=\R, y radius=\Ry] -- (\R, 0) arc[start angle=0, end angle=-180, x radius=\R, y radius=\Ry];
+		\shade[left color=gray!60, right color=gray!10] (-\R-0.1, -0.4) rectangle (0.25*\R, \L+0.1);
+		\shade[left color=gray!10, right color=gray!75] (0.25*\R, -0.4) rectangle (\R+0.1, \L+0.1);
 	\end{scope}
-	% твірні (бічні контурні лінії)
-	\draw (0,0) -- ++(0,\cylH);
-	\draw (\cylD,0) -- ++(0,\cylH);
-	% видима (передня) частина нижньої основи
-	\draw (0,0) arc(180:360:\cylR{} and \cylRy);
-	% верхня основа -- світліше заповнення з тонкою обвідкою для ефекту освітленої поверхні
-	\shade[ball color=gray!20] (\cylR, \cylH) circle (\cylR{} and \cylRy);
-	\draw (\cylR, \cylH) circle (\cylR{} and \cylRy);
-
-	\draw[bfield, arrowpos={0.5}{2pt}{4pt}] (\cylR, \cylH/2) [partial ellipse=155:385:{\fieldR} and \cylRy]
-	node[pos=0.5, below] {$\Hfield$};
-	\draw[->, efield, thick] (\cylR, \cylH/2) -- ++(0, 0.5) node[left] {$\Efield$};
-	\draw[->, ffield, thick] (\cylD/2+\fieldR, \cylH/2) -- ++(-0.5, 0) node[above] {$\vect{\Pi}$};
+	\draw (-\R, 0) -- (-\R, \L) (\R, 0) -- (\R, \L);
+	\draw (-\R, 0) arc[start angle=180, end angle=360, x radius=\R, y radius=\Ry];
+	\fill[gray!15] (0, \L) ellipse[x radius=\R, y radius=\Ry];
+	\draw (0, \L) ellipse[x radius=\R, y radius=\Ry];
+	% кільця на поверхні, крізь які входить Π (видима передня половина)
+	\foreach \y in \Pilevels
+		\draw[ffield!60, thin] (-\R, \y) arc[start angle=180, end angle=360, x radius=\R, y radius=\Ry];
+	% струм I
+	\draw[->, very thick] (0, -0.95) -- (0, -0.4) node[right, pos=0.3] {$I$};
+	\draw[->, very thick] (0, \L+0.05) -- (0, \L+0.7) node[right, pos=0.6] {$I$};
+	% E -- всередині провідника, вздовж струму
+	\foreach \x in {-0.5, 0, 0.5}
+		\draw[->, efield, thick] (\x*\R, 1.05) -- (\x*\R, 2.05);
+	\node[efield, font=\bfseries, fill=gray!10, inner sep=1pt, rounded corners=1pt] at (0.25*\R, 0.88) {$\Efield$};
+	% H -- коло навколо дроту: передня дуга зі стрілкою
+	\draw[bfield, thick, postaction={decorate, decoration={markings, mark=at position 0.5 with {\arrow{Latex}}}}]
+		(-\F, \hy) arc[start angle=180, end angle=360, x radius=\F, y radius=\hry];
+	\node[bfield, right] at (\F, \hy) {$\Hfield$};
+	% передні стрілки Π -- радіально до осі, поверх дроту
+	\foreach \y in \Pilevels
+		\foreach \a in {180, 235, 305, 360}
+			\wpPi{\a}{\y}
+	\node[ffield, right] at (2.3*\R, 2.55) {$\vect\Pi$};
 \end{tikzpicture}

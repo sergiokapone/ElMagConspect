@@ -1,35 +1,44 @@
-% Магнітне поле струму зміщення всередині конденсатора, що заряджається (об'ємний вигляд)
+% Магнітне поле струму зміщення всередині конденсатора, що заряджається (об'ємний вигляд).
+% Дивимося спереду-справа: видно праву грань кожної обкладки, передня половина кожного
+% кола B -- ліва дуга. Порядок малювання: задні дуги B -> дроти, обкладки, лінії E -> передні дуги B,
+% тож лінії B охоплюють дроти й струм зміщення.
 \begin{tikzpicture}[>=latex, scale=2]
 	\tikzset{cylh/.style={line width=3pt, wirecolor!70, line cap=round},
-		cylhl/.style={line width=1pt, white, opacity=0.55, line cap=round}}
-	% підвідні дроти як циліндри
+		cylhl/.style={line width=1pt, white, opacity=0.55, line cap=round},
+		bback/.style={bfield!55, thin, dash pattern=on 2pt off 1pt},
+		bfront/.style={bfield, thick, postaction={decorate, decoration={markings,
+			mark=at position 0.3 with {\arrow{Latex[length=5pt, width=4.5pt]}}}}}}
+	\def\Bloops{-1.25/0.18/0.55, -1.25/0.1/0.35, 0/0.2/0.62, 1.25/0.18/0.55, 1.25/0.1/0.35, 0/0.12/0.4}
+	% задня половина магнітних ліній (за дротами й лініями E)
+	\foreach \x/\a/\b in \Bloops
+		\draw[bback] (\x, 0) ++(90:{\a} and {\b}) arc[start angle=90, end angle=-90, x radius=\a, y radius=\b];
+	% лівий дріт іде до дальньої (невидимої) грані лівої обкладки, тому малюємо його до неї
 	\draw[cylh] (-1.7, 0) -- (-0.62, 0);
 	\draw[cylhl] (-1.7, 0.02) -- (-0.62, 0.02);
-	\draw[cylh] (0.62, 0) -- (1.7, 0);
-	\draw[cylhl] (0.62, 0.02) -- (1.7, 0.02);
-	% задня половина магнітних ліній (за віссю)
-	\foreach \x/\a/\b in {-1.25/0.18/0.55, 0/0.2/0.62, 1.25/0.18/0.55, 0/0.12/0.4}
-		\draw[bfield!45, dash pattern=on 2pt off 0.8pt] (\x, 0) ++(90:{\a} and {\b}) arc[start angle=90, end angle=-90, x radius=\a, y radius=\b];
 	% позитивна обкладка (диск з товщиною)
 	\begin{scope}[xshift=-0.62cm]
-		\shade[top color=efield!40, bottom color=efield!85] (0, 0.9) arc[start angle=90, end angle=270, x radius=0.26, y radius=0.9] -- ++(0.1, 0) arc[start angle=270, end angle=90, x radius=0.26, y radius=0.9] -- cycle;
-		\fill[efield!30] (0.1, 0) ellipse (0.26 and 0.9);
-		\draw[efield!80!black, thin] (0.1, 0) ellipse (0.26 and 0.9);
+		\shade[top color=gray!30, bottom color=gray!70] (0, 0.9) arc[start angle=90, end angle=270, x radius=0.26, y radius=0.9] -- ++(0.1, 0) arc[start angle=270, end angle=90, x radius=0.26, y radius=0.9] -- cycle;
+		\fill[gray!18] (0.1, 0) ellipse (0.26 and 0.9);
+		\draw[gray!60!black, thin] (0.1, 0) ellipse (0.26 and 0.9);
 	\end{scope}
 	% електричне поле між обкладками
 	\foreach \y in {-0.6, -0.3, 0, 0.3, 0.6}
-		\draw[efield, thin, arrowpos={0.5}{2pt}{2pt}] (-0.5, \y) -- (0.5, \y);
+		\draw[efield, thin, arrowpos={0.5}{4pt}{4pt}] (-0.5, \y) -- (0.5, \y);
 	% від'ємна обкладка
 	\begin{scope}[xshift=0.52cm]
-		\shade[top color=bfield!40, bottom color=bfield!85] (0, 0.9) arc[start angle=90, end angle=270, x radius=0.26, y radius=0.9] -- ++(0.1, 0) arc[start angle=270, end angle=90, x radius=0.26, y radius=0.9] -- cycle;
-		\fill[bfield!30] (0.1, 0) ellipse (0.26 and 0.9);
-		\draw[bfield!80!black, thin] (0.1, 0) ellipse (0.26 and 0.9);
+		\shade[top color=gray!30, bottom color=gray!70] (0, 0.9) arc[start angle=90, end angle=270, x radius=0.26, y radius=0.9] -- ++(0.1, 0) arc[start angle=270, end angle=90, x radius=0.26, y radius=0.9] -- cycle;
+		\fill[gray!18] (0.1, 0) ellipse (0.26 and 0.9);
+		\draw[gray!60!black, thin] (0.1, 0) ellipse (0.26 and 0.9);
 	\end{scope}
-	\node[efield, font=\footnotesize\bfseries] at (-0.95, 0.2) {$+$};
-	\node[bfield, font=\footnotesize\bfseries] at (1.05, 0.2) {$-$};
-	% передня половина магнітних ліній (стрілки)
-	\foreach \x/\a/\b in {-1.25/0.18/0.55, 0/0.2/0.62, 1.25/0.18/0.55, 0/0.12/0.4}
-		\draw[bfield, semithick, arrowpos={0.5}{2pt}{2.5pt}] (\x, 0) ++(90:{\a} and {\b}) arc[start angle=90, end angle=270, x radius=\a, y radius=\b];
+	% правий дріт виходить із центра видимої зовнішньої грані правої обкладки
+	\fill[gray!50!black] (0.62, 0) ellipse (0.03 and 0.07);
+	\draw[cylh] (0.62, 0) -- (1.7, 0);
+	\draw[cylhl] (0.64, 0.02) -- (1.7, 0.02);
+	\node[font=\footnotesize\bfseries] at (-0.52, 1.05) {$+$};
+	\node[font=\footnotesize\bfseries] at (0.62, 1.05) {$-$};
+	% передня половина магнітних ліній -- поверх дротів і ліній E
+	\foreach \x/\a/\b in \Bloops
+		\draw[bfront] (\x, 0) ++(90:{\a} and {\b}) arc[start angle=90, end angle=270, x radius=\a, y radius=\b];
 	\node[bfield] at (-1.25, 0.8) {$\Bfield$};
 	% позначки струмів
 	\draw[->, jfield, thick] (-1.6, -1.1) -- node[below, text=black] {$I$} ++(0.6, 0);

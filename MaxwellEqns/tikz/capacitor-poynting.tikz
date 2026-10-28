@@ -1,111 +1,83 @@
-% !TeX root = ../../main.tex
-
-\begin{tikzpicture}[x={(1cm,-0.15cm)}, y={(0.5cm,0.35cm)}, z={(0cm,1cm)}, >=Latex]
+% Зарядка плоского конденсатора: E, H і вектор Пойнтінга
+% Пряма (нескошена) проєкція: кола в площині xy -- еліпси з горизонтальною великою віссю,
+% тож бічні поверхні циліндрів (дуги 180..360) точно дотикаються контурів основ.
+% Порядок малювання: що далі від глядача, те раніше; пластини непрозорі.
+\begin{tikzpicture}[x={(1cm,0cm)}, y={(0cm,0.33cm)}, z={(0cm,1cm)}, >=Latex]
+  % стрілка посередині лінії
+  \tikzset{Emid/.style={postaction={decorate, decoration={markings, mark=at position 0.45 with {\arrow{Latex[scale=1.1]}}}}}}
 
   % Основні параметри розмірів
   \def\R{2.8}      % Радіус пластин
-  \def\H{2.6}      % Відстань між пластинами (h)
+  \def\H{3.0}      % Відстань між пластинами (h)
   \def\thick{0.25} % Товщина пластин
-  \def\rwire{0.2} % Радіус товстих провідників
+  \def\rwire{0.2}  % Радіус провідників
+  \def\lwire{1.4}  % Довжина провідників
 
-  % ================= НИЖНІЙ ПРОВІДНИК СТРУМУ I (ОБ'ЄМНИЙ) =================
-  % Нижня грань провідника
-  \draw[fill=gray!40, draw=black!60] (0,0,-1.4) circle [radius=\rwire];
-  % Бічна циліндрична поверхня
-  \fill[gray!50] (-\rwire,0,-\thick) arc (180:360:\rwire) -- (\rwire,0,-1.4) arc (360:180:\rwire) -- cycle;
-  \draw[black!60] (-\rwire,0,-1.4) arc (180:360:\rwire);
-  \draw[black!60] (-\rwire,0,-\thick) arc (180:360:\rwire);
-  \draw[black!60] (-\rwire,0,-1.4) -- (-\rwire,0,-\thick);
-  \draw[black!60] (\rwire,0,-1.4) -- (\rwire,0,-\thick);
+  % бічна поверхня циліндра радіуса #1 від z=#2 до z=#3 (видима передня половина)
+  \newcommand{\cpside}[4]{%
+    \shade[left color=gray!#4, middle color=gray!15, right color=gray!#4!black!80]
+      (-#1,0,#3) arc (180:360:#1) -- (#1,0,#2) arc (360:180:#1) -- cycle;
+    \draw[black!60] (-#1,0,#3) -- (-#1,0,#2) arc (180:360:#1) -- (#1,0,#3);
+  }
+  % пластина: нижня основа на висоті #1
+  \newcommand{\cpplate}[1]{%
+    \cpside{\R}{#1}{#1+\thick}{45}
+    \draw[fill=gray!12, draw=black!70, thick] (0,0,#1+\thick) circle [radius=\R];
+  }
 
-  % Стрілка струму I
-  \draw[->, thick, black] (0,0,-1.2) -- (0,0,-0.4) node[right=4pt] {$I$};
+  % ================= НИЖНІЙ ПРОВІДНИК (видно лише бічну поверхню) =================
+  \cpside{\rwire}{-\lwire}{0}{55}
+  \draw[->, thick, black] (0,0,-\lwire+0.15) -- (0,0,-\thick-0.25) node[right=4pt, pos=0.4] {$I$};
 
   % ================= НИЖНЯ ПЛАСТИНА (+q) =================
-  % Нижня грань пластини
-  \draw[fill=gray!30, draw=gray!60] (0,0,-\thick) circle [radius=\R];
-  % Бічна циліндрична поверхня
-  \fill[gray!45] (-\R,0,0) arc (180:360:\R) -- (\R,0,-\thick) arc (360:180:\R) -- cycle;
-  \draw[gray!60] (-\R,0,0) arc (180:360:\R);
-  \draw[gray!60] (-\R,0,-\thick) arc (180:360:\R);
-  \draw[gray!60] (-\R,0,0) -- (-\R,0,-\thick);
-  \draw[gray!60] (\R,0,0) -- (\R,0,-\thick);
-  % Верхня грань нижньої пластини
-  \draw[fill=gray!15, draw=black!70, thick] (0,0,0) circle [radius=\R];
-  \node[red!80!black, font=\small] at (0, -\R*0.75, 0.05) {$+q$};
+  \cpplate{-\thick}
+  \node[font=\small] at (-1.3, -\R*0.8, 0) [above=1pt] {$+q$};
 
   % Центральна вісь симетрії
   \draw[gray!50, dashed] (0,0,0) -- (0,0,\H);
 
   % ================= ЕЛЕКТРИЧНЕ ПОЛЕ E (ЗАДНІ ЛІНІЇ) =================
-  \foreach \r in {1.0, 2.0} {
-      \foreach \angle in {40, 90, 140} {
-          \draw[efield!40, draw opacity=0.7, ->, thick] ({\r*cos(\angle)}, {\r*sin(\angle)}, 0.05) -- ({\r*cos(\angle)}, {\r*sin(\angle)}, \H-0.05);
-        }
-    }
+  % азимути підібрано так, щоб у проєкції задні й передні лінії не накладалися одна на одну
+  \foreach \r/\angle in {1.6/40, 1.6/140, 2.3/65, 2.3/115}
+      \draw[efield!45, thick, Emid] ({\r*cos(\angle)}, {\r*sin(\angle)}, 0) -- ({\r*cos(\angle)}, {\r*sin(\angle)}, \H);
 
-  % ================= МАГНІТНЕ ПОЛЕ H (НА ВІЗОК H/2) =================
+  % ================= МАГНІТНЕ ПОЛЕ H (НА ВИСОТІ h/2) =================
   \pgfmathsetmacro{\hz}{\H*0.5}
-  \foreach \r in {1.0, 1.8, 2.5} {
-      % Задня дуга (пунктир)
-      \draw[bfield, thick, dashed] (0,0,\hz) ++(0:\r) arc (0:180:\r);
-      % Передня дуга (суцільна зі стрілкою напрямку)
-      \draw[bfield, thick, postaction={decorate, decoration={markings, mark=at position 0.55 with {\arrow{Latex}}}}] (0,0,\hz) ++(180:\r) arc (180:360:\r);
-    }
-  \node[bfield, font=\bfseries] at (\R*1.05, 0, \hz) {$\Hfield$};
+  % задні дуги
+  \foreach \r/\w in {1.4/thin, 2.5/thick}
+      \draw[bfield, \w, dashed, opacity=0.6] (0,0,\hz) ++(0:\r) arc (0:180:\r);
 
   % ================= ЕЛЕКТРИЧНЕ ПОЛЕ E (ПЕРЕДНІ ЛІНІЇ) =================
-  \foreach \r in {1.0, 2.0} {
-      \foreach \angle in {210, 270, 330} {
-          \draw[efield, ->, thick] ({\r*cos(\angle)}, {\r*sin(\angle)}, 0.05) -- ({\r*cos(\angle)}, {\r*sin(\angle)}, \H-0.05);
-        }
-    }
-  % Центральна силова лінія E
-  \draw[efield, ->, thick] (0, 0, 0.05) -- (0, 0, \H-0.05);
-  \node[efield, font=\bfseries, right] at (0, 0, -\H*0.1) {$\Efield$};
+  \draw[efield, thick, Emid] (0, 0, 0) -- (0, 0, \H);
+  \foreach \r/\angle in {1.1/240, 1.1/300, 2.1/215, 2.1/325}
+      \draw[efield, thick, Emid] ({\r*cos(\angle)}, {\r*sin(\angle)}, 0) -- ({\r*cos(\angle)}, {\r*sin(\angle)}, \H);
+  \node[efield, font=\bfseries] at (1.3, -\R*0.55, 0.5) {$\Efield$};
 
-  % ================= ВЕКТОР ПОЙНТІНГА \Pi (ВЦЕНТР) =================
-  \foreach \angle in {195, 240, 285, 330} {
-      \draw[ffield, ultra thick, ->] ({\R*cos(\angle)}, {\R*sin(\angle)}, \hz) -- ({0.45*\R*cos(\angle)}, {0.45*\R*sin(\angle)}, \hz);
+  % передні дуги H -- поверх ліній E
+  \foreach \r/\w in {1.4/thin, 2.5/thick}
+      \draw[bfield, \w, postaction={decorate, decoration={markings, mark=at position 0.62 with {\arrow{Latex}}}}] (0,0,\hz) ++(180:\r) arc (180:360:\r);
+  \node[bfield, font=\bfseries, right] at (2.55, 0, \hz) {$\Hfield$};
+
+  % ================= ВЕКТОР ПОЙНТІНГА (ДО ОСІ) =================
+  \foreach \angle in {200, 240, 300, 340} {
+      \draw[ffield, ultra thick, ->] ({1.25*\R*cos(\angle)}, {1.25*\R*sin(\angle)}, \hz) -- ({0.62*\R*cos(\angle)}, {0.62*\R*sin(\angle)}, \hz);
     }
-  \node[ffield, font=\bfseries, below right] at ({\R*cos(330)}, {\R*sin(330)}, \hz) {$\vect{\Pi}$};
+  \node[ffield, font=\bfseries, right] at ({1.25*\R*cos(340)}, {1.25*\R*sin(340)}, \hz-0.35) {$\vect{\Pi}$};
 
   % ================= ВЕРХНЯ ПЛАСТИНА (-q) =================
-  % Нижня грань верхньої пластини (напівпрозора для огляду поля)
-  \draw[fill=gray!25, fill opacity=0.6, draw=black!70, thick] (0,0,\H) circle [radius=\R];
-  % Бічна циліндрична поверхня
-  \fill[gray!35, fill opacity=0.7] (-\R,0,\H+\thick) arc (180:360:\R) -- (\R,0,\H) arc (360:180:\R) -- cycle;
-  \draw[gray!60] (-\R,0,\H) arc (180:360:\R);
-  \draw[gray!60] (-\R,0,\H+\thick) arc (180:360:\R);
-  \draw[gray!60] (-\R,0,\H) -- (-\R,0,\H+\thick);
-  \draw[gray!60] (\R,0,\H) -- (\R,0,\H+\thick);
-  % Верхня грань верхньої пластини
-  \draw[fill=gray!10, fill opacity=0.85, draw=black!70, thick] (0,0,\H+\thick) circle [radius=\R];
-  \node[blue!80!black, font=\small] at (0, -\R*0.75, \H+\thick+0.05) {$-q$};
+  \cpplate{\H}
+  \node[font=\small] at (0, -\R*0.8, \H+\thick) [above=1pt] {$-q$};
 
-  % ================= ВЕРХНІЙ ПРОВІДНИК СТРУМУ I (ОБ'ЄМНИЙ) =================
+  % ================= ВЕРХНІЙ ПРОВІДНИК =================
   \pgfmathsetmacro{\ztop}{\H+\thick}
-  \pgfmathsetmacro{\ztopend}{\H+\thick+1.4}
-
-  % Бічна циліндрична поверхня
-  \fill[gray!50] (-\rwire,0,\ztopend) arc (180:360:\rwire) -- (\rwire,0,\ztop) arc (360:180:\rwire) -- cycle;
-  \draw[black!60] (-\rwire,0,\ztop) arc (180:360:\rwire);
-  \draw[black!60] (-\rwire,0,\ztopend) arc (180:360:\rwire);
-  \draw[black!60] (-\rwire,0,\ztop) -- (-\rwire,0,\ztopend);
-  \draw[black!60] (\rwire,0,\ztop) -- (\rwire,0,\ztopend);
-  % Верхня грань верхнього провідника
+  \pgfmathsetmacro{\ztopend}{\H+\thick+\lwire}
+  \cpside{\rwire}{\ztop}{\ztopend}{55}
   \draw[fill=gray!20, draw=black!60] (0,0,\ztopend) circle [radius=\rwire];
-
-  % Стрілка струму I
-  \draw[->, thick, black] (0,0,\ztop+0.3) -- (0,0,\ztop+1.1) node[right=4pt] {$I$};
+  \draw[->, thick, black] (0,0,\ztop+0.2) -- (0,0,\ztop+1.15) node[right=4pt, pos=0.6] {$I$};
 
   % ================= РОЗМІРИ ТА ПОЗНАЧЕННЯ =================
-  % Радіус R
-  \draw[<->, black, thin] (0,0,\H+\thick) -- (\R,0,\H+\thick) node[midway, above] {$R$};
-
-  % Відстань h між пластинами
+  \draw[<->, black, thin] (0.25,0,\H+\thick) -- (\R,0,\H+\thick) node[midway, above] {$R$};
   \draw[<->, black, thin] (-\R-0.5, 0, 0) -- (-\R-0.5, 0, \H) node[midway, left] {$h$};
   \draw[gray!50, dotted] (-\R,0,0) -- (-\R-0.7,0,0);
   \draw[gray!50, dotted] (-\R,0,\H) -- (-\R-0.7,0,\H);
-
 \end{tikzpicture}

@@ -1,14 +1,19 @@
-% Адаптовано з MaxwellEqns.tex (слайд "Закон збереження енергії електромагнітного поля")
+% Баланс енергії в області V: енергія поля зменшується через потік Π крізь S і роботу над зарядами (j·E)
 \begin{tikzpicture}[>=latex, scale=1]
 	\pgfmathsetseed{55}
-	\foreach \a in {0,10,...,350}
-		{
-			\pgfmathparse{1.2*abs(rand)}
-			\node[inner sep=1pt, circle, ball color=red!50] at (\a:{\pgfmathresult}) {};
-			\draw[->] (0,0) ++(\a:2) -- ++(\a:0.5);
-		}
-	\draw[ball color=gray!5, name path=metall, smooth, opacity=0.5] plot
-		[smooth cycle,
-			samples=8,domain={1:10}]
-	(\x*360/10+5*rnd:1cm+1cm*rnd);
+	% заряди всередині (над ними поле виконує роботу j·E)
+	\foreach \a in {0,20,...,340} {
+		\pgfmathparse{1.1*abs(rand)}
+		\node[inner sep=1.2pt, circle, ball color=gray!50] at (\a:{\pgfmathresult}) {};
+	}
+	% поверхня S
+	\draw[ball color=gray!5, smooth, opacity=0.5, thick] plot
+		[smooth cycle, samples=8, domain={1:10}] (\x*360/10+5*rnd:1cm+1cm*rnd);
+	% потік Π назовні
+	\foreach \a in {0,30,...,330}
+		\draw[->, ffield, thick] (\a:2.05) -- ++(\a:0.55);
+	\node[ffield] at (15:2.95) {$\vect\Pi$};
+	\node at (75:2.3) {$S$};
+	\node[font=\large] at (-0.35, 0.45) {$V$};
+	\node[font=\scriptsize, fill=white, fill opacity=0.7, text opacity=1, inner sep=1pt] at (0.2,-0.35) {$\vect j\cdot\Efield$};
 \end{tikzpicture}

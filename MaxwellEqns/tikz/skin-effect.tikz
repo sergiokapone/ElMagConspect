@@ -1,63 +1,45 @@
+% Якісне пояснення скін-ефекту: наростаючий струм I створює B (кола навколо осі),
+% зміна B індукує вихрові струми, що біля поверхні йдуть уздовж I, а біля осі -- проти I
 \begin{tikzpicture}[>=latex, scale=1.5]
-    % Основні параметри
-    \pgfmathsetmacro\h{3}          % Висота
-    \pgfmathsetmacro\R{1}          % Радіус
-    \pgfmathsetmacro\Ry{0.2*\R}   % Стиснення еліпса основи
-    \pgfmathsetmacro\HL{-0.1*\R}  % Межа відблиску
-
-    \coordinate (A) at (0, {-\h/2});
-    \coordinate (B) at (0, {+\h/2});
-
-    % Бічна поверхня циліндра (тінь -- відблиск -- тінь)
-    \begin{scope}
-        \clip (-\R, -\h/2) -- (-\R, \h/2) arc (180:360:{\R} and {\Ry}) -- (\R, -\h/2) arc (0:-180:{\R} and {\Ry});
-        \shade[left color=gray!55, right color=gray!12]
-            (-\R-0.1, -\h/2-\Ry-0.1) rectangle (\HL, \h/2+0.1);
-        \shade[left color=gray!12, right color=gray!78]
-            (\HL, -\h/2-\Ry-0.1) rectangle (\R+0.1, \h/2+0.1);
-    \end{scope}
-
-    % Вертикальні твірні
-    \draw (-\R, -\h/2) -- (-\R, \h/2)
-          ( \R, -\h/2) -- ( \R, \h/2);
-
-    % Видима (передня) частина нижньої основи
-    \draw (-\R, -\h/2) arc (180:360:{\R} and {\Ry});
-
-    % Верхня основа
-    \shade[ball color=gray!20] (0, \h/2) circle ({\R} and {\Ry});
-    \draw (0, \h/2) circle ({\R} and {\Ry});
-
-    % Стрілка для струму
-    \draw[->] ([yshift={\h*0.3cm}]A) -- ([yshift={-\h*0.3cm}]B) node[above] {$I$};
-
-    % Параметри для витків
-    \def\fLarge{0.8}  % Масштаб великого витка
-    \def\fSmall{0.4}  % Масштаб маленького витка
-
-    % Витки на різних рівнях
-    \foreach \y in {-1.5, -1, ..., +1.5} {
-        \pgfmathtruncatemacro{\c}{round(\y)}
-        \ifnum\c=0 \edef\t{1} \else \edef\t{0.1} \fi % Прозорість
-        \begin{scope}[opacity=\t]
-
-            % Великий виток
-            \draw[arrowpos={0.4}{0}{3pt}, jfield] (0,{0.8*\y})
-            [partial ellipse=91:{360+89}:{\fLarge*\R} and {\fLarge*0.2*\R}];
-
-            \draw[arrowpos={0.5}{2pt}{3pt}, arrowpos={1}{2pt}{3pt}, efield, yscale=-1] (0,{0.8*\y})
-            ++(180:{\fLarge*\R}) circle(0.2);
-            \draw[arrowpos={0}{2pt}{3pt}, arrowpos={0.5}{2pt}{3pt}, efield] (0,{0.8*\y})
-            ++(0:{\fLarge*\R}) circle(0.2);
-
-            % Маленький виток
-%           \draw[arrowpos={0.4}{0}{2pt}, blue] (0,{0.8*\y})
-%           [partial ellipse=91:{360+89}:{\fSmall*\R} and {\fSmall*0.2*\R}];
-%
-%           \draw[arrowpos={0.5}{1.2pt}{2pt}, red, yscale=-1] (0,{0.8*\y})
-%           ++(180:{\fSmall*\R}) circle(0.1);
-%           \draw[arrowpos={0.5}{1.2pt}{2pt}, red, rotate=180] (0,{0.8*\y})
-%           ++(180:{\fSmall*\R}) circle(0.1);
-        \end{scope}
-    }
+	\pgfmathsetmacro\h{3}
+	\pgfmathsetmacro\R{1}
+	\pgfmathsetmacro\Ry{0.2*\R}
+	\pgfmathsetmacro\HL{-0.1*\R}
+	\def\rb{0.62}  % радіус кіл B
+	\def\xi{0.22}  % внутрішній (біля осі) бік вихрової петлі
+	\def\xo{0.84}  % зовнішній (біля поверхні) бік вихрової петлі
+	\def\yb{-0.75}\def\yt{0.55}  % низ і верх вихрових петель
+	\tikzset{eddy/.style={jfield, thick, rounded corners=4pt, postaction={decorate, decoration={markings,
+		mark=at position 0.03 with {\arrow{Latex[scale=1.4]}}, mark=at position 0.53 with {\arrow{Latex[scale=1.4]}}}}}}
+	% бічна поверхня
+	\begin{scope}
+		\clip (-\R, -\h/2) -- (-\R, \h/2) arc (180:360:{\R} and {\Ry}) -- (\R, -\h/2) arc (0:-180:{\R} and {\Ry});
+		\shade[left color=gray!45, right color=gray!8] (-\R-0.1, -\h/2-\Ry-0.1) rectangle (\HL, \h/2+0.1);
+		\shade[left color=gray!8, right color=gray!60] (\HL, -\h/2-\Ry-0.1) rectangle (\R+0.1, \h/2+0.1);
+	\end{scope}
+	\draw (-\R, -\h/2) -- (-\R, \h/2) (\R, -\h/2) -- (\R, \h/2);
+	\draw (-\R, -\h/2) arc (180:360:{\R} and {\Ry});
+	\fill[gray!12] (0, \h/2) ellipse ({\R} and {\Ry});
+	\draw (0, \h/2) ellipse ({\R} and {\Ry});
+	% вісь і струм
+	\draw[gray, dash dot, thin] (0, -\h/2-0.3) -- (0, \h/2+0.3);
+	\draw[->, very thick] (0, \h/2+0.1) -- (0, \h/2+0.7) node[right] {$I,\ \dfrac{dI}{dt}>0$};
+	% кола B -- вище й нижче вихрових петель: задня дуга пунктиром, передня зі стрілкою
+	\foreach \y in {-1.12, 0.95} {
+		\draw[bfield, thin, dashed] (\rb, \y) arc (0:180:{\rb} and {0.2*\rb});
+		\draw[bfield, thick, postaction={decorate, decoration={markings, mark=at position 0.5 with {\arrow{Latex[scale=1.2]}}}}]
+			(-\rb, \y) arc (180:360:{\rb} and {0.2*\rb});
+	}
+	% вихрові петлі в площині рисунка; шлях починається посередині зовнішнього боку,
+	% тож стрілки стоять посередині вертикальних боків: зовнішній -- вгору, внутрішній -- вниз
+	\pgfmathsetmacro\ym{(\yb+\yt)/2}
+	\foreach \s in {1, -1}
+		\draw[eddy] ({\s*\xo}, \ym) -- ({\s*\xo}, \yt) -- ({\s*\xi}, \yt) -- ({\s*\xi}, \yb) -- ({\s*\xo}, \yb) -- cycle;
+	% підписи
+	\node[bfield, below] at (0, -1.12-0.2*\rb) {$\Bfield$};
+	\node[jfield, font=\small] at (0.53, \yt+0.17) {$\vect j_\text{вихр}$};
+	\draw[->, thick, jfield] (\R+0.35, -0.05) -- ++(0, 0.5);
+	\node[right, font=\scriptsize, align=left] at (\R+0.4, 0.2) {біля поверхні:\\[-2pt]$\vect j_\text{вихр}\uparrow\uparrow I$};
+	\draw[->, thick, jfield] (\R+0.35, -0.55) -- ++(0, -0.5);
+	\node[right, font=\scriptsize, align=left] at (\R+0.4, -0.8) {біля осі:\\[-2pt]$\vect j_\text{вихр}\uparrow\downarrow I$};
 \end{tikzpicture}

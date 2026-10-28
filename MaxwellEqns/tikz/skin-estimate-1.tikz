@@ -43,7 +43,7 @@
 		\draw[->, efield, ultra thin] ({\x-1},-0.5) -- ++(0, {1-2*\x});
 	}
 
-	% Сині витки
+	% Лінії B навколо осі
 	\foreach \y in {-0.4,0,0.4} {
 		\draw[arrowpos={0.5}{0}{2pt}, bfield, ultra thin] (0,{\fLarge*\y})
 		[partial ellipse=91:{360+89}:{\fLarge*\R} and {\fLarge*0.1*\R}];

@@ -1,36 +1,242 @@
-% Скін-ефект: розподіл струму в перерізі провідника при різних частотах (об'ємний вигляд)
+% Скін-ефект: густина струму в перерізі мідного дроту діаметром 0,5 мм.
+% Розподіл |j(r)| = |J0(kr)|/|J0(kR)|, k=(1-i)/delta, обчислено заздалегідь (колір ~ |j|).
 \begin{tikzpicture}[scale=1]
+	\colorlet{skinlow}{gray!8}
 	\def\r{1}
 	\def\vx{0.55}\def\vy{0.42}       % зсув задньої основи (косокутна проєкція)
-	\def\tx{0.607}\def\ty{0.795}     % дотична точка до бічної поверхні
-	\coordinate (A) at (0,0);
-	\coordinate (B) at (2.9,0);
-	\coordinate (C) at (5.8,0);
-	\coordinate (D) at (8.7,0);
-
-	\node[font=\normalsize] at ([yshift=2.3cm, xshift=0.25cm]A) {$50$~Гц};
-	\node[font=\normalsize] at ([yshift=2.3cm, xshift=0.25cm]B) {$50$~кГц};
-	\node[font=\normalsize] at ([yshift=2.3cm, xshift=0.25cm]C) {$1$~МГц};
-	\node[font=\normalsize] at ([yshift=2.3cm, xshift=0.25cm]D) {$50$~МГц};
-
-	% циліндри: задня основа та бічна поверхня
-	\foreach \P in {A,B,C,D} {
-		\begin{scope}[shift={(\P)}]
-			\fill[gray!30] (\vx, \vy) circle (\r);
-			\shade[left color=gray!62, right color=gray!14] (-\tx, \ty) -- (\tx, -\ty) -- ({\tx+\vx}, {-\ty+\vy}) -- ({-\tx+\vx}, {\ty+\vy}) -- cycle;
-			\draw[wirecolor!50, thin] (-\tx, \ty) -- ({-\tx+\vx}, {\ty+\vy}) (\tx, -\ty) -- ({\tx+\vx}, {-\ty+\vy});
+	\def\tx{0.607}\def\ty{0.795}     % точки дотику твірних (перпендикулярно до зсуву)
+	% бічна поверхня: одна замкнена фігура між твірними (видно лише частину за торцем),
+	% тінь поперек осі циліндра; задня основа невидима, тож її не малюємо
+	\newcommand{\skinside}{%
+		\begin{scope}
+			\clip (-\tx, \ty) -- ++(\vx, \vy) arc[start angle=127.4, end angle=-52.6, radius=\r] -- (\tx, -\ty) arc[start angle=-52.6, end angle=127.4, radius=\r] -- cycle;
+			\shade[top color=gray!30, middle color=gray!8, bottom color=gray!62, shading angle=37.4] (-1.3, -1.3) rectangle (1.9, 1.75);
 		\end{scope}
+		\draw[wirecolor!50, thin] (-\tx, \ty) -- ++(\vx, \vy) arc[start angle=127.4, end angle=-52.6, radius=\r] -- (\tx, -\ty);
 	}
-	% передні основи: густина струму (глибина проникнення зменшується з частотою)
-	\fill[inner color=jfield!55, outer color=jfield] (A) circle (\r);
-	\fill[inner color=gray!12, outer color=jfield] (B) circle (\r);
-	\fill[gray!12] (B) circle (0.5);
-	\fill[inner color=gray!12, outer color=jfield] (C) circle (\r);
-	\fill[gray!12] (C) circle (0.8);
-	\fill[inner color=gray!12, outer color=jfield] (D) circle (\r);
-	\fill[gray!12] (D) circle (0.95);
-	\foreach \P in {A,B,C,D}
-		\draw[wirecolor!70, thin] (\P) circle (\r);
-
-	\node[align=center, font=\normalsize] at ({(5.8+2.9)/2},-1.7) {Для провідника діаметром $0.5$~мм};
+	% f = 50 Гц: delta = 9348.0 мкм
+	\begin{scope}[shift={(0,0)}]
+		\skinside
+		\fill[jfield!100!skinlow] (0,0) circle (1.0000);
+		\fill[jfield!100!skinlow] (0,0) circle (0.9792);
+		\fill[jfield!100!skinlow] (0,0) circle (0.9583);
+		\fill[jfield!100!skinlow] (0,0) circle (0.9375);
+		\fill[jfield!100!skinlow] (0,0) circle (0.9167);
+		\fill[jfield!100!skinlow] (0,0) circle (0.8958);
+		\fill[jfield!100!skinlow] (0,0) circle (0.8750);
+		\fill[jfield!100!skinlow] (0,0) circle (0.8542);
+		\fill[jfield!100!skinlow] (0,0) circle (0.8333);
+		\fill[jfield!100!skinlow] (0,0) circle (0.8125);
+		\fill[jfield!100!skinlow] (0,0) circle (0.7917);
+		\fill[jfield!100!skinlow] (0,0) circle (0.7708);
+		\fill[jfield!100!skinlow] (0,0) circle (0.7500);
+		\fill[jfield!100!skinlow] (0,0) circle (0.7292);
+		\fill[jfield!100!skinlow] (0,0) circle (0.7083);
+		\fill[jfield!100!skinlow] (0,0) circle (0.6875);
+		\fill[jfield!100!skinlow] (0,0) circle (0.6667);
+		\fill[jfield!100!skinlow] (0,0) circle (0.6458);
+		\fill[jfield!100!skinlow] (0,0) circle (0.6250);
+		\fill[jfield!100!skinlow] (0,0) circle (0.6042);
+		\fill[jfield!100!skinlow] (0,0) circle (0.5833);
+		\fill[jfield!100!skinlow] (0,0) circle (0.5625);
+		\fill[jfield!100!skinlow] (0,0) circle (0.5417);
+		\fill[jfield!100!skinlow] (0,0) circle (0.5208);
+		\fill[jfield!100!skinlow] (0,0) circle (0.5000);
+		\fill[jfield!100!skinlow] (0,0) circle (0.4792);
+		\fill[jfield!100!skinlow] (0,0) circle (0.4583);
+		\fill[jfield!100!skinlow] (0,0) circle (0.4375);
+		\fill[jfield!100!skinlow] (0,0) circle (0.4167);
+		\fill[jfield!100!skinlow] (0,0) circle (0.3958);
+		\fill[jfield!100!skinlow] (0,0) circle (0.3750);
+		\fill[jfield!100!skinlow] (0,0) circle (0.3542);
+		\fill[jfield!100!skinlow] (0,0) circle (0.3333);
+		\fill[jfield!100!skinlow] (0,0) circle (0.3125);
+		\fill[jfield!100!skinlow] (0,0) circle (0.2917);
+		\fill[jfield!100!skinlow] (0,0) circle (0.2708);
+		\fill[jfield!100!skinlow] (0,0) circle (0.2500);
+		\fill[jfield!100!skinlow] (0,0) circle (0.2292);
+		\fill[jfield!100!skinlow] (0,0) circle (0.2083);
+		\fill[jfield!100!skinlow] (0,0) circle (0.1875);
+		\fill[jfield!100!skinlow] (0,0) circle (0.1667);
+		\fill[jfield!100!skinlow] (0,0) circle (0.1458);
+		\fill[jfield!100!skinlow] (0,0) circle (0.1250);
+		\fill[jfield!100!skinlow] (0,0) circle (0.1042);
+		\fill[jfield!100!skinlow] (0,0) circle (0.0833);
+		\fill[jfield!100!skinlow] (0,0) circle (0.0625);
+		\fill[jfield!100!skinlow] (0,0) circle (0.0417);
+		\fill[jfield!100!skinlow] (0,0) circle (0.0208);
+		\draw[wirecolor!70, thin] (0,0) circle (\r);
+		\node[font=\normalsize] at (0.25,2.3) {$50$~Гц};
+		\node[font=\footnotesize] at (0,-1.35) {$\delta\approx9$~мм};
+	\end{scope}
+	% f = 200000 Гц: delta = 147.8 мкм
+	\begin{scope}[shift={(2.9,0)}]
+		\skinside
+		\fill[jfield!99!skinlow] (0,0) circle (1.0000);
+		\fill[jfield!97!skinlow] (0,0) circle (0.9792);
+		\fill[jfield!95!skinlow] (0,0) circle (0.9583);
+		\fill[jfield!93!skinlow] (0,0) circle (0.9375);
+		\fill[jfield!91!skinlow] (0,0) circle (0.9167);
+		\fill[jfield!89!skinlow] (0,0) circle (0.8958);
+		\fill[jfield!88!skinlow] (0,0) circle (0.8750);
+		\fill[jfield!86!skinlow] (0,0) circle (0.8542);
+		\fill[jfield!85!skinlow] (0,0) circle (0.8333);
+		\fill[jfield!83!skinlow] (0,0) circle (0.8125);
+		\fill[jfield!82!skinlow] (0,0) circle (0.7917);
+		\fill[jfield!81!skinlow] (0,0) circle (0.7708);
+		\fill[jfield!80!skinlow] (0,0) circle (0.7500);
+		\fill[jfield!79!skinlow] (0,0) circle (0.7292);
+		\fill[jfield!78!skinlow] (0,0) circle (0.7083);
+		\fill[jfield!77!skinlow] (0,0) circle (0.6875);
+		\fill[jfield!76!skinlow] (0,0) circle (0.6667);
+		\fill[jfield!75!skinlow] (0,0) circle (0.6458);
+		\fill[jfield!74!skinlow] (0,0) circle (0.6250);
+		\fill[jfield!74!skinlow] (0,0) circle (0.6042);
+		\fill[jfield!73!skinlow] (0,0) circle (0.5833);
+		\fill[jfield!73!skinlow] (0,0) circle (0.5625);
+		\fill[jfield!72!skinlow] (0,0) circle (0.5417);
+		\fill[jfield!72!skinlow] (0,0) circle (0.5208);
+		\fill[jfield!72!skinlow] (0,0) circle (0.5000);
+		\fill[jfield!71!skinlow] (0,0) circle (0.4792);
+		\fill[jfield!71!skinlow] (0,0) circle (0.4583);
+		\fill[jfield!71!skinlow] (0,0) circle (0.4375);
+		\fill[jfield!71!skinlow] (0,0) circle (0.4167);
+		\fill[jfield!70!skinlow] (0,0) circle (0.3958);
+		\fill[jfield!70!skinlow] (0,0) circle (0.3750);
+		\fill[jfield!70!skinlow] (0,0) circle (0.3542);
+		\fill[jfield!70!skinlow] (0,0) circle (0.3333);
+		\fill[jfield!70!skinlow] (0,0) circle (0.3125);
+		\fill[jfield!70!skinlow] (0,0) circle (0.2917);
+		\fill[jfield!70!skinlow] (0,0) circle (0.2708);
+		\fill[jfield!70!skinlow] (0,0) circle (0.2500);
+		\fill[jfield!70!skinlow] (0,0) circle (0.2292);
+		\fill[jfield!70!skinlow] (0,0) circle (0.2083);
+		\fill[jfield!70!skinlow] (0,0) circle (0.1875);
+		\fill[jfield!70!skinlow] (0,0) circle (0.1667);
+		\fill[jfield!70!skinlow] (0,0) circle (0.1458);
+		\fill[jfield!70!skinlow] (0,0) circle (0.1250);
+		\fill[jfield!70!skinlow] (0,0) circle (0.1042);
+		\fill[jfield!70!skinlow] (0,0) circle (0.0833);
+		\fill[jfield!70!skinlow] (0,0) circle (0.0625);
+		\fill[jfield!70!skinlow] (0,0) circle (0.0417);
+		\fill[jfield!70!skinlow] (0,0) circle (0.0208);
+		\draw[wirecolor!70, thin] (0,0) circle (\r);
+		\node[font=\normalsize] at (0.25,2.3) {$200$~кГц};
+		\node[font=\footnotesize] at (0,-1.35) {$\delta\approx0{,}15$~мм};
+	\end{scope}
+	% f = 3e+06 Гц: delta = 38.2 мкм
+	\begin{scope}[shift={(5.8,0)}]
+		\skinside
+		\fill[jfield!94!skinlow] (0,0) circle (1.0000);
+		\fill[jfield!83!skinlow] (0,0) circle (0.9792);
+		\fill[jfield!73!skinlow] (0,0) circle (0.9583);
+		\fill[jfield!64!skinlow] (0,0) circle (0.9375);
+		\fill[jfield!57!skinlow] (0,0) circle (0.9167);
+		\fill[jfield!50!skinlow] (0,0) circle (0.8958);
+		\fill[jfield!44!skinlow] (0,0) circle (0.8750);
+		\fill[jfield!39!skinlow] (0,0) circle (0.8542);
+		\fill[jfield!35!skinlow] (0,0) circle (0.8333);
+		\fill[jfield!31!skinlow] (0,0) circle (0.8125);
+		\fill[jfield!27!skinlow] (0,0) circle (0.7917);
+		\fill[jfield!24!skinlow] (0,0) circle (0.7708);
+		\fill[jfield!21!skinlow] (0,0) circle (0.7500);
+		\fill[jfield!19!skinlow] (0,0) circle (0.7292);
+		\fill[jfield!17!skinlow] (0,0) circle (0.7083);
+		\fill[jfield!15!skinlow] (0,0) circle (0.6875);
+		\fill[jfield!13!skinlow] (0,0) circle (0.6667);
+		\fill[jfield!12!skinlow] (0,0) circle (0.6458);
+		\fill[jfield!10!skinlow] (0,0) circle (0.6250);
+		\fill[jfield!9!skinlow] (0,0) circle (0.6042);
+		\fill[jfield!8!skinlow] (0,0) circle (0.5833);
+		\fill[jfield!7!skinlow] (0,0) circle (0.5625);
+		\fill[jfield!6!skinlow] (0,0) circle (0.5417);
+		\fill[jfield!6!skinlow] (0,0) circle (0.5208);
+		\fill[jfield!5!skinlow] (0,0) circle (0.5000);
+		\fill[jfield!5!skinlow] (0,0) circle (0.4792);
+		\fill[jfield!4!skinlow] (0,0) circle (0.4583);
+		\fill[jfield!4!skinlow] (0,0) circle (0.4375);
+		\fill[jfield!3!skinlow] (0,0) circle (0.4167);
+		\fill[jfield!3!skinlow] (0,0) circle (0.3958);
+		\fill[jfield!3!skinlow] (0,0) circle (0.3750);
+		\fill[jfield!2!skinlow] (0,0) circle (0.3542);
+		\fill[jfield!2!skinlow] (0,0) circle (0.3333);
+		\fill[jfield!2!skinlow] (0,0) circle (0.3125);
+		\fill[jfield!2!skinlow] (0,0) circle (0.2917);
+		\fill[jfield!2!skinlow] (0,0) circle (0.2708);
+		\fill[jfield!1!skinlow] (0,0) circle (0.2500);
+		\fill[jfield!1!skinlow] (0,0) circle (0.2292);
+		\fill[jfield!1!skinlow] (0,0) circle (0.2083);
+		\fill[jfield!1!skinlow] (0,0) circle (0.1875);
+		\fill[jfield!1!skinlow] (0,0) circle (0.1667);
+		\fill[jfield!1!skinlow] (0,0) circle (0.1458);
+		\fill[jfield!1!skinlow] (0,0) circle (0.1250);
+		\fill[jfield!1!skinlow] (0,0) circle (0.1042);
+		\fill[jfield!1!skinlow] (0,0) circle (0.0833);
+		\fill[jfield!1!skinlow] (0,0) circle (0.0625);
+		\fill[jfield!1!skinlow] (0,0) circle (0.0417);
+		\fill[jfield!1!skinlow] (0,0) circle (0.0208);
+		\draw[wirecolor!70, thin] (0,0) circle (\r);
+		\node[font=\normalsize] at (0.25,2.3) {$3$~МГц};
+		\node[font=\footnotesize] at (0,-1.35) {$\delta\approx38$~мкм};
+	\end{scope}
+	% f = 1e+08 Гц: delta = 6.6 мкм
+	\begin{scope}[shift={(8.7,0)}]
+		\skinside
+		\fill[jfield!68!skinlow] (0,0) circle (1.0000);
+		\fill[jfield!31!skinlow] (0,0) circle (0.9792);
+		\fill[jfield!14!skinlow] (0,0) circle (0.9583);
+		\fill[jfield!7!skinlow] (0,0) circle (0.9375);
+		\fill[jfield!3!skinlow] (0,0) circle (0.9167);
+		\fill[jfield!1!skinlow] (0,0) circle (0.8958);
+		\fill[jfield!1!skinlow] (0,0) circle (0.8750);
+		\fill[jfield!0!skinlow] (0,0) circle (0.8542);
+		\fill[jfield!0!skinlow] (0,0) circle (0.8333);
+		\fill[jfield!0!skinlow] (0,0) circle (0.8125);
+		\fill[jfield!0!skinlow] (0,0) circle (0.7917);
+		\fill[jfield!0!skinlow] (0,0) circle (0.7708);
+		\fill[jfield!0!skinlow] (0,0) circle (0.7500);
+		\fill[jfield!0!skinlow] (0,0) circle (0.7292);
+		\fill[jfield!0!skinlow] (0,0) circle (0.7083);
+		\fill[jfield!0!skinlow] (0,0) circle (0.6875);
+		\fill[jfield!0!skinlow] (0,0) circle (0.6667);
+		\fill[jfield!0!skinlow] (0,0) circle (0.6458);
+		\fill[jfield!0!skinlow] (0,0) circle (0.6250);
+		\fill[jfield!0!skinlow] (0,0) circle (0.6042);
+		\fill[jfield!0!skinlow] (0,0) circle (0.5833);
+		\fill[jfield!0!skinlow] (0,0) circle (0.5625);
+		\fill[jfield!0!skinlow] (0,0) circle (0.5417);
+		\fill[jfield!0!skinlow] (0,0) circle (0.5208);
+		\fill[jfield!0!skinlow] (0,0) circle (0.5000);
+		\fill[jfield!0!skinlow] (0,0) circle (0.4792);
+		\fill[jfield!0!skinlow] (0,0) circle (0.4583);
+		\fill[jfield!0!skinlow] (0,0) circle (0.4375);
+		\fill[jfield!0!skinlow] (0,0) circle (0.4167);
+		\fill[jfield!0!skinlow] (0,0) circle (0.3958);
+		\fill[jfield!0!skinlow] (0,0) circle (0.3750);
+		\fill[jfield!0!skinlow] (0,0) circle (0.3542);
+		\fill[jfield!0!skinlow] (0,0) circle (0.3333);
+		\fill[jfield!0!skinlow] (0,0) circle (0.3125);
+		\fill[jfield!0!skinlow] (0,0) circle (0.2917);
+		\fill[jfield!0!skinlow] (0,0) circle (0.2708);
+		\fill[jfield!0!skinlow] (0,0) circle (0.2500);
+		\fill[jfield!0!skinlow] (0,0) circle (0.2292);
+		\fill[jfield!0!skinlow] (0,0) circle (0.2083);
+		\fill[jfield!0!skinlow] (0,0) circle (0.1875);
+		\fill[jfield!0!skinlow] (0,0) circle (0.1667);
+		\fill[jfield!0!skinlow] (0,0) circle (0.1458);
+		\fill[jfield!0!skinlow] (0,0) circle (0.1250);
+		\fill[jfield!0!skinlow] (0,0) circle (0.1042);
+		\fill[jfield!0!skinlow] (0,0) circle (0.0833);
+		\fill[jfield!0!skinlow] (0,0) circle (0.0625);
+		\fill[jfield!0!skinlow] (0,0) circle (0.0417);
+		\fill[jfield!0!skinlow] (0,0) circle (0.0208);
+		\draw[wirecolor!70, thin] (0,0) circle (\r);
+		\node[font=\normalsize] at (0.25,2.3) {$100$~МГц};
+		\node[font=\footnotesize] at (0,-1.35) {$\delta\approx6{,}5$~мкм};
+	\end{scope}
+	% шкала кольору
+	\shade[left color=skinlow, right color=jfield] (3.0,-2.25) rectangle (5.6,-2.05);
+	\draw[wirecolor!70, thin] (3.0,-2.25) rectangle (5.6,-2.05);
+	\node[font=\footnotesize, anchor=east] at (3.0,-2.15) {$j=0$};
+	\node[font=\footnotesize, anchor=west] at (5.6,-2.15) {$j=j_\text{пов}$};
 \end{tikzpicture}

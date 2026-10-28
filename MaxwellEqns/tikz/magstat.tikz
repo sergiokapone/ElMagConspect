@@ -3,9 +3,13 @@
 	\def\Ht{3.4}      % півдовжина дроту
 	\def\rw{0.2}      % радіус дроту
 	\def\ryw{0.07}
-	% задня половина магнітних ліній (за дротом)
-	\foreach \z/\a in {-1.2/0.8, 0.2/1.2, 1.6/1.7} {
-		\draw[bfield!45, dash pattern=on 2pt off 0.8pt] (\a, \z) arc[start angle=0, end angle=180, x radius=\a, y radius={0.3*\a}];
+	% три "поверхи" кіл: знизу, посередині, зверху
+	\def\Zs{-1.6/0, 0/0, 1.6/0}
+	% задня половина магнітних ліній
+	\foreach \z/\dummy in \Zs {
+		\foreach \a in {0.7, 1.1, 1.5} {
+			\draw[bfield!45, dash pattern=on 2pt off 0.8pt] (\a, \z) arc[start angle=0, end angle=180, x radius=\a, y radius={0.32*\a}];
+		}
 	}
 	% дріт: циліндр з градієнтом
 	\shade[left color=gray!55, right color=gray!15] (-\rw, -\Ht) rectangle (0, \Ht);
@@ -15,8 +19,10 @@
 	% напрямок струму
 	\draw[->, jfield, ultra thick] (0, -2.9) -- (0, -1.9) node[right, pos=0.5, text=black] {$I$};
 	% передня половина магнітних ліній (стрілки)
-	\foreach \z/\a in {-1.2/0.8, 0.2/1.2, 1.6/1.7} {
-		\draw[bfield, thin, arrowpos={0.5}{2pt}{3pt}] (\a, \z) arc[start angle=0, end angle=-180, x radius=\a, y radius={0.3*\a}];
+	\foreach \z/\dummy in \Zs {
+		\foreach \a in {0.7, 1.1, 1.5} {
+			\draw[bfield, thin, arrowpos={0.5}{2pt}{3pt}] (\a, \z) arc[start angle=0, end angle=-180, x radius=\a, y radius={0.32*\a}];
+		}
 	}
 	\node[bfield, font=\small] at (1.9, 0.25) {$\Bfield$};
 \end{tikzpicture}
