@@ -12,8 +12,9 @@
 		}
 	}
 	% дріт: циліндр з градієнтом
-	\shade[left color=gray!55, right color=gray!15] (-\rw, -\Ht) rectangle (0, \Ht);
-	\shade[left color=gray!15, right color=gray!78] (0, -\Ht) rectangle (\rw, \Ht);
+	\shade[left color=gray!55, right color=gray!15] (-\rw, \Ht) -- (-\rw, -\Ht) arc[start angle=180, end angle=270, x radius=\rw, y radius=\ryw] -- (0, \Ht) -- cycle;
+	\shade[left color=gray!15, right color=gray!78] (0, \Ht) -- (0, -\Ht-\ryw) arc[start angle=270, end angle=360, x radius=\rw, y radius=\ryw] -- (\rw, \Ht) -- cycle;
+	\draw[wirecolor, thin] (-\rw, \Ht) -- (-\rw, -\Ht) arc[start angle=180, end angle=360, x radius=\rw, y radius=\ryw] -- (\rw, \Ht);
 	\shade[ball color=gray!25] (0, \Ht) ellipse ({\rw} and {\ryw});
 	\draw[wirecolor, thin] (0, \Ht) ellipse ({\rw} and {\ryw});
 	% напрямок струму

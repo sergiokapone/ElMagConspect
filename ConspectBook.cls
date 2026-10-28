@@ -872,6 +872,16 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 {#1}
 [.]
 
+% Підзаголовок без номера (всередині підсекції): у підбір з текстом, напівжирний курсив
+% з маркером ▸; нумеровані \subsubsection (додатки) лишаються за стандартним оформленням
+\titleformat{name=\subsubsection,numberless}[runin]
+{\normalsize\bfseries\itshape}
+{}
+{0pt}
+{$\scriptstyle\blacktriangleright$\,#1}
+[.]
+\titlespacing*{\subsubsection}{0pt}{1.5ex plus 0.5ex minus 0.2ex}{1em}
+
 
 % Колонтитули: на парних сторінках — назва глави, на непарних — теж (крім
 % спеціальних стилів для Відповідей/Додатків/Бібліографії, де замість назви
