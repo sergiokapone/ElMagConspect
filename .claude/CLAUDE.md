@@ -40,6 +40,11 @@ Commits go straight to `main`; commit and push only when asked.
 - One chapter with the book class: `python chapter.py <Folder> --png` (test.tex + latexmk -usepretex) ->
   `_chapters/<Folder>.pdf` and page PNGs to check the layout (widows, split boxes). `--tikz <name>` builds one picture.
   Refs to other chapters stay `??`; the running head shows "Частина .": that is normal.
+- Layout check of the whole PDF: `python elmag.py lint` (`layout_lint.py`, PyMuPDF): sparse pages (`gap-bottom`, `gap-inside`),
+  widows, orphans, tcolorbox slivers (1-2 lines of a split box). `--chapter <part of the title>`, `--sheet` saves contact sheets
+  of the flagged pages to `_lint/`. Reads `docs/ElMagConspect.pdf` (or `main.pdf`); the answers section is skipped.
+  A `gap-inside` usually means: with `\flushbottom` the empty space left by an unbreakable box or a float that did not fit is spread
+  over the glue around headings; cure: make that box breakable or move the figure before it.
 - After a review round: `python elmag.py pdf`, then `python elmag.py html`, commit `docs/`, push (only when asked).
 - `elmag.py` is the entry point for everything (pdf, html, serve, clean, purge, size, status, push, chapter): an interactive
   shell or one command; it only calls the scripts. A new script of the project gets a command there.
@@ -59,6 +64,11 @@ Commits go straight to `main`; commit and push only when asked.
   downloads). The repo is cleaned of old PDF / docs/ versions periodically with `clean_repo.py` (`--dry-run` first).
 
 ## MathJax
+- `mathjax-macros.tex` is generated (TSS Workflow, from `ConspectBook.cls`) and can silently lose entries when the class changes
+  (`\tcbhighmath` was lost this way: no boxes in the HTML). Macros that must always reach MathJax go to `ALWAYS` in `mathjax2lwarp.py`.
+  `npm i` in the project root installs `mathjax-full@3`; then `build-html.ps1` runs `check-mathjax-html.js` (every formula of the
+  page through MathJax with the macros from `lwarp-mathjax.tex`) and reports undefined macros. Run it by hand:
+  `node check-mathjax-html.js docs/ch*.html`.
 - lwarp 0.922 hard-codes MathJax 3 (`mathjax@3/es5/tex-svg.js`) with its own `startup.ready()` code that uses v3-internal
   modules; MathJax 4 would need that code ported. MathJax 3 has no line breaking: `book.js` splits long display
   formulas itself (top-level TeX break points -> `aligned`).

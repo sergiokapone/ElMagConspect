@@ -16,7 +16,10 @@ RENEW = {'phi', 'epsilon', 'iint', 'iiint'}        # already defined in MathJax
 ALWAYS = {'emf': r'\newcommand{\emf}{\mathcal{E}}',
           'tikzmarknode': r'\newcommand{\tikzmarknode}[2]{#2}',   # tikzmark has no meaning in HTML
           'tikzmark': r'\newcommand{\tikzmark}[1]{}',
-          'enquote': r'\newcommand{\enquote}[1]{«#1»}'}   # csquotes, used inside \text{..} in a formula
+          'enquote': r'\newcommand{\enquote}[1]{«#1»}',   # csquotes, used inside \text{..} in a formula
+          'allowbreak': r'\newcommand{\allowbreak}{}',   # line-break hint inside a print formula; MathJax has no such command
+          # print: tcolorbox \tcbhighmath; the generator of mathjax-macros.tex drops it when ConspectBook.cls changes
+          'tcbhighmath': r'\newcommand{\tcbhighmath}[1]{\boxed{#1}}'}
 
 # Math operators that come from babel (Ukrainian/Russian), not from the class, so mathjax-macros.tex does not have them.
 BABEL_OPS = [('sh', 'sh'), ('ch', 'ch'), ('tg', 'tg'), ('ctg', 'ctg'), ('arctg', 'arctg'), ('arcctg', 'arcctg'), ('cth', 'cth'), ('cosec', 'cosec')]

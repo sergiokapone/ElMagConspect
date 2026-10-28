@@ -68,3 +68,9 @@ test_main.pdf
 
 # answers written by the answers package during the build
 *-Answers.tex
+
+# npm: mathjax-full for check-mathjax-html.js
+node_modules/
+
+# layout_lint.py --sheet
+/_lint/

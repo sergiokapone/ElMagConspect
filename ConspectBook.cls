@@ -145,6 +145,8 @@
 \RequirePackage[]{pageslts}
 \pagenumbering{arabic}
 \RequirePackage{microtype}   % мікротипографія (protrusion, expansion) — акуратніші рядки
+% ВИМКНЕНО (28.10.2026): зменшує вдови (45 → 36 знахідок лінтера), але в ElEnergy дало порожнечу 90 мм перед «Контрольними питаннями».
+\RequirePackage[balanced]{lua-widow-control}   % сироти й вдови: подовжує абзац на рядок (\looseness), без розтягування сторінок; не діє всередині tcolorbox. Режими: default (штраф 1), balanced (500, м'якший), strict; \lwcsetup{draft} підсвічує змінені абзаци. Перевірка: python elmag.py lint
 %\RequirePackage[nosingleletter, hyphenation, lastparline]{impnattypo}
 %\usepackage[defaultlines=4,all]{nowidow}
 %\clubpenalty =1000
@@ -1296,7 +1298,8 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 			enhanced,
 			breakable,
 			before skip=2mm,after skip=3mm,
-			before upper={\parindent15pt},
+			% задачу можна розірвати між сторінками, але так, щоб з кожного боку лишалося не менше 3 рядків абзацу
+		before upper={\parindent15pt\clubpenalties=2 10000 10000\relax\widowpenalties=2 10000 10000\relax},
 			boxrule=0.4pt,left=5mm,right=2mm,top=1mm,bottom=1mm,
 			colback=gray!5,
 			colframe=yellow!50,

@@ -41,8 +41,11 @@ These are decisions already made. Follow them; if you think one is wrong, say so
 - Answers to problems written in the chapter text are commented out (`%Відповідь: ...`) so that they are not printed there.
   The answers section at the end of the book is built by the `answers` package from the `solution` blocks
   (`<Folder>-Answers.tex`, generated and git-ignored: never edit it by hand).
-- Problems must not break across pages: around the «Задачі» section
-  `\begingroup\tcbset{answersolutionstyle/.append style={unbreakable}} ... \endgroup`. The class itself is not changed (yet).
+- Problems may break across pages, but not leaving fewer than 3 lines on either side (author's decision, 28.10.2026): this is done
+  once in `ConspectBook.cls` (`\clubpenalties`/`\widowpenalties` in `answersolutionstyle`). The old per-chapter
+  `\begingroup\tcbset{...unbreakable}...\endgroup` is removed: do not add it again (it leaves 30-90 mm gaps before a tall problem).
+- `lua-widow-control` (mode `balanced`) is on in `ConspectBook.cls`: fewer widows/orphans (not inside tcolorbox). Check with `python elmag.py lint`.
+  A gap is "noticeable" from 90 pt at the page bottom / 80 pt inside the page; smaller ones are accepted by the author.
 - Short boxes (`Attention`, `Example`, `Historical`) that would split into 1-3 lines get `[unbreakable]`. A box taller than a page
   (e.g. with a figure) stays breakable, otherwise: overfull \vbox.
 - Environments in use: `problem`/`solution`, `Attention`, `Example`, `Historical`, `Extra`, `Questions`, `quizlist`,

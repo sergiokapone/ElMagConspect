@@ -50,6 +50,12 @@ def cmd_chapter(args):
     return py('chapter.py', *args)
 
 
+def cmd_lint(args):
+    """Layout check of the PDF (layout_lint.py): sparse pages, widows, orphans, box slivers.
+    lint; lint --chapter Хвилеводи (part of the title in the contents); lint --sheet (contact sheets of the flagged pages in _lint/); lint <file.pdf>."""
+    return py('layout_lint.py', *args)
+
+
 def cmd_html(args):
     """HTML version (lwarp) -> docs/: build-html.ps1 with its flags, e.g.  html -SkipPrepare -NoImages"""
     return ps('build-html.ps1', *args)
@@ -110,6 +116,7 @@ def cmd_push(args):
 COMMANDS = {
     'pdf': (cmd_pdf, ['--no-publish', '--full', '--publish-only']),
     'chapter': (cmd_chapter, ['--png', '--tikz', '--full']),
+    'lint': (cmd_lint, ['--chapter', '--sheet', '--all', '--min-gap', '--max-inside', '--sliver']),
     'html': (cmd_html, HTML_FLAGS),
     'serve': (cmd_serve, ['8000', '--no-browser']),
     'clean': (cmd_clean, ['aux', 'bak', 'html', 'all']),
