@@ -9,9 +9,10 @@ Review the chapter `$ARGUMENTS` (a folder name from `main.tex`; if it is empty o
 Work in stages and stop at the marked points: the author decides what is changed.
 
 ## 1. Prepare (read only)
-- Read `$ARGUMENTS/$ARGUMENTS.tex` completely. Read `.claude/rules/conventions.md` and `.claude/STATUS.md`.
-- Find the chapter's section in `review-remarks.md` (`grep -n '^## ' review-remarks.md`): if it exists, this is a repeat
-  review; read that section only and do not re-raise items marked [-] (the author kept them) or [+] (done).
+- Read `$ARGUMENTS/$ARGUMENTS.tex` completely, once (if one Read is too small, consecutive ranges of ~250 lines; never twice).
+  Read `.claude/rules/conventions.md` unless it already loaded with the `.tex`. `STATUS.md` is already imported: do not re-read it.
+- Check whether `review/$ARGUMENTS.md` exists: if it does, this is a repeat review; read that file (it is small) and do not re-raise items
+  marked [-] (the author kept them) or [+] (done).
 - Skim the neighbouring chapters' relevant paragraphs only when the text refers to them (notation, results used earlier).
 
 ## 2. Analyse (four passes, do not mix)
@@ -25,18 +26,20 @@ Work in stages and stop at the marked points: the author decides what is changed
    print-only commands missing from `ConspectBookHTML.cls`.
 
 ## 3. Write the remarks (do not edit the chapter yet)
-- Append a section `## $ARGUMENTS` to `review-remarks.md` (create it if absent): numbered items in Ukrainian,
+- Write the remarks to `review/$ARGUMENTS.md` (create it with the heading `## $ARGUMENTS` if absent; on a repeat review append a new block with Bash `>>` and
+  continue the numbering; never rewrite the file): numbered items in Ukrainian,
   each with the line number or a short anchor quote, what is wrong, and a concrete proposed fix. All start as `[?]`.
 - Order by weight: errors first, then clarity, then style. Do not pad: no remark means it is fine.
 - Tell the author (in Russian): the count by weight, the 3-5 most important items, and ask for decisions. **Stop here.**
 
 ## 4. After the author's decisions
+- Do not re-read the chapter in full: `grep -n` the anchor quote from the remark, Read ~60 lines around it, Edit.
 - Apply only what was agreed. Mark each item `[+]` (done), `[~]` (done differently: say how), `[-]` (author kept as is).
 - New figures or boxes: define the commands for the HTML class too.
 - Check the layout: `python chapter.py $ARGUMENTS --png`; look at the PNGs (widows, split boxes, overfull). Fix and rebuild.
 - Do not edit chapter sources while a full-book build is running.
 
 ## 5. Close
-- Add or update the chapter's row in `REVIEW.md` (the main changes, one line; the commit hash is added by the author after the commit).
-- Update `.claude/STATUS.md`: new open items, new disagreements, what remains to be done.
+- Add or update the chapter's row in `REVIEW.md` (find the row with `grep -n`, never read the whole file) (the main changes, one line; the commit hash is added by the author after the commit).
+- Update `.claude/STATUS.md`: new open items, new disagreements, what remains to be done. Keep it within ~40 lines: drop finished items, do not keep a chronological log (history is in `REVIEW.md` and `git log`).
 - Do not commit or push unless asked.
