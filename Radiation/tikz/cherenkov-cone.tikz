@@ -1,0 +1,34 @@
+% Конус Вавилова--Черенкова: сферичні хвилі, випущені з точок A_i траєкторії, мають спільну огинаючу~--- конус.
+% Переріз площиною, що містить швидкість. cos(theta) = (c/n)t / (vt) = c/(nv).
+\begin{tikzpicture}[>=Stealth, line cap=round]
+	\def\th{48}            % кут Черенкова theta
+	\def\d{1.15}           % відстань між сусідніми точками випромінювання
+	\pgfmathsetmacro{\ps}{90-\th}  % кут конуса до осі
+	\colorlet{front}{blue!70!black}
+	% кола-хвилі від попередніх положень заряду
+	\foreach \i in {1,2,3,4}{
+		\draw[gray!70, thin] ({-\i*\d},0) circle ({\i*\d*cos(\th)});
+		\fill[gray!70] ({-\i*\d},0) circle (1pt);
+	}
+	% огинаюча (конус) і вісь
+	\draw[front, very thick] (0,0) -- ({-4.5*\d*cos(\ps)},{ 4.5*\d*sin(\ps)}) node[above, font=\small] {хвильовий фронт};
+	\draw[front, very thick] (0,0) -- ({-4.5*\d*cos(\ps)},{-4.5*\d*sin(\ps)});
+	\draw[dashed, black!60] (-5.4*\d,0) -- (1.4,0);
+	% промінь від A_3 до точки дотику, відрізки vt і (c/n)t, кут theta
+	\coordinate (A) at ({-3*\d},0);
+	\pgfmathsetmacro{\tx}{-3*\d + 3*\d*cos(\th)*cos(\th)}
+	\pgfmathsetmacro{\ty}{3*\d*cos(\th)*sin(\th)}
+	\coordinate (T) at (\tx,\ty);
+	\draw[->, very thick, efield] (A) -- (T);
+	\draw[dotted] (T) -- (0,0);
+	\draw[black!80, thin] ({\tx-0.2*cos(\th)},{\ty-0.2*sin(\th)}) -- ({\tx-0.2*cos(\th)+0.2*sin(\th)},{\ty-0.2*sin(\th)-0.2*cos(\th)}) -- ({\tx+0.2*sin(\th)},{\ty-0.2*cos(\th)});
+	\draw[black!80] ($(A)+(0.9,0)$) arc[start angle=0, end angle=\th, radius=0.9];
+	\node[font=\small] at ($(A)+({0.5*\th}:1.2)$) {$\theta$};
+	\node[font=\small, below=1pt, fill=white, inner sep=1pt] at ({-1.5*\d},0) {$vt$};
+	\node[font=\small, sloped, above, efield] at ($(A)!0.5!(T)$) {$\dfrac cn\,t$};
+	% прямий кут при точці дотику
+	% заряд і його швидкість
+	\shade[ball color=red] (0,0) circle (0.14);
+	\node[font=\tiny, white, inner sep=0] at (0,0) {$+$};
+	\draw[->, very thick] (0.2,0) -- (1.25,0) node[above, font=\small] {$\vect v$};
+\end{tikzpicture}

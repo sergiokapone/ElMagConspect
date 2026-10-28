@@ -1,0 +1,45 @@
+% Поля у точці P хвильової зони диполя: E вздовж меридіана (e_theta), B вздовж паралелі (e_phi), r~--- напрям поширення.
+% Тривимірний вигляд сфери: екран X = x, Y = z cos(eps) + y sin(eps), вісь y віддалена від глядача.
+\begin{tikzpicture}[>=Stealth, line cap=round]
+	\pgfmathsetmacro{\R}{2.8}      % радіус сфери
+	\pgfmathsetmacro{\sE}{0.3}     % sin(eps)
+	\pgfmathsetmacro{\cE}{0.954}   % cos(eps)
+	\def\th{40}   % полярний кут точки P
+	\def\ph{-60}  % азимут точки P (від'ємний~--- передня півсфера)
+	% екранні складові ортів e_r, e_theta, e_phi
+	\pgfmathsetmacro{\erx}{sin(\th)*cos(\ph)}
+	\pgfmathsetmacro{\ery}{cos(\th)*\cE + sin(\th)*sin(\ph)*\sE}
+	\pgfmathsetmacro{\etx}{cos(\th)*cos(\ph)}
+	\pgfmathsetmacro{\ety}{-sin(\th)*\cE + cos(\th)*sin(\ph)*\sE}
+	\pgfmathsetmacro{\efx}{-sin(\ph)}
+	\pgfmathsetmacro{\efy}{cos(\ph)*\sE}
+	\coordinate (O) at (0,0);
+	\coordinate (P) at (\R*\erx,\R*\ery);
+	% вісь диполя
+	\draw[dashed] (0,-1.25*\R) -- (0,1.25*\R);
+	% сфера: контур, екватор (задня половина штрихова), паралель і меридіан точки P
+	\draw (O) circle (\R);
+	\draw[dashed, thin] plot[domain=0:180, samples=60, variable=\t] ({\R*cos(\t)},{\R*sin(\t)*\sE});
+	\draw plot[domain=180:360, samples=60, variable=\t] ({\R*cos(\t)},{\R*sin(\t)*\sE});
+	\draw[dashed, thin] plot[domain=0:180, samples=60, variable=\t]
+		({\R*sin(\th)*cos(\t)},{\R*cos(\th)*\cE + \R*sin(\th)*sin(\t)*\sE});
+	\draw plot[domain=180:360, samples=60, variable=\t]
+		({\R*sin(\th)*cos(\t)},{\R*cos(\th)*\cE + \R*sin(\th)*sin(\t)*\sE});
+	\draw plot[domain=0:180, samples=80, variable=\t]
+		({\R*sin(\t)*cos(\ph)},{\R*cos(\t)*\cE + \R*sin(\t)*sin(\ph)*\sE});
+	% радіус OP, його проєкція на екватор і кут theta
+	\draw[dashed] (O) -- (P);
+	\draw[dashed] (O) -- ({\R*cos(\ph)},{\R*sin(\ph)*\sE});
+	\draw plot[domain=0:\th, samples=20, variable=\t]
+		({0.9*sin(\t)*cos(\ph)},{0.9*cos(\t)*\cE + 0.9*sin(\t)*sin(\ph)*\sE});
+	\node[font=\small] at ({1.05*sin(\th/2)*cos(\ph)+0.03},{1.35*cos(\th/2)*\cE + 1.35*sin(\th/2)*sin(\ph)*\sE}) {$\theta$};
+	% диполь у центрі
+	\draw[-{Stealth[length=6pt]}, line width=1.4pt] (0,-0.4) -- (0,0.4);
+	\node[left, font=\small] at (0,0.1) {$\vect p$};
+	\node[below left, font=\small] at (O) {$O$};
+	% вектори в точці P
+	\draw[->, very thick] (P) -- ++({1.9*\erx},{1.9*\ery}) node[above right, font=\small] {$\vect r$};
+	\draw[->, very thick, bfield] (P) -- ++({1.5*\efx},{1.5*\efy}) node[right, font=\small] {$\Bfield$};
+	\draw[->, very thick, efield] (P) -- ++({1.5*\etx},{1.5*\ety}) node[below right, font=\small] {$\Efield$};
+	\fill (P) circle (2pt) node[above left, font=\small] {$P$};
+\end{tikzpicture}

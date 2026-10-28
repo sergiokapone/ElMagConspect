@@ -1,0 +1,23 @@
+% Затухаючий цуг хвиль класичного осцилятора E(t) ~ exp(-Gamma t/2) cos(omega t) і~його лоренцева лінія
+% (час у~одиницях tau = 1/Gamma, частота~--- у~одиницях Gamma).
+\begin{tikzpicture}[>=Stealth, line cap=round]
+	\colorlet{wave}{red!80!black}
+	% цуг
+	\draw[->] (-0.2,0) -- (5.6,0) node[right, font=\small] {$t$};
+	\draw[->] (0,-1.35) -- (0,1.5) node[above, font=\small] {$E$};
+	\draw[wave, line width=0.8pt, samples=400, domain=0:4.6, smooth] plot ({1.1*\x},{1.2*exp(-\x/2)*cos((16*\x) r)});
+	\draw[dashed, black!60] plot[domain=0:4.6, samples=40] ({1.1*\x},{ 1.2*exp(-\x/2)});
+	\draw[dashed, black!60] plot[domain=0:4.6, samples=40] ({1.1*\x},{-1.2*exp(-\x/2)});
+	\draw[dotted] (1.1,0) -- (1.1,0.75);
+	\node[font=\small, fill=white, inner sep=1pt] at (1.1,0.95) {$\tau=1/\Gamma$};
+	\node[font=\small, black!70, anchor=west] at (2.6,1.0) {$\propto e^{-\Gamma t/2}$};
+	% лінія
+	\begin{scope}[yshift=-4.1cm]
+		\draw[->] (-0.2,0) -- (5.6,0) node[right, font=\small] {$\omega$};
+		\draw[->] (2.7,-0.15) -- (2.7,1.9) node[above, font=\small] {$I(\omega)$};
+		\draw[wave, line width=0.9pt, samples=120, domain=-2.7:2.7] plot ({2.7+0.95*\x},{1.6/(1+4*\x*\x)});
+		\node[font=\small, below] at (2.7,0) {$\omega_0$};
+		\draw[<->] ({2.7-0.475},0.8) -- ({2.7+0.475},0.8);
+		\node[font=\small, anchor=west] at ({2.7+0.62},1.05) {$\Delta\omega\sim\Gamma$};
+	\end{scope}
+\end{tikzpicture}

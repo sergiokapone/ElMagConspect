@@ -15,7 +15,8 @@
 			},
 		myarrow/.style = {
 				->,
-				red
+				red!80!black,
+				line width=0.9pt
 			},
 		mybrace/.style = {
 				decorate,
@@ -33,18 +34,19 @@
 	\node[chp, opacity=0.5] (q) at (0,0) {$+$};
 	\node[chp] (q') at (0,\d) {$+$};
 
-	\draw[gray, mydash, name path=innerCircle] (q) circle(\r);
-	\draw[gray, mydash] (q) circle(\R);
+	\fill[even odd rule, yellow!45] (q) circle(\R) (q) circle(\r);
+	\draw[gray!70!black, thin, name path=innerCircle] (q) circle(\r);
+	\draw[gray!70!black, thin] (q) circle(\R);
 
 	\begin{scope}
 		\clip (q) circle(\r);
-		\draw[red, opacity=0.5, name path global=redLine] (q') -- ++(\angle:{\R + \d});
+		\draw[red!80!black, line width=0.9pt, name path global=redLine] (q') -- ++(\angle:{\R + \d});
 	\end{scope}
 
 	\draw[myarrow] (q) ++(\angle:\R) coordinate (endOfRedLine) -- ++(\angle:\arrowLength);
-	\draw[red, name intersections={of=innerCircle and redLine}] (intersection-1) coordinate (startOfRedLine) -- (endOfRedLine);
+	\draw[red!80!black, line width=0.9pt, name intersections={of=innerCircle and redLine}] (intersection-1) coordinate (startOfRedLine) -- (endOfRedLine);
 
-	\draw[dashed] (q) -- ++(\angle:\R);
+	\draw[dashed, black!70] (q) -- ++(\angle:\R);
 	\draw[mybrace] (q.west) -- node[left] {$v_qT$} (q'.west);
 	\draw[mydash] (q') -- coordinate (projectionPoint) ++({\angle-90}:{\d*cos(\angle)});
 	\draw (q') -- ++(0, 2);
@@ -56,14 +58,14 @@
 	\draw (q) -- (265:\r) node[above, pos=0.5, sloped] {$c(T-\tau)$};
 	\node[text=black] (vqTSinThetaLabel) at (1, -0.5) {$v_qT\sin\theta$};
 	\draw[thick] (startOfRedLine) -- coordinate (midPoint)  ++({\angle-90}:{\d*sin(90-\angle)});
-	\draw[->, gray!70] (vqTSinThetaLabel.north) to[in=0] (projectionPoint);
-	\draw[->, gray!70] (vqTSinThetaLabel.north) to[in=225] (midPoint);
+	\draw[->, black!60] (vqTSinThetaLabel.north) to[in=0] (projectionPoint);
+	\draw[->, black!60] (vqTSinThetaLabel.north) to[in=225] (midPoint);
 	\draw[thick] (\angle:\r) -- coordinate (endPoint) (endOfRedLine);
-	\draw[->, gray!70] (cTauLabel) to[in=-85] (endPoint);
+	\draw[->, black!60] (cTauLabel) to[in=-85] (endPoint);
 
-	\draw[->, thick, red] (endOfRedLine) -- ++(\angle:1) coordinate (Epl) node[above]  {$\Efield_{\parallel}$};
-	\draw[->, thick, red] (endOfRedLine) -- ++({\angle-90}:{\ctang}) coordinate (Epr) node[below] {$\Efield_{\perp}$};
-	\draw[->, thick, red] (endOfRedLine) -- ++({\angle-atan(\ctang)}:{\E}) coordinate (E)
+	\draw[->, very thick, efield] (endOfRedLine) -- ++(\angle:1) coordinate (Epl) node[above]  {$\Efield_{\parallel}$};
+	\draw[->, very thick, efield] (endOfRedLine) -- ++({\angle-90}:{\ctang}) coordinate (Epr) node[below] {$\Efield_{\perp}$};
+	\draw[->, very thick, efield] (endOfRedLine) -- ++({\angle-atan(\ctang)}:{\E}) coordinate (E)
 	node[right] {$\Efield$};
-	\draw[mydash] (Epl) -- (E) -- (Epr);
+	\draw[mydash, black!60] (Epl) -- (E) -- (Epr);
 \end{tikzpicture}
