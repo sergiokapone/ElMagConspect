@@ -151,6 +151,9 @@ def main():
     blobs = os.path.join(tmp, 'purge-blobs.txt')
     with open(blobs, 'w', encoding='ascii', newline='\n') as f: f.write(''.join(o + '\n' for o in sorted(docs)))
     print('[3/5] git filter-repo ...')
+    # the marker of the previous run makes filter-repo ask "continue the previous run (Y/N)?" even with --force: not wanted here
+    marker = os.path.join(ROOT, '.git', 'filter-repo', 'already_ran')
+    if os.path.isfile(marker): os.remove(marker)
     code = run('git', 'filter-repo', '--invert-paths', '--paths-from-file', LIST, '--strip-blobs-with-ids', blobs, '--force')
     for rel in saved:
         dst = os.path.join(ROOT, rel)
