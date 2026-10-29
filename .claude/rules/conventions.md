@@ -42,6 +42,8 @@ These are decisions already made. Follow them; if you think one is wrong, say so
   prefer the original paper or a standard monograph; never a pile of 3-4 references after one sentence. Check every
   source (authors, journal, year, DOI) by search before adding it to `Bibliography/Articles.bib`; never from memory alone.
   When unsure whether a place needs a reference, do not add it and ask the author.
+- Every `Historical` box (історична довідка) carries at least one source for its main historical claim (author's rule, 29.10.2026):
+  the original paper or a standard history; verify by search as above. If no source can be found, say so to the author instead of leaving the claim bare.
 - Epigraphs are real quotations with a source (author, work, year; translation checked against the original when possible).
   Never invent an epigraph. Unverified ones are listed in `STATUS.md`.
 
