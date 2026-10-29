@@ -1,15 +1,36 @@
 % Адаптовано з ElMagInduction.tex (слайд "Задачі на застосування теореми взаємності", Задача 2)
+% Силові лінії диполя r = L sin^2(theta) (theta --- кут від осі диполя) обчислено в площині обертання
+% й спроєктовано на екран: X = L sin^3 t, Y = L sin^2 t cos t -> (0.7071 (X+Y), 0.2419 (Y-X)),
+% це та сама проєкція, що в tdplot-блоці. Лінії малюються в екранних координатах, тому стрілки лежать по дотичній.
 \begin{tikzpicture}[scale=1.5]
 	\tdplotsetmaincoords{0}{0}
 	\begin{scope}[tdplot_main_coords, rotate around x=70, rotate around z=-45]
 		\draw [dashed] (0,0,0) circle (1);
+	\end{scope}
+	\tikzset{fline/.style={blue!70, thin,
+		postaction={decorate, decoration={markings, mark=at position 0.5 with {\arrow{latex'}}}}}}
+	% близькі лінії диполя (обидва боки)
+	\foreach \L in {0.5,1.0}{
+		\foreach \d in {{15:165},{345:195}}{
+			\draw [fline] plot [domain=\d, samples=40, variable=\t]
+				({0.7071*\L*sin(\t)*sin(\t)*(sin(\t)+cos(\t))}, {0.2419*\L*sin(\t)*sin(\t)*(cos(\t)-sin(\t))});
+		}
+	}
+	% лінії, що доходять до кільця (кінцевий кут підібрано так, щоб x = 3)
+	\foreach \L/\te in {8/38, 6/45, 4.5/56}{
+		\draw [fline] plot [domain=15:\te, samples=40, variable=\t]
+			({0.7071*\L*sin(\t)*sin(\t)*(sin(\t)+cos(\t))}, {0.2419*\L*sin(\t)*sin(\t)*(cos(\t)-sin(\t))});
+	}
+	\begin{scope}[tdplot_main_coords, rotate around x=70, rotate around z=-45]
 		\fill [blue] (180:0.2) -- (90:1) -- (0:0.2) -- cycle;
 		\fill [red] (180:0.2) -- (-90:1) -- (0:0.2) -- cycle;
 	\end{scope}
 	\draw [-latex'] (0,-1) -- (0,1) node [above] {$\omega$};
-	\draw [-latex'] (3,0) -- (3.5,0) node [right] {$\vect{n}$};
+	\draw [-latex'] (3,0) -- (3.6,0) node [right] {$\vect{n}$};
 	\begin{scope}[shift={(3,0,0)}, tdplot_main_coords, rotate around y=60]
-		\draw [thick, wirecolor] (0,0,0) circle (0.4);
+		\fill [gray!12, opacity=0.7] (0,0,0) circle (0.4);
+		\draw [line width=3.2pt, wirecolor!85] (0,0,0) circle (0.4);
+		\draw [line width=1.6pt, wirecolor!20] (0,0,0) circle (0.4);
 		\draw [-latex'] (0,0) -- +(110:0.4) node[above] {$a$};
 	\end{scope}
 	\draw (3,0) -- ([yshift=-1cm]3,0);
