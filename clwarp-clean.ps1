@@ -1,7 +1,8 @@
 ﻿# clwarp-clean.ps1 - removes from the project root everything that the HTML build (lwarp) has left behind.
 # Run it from anywhere: it works in the folder where it lies.
 # Not touched: sources, the print PDF and the docs folder (the published book with its site files).
-# Ordinary LaTeX auxiliary files of the print build are the business of rm.ps1.
+# Also removes the local junk of the print build (main.aux ..., *.bak*, aux/log of pictures in chapter folders),
+# _chapters, _lint and __pycache__ (step 4). The print PDF and *-Answers.tex are kept.
 #   .\clwarp-clean.ps1
 
 Set-Location -LiteralPath $PSScriptRoot
@@ -48,4 +49,35 @@ foreach ($pdf in Get-ChildItem -Path '*/Pictures/*.pdf' -File) {
     }
 }
 
-Write-Host "Done. Files removed: $removed, SVG pictures made from PDF: $svgs" -ForegroundColor Green
+# 4. Local junk of the print build and of the helper scripts (all git-ignored; the print PDF and *-Answers.tex stay)
+foreach ($folder in @('_chapters', '_lint')) {
+    if (Test-Path -LiteralPath $folder) {
+        Remove-Item -LiteralPath $folder -Recurse -Force -ErrorAction SilentlyContinue
+        Write-Host "  [folder removed] $folder" -ForegroundColor Yellow
+    }
+}
+$pycache = 0
+foreach ($d in Get-ChildItem -Path . -Directory -Recurse -Filter '__pycache__' -Force -ErrorAction SilentlyContinue |
+         Where-Object { $_.FullName -notmatch '[\\/]node_modules[\\/]' }) {
+    Remove-Item -LiteralPath $d.FullName -Recurse -Force -ErrorAction SilentlyContinue
+    $pycache++
+}
+# aux files of the print build (root: main.*, but not main.tex / main.pdf) and of single pictures in chapter folders
+$rootMasks = @('main.aux', 'main.log', 'main.out', 'main.toc', 'main.lof', 'main.lot', 'main.bcf*', 'main.blg', 'main.run.xml',
+               'main.bbl', 'main.ind', 'main.ilg', 'main.idx', 'main.fls', 'main.fdb_latexmk', 'main.thm', 'main.synctex.gz',
+               'main.curve.*', 'main.xdv', 'main2.tex', '*.bak*')
+$junk = 0
+foreach ($f in Get-ChildItem -LiteralPath . -File) {
+    foreach ($m in $rootMasks) {
+        if ($f.Name -like $m) { Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue; $junk++; break }
+    }
+}
+$subMasks = @('*.aux', '*.log', '*.out', '*.thm', '*.synctex.gz', '*.bak*', '*.plot.table')
+foreach ($f in Get-ChildItem -Path . -File -Recurse -Force -ErrorAction SilentlyContinue |
+         Where-Object { $_.DirectoryName -ne $PSScriptRoot -and $_.FullName -notmatch '[\\/](node_modules|docs|\.git|\.garbage|\.archive|review)[\\/]' }) {
+    foreach ($m in $subMasks) {
+        if ($f.Name -like $m) { Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue; $junk++; break }
+    }
+}
+
+Write-Host "Done. Files removed: $removed, SVG pictures made from PDF: $svgs, print-build junk: $junk, __pycache__: $pycache" -ForegroundColor Green
