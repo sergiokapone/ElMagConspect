@@ -205,6 +205,7 @@
 \let\MakeUppercase\MakeTextUppercase   % коректна робота \MakeUppercase з кирилицею/захищеним текстом
 
 \RequirePackage{indentfirst}   % відступ також у першому абзаці розділу (типова книжкова верстка)
+\RequirePackage{xurl} % Lkz gthtyjce gjcbfym? jcj,kbdj d ,s,ksjuhfas]
 % ------------------------------------ Плаваючі об'єкти ------------------------
 %\RequirePackage{subfig}
 %\renewcommand\thesubfigure{\alph{subfigure}}
@@ -220,6 +221,8 @@
 % напр. у файлі "chapter1/chapter1.tex" виклик \localinput{fig.tikz}
 % підвантажить "chapter1/tikz/fig.tikz". Використовується у розділах-главах книги.
 \newcommand{\localinput}[1]{\input{\currfilebase/tikz/#1}}
+
+
 
 %===============================================================================
 %
