@@ -958,6 +958,20 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 	\DeclareBibliographyCategory{Textbooks}   % категорія джерел: підручники
 	\DeclareBibliographyCategory{Problems}    % категорія джерел: задачники
 
+	% Два списки літератури: підручники (MyBase.bib, Books.bib) і джерела фактів (Articles.bib).
+	% Розділяє biber за файлом: усі записи з Articles.bib дістають userf=facts, решта -- ні
+	% (шлях у \perdatasource має збігатися з тим, що в \addbibresource).
+	\DeclareSourcemap{\maps[datatype=bibtex]{\map{\perdatasource{Bibliography/Articles.bib}%
+		\step[fieldset=userf, fieldvalue=facts]}}}
+	\defbibcheck{textbooks}{\iffieldequalstr{userf}{facts}{\skipentry}{}}
+	\defbibcheck{facts}{\iffieldequalstr{userf}{facts}{}{\skipentry}}
+	% Заголовок підрозділу списку: запис у змісті на рівні section
+	\defbibheading{bibsub}[\bibname]{\section*{#1}\addcontentsline{toc}{section}{#1}}
+	\newcommand{\printbibliographies}{%
+		\printbibheading[heading=bibintoc]%
+		\printbibliography[check=textbooks, heading=bibsub, title={Підручники та посібники}]%
+		\printbibliography[check=facts, heading=bibsub, title={Джерела фактів і результатів}]}
+
 	% Перевизначає стандартний заголовок "bibintoc" (як його викликає
 	% \printbibliography[heading=bibintoc] у майстер-файлі): замість
 	% \chapter*{Література} --- \part*{Література}, з тих самих причин, що й

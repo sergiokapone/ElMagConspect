@@ -34,6 +34,14 @@ These are decisions already made. Follow them; if you think one is wrong, say so
 
 ## References
 - To a paragraph: `\S~\ref{...}`. To a chapter: `розділ~\ref{...}` (not «гл.», not «розд.»).
+- Bibliographic citations (`\cite`): sparingly. This is a textbook, not a review article. Do not cite established, generally known
+  facts and textbook results (Coulomb's law, Gauss's theorem, the value of a constant, standard devices). Cite only where
+  (1) the text tells history: who discovered what and when, a historical experiment (Dufay, Millikan, Cavendish, Hall);
+  (2) a result is new or non-textbook: a modern measurement, a recent technology, a limit that changes (photon mass,
+  Coulomb-law exponent); (3) a quotation, a table or a number is taken from a specific source. One reference per claim,
+  prefer the original paper or a standard monograph; never a pile of 3-4 references after one sentence. Check every
+  source (authors, journal, year, DOI) by search before adding it to `Bibliography/Articles.bib`; never from memory alone.
+  When unsure whether a place needs a reference, do not add it and ask the author.
 - Epigraphs are real quotations with a source (author, work, year; translation checked against the original when possible).
   Never invent an epigraph. Unverified ones are listed in `STATUS.md`.
 
@@ -52,6 +60,8 @@ These are decisions already made. Follow them; if you think one is wrong, say so
   `SCfigure`, `wrapstuff`, key formulas in `\tcbhighmath{...}`, term definitions in `\emphx{...}`.
 - Figures go outside the boxes (`Example`, `Attention`, `Historical`, `Extra`): right after `\end{...}`, as `figure` / `SCfigure`.
   A figure inside a box breaks the box across pages and the references to it. Check this in every chapter during review.
+- AI-generated figures: no «Згенеровано ШІ» in captions. The list and the legal note are in `AI_ILLUSTRATIONS.txt` (repo root).
+  If you meet such a phrase under a figure, delete it from the caption and make sure the figure's file is listed there.
 - Anything added to chapters for print (tcolorbox commands etc.) must also be defined in `ConspectBookHTML.cls`
   (there `\tcbset` is an empty stub). Check with `python elmag.py html` after a review round.
 - Check the layout of an edited chapter with `python chapter.py <Folder> --png` and look at the PNGs.

@@ -144,6 +144,9 @@ def main():
 
     pretex = r'\def\TargetChapter{%s}' % a.chapter
     job = a.chapter
+    if not a.tikz:                              # the chapter cites something: print its literature after the text
+        with open(src, encoding='utf-8', errors='replace') as f:
+            if re.search(r'\\(?:no)?cite', re.sub(r'(?m)(?<!\\)%.*$', '', f.read())): pretex += r'\def\TargetBib{}'
     if a.tikz:
         pretex += r'\def\TargetTikz{%s}' % a.tikz
         job += '-' + a.tikz
