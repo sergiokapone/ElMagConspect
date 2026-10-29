@@ -3,8 +3,8 @@
 \errorcontextlines=10
 % \let\enquote\emph
 
-% \addbibresource{d:/Projects/LaTeX/MyPackages/bib/MyBase.bib}
-% \addbibresource{./bibliography/Articles.bib}
+\IfFileExists{d:/Projects/LaTeX/MyPackages/bib/MyBase.bib}{\addbibresource{d:/Projects/LaTeX/MyPackages/bib/MyBase.bib}}{}
+\addbibresource{Bibliography/Books.bib}\addbibresource{Bibliography/Articles.bib}
 
 %  1) Charges
 % 17) SteadyEfield
@@ -42,6 +42,8 @@
   % answers of the chapter (written by the answers package on the previous pass)
   \answers
   \InputIfFileExists{\TargetChapter/\TargetChapter-Answers}{}{}
+  % literature of the chapter (chapter.py defines \TargetBib when the chapter has \cite): checks the references
+  \ifdefined\TargetBib\clearpage\bibliographytrue\phantomsection\pagestyle{bibliography}\printbibliographies\fi
 \fi
 
 \end{document}
