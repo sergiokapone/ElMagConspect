@@ -18,6 +18,7 @@ generated image folders are removed completely (leftover temporary files of lwar
 Usage: python publish_html.py [--out docs] [--extra file ...] [--keep-leftovers]"""
 import argparse, fnmatch, glob, os, posixpath, re, shutil, sys
 from urllib.parse import unquote
+import svg_optimize
 
 SITE_OWN = ['index.html', 'google*.html', 'assets', 'serve.py']   # site-only files written by hand; edit here
 ASSET_FILES = ['book.js', 'conspect.css']                # site-only files that live in <out>/assets/ (the pages link to them there)
@@ -170,7 +171,7 @@ while i < len(queue):
 
 # --- 4. move generated files, copy the rest ------------------------------------------------------
 n_move = n_copy = n_have = 0
-size = 0
+size = svg_before = svg_after = 0
 moved_from = []
 for rel, src in sorted(sources.items()):
     if os.path.commonpath([src, OUT]) == OUT:
@@ -179,6 +180,8 @@ for rel, src in sorted(sources.items()):
     os.makedirs(os.path.dirname(dst), exist_ok=True)
     if is_generated(rel, src): shutil.move(src, dst); n_move += 1; moved_from.append(src)
     else: shutil.copy2(src, dst); n_copy += 1
+    if dst.lower().endswith('.svg'):                           # pictures: numbers rounded to 0.01 pt, ~2x smaller (svg_optimize.py)
+        a, b = svg_optimize.process(dst, dst); svg_before += a; svg_after += min(a, b)
     size += os.path.getsize(dst)
 
 # --- 5. the pages: links to assets/, book.js on every page ---------------------------------------
@@ -277,6 +280,7 @@ for src in moved_from:                                           # folders the m
 
 print('  output folder %s: %d files moved out of the project, %d copied, %d site files already there (%.1f MB new)'
       % (os.path.relpath(OUT, ROOT), n_move, n_copy, n_have, size / 1048576))
+if svg_before: print('  SVG pictures compressed: %.1f MB -> %.1f MB' % (svg_before / 1048576, svg_after / 1048576))
 if moved_site: print('  site files moved from the project root (once): %s' % ', '.join(moved_site))
 if moved_assets: print('  moved to %s/%s/: %s' % (os.path.relpath(OUT, ROOT), ASSET_DIR, ', '.join(moved_assets)))
 print('  pages: %d rewritten (links to %s/), book.js added to %d' % (n_pages, ASSET_DIR, n_script))

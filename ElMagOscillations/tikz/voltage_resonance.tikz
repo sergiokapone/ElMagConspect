@@ -1,0 +1,42 @@
+\begin{tikzpicture}
+\begin{axis}[
+    % Параметри лабораторної роботи; частота в одиницях 10^4 рад/с
+    declare function={
+        XL(\w) = 90*\w;                                % ωL, Ом (L = 9 мГн)
+        XC(\w) = 100/\w;                               % 1/(ωC), Ом (C = 1 мкФ)
+        Z(\w) = sqrt(77.5^2 + (XL(\w) - XC(\w))^2);    % імпеданс, R = 77,5 Ом
+    },
+    axis lines=left,
+    xlabel={$\omega$, $10^4$ рад/с},
+    ylabel={$V/\emf_m$},
+    x label style={anchor=north west, at={(axis description cs:1.0,-0.02)}},
+    xmin=0, xmax=2.5,
+    ymin=0, ymax=1.6,
+    xtick={0,0.5,1.5,2},
+    ytick={0,0.5,1,1.5},
+    extra x ticks={0.86, 1.054, 1.29},
+    extra x tick labels={$\omega_C$, $\omega_0$, $\omega_L$},
+    extra x tick style={tick label style={below=1pt, font=\small}, grid=none},
+    grid=both, grid style={line width=.2pt, draw=gray!25},
+    legend pos=north east, legend cell align=left, legend style={font=\small},
+    width=12cm,
+    height=7.5cm,
+    samples=400,
+    domain=0.05:2.5,
+    thick,
+]
+    \addplot[blue, very thick]           {77.5/Z(x)};
+    \addlegendentry{$V_R$}
+    \addplot[red, very thick]            {XC(x)/Z(x)};
+    \addlegendentry{$V_C$}
+    \addplot[green!50!black, very thick] {XL(x)/Z(x)};
+    \addlegendentry{$V_L$}
+
+    \draw[dashed, gray] (axis cs:0.86,0)  -- (axis cs:0.86,1.341);
+    \draw[dashed, gray] (axis cs:1.054,0) -- (axis cs:1.054,1.224);
+    \draw[dashed, gray] (axis cs:1.29,0)  -- (axis cs:1.29,1.341);
+
+    \addplot[only marks, mark=*, mark size=2pt, black]
+        coordinates {(0.86,1.341) (1.054,1) (1.054,1.224) (1.29,1.341)};
+\end{axis}
+\end{tikzpicture}
