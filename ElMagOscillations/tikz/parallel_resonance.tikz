@@ -1,0 +1,41 @@
+\begin{tikzpicture}
+\begin{axis}[
+    % Параметри лабораторної роботи; частота в одиницях 10^4 рад/с
+    declare function={
+        xx(\w) = \w/1.054;                             % w/w_0
+        D(\w) = sqrt(0.9692 + (xx(\w) - 1/xx(\w))^2);  % sqrt(Q^-2 + (x-1/x)^2), Q = 1,016
+    },
+    axis lines=left,
+    xlabel={$\omega$, $10^4$ рад/с},
+    ylabel={$I/I_m$},
+    x label style={anchor=north west, at={(axis description cs:1.0,-0.02)}},
+    xmin=0, xmax=2.5,
+    ymin=0, ymax=1.4,
+    xtick={0,0.5,2},
+    ytick={0,0.5,1},
+    extra x ticks={0.757, 1.054, 1.468},
+    extra x tick labels={$\omega_L$, $\omega_0$, $\omega_C$},
+    extra x tick style={tick label style={below=1pt, font=\small}, grid=none},
+    grid=both, grid style={line width=.2pt, draw=gray!25},
+    legend pos=north east, legend cell align=left, legend style={font=\small},
+    width=12cm,
+    height=7.5cm,
+    samples=400,
+    domain=0.05:2.5,
+    thick,
+]
+    \addplot[blue, very thick]           {0.9845/D(x)};
+    \addlegendentry{$I_R$}
+    \addplot[red, very thick]            {xx(x)/D(x)};
+    \addlegendentry{$I_C$}
+    \addplot[green!50!black, very thick] {(1/xx(x))/D(x)};
+    \addlegendentry{$I_L$}
+
+    \draw[dashed, gray] (axis cs:0.757,0) -- (axis cs:0.757,1.167);
+    \draw[dashed, gray] (axis cs:1.054,0) -- (axis cs:1.054,1.016);
+    \draw[dashed, gray] (axis cs:1.468,0) -- (axis cs:1.468,1.167);
+
+    \addplot[only marks, mark=*, mark size=2pt, black]
+        coordinates {(0.757,1.167) (1.054,1) (1.054,1.016) (1.468,1.167)};
+\end{axis}
+\end{tikzpicture}
