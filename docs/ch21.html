@@ -1,0 +1,4165 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Відповіді</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-1577"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span><span class="toctitle">&#x2003;Електричні заряди та їх взаємодія</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span><span class="toctitle">&#x2003;Сили (взаємодії) в природі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span><span class="toctitle">&#x2003;Електричний заряд</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-13" class="tocsection" >
+<span class="sectionnumber">1.3</span><span class="toctitle">&#x2003;Як заряджають тіла?</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-18" class="tocsection" >
+<span class="sectionnumber">1.4</span><span class="toctitle">&#x2003;Закон Кулона</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-27" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocchapter" >
+<span class="sectionnumber">2</span><span class="toctitle">&#x2003;Постійне електричне поле у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.1</span><span class="toctitle">&#x2003;Електромагнітне поле</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-35" class="tocsection" >
+<span class="sectionnumber">2.2</span><span class="toctitle">&#x2003;Напруженість поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-50" class="tocsection" >
+<span class="sectionnumber">2.3</span><span class="toctitle">&#x2003;Силові лінії та математичне поняття поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-66" class="tocsection" >
+<span class="sectionnumber">2.4</span><span class="toctitle">&#x2003;Теорема Гаусса</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-100" class="tocsection" >
+<span class="sectionnumber">2.5</span><span class="toctitle">&#x2003;Потенціальність електростатичного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-115" class="tocsection" >
+<span class="sectionnumber">2.6</span><span class="toctitle">&#x2003;Циркуляція вектора \(\symbf {E}\)</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+<span class="sectionnumber">2.7</span><span class="toctitle">&#x2003;Граничні умови</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-142" class="tocsection" >
+<span class="sectionnumber">2.8</span><span class="toctitle">&#x2003;Рівняння Пуассона та Лапласа</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-147" class="tocsection" >
+<span class="sectionnumber">2.9</span><span class="toctitle">&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-152" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-153" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-166" class="tocchapter" >
+<span class="sectionnumber">3</span><span class="toctitle">&#x2003;Електричне поле статичної системи зарядів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-167" class="tocsection" >
+<span class="sectionnumber">3.1</span><span class="toctitle">&#x2003;Дипольний момент системи зарядів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-171" class="tocsection" >
+<span class="sectionnumber">3.2</span><span class="toctitle">&#x2003;Потенціал точкового диполя</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-175" class="tocsection" >
+<span class="sectionnumber">3.3</span><span class="toctitle">&#x2003;Поле точкового диполя</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-181" class="tocsection" >
+<span class="sectionnumber">3.4</span><span class="toctitle">&#x2003;Потенціал системи зарядів на далеких відстанях</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-198" class="tocsection" >
+<span class="sectionnumber">3.5</span><span class="toctitle">&#x2003;Диполь в електричному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-216" class="tocsection" >
+<span class="sectionnumber">3.6</span><span class="toctitle">&#x2003;Енергія довільної системи зарядів у зовнішньому полі*</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-217" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-220" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-238" class="tocchapter" >
+<span class="sectionnumber">4</span><span class="toctitle">&#x2003;Електричне поле у провідниках</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-239" class="tocsection" >
+<span class="sectionnumber">4.1</span><span class="toctitle">&#x2003;Структура провідників</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-243" class="tocsection" >
+<span class="sectionnumber">4.2</span><span class="toctitle">&#x2003;Провідник у полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-268" class="tocsection" >
+<span class="sectionnumber">4.3</span><span class="toctitle">&#x2003;Електричне поле біля вістря</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-277" class="tocsection" >
+<span class="sectionnumber">4.4</span><span class="toctitle">&#x2003;Єдиність розв’язку електростатичної задачі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-287" class="tocsection" >
+<span class="sectionnumber">4.5</span><span class="toctitle">&#x2003;Металева куля в однорідному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-299" class="tocsection" >
+<span class="sectionnumber">4.6</span><span class="toctitle">&#x2003;Сили, що діють на поверхню провідника в полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-303" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-304" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-317" class="tocchapter" >
+<span class="sectionnumber">5</span><span class="toctitle">&#x2003;Основи електростатики діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-318" class="tocsection" >
+<span class="sectionnumber">5.1</span><span class="toctitle">&#x2003;Основні поняття</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-320" class="tocsection" >
+<span class="sectionnumber">5.2</span><span class="toctitle">&#x2003;Структура діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-357" class="tocsection" >
+<span class="sectionnumber">5.3</span><span class="toctitle">&#x2003;Поляризація діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-384" class="tocsection" >
+<span class="sectionnumber">5.4</span><span class="toctitle">&#x2003;Вектор поляризації</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-392" class="tocsection" >
+<span class="sectionnumber">5.5</span><span class="toctitle">&#x2003;Вектор електричної індукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-407" class="tocsection" >
+<span class="sectionnumber">5.6</span><span class="toctitle">&#x2003;Граничні умови в&nbsp;присутності діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-420" class="tocsection" >
+<span class="sectionnumber">5.7</span><span class="toctitle">&#x2003;Мікроскопічна теорія діелектричної проникності</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-427" class="tocsection" >
+<span class="sectionnumber">5.8</span><span class="toctitle">&#x2003;Типи діелектриків та їх застосування</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-450" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-451" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-466" class="tocchapter" >
+<span class="sectionnumber">6</span><span class="toctitle">&#x2003;Енергія електричного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-467" class="tocsection" >
+<span class="sectionnumber">6.1</span><span class="toctitle">&#x2003;Електрична ємність</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-488" class="tocsection" >
+<span class="sectionnumber">6.2</span><span class="toctitle">&#x2003;Енергія електричного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-501" class="tocsection" >
+<span class="sectionnumber">6.3</span><span class="toctitle">&#x2003;Пондеромоторні сили</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-511" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-512" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-524" class="tocchapter" >
+<span class="sectionnumber">7</span><span class="toctitle">&#x2003;Постійний електричний струм</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-525" class="tocsection" >
+<span class="sectionnumber">7.1</span><span class="toctitle">&#x2003;Основні поняття</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-532" class="tocsection" >
+<span class="sectionnumber">7.2</span><span class="toctitle">&#x2003;Природа носіїв заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-537" class="tocsection" >
+<span class="sectionnumber">7.3</span><span class="toctitle">&#x2003;Закон збереження заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-544" class="tocsection" >
+<span class="sectionnumber">7.4</span><span class="toctitle">&#x2003;Закон Ома</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-575" class="tocsection" >
+<span class="sectionnumber">7.5</span><span class="toctitle">&#x2003;Закон Джоуля–Ленца</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-576" class="tocsection" >
+<span class="sectionnumber">7.6</span><span class="toctitle">&#x2003;Струми в необмежених середовищах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-583" class="tocsection" >
+<span class="sectionnumber">7.7</span><span class="toctitle">&#x2003;Перехідні процеси в колі з конденсатором</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-596" class="tocsection" >
+<span class="sectionnumber">7.8</span><span class="toctitle">&#x2003;Максвеллівський час релаксації заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-598" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-611" class="tocchapter" >
+<span class="sectionnumber">8</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;різних середовищах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-613" class="tocsection" >
+<span class="sectionnumber">8.1</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;металах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-637" class="tocsection" >
+<span class="sectionnumber">8.2</span><span class="toctitle">&#x2003;Електричний струм в&nbsp;електролітах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-643" class="tocsection" >
+<span class="sectionnumber">8.3</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;газах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-654" class="tocsection" >
+<span class="sectionnumber">8.4</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-668" class="tocsection" >
+<span class="sectionnumber">8.5</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;напівпровідниках</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-689" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-691" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-723" class="tocchapter" >
+<span class="sectionnumber">9</span><span class="toctitle">&#x2003;Магнітне поле у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-724" class="tocsection" >
+<span class="sectionnumber">9.1</span><span class="toctitle">&#x2003;Означення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-728" class="tocsection" >
+<span class="sectionnumber">9.2</span><span class="toctitle">&#x2003;Характеристика магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-729" class="tocsection" >
+<span class="sectionnumber">9.3</span><span class="toctitle">&#x2003;Дія магнітного поля на заряджені частинки та струми</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-750" class="tocsection" >
+<span class="sectionnumber">9.4</span><span class="toctitle">&#x2003;Закон Біо–Савара–Лапласа</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-763" class="tocsection" >
+<span class="sectionnumber">9.5</span><span class="toctitle">&#x2003;Вектор-потенціал магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-768" class="tocsection" >
+<span class="sectionnumber">9.6</span><span class="toctitle">&#x2003;Теореми магнітостатики</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-790" class="tocsection" >
+<span class="sectionnumber">9.7</span><span class="toctitle">&#x2003;Магнітний момент</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-807" class="tocsection" >
+<span class="sectionnumber">9.8</span><span class="toctitle">&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-817" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-818" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-826" class="tocchapter" >
+<span class="sectionnumber">10</span><span class="toctitle">&#x2003;Магнітне поле в речовині</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-835" class="tocsection" >
+<span class="sectionnumber">10.1</span><span class="toctitle">&#x2003;Основні поняття</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-838" class="tocsection" >
+<span class="sectionnumber">10.2</span><span class="toctitle">&#x2003;Намагнічування</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-850" class="tocsection" >
+<span class="sectionnumber">10.3</span><span class="toctitle">&#x2003;Теорема про циркуляцію в речовині</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-856" class="tocsection" >
+<span class="sectionnumber">10.4</span><span class="toctitle">&#x2003;Магнітна сприйнятливість речовини</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-892" class="tocsection" >
+<span class="sectionnumber">10.5</span><span class="toctitle">&#x2003;Граничні умови</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-907" class="tocsection" >
+<span class="sectionnumber">10.6</span><span class="toctitle">&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-925" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-926" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-935" class="tocchapter" >
+<span class="sectionnumber">11</span><span class="toctitle">&#x2003;Рух заряджених частинок</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-936" class="tocsection" >
+<span class="sectionnumber">11.1</span><span class="toctitle">&#x2003;Рух частинок в&nbsp;однорідних полях</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-954" class="tocsection" >
+<span class="sectionnumber">11.2</span><span class="toctitle">&#x2003;Мас-спектрометр і&nbsp;циклотрон</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-963" class="tocsection" >
+<span class="sectionnumber">11.3</span><span class="toctitle">&#x2003;Застосування схрещених полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-971" class="tocsection" >
+<span class="sectionnumber">11.4</span><span class="toctitle">&#x2003;Методи вимірювання питомого заряду електрона</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-981" class="tocsection" >
+<span class="sectionnumber">11.5</span><span class="toctitle">&#x2003;Досліди Міллікена</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-985" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-986" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1003" class="tocchapter" >
+<span class="sectionnumber">12</span><span class="toctitle">&#x2003;Явище електромагнітної індукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1004" class="tocsection" >
+<span class="sectionnumber">12.1</span><span class="toctitle">&#x2003;Досліди Фарадея</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1010" class="tocsection" >
+<span class="sectionnumber">12.2</span><span class="toctitle">&#x2003;Закон електромагнітної індукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1019" class="tocsection" >
+<span class="sectionnumber">12.3</span><span class="toctitle">&#x2003;ЕРС руху: сила Лоренца в&nbsp;рухомому провіднику</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1030" class="tocsection" >
+<span class="sectionnumber">12.4</span><span class="toctitle">&#x2003;Куди йде робота</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1036" class="tocsection" >
+<span class="sectionnumber">12.5</span><span class="toctitle">&#x2003;Нерухомий контур: вихрове електричне поле</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1040" class="tocsection" >
+<span class="sectionnumber">12.6</span><span class="toctitle">&#x2003;Вихрове поле проти електростатичного: приклади</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1049" class="tocsection" >
+<span class="sectionnumber">12.7</span><span class="toctitle">&#x2003;Бетатрон</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1053" class="tocsection" >
+<span class="sectionnumber">12.8</span><span class="toctitle">&#x2003;Застосування: індукційний заряд і&nbsp;струми Фуко</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1058" class="tocsection" >
+<span class="sectionnumber">12.9</span><span class="toctitle">&#x2003;Явище самоіндукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1078" class="tocsection" >
+<span class="sectionnumber">12.10</span><span class="toctitle">&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1098" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1099" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1118" class="tocchapter" >
+<span class="sectionnumber">13</span><span class="toctitle">&#x2003;Енергія магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1119" class="tocsection" >
+<span class="sectionnumber">13.1</span><span class="toctitle">&#x2003;Енергія магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1126" class="tocsection" >
+<span class="sectionnumber">13.2</span><span class="toctitle">&#x2003;Взаємна індукція</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1142" class="tocsection" >
+<span class="sectionnumber">13.3</span><span class="toctitle">&#x2003;Енергія системи зв’язаних контурів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1145" class="tocsection" >
+<span class="sectionnumber">13.4</span><span class="toctitle">&#x2003;Принцип роботи трансформаторів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1149" class="tocsection" >
+<span class="sectionnumber">13.5</span><span class="toctitle">&#x2003;Магнітна енергія струмів як функція стану</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1151" class="tocsection" >
+<span class="sectionnumber">13.6</span><span class="toctitle">&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1157" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1158" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1170" class="tocchapter" >
+<span class="sectionnumber">14</span><span class="toctitle">&#x2003;Система рівнянь Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1175" class="tocsection" >
+<span class="sectionnumber">14.1</span><span class="toctitle">&#x2003;Струм зміщення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1196" class="tocsection" >
+<span class="sectionnumber">14.2</span><span class="toctitle">&#x2003;Система рівнянь Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1213" class="tocsection" >
+<span class="sectionnumber">14.3</span><span class="toctitle">&#x2003;Про рівняння Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1215" class="tocsection" >
+<span class="sectionnumber">14.4</span><span class="toctitle">&#x2003;Енергія електромагнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1229" class="tocsection" >
+<span class="sectionnumber">14.5</span><span class="toctitle">&#x2003;Скін-ефект</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1251" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1252" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1260" class="tocchapter" >
+<span class="sectionnumber">15</span><span class="toctitle">&#x2003;Відносність електричного і&nbsp;магнітного полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1262" class="tocsection" >
+<span class="sectionnumber">15.1</span><span class="toctitle">&#x2003;Нерелятивістські закони перетворення полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1265" class="tocsection" >
+<span class="sectionnumber">15.2</span><span class="toctitle">&#x2003;Релятивістські закони перетворення полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1271" class="tocsection" >
+<span class="sectionnumber">15.3</span><span class="toctitle">&#x2003;Тензор електромагнітного поля*</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1273" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1274" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1283" class="tocchapter" >
+<span class="sectionnumber">16</span><span class="toctitle">&#x2003;Електромагнітні хвилі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1284" class="tocsection" >
+<span class="sectionnumber">16.1</span><span class="toctitle">&#x2003;Хвильове рівняння</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1300" class="tocsection" >
+<span class="sectionnumber">16.2</span><span class="toctitle">&#x2003;Електромагнітні хвилі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1305" class="tocsection" >
+<span class="sectionnumber">16.3</span><span class="toctitle">&#x2003;Енергія та вектор Пойнтінга для хвилі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1315" class="tocsection" >
+<span class="sectionnumber">16.4</span><span class="toctitle">&#x2003;Імпульс і&nbsp;момент імпульсу електромагнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1321" class="tocsection" >
+<span class="sectionnumber">16.5</span><span class="toctitle">&#x2003;Відбивання хвиль від межі двох діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1341" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1342" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1354" class="tocchapter" >
+<span class="sectionnumber">17</span><span class="toctitle">&#x2003;Випромінювання електромагнітних хвиль</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">17.1</span><span class="toctitle">&#x2003;Історична довідка: досліди Герца</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1358" class="tocsection" >
+<span class="sectionnumber">17.2</span><span class="toctitle">&#x2003;Елементарна модель випромінювання</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1371" class="tocsection" >
+<span class="sectionnumber">17.3</span><span class="toctitle">&#x2003;Дипольне випромінювання</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1389" class="tocsection" >
+<span class="sectionnumber">17.4</span><span class="toctitle">&#x2003;Потужність випромінювання осцилятора</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1394" class="tocsection" >
+<span class="sectionnumber">17.5</span><span class="toctitle">&#x2003;Випромінювання рухомого заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1406" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1407" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1417" class="tocchapter" >
+<span class="sectionnumber">18</span><span class="toctitle">&#x2003;Коливальні процеси в&nbsp;електричних колах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+<span class="sectionnumber">18.1</span><span class="toctitle">&#x2003;Квазістаціонарне наближення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+<span class="sectionnumber">18.2</span><span class="toctitle">&#x2003;Вільні коливання в&nbsp;коливальному контурі</span></a>
+</p>
+<p>
+<a href="ch18.html#autosec-1444" class="tocsection" >
+<span class="sectionnumber">18.3</span><span class="toctitle">&#x2003;Вимушені коливання під дією гармонічної ЕРС</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1458" class="tocsection" >
+<span class="sectionnumber">18.4</span><span class="toctitle">&#x2003;Змінний струм</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1486" class="tocsection" >
+<span class="sectionnumber">18.5</span><span class="toctitle">&#x2003;Трансформатор</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1490" class="tocsection" >
+<span class="sectionnumber">18.6</span><span class="toctitle">&#x2003;Частотні фільтри</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1506" class="tocsection" >
+<span class="sectionnumber">18.7</span><span class="toctitle">&#x2003;Трифазний струм</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1510" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1511" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1524" class="tocchapter" >
+<span class="sectionnumber">19</span><span class="toctitle">&#x2003;Довгі лінії. Телеграфні рівняння</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1525" class="tocsection" >
+<span class="sectionnumber">19.1</span><span class="toctitle">&#x2003;Від зосереджених елементів до розподілених</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1526" class="tocsection" >
+<span class="sectionnumber">19.2</span><span class="toctitle">&#x2003;Виведення телеграфних рівнянь</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1530" class="tocsection" >
+<span class="sectionnumber">19.3</span><span class="toctitle">&#x2003;Гармонічний режим. Хвильове рівняння</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1531" class="tocsection" >
+<span class="sectionnumber">19.4</span><span class="toctitle">&#x2003;Лінія без втрат</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1538" class="tocsection" >
+<span class="sectionnumber">19.5</span><span class="toctitle">&#x2003;Польова картина. Зв’язок з&nbsp;рівняннями Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1545" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1546" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1554" class="tocchapter" >
+<span class="sectionnumber">20</span><span class="toctitle">&#x2003;Хвилеводи</span></a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1555" class="tocsection" >
+<span class="sectionnumber">20.1</span><span class="toctitle">&#x2003;Від довгої лінії до хвилеводу</span></a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1556" class="tocsection" >
+<span class="sectionnumber">20.2</span><span class="toctitle">&#x2003;Прямокутний хвилевід</span></a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1569" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1572" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1579" class="tocchapter" >
+Відповіді</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1606" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1607" class="tocsection" >
+<span class="sectionnumber">А</span><span class="toctitle">&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</span></a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1612" class="tocsection" >
+<span class="sectionnumber">Б</span><span class="toctitle">&#x2003;Основні позначення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1615" class="tocsection" >
+<span class="sectionnumber">В</span><span class="toctitle">&#x2003;Основні формули векторного аналізу</span></a>
+</p>
+
+
+
+<p>
+<a href="ch23.html#autosec-1637" class="tocchapter" >
+Література</a>
+</p>
+
+
+
+<p>
+<a href="ch23.html#autosec-1638" class="tocsection" >
+Підручники та посібники</a>
+</p>
+
+
+
+<p>
+<a href="ch23.html#autosec-1639" class="tocsection" >
+Джерела фактів і результатів</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Відповіді">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\newcommand {\allowbreak }{}\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Відповіді ......
+-->
+<h3 id="autosec-1579">Відповіді</h3>
+<a id="main-html-autopage-1579"></a>
+<a id="main-html-autofile-21"></a>
+<!--
+...... section <a href=ch1.html#Charges>Електричні заряди та їх взаємодія</a> ......
+-->
+<h4 id="autosec-1580"><a href="ch1.html#Charges">Електричні заряди та їх взаємодія</a></h4>
+<a id="main-html-autopage-1580"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:1.{1}"></a><a id="solution1.{1}"></a><b><a href="ch1.html#LWR-ht-problem:1.{1}">1.1.</a></b> \(N_p\approx \dfrac {7\cdot 10^{4}}{2\cdot 1{,}7\cdot 10^{-24}}\approx 2\cdot 10^{28}\),
+надлишковий заряд \(q\approx 2\cdot 10^{26}\cdot 4{,}8\cdot 10^{-10}\approx 10^{17}\)&nbsp;Фр, \(F=q^2/r^2\approx 10^{30}\)&nbsp;дин \(\approx 10^{25}\)&nbsp;Н. Вага Землі \(M_\oplus g\approx 6\cdot 10^{30}\)&nbsp;дин,
+тобто сила того ж порядку.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:1.{2}"></a><a id="solution1.{2}"></a><b><a href="ch1.html#LWR-ht-problem:1.{2}">1.2.</a></b> За збереженням заряду та симетрією на кожній кульці стало по \(+q\). Було притягання \(F_1=3q^2/r^2\),
+стало відштовхування \(F_2=q^2/r^2\): сила зменшилась у \(3\) рази й змінила напрям.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:1.{3}"></a><a id="solution1.{3}"></a><b><a href="ch1.html#LWR-ht-problem:1.{3}">1.3.</a></b> \(\dfrac {F_e}{F_g}=\dfrac {e^2}{Gm_em_p}\approx 2\cdot 10^{39}\); від відстані не залежить, бо обидві
+сили \(\propto 1/r^2\).
+</p>
+
+</div>
+<!--
+...... section <a href=ch2.html#SteadyEfield>Постійне електричне поле у-вакуумі</a> ......
+-->
+<h4 id="autosec-1581"><a href="ch2.html#SteadyEfield">Постійне електричне поле у&nbsp;вакуумі</a></h4>
+<a id="main-html-autopage-1581"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:2.{1}"></a><a id="solution2.{1}"></a><b><a href="ch2.html#LWR-ht-problem:2.{1}">2.1.</a></b> \(E = 2\pi \rho r\) при \(r\leqslant R\), \(E = \dfrac {2\pi \rho R^2}{r} = \dfrac {2\lambda }{r}\)
+при \(r\geqslant R\) (\(\lambda =\pi R^2\rho \)). Потенціал зовні \(\phi = -2\lambda \ln r + C\) необмежено спадає при \(r\to \infty \), тому покласти \(\phi (\infty )=0\) не можна; нуль вибирають у&nbsp;скінченній точці,
+наприклад на осі: \(\phi = -\pi \rho r^2\) при \(r\leqslant R\), \(\phi = -\pi \rho R^2\left (1 + 2\ln \dfrac {r}{R}\right )\) при \(r\geqslant R\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:2.{2}"></a><a id="solution2.{2}"></a><b><a href="ch2.html#LWR-ht-problem:2.{2}">2.2.</a></b> \(F=\displaystyle \int _l^\infty \frac {q\lambda \,dx}{x^2}=\frac {q\lambda }{l}\) (у&nbsp;СІ
+\(F=\dfrac {q\lambda }{4\pi \epsilon _0 l}\)); для наведених даних \(F\approx 4{,}5\cdot 10^{-3}\)&nbsp;Н.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:2.{3}"></a><a id="solution2.{3}"></a><b><a href="ch2.html#LWR-ht-problem:2.{3}">2.3.</a></b> \(\Phi =q\,\Omega =2\pi q\left (1-\dfrac {z}{\sqrt {z^2+R^2}}\right )\), де \(\Omega \)&nbsp;—
+тілесний кут, під яким видно кільце із заряду.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:2.{4}"></a><a id="solution2.{4}"></a><b><a href="ch2.html#LWR-ht-problem:2.{4}">2.4.</a></b> повний потік \(4\pi q\) мінус потоки крізь дві основи: \(\Phi _\text {біч}=\dfrac {2\pi q h}{\sqrt
+{h^2/4+R^2}}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:2.{5}"></a><a id="solution2.{5}"></a><b><a href="ch2.html#LWR-ht-problem:2.{5}">2.5.</a></b> \(Q = \pi \rho _0R^3\); \(E = \dfrac {Qr^2}{R^4}\), \(\phi = \dfrac {Q\,(4R^3 - r^3)}{3R^4}\) при
+\(r\leqslant R\); \(E = \dfrac {Q}{r^2}\), \(\phi = \dfrac {Q}{r}\) при \(r\geqslant R\). \(\phi (0) = \dfrac {4Q}{3R} &lt; \dfrac {3Q}{2R}\): заряд зосереджений ближче до поверхні, тому центр «піднятий» менше.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:2.{6}"></a><a id="solution2.{6}"></a><b><a href="ch2.html#LWR-ht-problem:2.{6}">2.6.</a></b> а)&nbsp;\(\divg \vect r=3\), \(\rot \vect r=0\). б)&nbsp;\(\divg \Efield =0\) при \(r&gt;0\); при \(r\to
+0\) дивергенція не визначена: потік крізь будь-яку сферу навколо заряду дорівнює \(4\pi q\), тобто \(\divg \Efield =4\pi q\,\delta (\vect r)\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:2.{7}"></a><a id="solution2.{7}"></a><b><a href="ch2.html#LWR-ht-problem:2.{7}">2.7.</a></b> потенціал поля сфери \(\phi (r)=\phi _0R/r\): на відстані \(4R\) він дорівнює \(-100\)&nbsp;В, на поверхні
+\(-400\)&nbsp;В; електрон має подолати різницю потенціальних енергій \(300\)&nbsp;еВ, тож \(v_{\min }=\sqrt {2e\cdot 300~\text {В}/m}\approx 1{,}0\cdot 10^{7}\)&nbsp;м/с.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:2.{8}"></a><a id="solution2.{8}"></a><b><a href="ch2.html#LWR-ht-problem:2.{8}">2.8.</a></b> \(U=\dfrac {mv^2}{2e}\approx 9{,}5\cdot 10^{-3}\)&nbsp;СГСЕ \(\approx 2{,}8\)&nbsp;В.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:2.{9}"></a><a id="solution2.{9}"></a><b><a href="ch2.html#LWR-ht-problem:2.{9}">2.9.</a></b> \(\Efield =-\grad \dfrac {Q}{r}=\dfrac {Q\vect r}{r^3}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:2.{10}"></a><a id="solution2.{10}"></a><b><a href="ch2.html#LWR-ht-problem:2.{10}">2.10.</a></b> \(\phi =-Axy\) (з&nbsp;точністю до сталої); еквіпотенціальні лінії \(xy=\const \)&nbsp;— рівносторонні
+гіперболи, повернуті на \(45^\circ \) відносно силових ліній. Нормалі до двох сімей кривих, \((y,\,x)\) і&nbsp;\((x,\,-y)\), ортогональні. \(\divg \Efield =0\), тож зарядів у&nbsp;цій області немає (таке поле існує, наприклад, поблизу центру
+квадруполя).
+</p>
+
+</div>
+<!--
+...... section <a href=ch3.html#ChargeSystem>Електричне поле статичної системи зарядів</a> ......
+-->
+<h4 id="autosec-1582"><a href="ch3.html#ChargeSystem">Електричне поле статичної системи зарядів</a></h4>
+<a id="main-html-autopage-1582"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:3.{1}"></a><a id="solution3.{1}"></a><b><a href="ch3.html#LWR-ht-problem:3.{1}">3.1.</a></b> \(E_r=\dfrac {2p\cos \theta }{r^3}\), \(E_\theta =\dfrac {p\sin \theta }{r^3}\); на осі \(E=2p/r^3\)
+уздовж \(\vect p\), на серединному перпендикулярі \(E=p/r^3\) проти \(\vect p\). Уздовж силової лінії \(\dfrac {dr}{r\,d\theta }=\dfrac {E_r}{E_\theta }=\dfrac {2\cos \theta }{\sin \theta }\), звідки \(\ln r = 2\ln \sin \theta
++ \const \), тобто \(r = C\sin ^2\theta \).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:3.{2}"></a><a id="solution3.{2}"></a><b><a href="ch3.html#LWR-ht-problem:3.{2}">3.2.</a></b> \(\cos ^2\theta =\dfrac 13\), тобто \(\theta \approx 54{,}7^\circ \) (і \(125{,}3^\circ \)). Підказка:
+\(\vect p\cdot \Efield =\dfrac {p^2}{r^3}\,(3\cos ^2\theta -1)\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:3.{3}"></a><a id="solution3.{3}"></a><b><a href="ch3.html#LWR-ht-problem:3.{3}">3.3.</a></b> \(E=2p/r^3=2\cdot 10^{-18}/(10^{-7})^3=2\cdot 10^{3}\)&nbsp;СГСЕ \(\approx 6\cdot
+10^{7}\)&nbsp;В/м&nbsp;— у&nbsp;сотні разів більше, ніж поле пробою повітря.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:3.{4}"></a><a id="solution3.{4}"></a><b><a href="ch3.html#LWR-ht-problem:3.{4}">3.4.</a></b> \(q_\Sigma =0\), \(\vect p=0\); єдині ненульові компоненти \(D_{xy}=D_{yx}=3qa^2\) (слід нульовий).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:3.{5}"></a><a id="solution3.{5}"></a><b><a href="ch3.html#LWR-ht-problem:3.{5}">3.5.</a></b> (а)&nbsp;\(E_z=6qa^2/z^4\). (б)&nbsp;Точно \(\phi =\dfrac {2qa^2}{z(z^2-a^2)}=\dfrac {q}{60a}\),
+наближення дає \(\dfrac {2q}{125a}\); їхнє відношення \((z^2-a^2)/z^2=24/25\), тож похибка \(\approx 4\%\) (наближення занижує).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:3.{6}"></a><a id="solution3.{6}"></a><b><a href="ch3.html#LWR-ht-problem:3.{6}">3.6.</a></b> \(T=2\pi \sqrt {I/(pE)}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:3.{7}"></a><a id="solution3.{7}"></a><b><a href="ch3.html#LWR-ht-problem:3.{7}">3.7.</a></b> \(A=2pE\) і \(A=pE\) відповідно.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:3.{8}"></a><a id="solution3.{8}"></a><b><a href="ch3.html#LWR-ht-problem:3.{8}">3.8.</a></b> \(F_r=p\,\dfrac {d}{dr}\dfrac {Q}{r^2}=-\dfrac {2pQ}{r^3}\), тобто притягання із силою \(2pQ/r^3\).
+Перевірка: поле диполя на осі в місці заряду дорівнює \(2p/r^3\), тож сила на заряд \(2pQ/r^3\) і вона протилежна.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:3.{9}"></a><a id="solution3.{9}"></a><b><a href="ch3.html#LWR-ht-problem:3.{9}">3.9.</a></b> (а)&nbsp;\(U=-2p^2/r^3\); (б)&nbsp;\(U=+p^2/r^3\). Вигідніше розташування на одній прямій.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:3.{10}"></a><a id="solution3.{10}"></a><b><a href="ch3.html#LWR-ht-problem:3.{10}">3.10.</a></b> \(\alpha =\dfrac {e^2}{m\omega _0^2}\approx \dfrac {(4{,}8\cdot 10^{-10})^2}{9{,}1\cdot
+10^{-28}\cdot 10^{32}}\approx 2{,}5\cdot 10^{-24}\ \text {см}^3\) (порядок розміру атома в кубі).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:3.{11}"></a><a id="solution3.{11}"></a><b><a href="ch3.html#LWR-ht-problem:3.{11}">3.11.</a></b> (а)&nbsp;\(\rot \Efield =0\), \(\divg \Efield =g\left (-\tfrac 12-\tfrac 12+1\right )=0\);
+\(\phi =-g\left (\dfrac {z^2}2-\dfrac {x^2+y^2}4\right )\). (б)&nbsp;\(U=q\phi (a)+q\phi (-a)-2q\phi (0)=-gqa^2\). (в)&nbsp;\(-\dfrac 16\left (D_{xx}\dfrac {\partial E_x}{\partial x}+D_{yy}\dfrac {\partial
+E_y}{\partial y}+D_{zz}\dfrac {\partial E_z}{\partial z}\right )=-\dfrac 16\left (qa^2g+qa^2g+4qa^2g\right )=-gqa^2\).
+</p>
+
+</div>
+<!--
+...... section <a href=ch4.html#FieldInMetalls>Електричне поле у провідниках</a> ......
+-->
+<h4 id="autosec-1583"><a href="ch4.html#FieldInMetalls">Електричне поле у провідниках</a></h4>
+<a id="main-html-autopage-1583"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:4.{1}"></a><a id="solution4.{1}"></a><b><a href="ch4.html#LWR-ht-problem:4.{1}">4.1.</a></b> методом зображень \(\sigma (x)=-\dfrac {qd}{2\pi \left (x^2+d^2\right )^{3/2}}\); повний
+індукований заряд дорівнює \(-q\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:4.{2}"></a><a id="solution4.{2}"></a><b><a href="ch4.html#LWR-ht-problem:4.{2}">4.2.</a></b> \(\phi =\dfrac {q}{b}\) (поле, створене індукованими зарядами, у&nbsp;центрі сфери дорівнює нулю, бо
+їхня сума нульова й&nbsp;усі вони на відстані \(R\)).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:4.{3}"></a><a id="solution4.{3}"></a><b><a href="ch4.html#LWR-ht-problem:4.{3}">4.3.</a></b> зображення диполя&nbsp;— антипаралельний диполь \(p&apos; = pR^3/b^3\) у&nbsp;точці \(a = R^2/b\);
+оскільки \(b\gg R\), відстань між диполями \(\approx b\), і&nbsp;\(F \approx \dfrac {3pp&apos;}{b^4} = \dfrac {3p^2R^3}{b^7}\), взаємодія&nbsp;— притягування.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:4.{4}"></a><a id="solution4.{4}"></a><b><a href="ch4.html#LWR-ht-problem:4.{4}">4.4.</a></b> Три зображення: \(-q\) у&nbsp;точках, дзеркальних до \(q\) відносно кожної площини, і&nbsp;\(+q\)
+у&nbsp;точці, симетричній відносно ребра кута. Сила напрямлена до ребра: \(F=\dfrac {q^2}{4d^2}\left (\sqrt 2-\dfrac 12\right )\approx 0{,}23\,\dfrac {q^2}{d^2}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:4.{5}"></a><a id="solution4.{5}"></a><b><a href="ch4.html#LWR-ht-problem:4.{5}">4.5.</a></b> \(F=2\pi \sigma ^2S\) (притягання); на відстані \(\ell \gg R\) пластини взаємодіють як точкові заряди:
+\(F\approx \dfrac {\left (\pi R^2\sigma \right )^2}{\ell ^2}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:4.{6}"></a><a id="solution4.{6}"></a><b><a href="ch4.html#LWR-ht-problem:4.{6}">4.6.</a></b> \(F= \frac {Q^2}{8R^2}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:4.{7}"></a><a id="solution4.{7}"></a><b><a href="ch4.html#LWR-ht-problem:4.{7}">4.7.</a></b> Біля вістря \(E\approx U/r=10^{4}/10^{-4}=10^{8}\)&nbsp;В/м, у&nbsp;30 разів більше за \(E_\text
+{пр}\): повітря біля вістря іонізується (коронний розряд, іонний вітер). Біля кулі \(E=U/R=10^{5}\)&nbsp;В/м \(\ll E_\text {пр}\). Найбільший потенціал кулі \(U_{\max }=E_\text {пр}R\approx 3\cdot 10^{5}\)&nbsp;В \(=300\)&nbsp;кВ;
+тому кулі генераторів Ван де Граафа роблять великими й&nbsp;гладенькими.
+</p>
+
+</div>
+<!--
+...... section <a href=ch5.html#FieldInDielectrics>Основи електростатики діелектриків</a> ......
+-->
+<h4 id="autosec-1584"><a href="ch5.html#FieldInDielectrics">Основи електростатики діелектриків</a></h4>
+<a id="main-html-autopage-1584"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:5.{1}"></a><a id="solution5.{1}"></a><b><a href="ch5.html#LWR-ht-problem:5.{1}">5.1.</a></b> \(\sigma &apos; = P\cos \theta \); зовні дві зміщені кулі діють як точкові заряди \(\pm Q = \pm \frac
+43\pi R^3\rho \) на відстані \(d\), тобто як диполь \(\vect p = Q\vect d = \frac {4\pi }{3}R^3\vect P\) у&nbsp;центрі.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:5.{2}"></a><a id="solution5.{2}"></a><b><a href="ch5.html#LWR-ht-problem:5.{2}">5.2.</a></b> \(\Efield &apos; = \frac {4\pi }{3}\vect P = \frac {\epsilon - 1}{3}\Efield \).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:5.{3}"></a><a id="solution5.{3}"></a><b><a href="ch5.html#LWR-ht-problem:5.{3}">5.3.</a></b> (а) \(D = E_0\), \(E = E_0/\epsilon \), \(P = (\epsilon -1)E_0/(4\pi \epsilon )\), \(\sigma &apos; =
+\pm P\); (б) \(E = E_0\), \(D = \epsilon E_0\), \(P = (\epsilon -1)E_0/4\pi \), на великих гранях \(\sigma &apos; = 0\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:5.{4}"></a><a id="solution5.{4}"></a><b><a href="ch5.html#LWR-ht-problem:5.{4}">5.4.</a></b> \(q&apos; = -Q(\epsilon -1)/\epsilon \); \(\rho &apos; = -\divg \vect P = 0\) при \(r &gt; 0\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:5.{5}"></a><a id="solution5.{5}"></a><b><a href="ch5.html#LWR-ht-problem:5.{5}">5.5.</a></b> \(\tg \alpha _2 = \tg 30^\circ /6 \approx 0{,}096\), \(\alpha _2 \approx 5{,}5^\circ \).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:5.{6}"></a><a id="solution5.{6}"></a><b><a href="ch5.html#LWR-ht-problem:5.{6}">5.6.</a></b> \(n = p/kT \approx 2\cdot 10^{19}\)&nbsp;см\(^{-3}\); орієнтаційний внесок \(4\pi n p_0^2/3kT
+\approx 5{,}4\cdot 10^{-3}\), електронний \(4\pi n\alpha _e \approx 3{,}7\cdot 10^{-4}\); \(\epsilon \approx 1{,}0058\).
+</p>
+
+</div>
+<!--
+...... section <a href=ch6.html#ElEnergy>Енергія електричного поля</a> ......
+-->
+<h4 id="autosec-1585"><a href="ch6.html#ElEnergy">Енергія електричного поля</a></h4>
+<a id="main-html-autopage-1585"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:6.{1}"></a><a id="solution6.{1}"></a><b><a href="ch6.html#LWR-ht-problem:6.{1}">6.1.</a></b> \(C_{11} \approx 1\)&nbsp;см, \(C_{22} \approx 2\)&nbsp;см, \(C_{12} \approx -0{,}04\)&nbsp;см (знак
+від’ємний, оскільки \(C_{12} \approx -R_1R_2/b\)).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:6.{2}"></a><a id="solution6.{2}"></a><b><a href="ch6.html#LWR-ht-problem:6.{2}">6.2.</a></b> послідовно \(\approx 0{,}55\ \text {мкФ}\); паралельно \(6\ \text {мкФ}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:6.{3}"></a><a id="solution6.{3}"></a><b><a href="ch6.html#LWR-ht-problem:6.{3}">6.3.</a></b> поле між обкладками зросте в&nbsp;\(1{,}5\) раза; екранування порушиться&nbsp;— з’явиться поле
+й&nbsp;назовні, \(E_\text {зовні}=2\pi q/S\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:6.{4}"></a><a id="solution6.{4}"></a><b><a href="ch6.html#LWR-ht-problem:6.{4}">6.4.</a></b> \(W=\dfrac {3Q^2}{5R}\) обома способами.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:6.{5}"></a><a id="solution6.{5}"></a><b><a href="ch6.html#LWR-ht-problem:6.{5}">6.5.</a></b> \(W=\displaystyle \int _{R_1}^{R_2}\frac {q^2}{8\pi r^4}\,4\pi r^2dr=\frac {q^2}{2}\left (\frac
+1{R_1}-\frac 1{R_2}\right )=\frac {q^2}{2C}\); при \(R_2\gg R_1\) у&nbsp;шарі \(R_1&lt;r&lt;2R_1\) зосереджена половина енергії; тиск \(p=E^2/8\pi =q^2/8\pi R_1^4\), напрямлений назовні.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:6.{6}"></a><a id="solution6.{6}"></a><b><a href="ch6.html#LWR-ht-problem:6.{6}">6.6.</a></b> (а)&nbsp;\(q\) стале, \(U&apos;=U/\epsilon \), \(W&apos;=W/\epsilon \), де \(W=CU^2/2\); поле виконує над
+пластиною роботу \(W(1-1/\epsilon )\) за рахунок своєї енергії. (б)&nbsp;\(U\) стала, \(q&apos;=\epsilon q\), \(W&apos;=\epsilon W\); батарея переносить заряд \((\epsilon -1)CU\) і&nbsp;виконує роботу \((\epsilon -1)CU^2=2\Delta W\),
+половина якої йде на приріст енергії поля, а&nbsp;половина \((\epsilon -1)CU^2/2\)&nbsp;— на роботу над пластиною. В&nbsp;обох випадках пластина втягується, хоча енергія поля в&nbsp;(а) зменшується, а&nbsp;в&nbsp;(б) зростає.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:6.{7}"></a><a id="solution6.{7}"></a><b><a href="ch6.html#LWR-ht-problem:6.{7}">6.7.</a></b> \(F=\epsilon _0SU^2/2d^2\approx 3{,}2\times 10^{-3}\ \text {Н}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:6.{8}"></a><a id="solution6.{8}"></a><b><a href="ch6.html#LWR-ht-problem:6.{8}">6.8.</a></b> \(F \approx 3{,}3\times 10^{-6}\ \text {Н}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:6.{9}"></a><a id="solution6.{9}"></a><b><a href="ch6.html#LWR-ht-problem:6.{9}">6.9.</a></b> \(h = \dfrac {(\epsilon -1)U^2}{8\pi \rho _\text {р} g d^2}\); &#x2003;\(Q = \dfrac {1}{2}mgh =
+\dfrac {(\epsilon -1)^2 l U^4}{128\pi ^2\rho _\text {р} g d^3}\), де \(m=\rho _\text {р} l d h\)&nbsp;— маса піднятого стовпа.
+</p>
+
+</div>
+<!--
+...... section <a href=ch7.html#SteadyCurrent>Постійний електричний струм</a> ......
+-->
+<h4 id="autosec-1586"><a href="ch7.html#SteadyCurrent">Постійний електричний струм</a></h4>
+<a id="main-html-autopage-1586"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:7.{1}"></a><a id="solution7.{1}"></a><b><a href="ch7.html#LWR-ht-problem:7.{1}">7.1.</a></b> \(u=\dfrac {I}{enS}\approx 7\cdot 10^{-5}\)&nbsp;м/с \(\approx 0{,}07\)&nbsp;мм/с; \(t\approx
+1{,}4\cdot 10^{4}\)&nbsp;с \(\approx 4\)&nbsp;год.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:7.{2}"></a><a id="solution7.{2}"></a><b><a href="ch7.html#LWR-ht-problem:7.{2}">7.2.</a></b> \(e/m = \ell v_0/(qR) \approx 1{,}9\cdot 10^{11}\)&nbsp;Кл/кг&nbsp;— близько до питомого заряду
+електрона. Заряд \(q = (m/e)\ell v_0/R\) визначається інтегралом \(\int a\,dt = v_0\), тобто лише повною зміною швидкості.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:7.{3}"></a><a id="solution7.{3}"></a><b><a href="ch7.html#LWR-ht-problem:7.{3}">7.3.</a></b> \(j_0=\dfrac {3I}{\pi R^2}=3\langle j\rangle \).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:7.{4}"></a><a id="solution7.{4}"></a><b><a href="ch7.html#LWR-ht-problem:7.{4}">7.4.</a></b> \(I_{\text {к.з.}}=\emf /r=24\)&nbsp;А; \(R=r=0{,}5\)&nbsp;Ом; \(\mathcal P_{\max }=\emf
+^2/(4r)=72\)&nbsp;Вт; \(\eta =50\%\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:7.{5}"></a><a id="solution7.{5}"></a><b><a href="ch7.html#LWR-ht-problem:7.{5}">7.5.</a></b> \(I=(\phi _1-\phi _2+\emf )/R=4{,}5\)&nbsp;А.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:7.{6}"></a><a id="solution7.{6}"></a><b><a href="ch7.html#LWR-ht-problem:7.{6}">7.6.</a></b> \(I=(\emf _1-\emf _2)/(R_1+R_2)=1{,}2\)&nbsp;А; \(U_1=2{,}4\)&nbsp;В, \(U_2=3{,}6\)&nbsp;В.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:7.{7}"></a><a id="solution7.{7}"></a><b><a href="ch7.html#LWR-ht-problem:7.{7}">7.7.</a></b> \(Q=I^2Rt=24\)&nbsp;кДж; \(j=I/S=4\cdot 10^{6}\)&nbsp;А/м\(^2\); \(w=\varrho j^2\approx 1{,}8\cdot
+10^{7}\)&nbsp;Вт/м\(^3\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:7.{8}"></a><a id="solution7.{8}"></a><b><a href="ch7.html#LWR-ht-problem:7.{8}">7.8.</a></b> \(R\approx 32\)&nbsp;Ом; при \(r_0&apos;=2r_0\) опір зменшиться вдвічі.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:7.{9}"></a><a id="solution7.{9}"></a><b><a href="ch7.html#LWR-ht-problem:7.{9}">7.9.</a></b> \(\tau =RC=1\)&nbsp;с, \(t=\tau \ln 10\approx 2{,}3\)&nbsp;с; \(Q=C\emf ^2/2=50\)&nbsp;мДж. При
+\(R=1\)&nbsp;кОм час зменшиться в \(100\) разів (\(t\approx 23\)&nbsp;мс), а виділена теплота <em>не зміниться</em>.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:7.{10}"></a><a id="solution7.{10}"></a><b><a href="ch7.html#LWR-ht-problem:7.{10}">7.10.</a></b> \(\tau =5\)&nbsp;с; \(t\approx 3{,}5\)&nbsp;с; \(U(2\tau )\approx 27\)&nbsp;В.
+</p>
+
+</div>
+<!--
+...... section <a href=ch8.html#CurrentsInMedia>Електричний струм у-різних середовищах</a> ......
+-->
+<h4 id="autosec-1587"><a href="ch8.html#CurrentsInMedia">Електричний струм у&nbsp;різних середовищах</a></h4>
+<a id="main-html-autopage-1587"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{1}"></a><a id="solution8.{1}"></a><b><a href="ch8.html#LWR-ht-problem:8.{1}">8.1.</a></b> \(\tau =\dfrac {m_e\lambda }{ne^2}\approx 2{,}5\cdot 10^{-14}\)&nbsp;с; \(\ell =v_T\tau \approx
+3\)&nbsp;нм, удесятеро більше за міжіонну відстань, на якій класичний електрон мав би розсіюватися. З&nbsp;\(v_F\) маємо \(\ell =v_F\tau \approx 40\)&nbsp;нм: електрон-хвиля проходить сотні періодів ґратки без розсіяння, що пояснює
+лише квантова теорія.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{2}"></a><a id="solution8.{2}"></a><b><a href="ch8.html#LWR-ht-problem:8.{2}">8.2.</a></b> \(\mu =\lambda /(en)\approx 4{,}3\cdot 10^{-3}\)&nbsp;м\(^2\)/(В\(\cdot \)с); \(E=j/\lambda \approx
+1{,}7\cdot 10^{-2}\)&nbsp;В/м; \(u=\mu E\approx 7\cdot 10^{-5}\)&nbsp;м/с (збігається з&nbsp;\(u=I/(enS)\)); \(\mu =e\tau /m_e\) з&nbsp;\(\tau \approx 2{,}5\cdot 10^{-14}\)&nbsp;с дає те саме.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{3}"></a><a id="solution8.{3}"></a><b><a href="ch8.html#LWR-ht-problem:8.{3}">8.3.</a></b> \(R=R_{20}[1+\alpha (t-20)]\approx 59\)&nbsp;Ом; зростання на \(\approx 490\%\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{4}"></a><a id="solution8.{4}"></a><b><a href="ch8.html#LWR-ht-problem:8.{4}">8.4.</a></b> \(\kappa /\lambda \approx 6{,}8\cdot 10^{-6}\)&nbsp;Вт\(\cdot \)Ом/К; \(L_{\text {кл}}T\approx
+3{,}3\cdot 10^{-6}\), \(LT\approx 7{,}3\cdot 10^{-6}\)&nbsp;Вт\(\cdot \)Ом/К — з квантовим значенням збіг у межах \(\sim 10\%\), класичне вдвічі занижене.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{5}"></a><a id="solution8.{5}"></a><b><a href="ch8.html#LWR-ht-problem:8.{5}">8.5.</a></b> (а) \(I_c=j_cS=1000\)&nbsp;А; (б) \(P/\ell =I^2\varrho /S\approx 3{,}4\cdot 10^{4}\)&nbsp;Вт/м (закон
+Джоуля–Ленца), у&nbsp;надпровіднику&nbsp;— нуль; (в) ті, у&nbsp;яких \(T_c&gt;77\)&nbsp;К: купрат <span
+    id="lateximage-main-html-300"
+    class="lateximagesource"
+><!--
+YBa2 Cu3 O7
+--><img
+   src="main-html-images\9EE06316E016E7BE29DF174026E2E601.svg"
+   alt="\ce{YBa2Cu3O7}"
+   style=""
+   class="lateximage"
+></span> (<span
+   id="lateximage-main-html-301"
+   class="lateximagesource"
+><!--
+H3 S
+--><img
+   src="main-html-images\A9FF2B391CADC5A49722CE2D35A42175.svg"
+   alt="\ce{H3S}"
+   style=""
+   class="lateximage"
+></span>&nbsp;— лише під тиском \(\sim 150\)&nbsp;ГПа).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{6}"></a><a id="solution8.{6}"></a><b><a href="ch8.html#LWR-ht-problem:8.{6}">8.6.</a></b> \(m=\dfrac {M}{zF}It\approx 1{,}18\)&nbsp;г.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{7}"></a><a id="solution8.{7}"></a><b><a href="ch8.html#LWR-ht-problem:8.{7}">8.7.</a></b> \(\lambda =en(\mu _++\mu _-)\approx 1{,}3\)&nbsp;См/м; частка катіонів \(\mu _+/(\mu _++\mu
+_-)\approx 0{,}40\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{8}"></a><a id="solution8.{8}"></a><b><a href="ch8.html#LWR-ht-problem:8.{8}">8.8.</a></b> \(I=(U-\emf _{\text {пол}})/R=10\)&nbsp;А; \(m=\dfrac {M}{zF}It\approx 0{,}38\)&nbsp;г; \(P_{\text
+{Дж}}=I^2R=5\)&nbsp;Вт; частка потужності, що відповідає ЕРС поляризації, \(\emf _{\text {пол}}/U=75\%\). Це не обов’язково частка корисної хімічної роботи: перенапруги на електродах також переходять у&nbsp;тепло.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{9}"></a><a id="solution8.{9}"></a><b><a href="ch8.html#LWR-ht-problem:8.{9}">8.9.</a></b> \(n_0=\sqrt {N/\beta }=2{,}5\cdot 10^{12}\)&nbsp;м\(^{-3}\); \(\lambda =en_0(\mu _++\mu _-)\approx
+1{,}3\cdot 10^{-10}\)&nbsp;См/м; \(j_{\text {нас}}=eNd\approx 3{,}2\cdot 10^{-8}\)&nbsp;А/м\(^2\), \(E\sim j_{\text {нас}}/\lambda \approx 2{,}4\cdot 10^{2}\)&nbsp;В/м, \(U\sim Ed\approx 5\)&nbsp;В.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{10}"></a><a id="solution8.{10}"></a><b><a href="ch8.html#LWR-ht-problem:8.{10}">8.10.</a></b> \(E=\dfrac {W_i}{e\ell }\approx 1{,}6\cdot 10^{5}\)&nbsp;В/м.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{11}"></a><a id="solution8.{11}"></a><b><a href="ch8.html#LWR-ht-problem:8.{11}">8.11.</a></b> \(\phi =E_{\text {пр}}r=30\)&nbsp;кВ і&nbsp;\(300\)&nbsp;В відповідно; на вістрі (малий радіус
+кривизни) поле при тому самому потенціалі найбільше.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{12}"></a><a id="solution8.{12}"></a><b><a href="ch8.html#LWR-ht-problem:8.{12}">8.12.</a></b> \(\dfrac {j_2}{j_1}=\left (\dfrac {T_2}{T_1}\right )^{2}\exp \!\left [\dfrac {A_{\text
+{вих}}}{k_B}\left (\dfrac 1{T_1}-\dfrac 1{T_2}\right )\right ]\approx 2{,}9\cdot 10^{2}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{13}"></a><a id="solution8.{13}"></a><b><a href="ch8.html#LWR-ht-problem:8.{13}">8.13.</a></b> \(j\approx 2{,}6\cdot 10^{2}\)&nbsp;А/м\(^2\); \(I=jS\approx 26\)&nbsp;мА; \(j\) зросте
+у&nbsp;\(2^{3/2}\approx 2{,}8\) рази при \(2U\) і&nbsp;зменшиться вчетверо при \(2d\); \(P=IU\approx 5\)&nbsp;Вт.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{14}"></a><a id="solution8.{14}"></a><b><a href="ch8.html#LWR-ht-problem:8.{14}">8.14.</a></b> \(\lambda =en_i(\mu _n+\mu _p)\approx 4{,}4\cdot 10^{-4}\)&nbsp;См/м; \(\varrho \approx
+2{,}3\cdot 10^{3}\)&nbsp;Ом\(\cdot \)м.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{15}"></a><a id="solution8.{15}"></a><b><a href="ch8.html#LWR-ht-problem:8.{15}">8.15.</a></b> \(\dfrac {n_i(T_2)}{n_i(T_1)}=\left (\dfrac {T_2}{T_1}\right )^{3/2}\exp \!\left [\dfrac
+{E_g}{2k_B}\left (\dfrac 1{T_1}-\dfrac 1{T_2}\right )\right ]\approx 8\), тобто опір кремнію <em>спадає</em> майже у&nbsp;\(8\) разів, тоді як опір міді <em>зростає</em> лише на \(\alpha \Delta t\approx 13\%\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{16}"></a><a id="solution8.{16}"></a><b><a href="ch8.html#LWR-ht-problem:8.{16}">8.16.</a></b> \(\lambda \approx en\mu _n\approx 2{,}2\cdot 10^{2}\)&nbsp;См/м; \(p=n_i^2/n\approx 2\cdot
+10^{10}\)&nbsp;м\(^{-3}\) (дірки&nbsp;— неосновні носії); провідність зросла приблизно в&nbsp;\(5\cdot 10^{5}\) разів.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:8.{17}"></a><a id="solution8.{17}"></a><b><a href="ch8.html#LWR-ht-problem:8.{17}">8.17.</a></b> \(\phi _k=\dfrac {k_BT}{e}\ln \dfrac {N_aN_d}{n_i^2}\approx 0{,}75\)&nbsp;В; \(\dfrac
+{I(+0{,}5)}{|I(-0{,}5)|}\approx e^{19{,}3}\approx 2{,}5\cdot 10^{8}\).
+</p>
+
+</div>
+<!--
+...... section <a href=ch9.html#MagFieldVacuum>Магнітне поле у-вакуумі</a> ......
+-->
+<h4 id="autosec-1592"><a href="ch9.html#MagFieldVacuum">Магнітне поле у&nbsp;вакуумі</a></h4>
+<a id="main-html-autopage-1592"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:9.{1}"></a><a id="solution9.{1}"></a><b><a href="ch9.html#LWR-ht-problem:9.{1}">9.1.</a></b> \(B=\dfrac {2\pi R^2I}{c\,(R^2+z^2)^{3/2}}\); у центрі \(B=\dfrac {2\pi I}{cR}\). При \(z\gg R\) маємо
+\(B\approx \dfrac {2p_m}{z^3}\), що збігається з <span class="textup">(<a href="ch9.html#eq:DipoleFieldB">9.30</a>)</span> на осі диполя (\(\vect r\parallel \vect p_m\)).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:9.{2}"></a><a id="solution9.{2}"></a><b><a href="ch9.html#LWR-ht-problem:9.{2}">9.2.</a></b> \(\Bfield =\dfrac {2\pi }{c}\,[\vect j\times \vect a]\), де \(\vect a\)&nbsp;— вектор, проведений від
+осі провідника до осі порожнини. Поле однорідне, \(B=\dfrac {2\pi jd}{c}\), перпендикулярне до \(\vect j\) і до лінії, що сполучає осі. (Усередині суцільного циліндра \(\Bfield =\dfrac {2\pi }{c}[\vect j\times \vect r]\), де \(\vect
+r\) — відстань від осі.)
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:9.{3}"></a><a id="solution9.{3}"></a><b><a href="ch9.html#LWR-ht-problem:9.{3}">9.3.</a></b> (а)&nbsp;\(p_m=\dfrac {QR^2\omega }{4c}\); за формулою <span class="textup">(<a
+href="ch9.html#eq:MagMomentViaInertia">9.24</a>)</span> з \(J=\tfrac 12MR^2\) — те саме. (б)&nbsp;\(|\vect p_m|=\dfrac {e\hbar }{2mc}\approx 9{,}3\cdot 10^{-21}\)&nbsp;ерг/Гс (магнетон Бора); оскільки заряд електрона
+від’ємний, \(\vect p_m\) напрямлений <em>протилежно</em> до \(\vect L\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:9.{4}"></a><a id="solution9.{4}"></a><b><a href="ch9.html#LWR-ht-problem:9.{4}">9.4.</a></b> \(F=\dfrac {2p_mI}{cr^2}\), виток притягується до провідника (диполь втягується в&nbsp;область
+сильнішого поля); за \(\vect p_m\uparrow \downarrow \Bfield \) сила та сама за модулем, але це відштовхування. Перевірка: \(F\approx \dfrac {2II&apos;a}{c^2}\Bigl (\dfrac 1r-\dfrac 1{r+a}\Bigr )\approx \dfrac
+{2II&apos;a^2}{c^2r^2}\), що збігається з \(\dfrac {2p_mI}{cr^2}\) при \(p_m=I&apos;a^2/c\). Сили на сторони, перпендикулярні до провідника, взаємно скорочуються.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:9.{5}"></a><a id="solution9.{5}"></a><b><a href="ch9.html#LWR-ht-problem:9.{5}">9.5.</a></b> \(B = \dfrac {2\pi \sigma \omega R}{c} = \dfrac {2Q\omega }{cR} \approx 1{,}3\cdot
+10^{-5}\)&nbsp;Гс, тобто приблизно в&nbsp;\(4\cdot 10^{4}\) разів менше за земне; при зміні напряму обертання напрям \(\Bfield \) змінюється на протилежний.
+</p>
+
+</div>
+<!--
+...... section <a href=ch10.html#MagFieldMedia>Магнітне поле в речовині</a> ......
+-->
+<h4 id="autosec-1593"><a href="ch10.html#MagFieldMedia">Магнітне поле в речовині</a></h4>
+<a id="main-html-autopage-1593"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:10.{1}"></a><a id="solution10.{1}"></a><b><a href="ch10.html#LWR-ht-problem:10.{1}">10.1.</a></b> \(H=\dfrac {4\pi }{c}nI\) (теорема про циркуляцію для \(\Hfield \)), \(B=\mu H=\dfrac {4\pi \mu
+}{c}nI\); молекулярні струми дають \(4\pi J=(\mu -1)H\), тобто частку \((\mu -1)/\mu \) від \(B\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:10.{2}"></a><a id="solution10.{2}"></a><b><a href="ch10.html#LWR-ht-problem:10.{2}">10.2.</a></b> За теоремою про циркуляцію \(H=\dfrac {2Ir}{cR^2}\) (азимутально), \(J=\chi _mH\). Об’ємний струм
+\(j_{m,z}=\dfrac {c}{r}\dfrac {d(rJ)}{dr}=\dfrac {4\chi _mI}{R^2}\) тече вздовж \(I\), повний \(I&apos;_\text {об}=4\pi \chi _mI\). Поверхневий \(i_m=cJ(R)=\dfrac {2\chi _mI}{R}\) тече проти \(I\), повний \(I&apos;_\text
+{пов}=4\pi \chi _mI\). Сумарний молекулярний струм крізь переріз дорівнює нулю: молекулярні струми замкнені й&nbsp;заряду крізь переріз не переносять.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:10.{3}"></a><a id="solution10.{3}"></a><b><a href="ch10.html#LWR-ht-problem:10.{3}">10.3.</a></b> (а)&nbsp;\(i_m=cJ\) (струм тече по колу навколо осі), \(B=4\pi J\), \(H=0\). (б)&nbsp;Молекулярні струми
+течуть лише на краях пластини (нескінченно далеко), тому \(B=0\), а \(H=-4\pi J\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:10.{4}"></a><a id="solution10.{4}"></a><b><a href="ch10.html#LWR-ht-problem:10.{4}">10.4.</a></b> З теореми про циркуляцію \(H_\text {м}l+H_\text {з}\delta =\dfrac {4\pi }{c}NI\) і
+неперервності \(B_n\) (\(B=\mu H_\text {м}=H_\text {з}\)) маємо \(B=\dfrac {4\pi NI}{c\,(l/\mu +\delta )}\), \(H_\text {м}=B/\mu \), \(H_\text {з}=B\). Без зазору \(B_0=\dfrac {4\pi \mu NI}{cl}\), тож \(B_0/B=1+\dfrac {\mu
+\delta }{l}=3\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:10.{5}"></a><a id="solution10.{5}"></a><b><a href="ch10.html#LWR-ht-problem:10.{5}">10.5.</a></b> (а)&nbsp;\(\chi _m^{\text {пара}}=\dfrac {np_0^2}{3kT}\approx 3{,}5\cdot 10^{-5}\).
+(б)&nbsp;\(\chi _m^{\text {діа}}=-\dfrac {ne^2\langle r^2\rangle }{6m_ec^2}\approx -2{,}3\cdot 10^{-7}\). (в)&nbsp;Парамагнітний внесок більший приблизно в \(1{,}5\cdot 10^{2}\) разів, тож речовина парамагнітна.
+(г)&nbsp;\(p_0B/kT\approx 2\cdot 10^{-3}\ll 1\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:10.{6}"></a><a id="solution10.{6}"></a><b><a href="ch10.html#LWR-ht-problem:10.{6}">10.6.</a></b> \(H_\text {мол}\sim \dfrac {kT_C}{p_0}\approx 7\cdot 10^{6}\)&nbsp;Гс, тоді як \(\dfrac
+{p_0}{a^3}\approx 1{,}3\cdot 10^{3}\)&nbsp;Гс, тобто приблизно в \(5\cdot 10^{3}\) разів менше. Магнітної взаємодії диполів недостатньо для феромагнітного впорядкування; потрібна обмінна взаємодія.
+</p>
+
+</div>
+<!--
+...... section <a href=ch11.html#EBMotion>Рух заряджених частинок</a> ......
+-->
+<h4 id="autosec-1594"><a href="ch11.html#EBMotion">Рух заряджених частинок</a></h4>
+<a id="main-html-autopage-1594"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:11.{1}"></a><a id="solution11.{1}"></a><b><a href="ch11.html#LWR-ht-problem:11.{1}">11.1.</a></b> (а)&nbsp;\(R=\dfrac {mvc}{eB}\), \(\omega _c=\dfrac {v}{R}=\dfrac {eB}{mc}\) — від \(v\) не
+залежить. (б)&nbsp;\(R\approx 0{,}57\)&nbsp;см, \(\omega _c\approx 1{,}8\cdot 10^{9}\)&nbsp;с\(^{-1}\) (\(T\approx 3{,}6\)&nbsp;нс). (в)&nbsp;Гвинтова лінія з радіусом \(R\sin \alpha \) і кроком \(h=2\pi R\cos \alpha \).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:11.{2}"></a><a id="solution11.{2}"></a><b><a href="ch11.html#LWR-ht-problem:11.{2}">11.2.</a></b> коло радіуса \(R = \dfrac {mcv_0}{|q|B}\) в площині, перпендикулярній до \(\Bfield \), і
+рівноприскорений рух вздовж поля: \(z = \dfrac {qE}{2m}t^2\). За період \(T = \dfrac {2\pi mc}{|q|B}\) зміщення \(\Delta z_n = (2n-1)\,\dfrac {2\pi ^2 mc^2E}{|q|B^2}\) (у напрямку сили \(q\Efield \)), тобто зміщення за
+послідовні оберти відносяться як \(1:3:5:\dots \)
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:11.{3}"></a><a id="solution11.{3}"></a><b><a href="ch11.html#LWR-ht-problem:11.{3}">11.3.</a></b> (а)&nbsp;\(u = cE/B \approx 3\cdot 10^{7}\)&nbsp;см/с у напрямку \(\Efield \times \Bfield \).
+(б)&nbsp;\(v_{\max } = 2u \approx 6\cdot 10^{7}\)&nbsp;см/с. (в)&nbsp;\(2u/|\omega _c| \approx 0{,}034\)&nbsp;см (радіус «колеса» \(u/|\omega _c| \approx 0{,}017\)&nbsp;см). (г)&nbsp;\(2\pi u/|\omega _c| = uT \approx
+0{,}11\)&nbsp;см при \(T \approx 3{,}6\)&nbsp;нс. Електрон спершу рухається в бік \(-\Efield \) (сила \(q\Efield \) для \(q&lt;0\)), а дрейфує в напрямку \(\Efield \times \Bfield \) так само, як і позитивний заряд.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:11.{4}"></a><a id="solution11.{4}"></a><b><a href="ch11.html#LWR-ht-problem:11.{4}">11.4.</a></b> \(2R = \dfrac {2c}{B}\sqrt {\dfrac {2mU}{e}}\): \(40{,}7\)&nbsp;см і&nbsp;\(42{,}7\)&nbsp;см;
+відстань між лініями \(\Delta = 2(R_2-R_1) \approx 2\)&nbsp;см, тож щілина має бути вужчою за \(\sim 2\)&nbsp;см (на практиці — значно вужчою).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:11.{5}"></a><a id="solution11.{5}"></a><b><a href="ch11.html#LWR-ht-problem:11.{5}">11.5.</a></b> (а)&nbsp;\(f = \dfrac {eB}{2\pi m_pc} \approx 23\)&nbsp;МГц. (б)&nbsp;\(W = \dfrac
+{e^2B^2R^2}{2m_pc^2} \approx 4{,}3\cdot 10^{-5}\)&nbsp;ерг \(\approx 27\)&nbsp;МеВ. (в)&nbsp;\(N = W/(2eU) \approx 450\). (г)&nbsp;\(\Delta \omega /\omega \approx W/m_pc^2 \approx 3\,\%\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:11.{6}"></a><a id="solution11.{6}"></a><b><a href="ch11.html#LWR-ht-problem:11.{6}">11.6.</a></b> (а)&nbsp;\(U_H = \dfrac {IB}{n|q|cd} \approx 4{,}2\cdot 10^{-7}\)&nbsp;СГСЕ \(\approx
+0{,}13\)&nbsp;мВ. (б)&nbsp;Знак змінюється на протилежний (\(R_H&gt;0\) для дірок). (в)&nbsp;\(n = \dfrac {IB}{|q|cd\,|U_H|}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:11.{7}"></a><a id="solution11.{7}"></a><b><a href="ch11.html#LWR-ht-problem:11.{7}">11.7.</a></b> (а)&nbsp;\(R_e \approx 0{,}5\)&nbsp;мм, \(R_i \approx 1{,}4\)&nbsp;м. (б)&nbsp;\(u = cE/B
+\approx 10^{8}\)&nbsp;см/с (\(E = 0{,}667\)&nbsp;СГСЕ). Оскільки \(R_i \gg \) розмірів каналу, іони практично не замагнічені, а&nbsp;електрони (\(R_e \ll \) розмірів каналу) замагнічені.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:11.{8}"></a><a id="solution11.{8}"></a><b><a href="ch11.html#LWR-ht-problem:11.{8}">11.8.</a></b> (а)&nbsp;З \(mv_0^2/2 = |q|U\) маємо \(y = \dfrac {El(l/2+L)}{2U}\) (частинки різних знаків
+відхиляються в протилежні боки). (б)&nbsp;\(|y| = \sqrt {|q|/m}\,\dfrac {Bl}{c\sqrt {2U}}\left (\dfrac {l}{2}+L\right )\), тому \(|y_e|/|y_p| = \sqrt {m_p/m_e} \approx 43\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:11.{9}"></a><a id="solution11.{9}"></a><b><a href="ch11.html#LWR-ht-problem:11.{9}">11.9.</a></b> \(v_0 = cE/B \approx 10^{9}\)&nbsp;см/с; \(\left |\dfrac {q}{m}\right | = \dfrac
+{y\,v_0\,c}{B\,l\,(l/2+L)} \approx 5{,}2\cdot 10^{17}\)&nbsp;од.&nbsp;СГСЕ\(\cdot \)г\(^{-1}\) \(\approx 1{,}7\cdot 10^{11}\)&nbsp;Кл\(\cdot \)кг\(^{-1}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:11.{10}"></a><a id="solution11.{10}"></a><b><a href="ch11.html#LWR-ht-problem:11.{10}">11.10.</a></b> \(r = \sqrt {\dfrac {9\eta v_0}{2g\rho }} \approx 1{,}4\cdot 10^{-4}\)&nbsp;см; \(q =
+6\pi \eta r\,\dfrac {v_0+v_E}{E} \approx 1{,}4\cdot 10^{-9}\)&nbsp;СГСЕ \(\approx 3e\); \(\Delta q = 6\pi \eta r\,\dfrac {v_E&apos;-v_E}{E} \approx 4{,}8\cdot 10^{-10}\)&nbsp;СГСЕ \(\approx e\).
+</p>
+
+</div>
+<!--
+...... section <a href=ch12.html#ElMagInduction>Явище електромагнітної індукції</a> ......
+-->
+<h4 id="autosec-1595"><a href="ch12.html#ElMagInduction">Явище електромагнітної індукції</a></h4>
+<a id="main-html-autopage-1595"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{1}"></a><a id="solution12.{1}"></a><b><a href="ch12.html#LWR-ht-problem:12.{1}">12.1.</a></b> \(\emf =B\ell v/c\approx 1{,}7\cdot 10^{-4}\)&nbsp;СГСЕ \(=0{,}05\)&nbsp;В;
+\(I=0{,}5\)&nbsp;А; \(F=I\ell B/c=500\)&nbsp;дин \(=5\)&nbsp;мН; \(P=Fv=25\)&nbsp;мВт \(=\emf I=I^2R\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{2}"></a><a id="solution12.{2}"></a><b><a href="ch12.html#LWR-ht-problem:12.{2}">12.2.</a></b> елемент радіуса \(dr\) має швидкість \(v=\omega r\), тому \(\emf =\dfrac 1c\int _0^a\omega
+rB\,dr=\dfrac {\omega Ba^2}{2c}\approx 5{,}2\cdot 10^{-4}\)&nbsp;СГСЕ \(\approx 0{,}16\)&nbsp;В.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{3}"></a><a id="solution12.{3}"></a><b><a href="ch12.html#LWR-ht-problem:12.{3}">12.3.</a></b> \(\emf _m=\dfrac {NBS\omega }{c}\approx 0{,}21\)&nbsp;СГСЕ \(\approx 63\)&nbsp;В;
+\(I_m\approx 6{,}3\)&nbsp;А; \(\langle P\rangle =\dfrac {\emf _m^2}{2R}\approx 0{,}2\)&nbsp;кВт (за законом збереження енергії — рівна середній електричній потужності).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{4}"></a><a id="solution12.{4}"></a><b><a href="ch12.html#LWR-ht-problem:12.{4}">12.4.</a></b> відкид пропорційний заряду, тому \(Q = 1{,}2\cdot 10^{-7}\)&nbsp;Кл \(=360\)&nbsp;СГСЕ. Повна
+зміна потоку крізь котушку \(N\Phi _1 = cRQ\) (у&nbsp;СІ \(RQ\)) \(= 2{,}4\cdot 10^{-5}\)&nbsp;Вб \(=2{,}4\cdot 10^{3}\)&nbsp;Гс\(\cdot \)см\(^2\), тобто крізь один виток \(\Phi _1\approx 2{,}4\cdot 10^{2}\)&nbsp;Гс\(\cdot
+\)см\(^2\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{5}"></a><a id="solution12.{5}"></a><b><a href="ch12.html#LWR-ht-problem:12.{5}">12.5.</a></b> із симетрії лінії \(\Efield \)&nbsp;— кола навколо осі; \(2\pi rE=-\dfrac 1c\dot B\pi r^2\) при
+\(r&lt;a\), тобто \(E=-\dfrac {r}{2c}\dot B\); при \(r&gt;a\) потік дорівнює \(\dot B\pi a^2\), тобто \(E=-\dfrac {a^2}{2cr}\dot B\). При \(r=a=5\)&nbsp;см \(|E|\approx 8{,}3\cdot 10^{-8}\)&nbsp;СГСЕ \(\approx 2{,}5\cdot
+10^{-5}\)&nbsp;В/см. Циркуляція \(\Efield \) по кільцю поза циліндром визначається потоком крізь <em>весь</em> циліндр, тому поле відмінне від нуля й&nbsp;там, де \(B=0\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{6}"></a><a id="solution12.{6}"></a><b><a href="ch12.html#LWR-ht-problem:12.{6}">12.6.</a></b> (а)&nbsp;\(\bar B=2B_\text {орб}=8\)&nbsp;кГс. (б)&nbsp;\(\Phi =\pi r^2\bar B\approx 1{,}0\cdot
+10^{7}\)&nbsp;Мкс, за \(5\)&nbsp;мс \(d\Phi /dt\approx 2\cdot 10^{9}\)&nbsp;Мкс/с, \(\emf =\dfrac 1c\dfrac {d\Phi }{dt}\approx 0{,}067\)&nbsp;СГСЕ \(\approx 20\)&nbsp;В, тобто \(20\)&nbsp;еВ за оберт. Кінцева енергія
+\(W=eB_\text {орб}r\approx 3{,}8\cdot 10^{-5}\)&nbsp;ерг \(\approx 24\)&nbsp;МеВ, тому обертів \(\approx 1{,}2\cdot 10^{6}\). Перевірка: час оберту \(2\pi r/c\approx 4{,}2\)&nbsp;нс, і&nbsp;\(1{,}2\cdot 10^{6}\cdot
+4{,}2\)&nbsp;нс \(\approx 5\)&nbsp;мс, як і&nbsp;має бути. (в)&nbsp;При однорідному полі \(\Phi =\pi r^2B\) і&nbsp;вихрове поле дає лише половину потрібного приросту імпульсу (\(dp/dt=er\dot B/2c\) замість \(er\dot B/c\));
+з&nbsp;\(p=eBr/c\) дістаємо \(r\propto B^{-1/2}\): орбіта стискається, і&nbsp;електрон «сходить» із&nbsp;початкового кола.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{7}"></a><a id="solution12.{7}"></a><b><a href="ch12.html#LWR-ht-problem:12.{7}">12.7.</a></b> (а)&nbsp;\(I=8/40=0{,}2\)&nbsp;А, \(V_1=IR_1=+2\)&nbsp;В, \(V_2=-IR_2=-6\)&nbsp;В;
+\(V_1-V_2=8\)&nbsp;В \(=|\emf |\). (б)&nbsp;Тепер \(V_1=V_2=-6\)&nbsp;В: показання визначає <em>шлях дротів</em>, а&nbsp;не те, між якими точками приєднано прилад. Контур «\(R_1\) + дроти \(V_1\)» охоплює потік, тому напруга на
+вольтметрі вже не дорівнює спаду на \(R_1\) (різниця \(=|\emf |\)).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{8}"></a><a id="solution12.{8}"></a><b><a href="ch12.html#LWR-ht-problem:12.{8}">12.8.</a></b> Дотична до кола складова поля \(E=r\dot B/(2c)\) вздовж хорди дорівнює \(E_\parallel
+=E\,d/r=d\dot B/(2c)\) і&nbsp;не залежить від положення на хорді; довжина хорди \(2\sqrt {a^2-d^2}=8\)&nbsp;см, тому \(\emf =\dfrac {\dot B}{c}\,d\sqrt {a^2-d^2}=\dfrac {\dot B}{c}\cdot 12~\text {см}^2\approx 4\cdot
+10^{-7}\)&nbsp;СГСЕ \(\approx 0{,}12\)&nbsp;мВ. Це&nbsp;ЕРС \(\dot B\,S_{OAB}/c\) через трикутник \(OAB\) (\(S_{OAB}=12\)&nbsp;см\(^2\)): вздовж радіусів \(OA\) і&nbsp;\(OB\) поле перпендикулярне до них і&nbsp;внеску не дає.
+Незамкнений дріт має ЕРС, бо \(\Efield \) не потенціальне: інтеграл \(\int _A^B\Efield \cdot d\symbfscr {l}\) залежить від шляху.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{9}"></a><a id="solution12.{9}"></a><b><a href="ch12.html#LWR-ht-problem:12.{9}">12.9.</a></b> \(mg=F_\text {А}=\dfrac {B^2\ell ^2v}{c^2R}\), тому \(v=\dfrac {mgRc^2}{B^2\ell ^2}\approx
+2{,}5\)&nbsp;м/с; \(mgv=I^2R\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{10}"></a><a id="solution12.{10}"></a><b><a href="ch12.html#LWR-ht-problem:12.{10}">12.10.</a></b> \(\tau =L/R=10\)&nbsp;мс; \(I_\infty =\emf /R=2\)&nbsp;А; \(I(5\text {~мс})=I_\infty
+(1-e^{-0{,}5})\approx 0{,}79\)&nbsp;А; \(t_{90}=\tau \ln 10\approx 23\)&nbsp;мс.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{11}"></a><a id="solution12.{11}"></a><b><a href="ch12.html#LWR-ht-problem:12.{11}">12.11.</a></b> \(I_0=\emf /r=10\)&nbsp;А; \(\emf _\text {сі}(0)=I_0(R+r)\approx 10\)&nbsp;кВ, тобто
+у&nbsp;\(\sim 10^{3}\) разів більше за \(\emf \); \(\tau &apos;=L/(R+r)\approx 1\)&nbsp;мс.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{12}"></a><a id="solution12.{12}"></a><b><a href="ch12.html#LWR-ht-problem:12.{12}">12.12.</a></b> \(\Bfield =-\nabla \psi \), \(\psi = -B_0\left (r + \dfrac {a^3}{2r^2}\right )\cos
+\theta \); \(B_r = B_0\cos \theta \left (1-\dfrac {a^3}{r^3}\right )\), \(B_\theta = -B_0\sin \theta \left (1+\dfrac {a^3}{2r^3}\right )\); при \(r=a\) маємо \(B_r=0\), \(B_\theta =-\dfrac 32B_0\sin \theta \).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{13}"></a><a id="solution12.{13}"></a><b><a href="ch12.html#LWR-ht-problem:12.{13}">12.13.</a></b> \(\Phi =B_0\pi a^2\approx 7{,}9\cdot 10^{3}\)&nbsp;Гс\(\cdot \)см\(^2\); за&nbsp;<span
+class="textup">(<a href="ch12.html#eq:SCFluxFrozen">12.23</a>)</span> \(I=c\Phi /L\approx 9{,}4\cdot 10^{11}\)&nbsp;СГСЕ \(\approx 3\cdot 10^{2}\)&nbsp;А; \(\Phi /\Phi _0\approx 4\cdot 10^{10}\) квантів.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{14}"></a><a id="solution12.{14}"></a><b><a href="ch12.html#LWR-ht-problem:12.{14}">12.14.</a></b> \(H(r)=\dfrac {2I}{cr}\), тому \(I_c=\dfrac {crH_c}{2}\approx 1{,}2\cdot
+10^{12}\)&nbsp;СГСЕ \(\approx 4\cdot 10^{2}\)&nbsp;А.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{15}"></a><a id="solution12.{15}"></a><b><a href="ch12.html#LWR-ht-problem:12.{15}">12.15.</a></b> \(h=\left (\dfrac {3p_m^2}{8mg}\right )^{1/4}\approx 2{,}6\)&nbsp;см.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:12.{16}"></a><a id="solution12.{16}"></a><b><a href="ch12.html#LWR-ht-problem:12.{16}">12.16.</a></b> \(\delta _L=\sqrt {\dfrac {m_ec^2}{4\pi n_se^2}}\approx 5\cdot 10^{-6}\)&nbsp;см
+\(=50\)&nbsp;нм; \(B(5\delta _L)=B_0e^{-5}\), тобто поле зменшується приблизно у&nbsp;\(150\) разів.
+</p>
+
+</div>
+<!--
+...... section <a href=ch13.html#MagEnergy>Енергія магнітного поля</a> ......
+-->
+<h4 id="autosec-1596"><a href="ch13.html#MagEnergy">Енергія магнітного поля</a></h4>
+<a id="main-html-autopage-1596"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:13.{1}"></a><a id="solution13.{1}"></a><b><a href="ch13.html#LWR-ht-problem:13.{1}">13.1.</a></b> Магнітний момент \(p_m=IS/c\), механічна робота повороту \(A=-\Delta U=\Delta (\vect p_m\cdot
+\Bfield )=I\,\Delta \Phi /c\), де \(\Phi =BS\cos \theta \)&nbsp;— потік зовнішнього поля крізь контур. Під час повороту ЕРС індукції \(-\frac 1c\,d\Phi /dt\) гальмує струм, і&nbsp;джерело, що підтримує \(I=\const \), виконує роботу
+\(I\,d\Phi /c\), яка дорівнює механічній (зміну енергії зовнішнього поля оплачують його власні джерела; нагрівання не враховуємо). Сила Лоренца роботи не виконує: її складові, пов’язані з&nbsp;рухом контуру й&nbsp;з&nbsp;дрейфом носіїв,
+компенсують одна одну.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:13.{3}"></a><a id="solution13.{3}"></a><b><a href="ch13.html#LWR-ht-problem:13.{3}">13.3.</a></b> \(w=\dfrac {B^2}{8\pi }\approx 3{,}6\cdot 10^{7}\)&nbsp;ерг/см\(^3\), \(W=wV\approx 3{,}6\cdot
+10^{13}\)&nbsp;ерг \(\approx 3{,}6\)&nbsp;МДж&nbsp;— майже як \(1\)&nbsp;кг тротилу. При квенчі ця енергія за секунди виділяється як тепло в&nbsp;обмотці й&nbsp;випаровує рідкий гелій.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:13.{4}"></a><a id="solution13.{4}"></a><b><a href="ch13.html#LWR-ht-problem:13.{4}">13.4.</a></b> поле є лише між циліндрами, \(H=\dfrac {2I}{cr}\); \(\dfrac {W}{\ell }=\displaystyle \int
+_a^b\frac {H^2}{8\pi }2\pi r\,dr=\frac {I^2}{c^2}\ln \frac ba\), тому \(\dfrac {L}{\ell }=2\ln \dfrac ba\approx 3{,}9\) (см на см) \(\approx 0{,}39\)&nbsp;мкГн/м.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:13.{5}"></a><a id="solution13.{5}"></a><b><a href="ch13.html#LWR-ht-problem:13.{5}">13.5.</a></b> \(L_{12}=\dfrac {c\Phi _{12}}{I}=\dfrac {2\pi ^2R_2^2}{R_1}\approx 2\)&nbsp;см
+\(=2\)&nbsp;нГн; \(|\emf |=L_{12}\left |\dfrac {dI}{dt}\right |\) (у&nbsp;СІ) \(\approx 2\)&nbsp;мкВ.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:13.{6}"></a><a id="solution13.{6}"></a><b><a href="ch13.html#LWR-ht-problem:13.{6}">13.6.</a></b> за&nbsp;<span class="textup">(<a href="ch13.html#eq:ElectromagnetForce">13.41</a>)</span>
+\(F=\dfrac {B^2S}{4\pi }\approx 8\cdot 10^{7}\)&nbsp;дин \(=800\)&nbsp;Н (близько \(80\)&nbsp;кгс).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:13.{7}"></a><a id="solution13.{7}"></a><b><a href="ch13.html#LWR-ht-problem:13.{7}">13.7.</a></b> \(W=\dfrac {B^2}{8\pi }S\ell =\dfrac {\Phi ^2\ell }{8\pi S}\) при \(\Phi =BS=\const \); при
+збільшенні площі перерізу \(dW=-\dfrac {B^2}{8\pi }\ell \,dS=-p\,dV\), тож \(p=\dfrac {B^2}{8\pi }\). Для \(B=10^5\)&nbsp;Гс \(p\approx 4\cdot 10^{8}\)&nbsp;дин/см\(^2\approx 4\cdot 10^{7}\)&nbsp;Па, тобто близько
+\(400\)&nbsp;атм.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:13.{8}"></a><a id="solution13.{8}"></a><b><a href="ch13.html#LWR-ht-problem:13.{8}">13.8.</a></b> той самий струм \(I\) в&nbsp;обох: \(W=\dfrac {1}{2c^2}\left (L_1+L_2\pm 2L_{12}\right )I^2\),
+тому \(L=L_1+L_2\pm 2L_{12}\). Найменше значення \(L_1+L_2-2\sqrt {L_1L_2}=(\sqrt {L_1}-\sqrt {L_2})^2\ge 0\). Для \(L_{12}=kL=5\)&nbsp;мГн: \(30\)&nbsp;мГн (узгоджено) і&nbsp;\(10\)&nbsp;мГн (зустрічно).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:13.{9}"></a><a id="solution13.{9}"></a><b><a href="ch13.html#LWR-ht-problem:13.{9}">13.9.</a></b> \(\eta =N_2/N_1=0{,}05\); \(U_2=\eta U_1=11\)&nbsp;В, \(I_2=U_2/R=1\)&nbsp;А, \(I_1=\eta
+I_2=0{,}05\)&nbsp;А; \(P=U_2I_2=U_1I_1=11\)&nbsp;Вт. У&nbsp;лінії \(I=P/U\) дорівнює \(100\)&nbsp;А і&nbsp;\(10\)&nbsp;А, втрати \(I^2r=100\)&nbsp;кВт (\(10\%\)) і&nbsp;\(1\)&nbsp;кВт (\(0{,}1\%\)): у&nbsp;\(100\) разів менше.
+</p>
+
+</div>
+<!--
+...... section <a href=ch14.html#MaxwellEqns>Система рівнянь Максвелла</a> ......
+-->
+<h4 id="autosec-1597"><a href="ch14.html#MaxwellEqns">Система рівнянь Максвелла</a></h4>
+<a id="main-html-autopage-1597"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:14.{1}"></a><a id="solution14.{1}"></a><b><a href="ch14.html#LWR-ht-problem:14.{1}">14.1.</a></b> \(j_\text {зм}=\dfrac {\epsilon \omega U_m}{4\pi d}\cos \omega t\), \(I_\text {зм}=\dfrac
+{\epsilon R^2\omega U_m}{4d}\cos \omega t = C\dfrac {dU}{dt}\) (тобто дорівнює струму в дротах — струм зміщення «замикає» коло); \(H(R)=\dfrac {2I_\text {зм}}{cR}=\dfrac {\epsilon R\omega U_m}{2cd}\cos \omega t\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:14.{2}"></a><a id="solution14.{2}"></a><b><a href="ch14.html#LWR-ht-problem:14.{2}">14.2.</a></b> \(\omega \sim 4\pi \lambda /\epsilon \approx 6\cdot 10^{17}~\text {с}^{-1}\), тобто \(\nu
+=\omega /2\pi \approx 10^{17}\)&nbsp;Гц&nbsp;— далекий ультрафіолет чи м’який рентген. Закон Ома ж порушується вже за \(\omega \sim 1/\tau \sim 10^{14}~\text {с}^{-1}\) (\(\nu \sim 10^{13}\)&nbsp;Гц). Отже, поки
+справджується \(\vect j=\lambda \Efield \), струм зміщення в&nbsp;металі нехтовно малий (оцінка орієнтовна, бо \(\lambda \), \(\epsilon \) і&nbsp;\(\tau \) відомі лише за порядком величини).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:14.{3}"></a><a id="solution14.{3}"></a><b><a href="ch14.html#LWR-ht-problem:14.{3}">14.3.</a></b> \(E=\dfrac {2\pi nR\dot I}{c^2}\) (вздовж кола), \(\Pi =\dfrac {2\pi n^2R\,I\dot I}{c^2}\),
+вектор \(\vect \Pi \) спрямований <em>до осі</em>; на одиницю довжини соленоїда \(\Pi \cdot 2\pi R=\dfrac {4\pi ^2n^2R^2}{c^2}I\dot I=\dfrac {d}{dt}\!\left (\dfrac {L_1I^2}{2c^2}\right )\), де \(L_1=4\pi ^2n^2R^2\) —
+індуктивність одиниці довжини.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:14.{4}"></a><a id="solution14.{4}"></a><b><a href="ch14.html#LWR-ht-problem:14.{4}">14.4.</a></b> \(\delta _{50}=\delta _{10\ \text {ГГц}}\sqrt {10^{10}/50}\approx 0{,}652~\text {мкм}\cdot
+1{,}4\cdot 10^4\approx 9\)&nbsp;мм; отже, струм майже не йде глибше ніж на \(\sim 1\)&nbsp;см, і&nbsp;суцільні мідні (чи алюмінієві) дроти діаметром понад \(\sim 2\)&nbsp;см малоефективні&nbsp;— тому їх роблять порожнистими або
+складеними з&nbsp;тонших жил.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:14.{5}"></a><a id="solution14.{5}"></a><b><a href="ch14.html#LWR-ht-problem:14.{5}">14.5.</a></b> \(\Pi =\dfrac {c}{4\pi }EH=\dfrac {UI}{2\pi r^2\ln (b/a)}\) вздовж кабелю; \(\displaystyle
+\int _a^b\Pi \,2\pi r\,dr=\dfrac {UI}{\ln (b/a)}\int _a^b\dfrac {dr}{r}=UI\)&nbsp;— енергія тече не в&nbsp;провідниках, а&nbsp;в&nbsp;проміжку між ними.
+</p>
+
+</div>
+<!--
+...... section <a href=ch15.html#Relativity>Відносність електричного і-магнітного полів</a> ......
+-->
+<h4 id="autosec-1598"><a href="ch15.html#Relativity">Відносність електричного і&nbsp;магнітного полів</a></h4>
+<a id="main-html-autopage-1598"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:15.{1}"></a><a id="solution15.{1}"></a><b><a href="ch15.html#LWR-ht-problem:15.{1}">15.1.</a></b> \(\Efield &apos; = E_0\vect i + \dfrac {v}{c}B_0\vect k\), \(\Bfield &apos; = B_0\vect j\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:15.{2}"></a><a id="solution15.{2}"></a><b><a href="ch15.html#LWR-ht-problem:15.{2}">15.2.</a></b> доведення — у&nbsp;тексті розділу (§&nbsp;«Інваріанти електромагнітного поля»); там використано лише
+явні формули перетворення й&nbsp;\(\gamma ^2(1-\beta ^2)=1\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:15.{3}"></a><a id="solution15.{3}"></a><b><a href="ch15.html#LWR-ht-problem:15.{3}">15.3.</a></b> ні: у&nbsp;першій системі \(I_1 = E^2 &gt; 0\), у&nbsp;другій \(I_1 = -B&apos;^2 &lt; 0\),
+а&nbsp;\(I_1\) інваріантний.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:15.{4}"></a><a id="solution15.{4}"></a><b><a href="ch15.html#LWR-ht-problem:15.{4}">15.4.</a></b> система з&nbsp;\(\Bfield &apos; = 0\) існує тоді й&nbsp;лише тоді, коли \(\Efield \perp \Bfield \)
+та \(E &gt; B\); її швидкість \(\vect v = c\,\dfrac {\Efield \times \Bfield }{E^2}\) (будь-яка система, що додатково рухається вздовж \(\Efield &apos;\), теж має \(\Bfield &apos;=0\)).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:15.{5}"></a><a id="solution15.{5}"></a><b><a href="ch15.html#LWR-ht-problem:15.{5}">15.5.</a></b> у&nbsp;\(S\) \(\rho = 0\), \(j_x = I/S\); у&nbsp;\(S&apos;\) \(\rho &apos; = \gamma \left (\rho -
+\dfrac {v}{c^2}j_x\right ) = -\gamma \dfrac {v j_x}{c^2}\), тобто лінійна густина заряду \(\lambda &apos; = -\gamma \dfrac {vI}{c^2}\) (\(I\) — струм у&nbsp;напрямку \(\vect v\)). Заряд кожної частинки той самий, але відстані
+між іонами й&nbsp;між електронами скорочуються в&nbsp;\(S&apos;\) по-різному, бо їхні швидкості в&nbsp;\(S&apos;\) різні.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:15.{6}"></a><a id="solution15.{6}"></a><b><a href="ch15.html#LWR-ht-problem:15.{6}">15.6.</a></b> схему розв’язання наведено в&nbsp;тексті: у&nbsp;тензорному записі \(\partial _\mu F^{\mu \nu
+}=\frac {4\pi }{c}j^\nu \), \(\partial _\mu \tilde F^{\mu \nu }=0\) обидві частини є 4-векторами, тож рівняння мають однаковий вигляд у&nbsp;всіх інерціальних системах.
+</p>
+
+</div>
+<!--
+...... section <a href=ch16.html#ElMagWaves>Електромагнітні хвилі</a> ......
+-->
+<h4 id="autosec-1599"><a href="ch16.html#ElMagWaves">Електромагнітні хвилі</a></h4>
+<a id="main-html-autopage-1599"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:16.{1}"></a><a id="solution16.{1}"></a><b><a href="ch16.html#LWR-ht-problem:16.{1}">16.1.</a></b> \(\nu =c/\lambda _0=5\cdot 10^{14}\)&nbsp;Гц (не змінюється); \(v=c/n=2\cdot
+10^{10}\)&nbsp;см/с; \(\lambda =\lambda _0/n=400\)&nbsp;нм; \(k=2\pi /\lambda \approx 1{,}6\cdot 10^{5}\)&nbsp;см\(^{-1}\); \(\epsilon =n^2=2{,}25\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:16.{2}"></a><a id="solution16.{2}"></a><b><a href="ch16.html#LWR-ht-problem:16.{2}">16.2.</a></b> \(I=P/S\approx 3{,}2\cdot 10^{8}\)&nbsp;ерг/(с\(\cdot \)см\(^2\)) \(\approx
+32\)&nbsp;Вт/см\(^2\); із \(I=cE_m^2/8\pi \) маємо \(E_m\approx 0{,}52\)&nbsp;СГСЕ \(\approx 1{,}5\cdot 10^{2}\)&nbsp;В/см, \(B_m=E_m\approx 0{,}52\)&nbsp;Гс; \(p=I/c\approx 1{,}1\cdot 10^{-2}\)&nbsp;дин/см\(^2\approx
+1{,}1\cdot 10^{-3}\)&nbsp;Па; для дзеркала тиск удвічі більший.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:16.{3}"></a><a id="solution16.{3}"></a><b><a href="ch16.html#LWR-ht-problem:16.{3}">16.3.</a></b> \(F=(1+\mathcal R)IS/c\approx 87\)&nbsp;дин \(\approx 0{,}87\)&nbsp;мН; \(a\approx 8{,}7\cdot
+10^{-5}\)&nbsp;м/с\(^2\); \(\Delta v\approx a\cdot 3{,}15\cdot 10^{7}~\text {с}\approx 2{,}7\)&nbsp;км/с.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:16.{4}"></a><a id="solution16.{4}"></a><b><a href="ch16.html#LWR-ht-problem:16.{4}">16.4.</a></b> \(F_\text {св}=\dfrac {L}{4\pi r^2c}\pi a^2\), \(F_\text {гр}=\dfrac {GM}{r^2}\cdot \dfrac
+43\pi a^3\rho \); звідки \(a=\dfrac {3L}{16\pi GMc\rho }\approx 6\cdot 10^{-5}\)&nbsp;см \(\approx 0{,}6\)&nbsp;мкм. Обидві сили спадають як \(1/r^2\), тому їх відношення від \(r\) не залежить; дрібніші пилинки Сонце відштовхує.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:16.{5}"></a><a id="solution16.{5}"></a><b><a href="ch16.html#LWR-ht-problem:16.{5}">16.5.</a></b> \(L=\dfrac {qBR^2}{2c}\approx 1{,}3\cdot 10^{-2}\)&nbsp;г\(\cdot \)см\(^2\)/с; \(\omega =\dfrac
+{qB}{2mc}=5\cdot 10^{-5}\)&nbsp;рад/с (один оберт за \(\approx 35\) год).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:16.{6}"></a><a id="solution16.{6}"></a><b><a href="ch16.html#LWR-ht-problem:16.{6}">16.6.</a></b> \(\mathcal R=\left (\dfrac {n-1}{n+1}\right )^2=4\,\%\) для скла, \(2\,\%\) для води; для
+пластинки \(T=\dfrac {1-\mathcal R}{1+\mathcal R}\approx 92\,\%\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:16.{7}"></a><a id="solution16.{7}"></a><b><a href="ch16.html#LWR-ht-problem:16.{7}">16.7.</a></b> \(\tg i_B=n_{21}\): \(56{,}3^\circ \), \(53{,}1^\circ \) і&nbsp;\(33{,}7^\circ \) відповідно.
+Оскільки \(i_B+r=90^\circ \) і&nbsp;\(i&apos;=i_B\), кут між відбитим і&nbsp;заломленим променями дорівнює \(180^\circ -i&apos;-r=90^\circ \).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:16.{8}"></a><a id="solution16.{8}"></a><b><a href="ch16.html#LWR-ht-problem:16.{8}">16.8.</a></b> \(i_b=\arcsin (1/1{,}5)\approx 41{,}8^\circ &lt;45^\circ \); \(K=\dfrac {2\pi }{\lambda
+_0}\sqrt {n^2\sin ^2i-1}\approx 3{,}7\cdot 10^{4}\)&nbsp;см\(^{-1}\), глибина \(1/K\approx 2{,}7\cdot 10^{-5}\)&nbsp;см \(\approx 270\)&nbsp;нм (\(\approx 0{,}45\lambda _0\)).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:16.{9}"></a><a id="solution16.{9}"></a><b><a href="ch16.html#LWR-ht-problem:16.{9}">16.9.</a></b> \(i_b=\arcsin (n_2/n_1)\approx 80{,}6^\circ \). На торці \(\sin \theta =n_1\sin \theta
+&apos;\), а&nbsp;на межі серцевина–оболонка кут падіння \(90^\circ -\theta &apos;\geqslant i_b\); звідси \(\sin \theta \leqslant n_1\cos i_b=\sqrt {n_1^2-n_2^2}\), тобто \(\mathrm {NA}\approx 0{,}24\), \(\theta _\text
+{макс}\approx 14^\circ \).
+</p>
+
+</div>
+<!--
+...... section <a href=ch17.html#Radiation>Випромінювання електромагнітних хвиль</a> ......
+-->
+<h4 id="autosec-1600"><a href="ch17.html#Radiation">Випромінювання електромагнітних хвиль</a></h4>
+<a id="main-html-autopage-1600"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:17.{1}"></a><a id="solution17.{1}"></a><b><a href="ch17.html#LWR-ht-problem:17.{1}">17.1.</a></b> при \(\theta =\pi /2\) \(\langle \Pi \rangle =\dfrac {\langle \ddot p^2\rangle }{4\pi
+c^3r^2}\), тому \(\left \langle \dfrac {dW}{dt}\right \rangle =\dfrac {2\langle \ddot p^2\rangle }{3c^3}=\dfrac {8\pi r^2}{3}\langle \Pi \rangle \).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:17.{2}"></a><a id="solution17.{2}"></a><b><a href="ch17.html#LWR-ht-problem:17.{2}">17.2.</a></b> \(p_x=p\cos \omega t\), \(p_y=p\sin \omega t\), \(\ddot {\vect p}^{\,2}=p^2\omega ^4=\const \),
+тому \(\dfrac {dW}{dt}=\dfrac {2p^2\omega ^4}{3c^3}\)&nbsp;— удвічі більше, ніж у&nbsp;лінійного осцилятора з&nbsp;тією самою амплітудою, і&nbsp;стала в&nbsp;часі: обертовий диполь&nbsp;— це два лінійні осцилятори, зсунуті за
+фазою на \(90^\circ \), пульсації потужності яких взаємно компенсуються.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:17.{3}"></a><a id="solution17.{3}"></a><b><a href="ch17.html#LWR-ht-problem:17.{3}">17.3.</a></b> \(\dot v=\dfrac {v^2}{R}=\dfrac {eq}{mR^2}\), тому \(\dfrac {dW}{dt}=\dfrac {2e^2}{3c^3}\left
+(\dfrac {eq}{mR^2}\right )^2=\dfrac {2e^4q^2}{3c^3m^2R^4}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:17.{4}"></a><a id="solution17.{4}"></a><b><a href="ch17.html#LWR-ht-problem:17.{4}">17.4.</a></b> енергія \(W=-\dfrac {e^2}{2r}\), втрати \(\dfrac {dW}{dt}=-\dfrac {2e^6}{3c^3m^2r^4}\), звідки
+\(\dfrac {dr}{dt}=-\dfrac {4e^4}{3m^2c^3r^2}\) і&nbsp;\(t=\dfrac {m^2c^3a_0^3}{4e^4}\approx 1{,}6\cdot 10^{-11}\)&nbsp;с.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:17.{5}"></a><a id="solution17.{5}"></a><b><a href="ch17.html#LWR-ht-problem:17.{5}">17.5.</a></b> інтенсивність розсіяння \(\propto \lambda ^{-4}\), тому \((700/450)^4\approx 6\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:17.{6}"></a><a id="solution17.{6}"></a><b><a href="ch17.html#LWR-ht-problem:17.{6}">17.6.</a></b> \(\langle dW/dt\rangle =\dfrac {\omega ^2I_0^2l^2}{3c^3}=\dfrac 12I_0^2R_\text {вип}\), тож
+\(R_\text {вип}=\dfrac {2\omega ^2l^2}{3c^3}=\dfrac {8\pi ^2}{3c}\left (\dfrac l\lambda \right )^2\), у&nbsp;СІ \(R_\text {вип}=80\pi ^2(l/\lambda )^2\)&nbsp;Ом \(\approx 0{,}9\)&nbsp;Ом при \(\lambda =30\)&nbsp;м;
+потужність \(\approx 0{,}44\)&nbsp;Вт. Коротка антена (\(l\ll \lambda \)) випромінює погано.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:17.{7}"></a><a id="solution17.{7}"></a><b><a href="ch17.html#LWR-ht-problem:17.{7}">17.7.</a></b> прискорення \(v^2/R\approx c^2/R\) однакові, тож \(P\propto \gamma ^4\propto m^{-4}\),
+і&nbsp;\(P_e/P_p=(m_p/m_e)^4\approx 1{,}1\cdot 10^{13}\).
+</p>
+
+</div>
+<!--
+...... section <a href=ch18.html#ElMagOscillations>Коливальні процеси в-електричних колах</a> ......
+-->
+<h4 id="autosec-1601"><a href="ch18.html#ElMagOscillations">Коливальні процеси в&nbsp;електричних колах</a></h4>
+<a id="main-html-autopage-1601"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:18.{1}"></a><a id="solution18.{1}"></a><b><a href="ch18.html#LWR-ht-problem:18.{1}">18.1.</a></b> \(\nu _{\max }=c/(10l)=10\)&nbsp;МГц; \(l/\lambda =10^{6}\ \text {м}/(6\cdot 10^{6}\ \text
+{м})\approx 0{,}17\)&nbsp;— лінія вже становить відчутну частку довжини хвилі, і&nbsp;квазістаціонарне наближення неприпустиме.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:18.{2}"></a><a id="solution18.{2}"></a><b><a href="ch18.html#LWR-ht-problem:18.{2}">18.2.</a></b> \(\omega _0=1/\sqrt {LC}\approx 3{,}16\cdot 10^{6}\)&nbsp;с\(^{-1}\) (\(\nu \approx
+503\)&nbsp;кГц), \(T\approx 1{,}99\)&nbsp;мкс; \(\gamma =R/2L=5\cdot 10^{3}\)&nbsp;с\(^{-1}\); \(\delta =\gamma T\approx 9{,}9\cdot 10^{-3}\); \(Q=\dfrac {1}{R}\sqrt {L/C}\approx 316\); \(n=1/\delta \approx 100\); \(R_\text
+{кр}=2\sqrt {L/C}\approx 3{,}2\)&nbsp;кОм.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:18.{3}"></a><a id="solution18.{3}"></a><b><a href="ch18.html#LWR-ht-problem:18.{3}">18.3.</a></b> \(I_{m,\max }=\emf _m/R=0{,}2\)&nbsp;А; \(V_{C,\max }=Q\emf _m\approx 316\)&nbsp;В
+(у&nbsp;\(316\) разів більше за напругу джерела); \(\Delta \omega =2\gamma =10^{4}\)&nbsp;с\(^{-1}\), тобто \(\Delta \nu =\omega _0/(2\pi Q)\approx 1{,}6\)&nbsp;кГц.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:18.{4}"></a><a id="solution18.{4}"></a><b><a href="ch18.html#LWR-ht-problem:18.{4}">18.4.</a></b> \(X_L=31{,}4\)&nbsp;Ом, \(X_C=318\)&nbsp;Ом, \(Z=100-287i\)&nbsp;Ом, \(|Z|\approx
+304\)&nbsp;Ом; \(\phi =\arg Z\approx -71^\circ \) (струм випереджає напругу, коло ємнісне); \(I_\text {еф}=U/|Z|\approx 0{,}72\)&nbsp;А; \(P=I_\text {еф}^2R\approx 52\)&nbsp;Вт; \(\cos \phi =R/|Z|\approx 0{,}33\)&nbsp;—
+через великий реактивний опір \(|X_L-X_C|\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:18.{5}"></a><a id="solution18.{5}"></a><b><a href="ch18.html#LWR-ht-problem:18.{5}">18.5.</a></b> \(C=1/(\omega _0^2L)\approx 25\)&nbsp;пФ; \(Q=R/(\omega _0L)\approx 15{,}9\);
+\(U_m=I_mR=100\)&nbsp;В; \(I_{L0}=I_{C0}=QI_m\approx 16\)&nbsp;мА&nbsp;— у&nbsp;\(Q\) разів більше за струм джерела.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:18.{6}"></a><a id="solution18.{6}"></a><b><a href="ch18.html#LWR-ht-problem:18.{6}">18.6.</a></b> \(I=P/(U\cos \phi )\approx 167\)&nbsp;А; \(Q_\text {р}=P\tg \phi \approx 1{,}33\)&nbsp;Мвар;
+батарея, що створює \(Q_C=U^2\omega C=Q_\text {р}\), має \(C=Q_\text {р}/(\omega U^2)\approx 42\)&nbsp;мкФ. Після компенсації \(I=P/U=100\)&nbsp;А, втрати \(\propto I^2\) зменшуються в&nbsp;\((0{,}6)^{-2}\approx 2{,}8\) раза.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:18.{7}"></a><a id="solution18.{7}"></a><b><a href="ch18.html#LWR-ht-problem:18.{7}">18.7.</a></b> без трансформатора \(P=\dfrac {\emf ^2R_\text {н}}{(R_\text {дж}+R_\text {н})^2}\approx
+0{,}078\)&nbsp;Вт. Узгодження: \(n=\sqrt {R_\text {дж}/R_\text {н}}=10\); напруга на первинній обмотці \(\emf /2=40\)&nbsp;В, на гучномовці \(U_2=U_1/n=4\)&nbsp;В, \(P=U_2^2/R_\text {н}=2\)&nbsp;Вт&nbsp;— у&nbsp;\(\approx
+25\) разів більше.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:18.{8}"></a><a id="solution18.{8}"></a><b><a href="ch18.html#LWR-ht-problem:18.{8}">18.8.</a></b> \(P_\text {втр}=R(P/U)^2\): \(\approx 16{,}5\)&nbsp;МВт (\(16{,}5\,\%\)) при \(110\)&nbsp;кВ
+і&nbsp;\(0{,}8\)&nbsp;МВт (\(0{,}8\,\%\)) при \(500\)&nbsp;кВ&nbsp;— у&nbsp;\((500/110)^2\approx 21\) раз менше.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:18.{9}"></a><a id="solution18.{9}"></a><b><a href="ch18.html#LWR-ht-problem:18.{9}">18.9.</a></b> \(\nu _c=1/(2\pi RC)\approx 1\)&nbsp;кГц; \(\omega RC\approx 10\), \(|K|=1/\sqrt {1+(\omega
+RC)^2}\approx 0{,}10\), \(\arg K=-\arctan (\omega RC)\approx -84^\circ \); послаблення у&nbsp;\(\approx 10\) разів, тобто \(\approx 20\)&nbsp;дБ.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:18.{10}"></a><a id="solution18.{10}"></a><b><a href="ch18.html#LWR-ht-problem:18.{10}">18.10.</a></b> при \(I_2\leftrightarrow I_3\) маємо \(B_y=+\frac 32B_m\cos \omega t\) при тому ж
+\(B_x=\frac 32B_m\sin \omega t\), тому кут \(\theta \) вектора \(\Bfield \) визначається рівностями \(\cos \theta =\sin \omega t\), \(\sin \theta =\cos \omega t\), тобто \(\theta =90^\circ -\omega t\) і&nbsp;вектор обертається
+за годинниковою стрілкою; раніше \(\theta =\omega t-90^\circ \) (проти годинникової).
+</p>
+
+</div>
+<!--
+...... section <a href=ch19.html#Telegraph>Довгі лінії. Телеграфні рівняння</a> ......
+-->
+<h4 id="autosec-1602"><a href="ch19.html#Telegraph">Довгі лінії. Телеграфні рівняння</a></h4>
+<a id="main-html-autopage-1602"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:19.{1}"></a><a id="solution19.{1}"></a><b><a href="ch19.html#LWR-ht-problem:19.{1}">19.1.</a></b> \(C_0 = \dfrac {2\pi \epsilon \epsilon _0}{\ln (b/a)} \approx 90\)&nbsp;пФ/м; \(L_0 = \dfrac
+{\mu \mu _0}{2\pi }\ln \dfrac ba \approx 277\)&nbsp;нГн/м; \(Z_{\text {хв}} = \sqrt {L_0/C_0} \approx \dfrac {60}{\sqrt \epsilon }\ln \dfrac ba \approx 55\)&nbsp;Ом; \(v_{\text {ф}} = c/\sqrt \epsilon = 2\cdot
+10^{8}\)&nbsp;м/с.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:19.{2}"></a><a id="solution19.{2}"></a><b><a href="ch19.html#LWR-ht-problem:19.{2}">19.2.</a></b> \(C_0 \approx 114\)&nbsp;пФ/м, \(L_0 \approx 220\)&nbsp;нГн/м, \(Z_{\text {хв}} \approx
+44\)&nbsp;Ом, \(v_{\text {ф}}/c = 1/\sqrt \epsilon \approx 0{,}67\). При \(b/a = 3 \to 6\) \(Z_{\text {хв}} \propto \ln (b/a)\) зростає в&nbsp;\(\ln 6/\ln 3 \approx 1{,}63\) раза, до \(\approx 72\)&nbsp;Ом; фазова швидкість
+не змінюється, бо залежить лише від \(\epsilon \) і&nbsp;\(\mu \).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:19.{3}"></a><a id="solution19.{3}"></a><b><a href="ch19.html#LWR-ht-problem:19.{3}">19.3.</a></b> \(\Gamma = (75-50)/(75+50) = 0{,}2\); \(\text {КСХ} = (1+0{,}2)/(1-0{,}2) = 1{,}5\);
+відбивається \(|\Gamma |^2 = 4\,\%\) потужності.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:19.{4}"></a><a id="solution19.{4}"></a><b><a href="ch19.html#LWR-ht-problem:19.{4}">19.4.</a></b> \(v_{\text {ф}} = c/1{,}5 = 2\cdot 10^{8}\)&nbsp;м/с, затримка \(l/v_{\text {ф}} =
+0{,}5\)&nbsp;мкс.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:19.{5}"></a><a id="solution19.{5}"></a><b><a href="ch19.html#LWR-ht-problem:19.{5}">19.5.</a></b> \(\lambda \geqslant 10\)&nbsp;м, тобто \(\nu \leqslant v/\lambda = 1{,}5\cdot 10^{8}/10 =
+15\)&nbsp;МГц; на вищих частотах доріжку треба розглядати як довгу лінію.
+</p>
+
+</div>
+<!--
+...... section <a href=ch20.html#Waveguides>Хвилеводи</a> ......
+-->
+<h4 id="autosec-1603"><a href="ch20.html#Waveguides">Хвилеводи</a></h4>
+<a id="main-html-autopage-1603"></a>
+
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:20.{1}"></a><a id="solution20.{1}"></a><b><a href="ch20.html#LWR-ht-problem:20.{1}">20.1.</a></b> \(\nu _0 = c/(2a) \approx 6{,}56\)&nbsp;ГГц; \(\sqrt {1-(\nu _0/\nu )^2} \approx 0{,}755\),
+тож \(v_\text {ф} \approx 1{,}33c\), \(v_\text {г} \approx 0{,}75c\), \(\lambda _\text {в} = \lambda /0{,}755 \approx 4{,}0\)&nbsp;см (у&nbsp;вакуумі \(\lambda = 3\)&nbsp;см).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:20.{2}"></a><a id="solution20.{2}"></a><b><a href="ch20.html#LWR-ht-problem:20.{2}">20.2.</a></b> Умова \(\nu &gt; n c/(2a)\) дає \(n &lt; 2a\nu /c \approx 2{,}3\), тобто поширюються \(\text
+{TE}_{10}\) і&nbsp;\(\text {TE}_{20}\).
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:20.{3}"></a><a id="solution20.{3}"></a><b><a href="ch20.html#LWR-ht-problem:20.{3}">20.3.</a></b> \(\kappa = \sqrt {(\pi /a)^2 - (\omega /c)^2} \approx \sqrt {137^2 - 105^2} \approx
+89\)&nbsp;м\(^{-1}\), тобто поле слабне в&nbsp;\(e\) разів на \(1/\kappa \approx 1{,}1\)&nbsp;см.
+</p>
+
+</div>
+
+
+<div class="cb-answer">
+
+<p>
+<a id="LWR-ht-solution:20.{4}"></a><a id="solution20.{4}"></a><b><a href="ch20.html#LWR-ht-problem:20.{4}">20.4.</a></b> \(t = l/v_\text {г} = 1/(0{,}755\cdot 3\cdot 10^{8})\)&nbsp;с \(\approx 4{,}4\)&nbsp;нс проти
+\(3{,}3\)&nbsp;нс у&nbsp;вакуумі.
+</p>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>
