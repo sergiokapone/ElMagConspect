@@ -1,0 +1,4935 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Магнітне поле в речовині</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-824"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span><span class="toctitle">&#x2003;Електричні заряди та їх взаємодія</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span><span class="toctitle">&#x2003;Сили (взаємодії) в природі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span><span class="toctitle">&#x2003;Електричний заряд</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-13" class="tocsection" >
+<span class="sectionnumber">1.3</span><span class="toctitle">&#x2003;Як заряджають тіла?</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-18" class="tocsection" >
+<span class="sectionnumber">1.4</span><span class="toctitle">&#x2003;Закон Кулона</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-27" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocchapter" >
+<span class="sectionnumber">2</span><span class="toctitle">&#x2003;Постійне електричне поле у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.1</span><span class="toctitle">&#x2003;Електромагнітне поле</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-35" class="tocsection" >
+<span class="sectionnumber">2.2</span><span class="toctitle">&#x2003;Напруженість поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-50" class="tocsection" >
+<span class="sectionnumber">2.3</span><span class="toctitle">&#x2003;Силові лінії та математичне поняття поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-66" class="tocsection" >
+<span class="sectionnumber">2.4</span><span class="toctitle">&#x2003;Теорема Гаусса</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-100" class="tocsection" >
+<span class="sectionnumber">2.5</span><span class="toctitle">&#x2003;Потенціальність електростатичного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-115" class="tocsection" >
+<span class="sectionnumber">2.6</span><span class="toctitle">&#x2003;Циркуляція вектора \(\symbf {E}\)</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+<span class="sectionnumber">2.7</span><span class="toctitle">&#x2003;Граничні умови</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-142" class="tocsection" >
+<span class="sectionnumber">2.8</span><span class="toctitle">&#x2003;Рівняння Пуассона та Лапласа</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-147" class="tocsection" >
+<span class="sectionnumber">2.9</span><span class="toctitle">&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-152" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-153" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-166" class="tocchapter" >
+<span class="sectionnumber">3</span><span class="toctitle">&#x2003;Електричне поле статичної системи зарядів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-167" class="tocsection" >
+<span class="sectionnumber">3.1</span><span class="toctitle">&#x2003;Дипольний момент системи зарядів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-171" class="tocsection" >
+<span class="sectionnumber">3.2</span><span class="toctitle">&#x2003;Потенціал точкового диполя</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-175" class="tocsection" >
+<span class="sectionnumber">3.3</span><span class="toctitle">&#x2003;Поле точкового диполя</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-181" class="tocsection" >
+<span class="sectionnumber">3.4</span><span class="toctitle">&#x2003;Потенціал системи зарядів на далеких відстанях</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-198" class="tocsection" >
+<span class="sectionnumber">3.5</span><span class="toctitle">&#x2003;Диполь в електричному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-216" class="tocsection" >
+<span class="sectionnumber">3.6</span><span class="toctitle">&#x2003;Енергія довільної системи зарядів у зовнішньому полі*</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-217" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-220" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-238" class="tocchapter" >
+<span class="sectionnumber">4</span><span class="toctitle">&#x2003;Електричне поле у провідниках</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-239" class="tocsection" >
+<span class="sectionnumber">4.1</span><span class="toctitle">&#x2003;Структура провідників</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-243" class="tocsection" >
+<span class="sectionnumber">4.2</span><span class="toctitle">&#x2003;Провідник у полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-268" class="tocsection" >
+<span class="sectionnumber">4.3</span><span class="toctitle">&#x2003;Електричне поле біля вістря</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-277" class="tocsection" >
+<span class="sectionnumber">4.4</span><span class="toctitle">&#x2003;Єдиність розв’язку електростатичної задачі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-287" class="tocsection" >
+<span class="sectionnumber">4.5</span><span class="toctitle">&#x2003;Металева куля в однорідному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-299" class="tocsection" >
+<span class="sectionnumber">4.6</span><span class="toctitle">&#x2003;Сили, що діють на поверхню провідника в полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-303" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-304" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-317" class="tocchapter" >
+<span class="sectionnumber">5</span><span class="toctitle">&#x2003;Основи електростатики діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-318" class="tocsection" >
+<span class="sectionnumber">5.1</span><span class="toctitle">&#x2003;Основні поняття</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-320" class="tocsection" >
+<span class="sectionnumber">5.2</span><span class="toctitle">&#x2003;Структура діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-357" class="tocsection" >
+<span class="sectionnumber">5.3</span><span class="toctitle">&#x2003;Поляризація діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-384" class="tocsection" >
+<span class="sectionnumber">5.4</span><span class="toctitle">&#x2003;Вектор поляризації</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-392" class="tocsection" >
+<span class="sectionnumber">5.5</span><span class="toctitle">&#x2003;Вектор електричної індукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-407" class="tocsection" >
+<span class="sectionnumber">5.6</span><span class="toctitle">&#x2003;Граничні умови в&nbsp;присутності діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-420" class="tocsection" >
+<span class="sectionnumber">5.7</span><span class="toctitle">&#x2003;Мікроскопічна теорія діелектричної проникності</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-427" class="tocsection" >
+<span class="sectionnumber">5.8</span><span class="toctitle">&#x2003;Типи діелектриків та їх застосування</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-450" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-451" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-466" class="tocchapter" >
+<span class="sectionnumber">6</span><span class="toctitle">&#x2003;Енергія електричного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-467" class="tocsection" >
+<span class="sectionnumber">6.1</span><span class="toctitle">&#x2003;Електрична ємність</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-488" class="tocsection" >
+<span class="sectionnumber">6.2</span><span class="toctitle">&#x2003;Енергія електричного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-501" class="tocsection" >
+<span class="sectionnumber">6.3</span><span class="toctitle">&#x2003;Пондеромоторні сили</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-511" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-512" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-524" class="tocchapter" >
+<span class="sectionnumber">7</span><span class="toctitle">&#x2003;Постійний електричний струм</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-525" class="tocsection" >
+<span class="sectionnumber">7.1</span><span class="toctitle">&#x2003;Основні поняття</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-532" class="tocsection" >
+<span class="sectionnumber">7.2</span><span class="toctitle">&#x2003;Природа носіїв заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-537" class="tocsection" >
+<span class="sectionnumber">7.3</span><span class="toctitle">&#x2003;Закон збереження заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-544" class="tocsection" >
+<span class="sectionnumber">7.4</span><span class="toctitle">&#x2003;Закон Ома</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-575" class="tocsection" >
+<span class="sectionnumber">7.5</span><span class="toctitle">&#x2003;Закон Джоуля–Ленца</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-576" class="tocsection" >
+<span class="sectionnumber">7.6</span><span class="toctitle">&#x2003;Струми в необмежених середовищах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-583" class="tocsection" >
+<span class="sectionnumber">7.7</span><span class="toctitle">&#x2003;Перехідні процеси в колі з конденсатором</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-596" class="tocsection" >
+<span class="sectionnumber">7.8</span><span class="toctitle">&#x2003;Максвеллівський час релаксації заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-598" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-611" class="tocchapter" >
+<span class="sectionnumber">8</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;різних середовищах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-613" class="tocsection" >
+<span class="sectionnumber">8.1</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;металах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-637" class="tocsection" >
+<span class="sectionnumber">8.2</span><span class="toctitle">&#x2003;Електричний струм в&nbsp;електролітах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-643" class="tocsection" >
+<span class="sectionnumber">8.3</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;газах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-654" class="tocsection" >
+<span class="sectionnumber">8.4</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-668" class="tocsection" >
+<span class="sectionnumber">8.5</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;напівпровідниках</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-689" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-691" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-723" class="tocchapter" >
+<span class="sectionnumber">9</span><span class="toctitle">&#x2003;Магнітне поле у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-724" class="tocsection" >
+<span class="sectionnumber">9.1</span><span class="toctitle">&#x2003;Означення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-728" class="tocsection" >
+<span class="sectionnumber">9.2</span><span class="toctitle">&#x2003;Характеристика магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-729" class="tocsection" >
+<span class="sectionnumber">9.3</span><span class="toctitle">&#x2003;Дія магнітного поля на заряджені частинки та струми</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-750" class="tocsection" >
+<span class="sectionnumber">9.4</span><span class="toctitle">&#x2003;Закон Біо–Савара–Лапласа</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-763" class="tocsection" >
+<span class="sectionnumber">9.5</span><span class="toctitle">&#x2003;Вектор-потенціал магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-768" class="tocsection" >
+<span class="sectionnumber">9.6</span><span class="toctitle">&#x2003;Теореми магнітостатики</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-790" class="tocsection" >
+<span class="sectionnumber">9.7</span><span class="toctitle">&#x2003;Магнітний момент</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-807" class="tocsection" >
+<span class="sectionnumber">9.8</span><span class="toctitle">&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-817" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-818" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-826" class="tocchapter" >
+<span class="sectionnumber">10</span><span class="toctitle">&#x2003;Магнітне поле в речовині</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-835" class="tocsection" >
+<span class="sectionnumber">10.1</span><span class="toctitle">&#x2003;Основні поняття</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-838" class="tocsection" >
+<span class="sectionnumber">10.2</span><span class="toctitle">&#x2003;Намагнічування</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-850" class="tocsection" >
+<span class="sectionnumber">10.3</span><span class="toctitle">&#x2003;Теорема про циркуляцію в речовині</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-856" class="tocsection" >
+<span class="sectionnumber">10.4</span><span class="toctitle">&#x2003;Магнітна сприйнятливість речовини</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-892" class="tocsection" >
+<span class="sectionnumber">10.5</span><span class="toctitle">&#x2003;Граничні умови</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-907" class="tocsection" >
+<span class="sectionnumber">10.6</span><span class="toctitle">&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-925" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-926" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-935" class="tocchapter" >
+<span class="sectionnumber">11</span><span class="toctitle">&#x2003;Рух заряджених частинок</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-936" class="tocsection" >
+<span class="sectionnumber">11.1</span><span class="toctitle">&#x2003;Рух частинок в&nbsp;однорідних полях</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-954" class="tocsection" >
+<span class="sectionnumber">11.2</span><span class="toctitle">&#x2003;Мас-спектрометр і&nbsp;циклотрон</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-963" class="tocsection" >
+<span class="sectionnumber">11.3</span><span class="toctitle">&#x2003;Застосування схрещених полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-971" class="tocsection" >
+<span class="sectionnumber">11.4</span><span class="toctitle">&#x2003;Методи вимірювання питомого заряду електрона</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-981" class="tocsection" >
+<span class="sectionnumber">11.5</span><span class="toctitle">&#x2003;Досліди Міллікена</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-985" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-986" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1003" class="tocchapter" >
+<span class="sectionnumber">12</span><span class="toctitle">&#x2003;Явище електромагнітної індукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1004" class="tocsection" >
+<span class="sectionnumber">12.1</span><span class="toctitle">&#x2003;Досліди Фарадея</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1010" class="tocsection" >
+<span class="sectionnumber">12.2</span><span class="toctitle">&#x2003;Закон електромагнітної індукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1019" class="tocsection" >
+<span class="sectionnumber">12.3</span><span class="toctitle">&#x2003;ЕРС руху: сила Лоренца в&nbsp;рухомому провіднику</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1030" class="tocsection" >
+<span class="sectionnumber">12.4</span><span class="toctitle">&#x2003;Куди йде робота</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1036" class="tocsection" >
+<span class="sectionnumber">12.5</span><span class="toctitle">&#x2003;Нерухомий контур: вихрове електричне поле</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1040" class="tocsection" >
+<span class="sectionnumber">12.6</span><span class="toctitle">&#x2003;Вихрове поле проти електростатичного: приклади</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1049" class="tocsection" >
+<span class="sectionnumber">12.7</span><span class="toctitle">&#x2003;Бетатрон</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1053" class="tocsection" >
+<span class="sectionnumber">12.8</span><span class="toctitle">&#x2003;Застосування: індукційний заряд і&nbsp;струми Фуко</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1058" class="tocsection" >
+<span class="sectionnumber">12.9</span><span class="toctitle">&#x2003;Явище самоіндукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1078" class="tocsection" >
+<span class="sectionnumber">12.10</span><span class="toctitle">&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1098" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1099" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1118" class="tocchapter" >
+<span class="sectionnumber">13</span><span class="toctitle">&#x2003;Енергія магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1119" class="tocsection" >
+<span class="sectionnumber">13.1</span><span class="toctitle">&#x2003;Енергія магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1126" class="tocsection" >
+<span class="sectionnumber">13.2</span><span class="toctitle">&#x2003;Взаємна індукція</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1142" class="tocsection" >
+<span class="sectionnumber">13.3</span><span class="toctitle">&#x2003;Енергія системи зв’язаних контурів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1145" class="tocsection" >
+<span class="sectionnumber">13.4</span><span class="toctitle">&#x2003;Принцип роботи трансформаторів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1149" class="tocsection" >
+<span class="sectionnumber">13.5</span><span class="toctitle">&#x2003;Магнітна енергія струмів як функція стану</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1151" class="tocsection" >
+<span class="sectionnumber">13.6</span><span class="toctitle">&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1157" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1158" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1170" class="tocchapter" >
+<span class="sectionnumber">14</span><span class="toctitle">&#x2003;Система рівнянь Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1175" class="tocsection" >
+<span class="sectionnumber">14.1</span><span class="toctitle">&#x2003;Струм зміщення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1196" class="tocsection" >
+<span class="sectionnumber">14.2</span><span class="toctitle">&#x2003;Система рівнянь Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1213" class="tocsection" >
+<span class="sectionnumber">14.3</span><span class="toctitle">&#x2003;Про рівняння Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1215" class="tocsection" >
+<span class="sectionnumber">14.4</span><span class="toctitle">&#x2003;Енергія електромагнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1229" class="tocsection" >
+<span class="sectionnumber">14.5</span><span class="toctitle">&#x2003;Скін-ефект</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1251" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1252" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1260" class="tocchapter" >
+<span class="sectionnumber">15</span><span class="toctitle">&#x2003;Відносність електричного і&nbsp;магнітного полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1262" class="tocsection" >
+<span class="sectionnumber">15.1</span><span class="toctitle">&#x2003;Нерелятивістські закони перетворення полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1265" class="tocsection" >
+<span class="sectionnumber">15.2</span><span class="toctitle">&#x2003;Релятивістські закони перетворення полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1271" class="tocsection" >
+<span class="sectionnumber">15.3</span><span class="toctitle">&#x2003;Тензор електромагнітного поля*</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1273" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1274" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1283" class="tocchapter" >
+<span class="sectionnumber">16</span><span class="toctitle">&#x2003;Електромагнітні хвилі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1284" class="tocsection" >
+<span class="sectionnumber">16.1</span><span class="toctitle">&#x2003;Хвильове рівняння</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1300" class="tocsection" >
+<span class="sectionnumber">16.2</span><span class="toctitle">&#x2003;Електромагнітні хвилі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1305" class="tocsection" >
+<span class="sectionnumber">16.3</span><span class="toctitle">&#x2003;Енергія та вектор Пойнтінга для хвилі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1315" class="tocsection" >
+<span class="sectionnumber">16.4</span><span class="toctitle">&#x2003;Імпульс і&nbsp;момент імпульсу електромагнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1321" class="tocsection" >
+<span class="sectionnumber">16.5</span><span class="toctitle">&#x2003;Відбивання хвиль від межі двох діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1341" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1342" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1354" class="tocchapter" >
+<span class="sectionnumber">17</span><span class="toctitle">&#x2003;Випромінювання електромагнітних хвиль</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">17.1</span><span class="toctitle">&#x2003;Історична довідка: досліди Герца</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1358" class="tocsection" >
+<span class="sectionnumber">17.2</span><span class="toctitle">&#x2003;Елементарна модель випромінювання</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1371" class="tocsection" >
+<span class="sectionnumber">17.3</span><span class="toctitle">&#x2003;Дипольне випромінювання</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1389" class="tocsection" >
+<span class="sectionnumber">17.4</span><span class="toctitle">&#x2003;Потужність випромінювання осцилятора</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1394" class="tocsection" >
+<span class="sectionnumber">17.5</span><span class="toctitle">&#x2003;Випромінювання рухомого заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1406" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1407" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1417" class="tocchapter" >
+<span class="sectionnumber">18</span><span class="toctitle">&#x2003;Коливальні процеси в&nbsp;електричних колах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+<span class="sectionnumber">18.1</span><span class="toctitle">&#x2003;Квазістаціонарне наближення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+<span class="sectionnumber">18.2</span><span class="toctitle">&#x2003;Вільні коливання в&nbsp;коливальному контурі</span></a>
+</p>
+<p>
+<a href="ch18.html#autosec-1444" class="tocsection" >
+<span class="sectionnumber">18.3</span><span class="toctitle">&#x2003;Вимушені коливання під дією гармонічної ЕРС</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1458" class="tocsection" >
+<span class="sectionnumber">18.4</span><span class="toctitle">&#x2003;Змінний струм</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1486" class="tocsection" >
+<span class="sectionnumber">18.5</span><span class="toctitle">&#x2003;Трансформатор</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1490" class="tocsection" >
+<span class="sectionnumber">18.6</span><span class="toctitle">&#x2003;Частотні фільтри</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1506" class="tocsection" >
+<span class="sectionnumber">18.7</span><span class="toctitle">&#x2003;Трифазний струм</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1510" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1511" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1524" class="tocchapter" >
+<span class="sectionnumber">19</span><span class="toctitle">&#x2003;Довгі лінії. Телеграфні рівняння</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1525" class="tocsection" >
+<span class="sectionnumber">19.1</span><span class="toctitle">&#x2003;Від зосереджених елементів до розподілених</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1526" class="tocsection" >
+<span class="sectionnumber">19.2</span><span class="toctitle">&#x2003;Виведення телеграфних рівнянь</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1530" class="tocsection" >
+<span class="sectionnumber">19.3</span><span class="toctitle">&#x2003;Гармонічний режим. Хвильове рівняння</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1531" class="tocsection" >
+<span class="sectionnumber">19.4</span><span class="toctitle">&#x2003;Лінія без втрат</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1538" class="tocsection" >
+<span class="sectionnumber">19.5</span><span class="toctitle">&#x2003;Польова картина. Зв’язок з&nbsp;рівняннями Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1545" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1546" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1554" class="tocchapter" >
+<span class="sectionnumber">20</span><span class="toctitle">&#x2003;Хвилеводи</span></a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1555" class="tocsection" >
+<span class="sectionnumber">20.1</span><span class="toctitle">&#x2003;Від довгої лінії до хвилеводу</span></a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1556" class="tocsection" >
+<span class="sectionnumber">20.2</span><span class="toctitle">&#x2003;Прямокутний хвилевід</span></a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1569" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1572" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1579" class="tocchapter" >
+Відповіді</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1606" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1607" class="tocsection" >
+<span class="sectionnumber">А</span><span class="toctitle">&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</span></a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1612" class="tocsection" >
+<span class="sectionnumber">Б</span><span class="toctitle">&#x2003;Основні позначення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1615" class="tocsection" >
+<span class="sectionnumber">В</span><span class="toctitle">&#x2003;Основні формули векторного аналізу</span></a>
+</p>
+
+
+
+<p>
+<a href="ch23.html#autosec-1637" class="tocchapter" >
+Література</a>
+</p>
+
+
+
+<p>
+<a href="ch23.html#autosec-1638" class="tocsection" >
+Підручники та посібники</a>
+</p>
+
+
+
+<p>
+<a href="ch23.html#autosec-1639" class="tocsection" >
+Джерела фактів і результатів</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Магнітне поле в речовині">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\newcommand {\allowbreak }{}\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Магнітне поле в речовині ......
+-->
+<h3 id="autosec-826"><span class="sectionnumber">10&#x2003;</span>Магнітне поле в речовині</h3>
+<a id="main-html-autopage-826"></a>
+<a id="main-html-autofile-10"></a>
+
+<a id="MagFieldMedia"></a>
+
+<p>
+<a id="LWR-ht-MagFieldMedia"></a>
+</p>
+<div class="epigraph" role="note">
+
+
+<div class="qitem">
+
+<p>
+Сама Земля&nbsp;— великий магніт.
+</p>
+
+
+<div class="epigraphsource">
+
+<p>
+Вільям Гільберт, «Про магніт» (De Magnete, 1600)
+</p>
+</div>
+
+</div>
+
+</div>
+<!--
+...... section Гіпотеза Ампера ......
+-->
+<h4 id="autosec-827">Гіпотеза Ампера</h4>
+<a id="main-html-autopage-827"></a>
+
+
+<p>
+Ми вже знаємо, що магнітне поле діє на рухомі заряджені частинки та на рамки зі струмом. Але <em>чому воно діє також і на шматок звичайного заліза</em> — скажімо, на цвях, який сам по собі не є магнітом? Відповідь на це запитання дав ще
+А.&nbsp;Ампер&nbsp;[<a href="ch23.html#LWR-ht-cite.0@Ampere1820">55</a>]: він припустив, що <em>всередині магніту теж течуть струми</em>.
+</p>
+
+<p>
+Якщо взяти магнітну стрілку чи магніт у руки, жодних струмів ми, звісно, не відчуваємо: отже, ці струми циркулюють <em>усередині</em> речовини і ніколи не виходять назовні. Що це за струми, Ампер, звісно, не знав — адже про будову атома
+тоді не було відомо нічого. Сучасній науці вже відомо, що звичайна речовина складається з атомів: усередині атомів є позитивно заряджені ядра, навколо яких рухаються негативно заряджені електрони, причому самі електрони, до того ж —
+маленькі магнітні «стрілочки» (мають власний магнітний момент, спін). Отже, рух електронів усередині атомів — це і є ті самі <em>струми</em>, про існування яких здогадався Ампер; магнітне поле діє на ці струми, а отже — і на речовину загалом
+(рис.&nbsp;<a href="ch10.html#pic:AmpereHypotesis">10.1</a>).
+</p>
+
+<figure id="autoid-293" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-829"></a>
+
+<p>
+<span
+    id="lateximage-main-html-173"
+    class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-173.svg"
+   alt="(figure)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+(а) Ненамагнічена речовина (хаотичний розподіл молекулярних струмів).
+
+</div>
+
+<a id="pic:unmagnetized"></a>
+
+<a id="sub@pic:unmagnetized"></a>
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-832"></a>
+
+<p>
+<span
+    id="lateximage-main-html-174"
+    class="lateximagesource"
+><!--
+𝐁
+
+
+
+
+    N
+
+
+
+
+    S
+--><img
+   src="main-html-images\image-174.svg"
+   alt="(figure)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+(б) Намагнічена речовина (впорядкований розподіл молекулярних струмів).
+
+</div>
+
+<a id="pic:magnetized"></a>
+
+<a id="sub@pic:magnetized"></a>
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.1. Гіпотеза Ампера: магнетизм речовини зумовлений мікроскопічними (молекулярними) струмами всередині неї: <a href="ch10.html#pic:unmagnetized">а</a>&nbsp;— ненамагнічена речовина; <a href="ch10.html#pic:magnetized">б</a>&nbsp;—
+намагнічена речовина.
+
+</div>
+
+<a id="pic:AmpereHypotesis"></a>
+
+</div>
+
+</figure>
+<!--
+...... section Основні поняття ......
+-->
+<h4 id="autosec-835"><span class="sectionnumber">&#xA7;&#x202F;10.1&#x2003;</span>Основні поняття</h4>
+<a id="main-html-autopage-835"></a>
+
+
+<p>
+<a id="LWR-ht-magnetics-basic-concepts"></a>
+</p>
+<!--
+...... subsection Мікрополе та середнє поле ......
+-->
+<h5 id="autosec-836">Мікрополе та середнє поле</h5>
+<a id="main-html-autopage-836"></a>
+
+
+<p>
+У речовині магнітне поле формується як зовнішнім полем, так і струмами, що циркулюють у самій речовині. На мікрорівні (тобто на відстанях порядку розміру атома й менше) це поле різко змінюється в часі й просторі — таке поле називають
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>мікрополем</span></em> \(\Bfield _\text {micro}\). Однак якщо провести усереднення за <em>фізично нескінченно малим</em> об’ємом \(\Delta V\) (малим порівняно з масштабом, на якому поле помітно змінюється макроскопічно, але
+великим порівняно з розмірами й відстанями між окремими атомами — тобто таким, що вміщує величезну кількість атомів), отримаємо <em><span
+    class="textcolor"
+    style="color:#990000"
+>середнє поле</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{0}\)</span>
+
+<!--
+
+                                                                                                                         ˚
+                                                                                                                     1
+                                                                                                            ⟨𝐁⟩ =             𝐁micro 𝑑𝑉 .
+                                                                                                                    Δ𝑉
+                                                                                                                         Δ𝑉
+
+-->
+
+<p>
+
+\begin{equation*}
+\langle \Bfield \rangle = \frac 1{\Delta V}\iiint \limits _{\Delta V} \Bfield _\text {micro}\, dV.
+\end{equation*}
+
+</p>
+
+<p>
+Середнє поле змінюється значно повільніше за мікрополе, оскільки усереднення за \(\Delta V\) згладжує швидкі просторові й часові коливання мікрополя. Надалі, як і раніше з полем \(\Efield \) в діелектрику, під \(\Bfield \) ми завжди
+розумітимемо саме це <em><span
+    class="textcolor"
+    style="color:#990000"
+>середнє поле</span></em>.
+</p>
+
+<p>
+Цей прийом той самий, що й для поля \(\Efield \) в діелектриках (розділ&nbsp;<a href="ch5.html#FieldInDielectrics">5</a>): у макроскопічній електродинаміці ми ніколи не працюємо з полем окремого атома, а лише з полем, усередненим
+за фізично нескінченно малим об’ємом.
+</p>
+<!--
+...... subsection Струми провідності та молекулярні струми ......
+-->
+<h5 id="autosec-837">Струми провідності та молекулярні струми</h5>
+<a id="main-html-autopage-837"></a>
+
+
+<p>
+Усі струми, створювані рухомими зарядами в речовині, поділяють на дві принципово різні групи:
+</p>
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>Струми провідності</span></em> — пов’язані з перенесенням <em><span
+    class="textcolor"
+    style="color:#990000"
+>вільних</span></em> носіїв заряду (тих самих, що ми вивчали в розділі&nbsp;<a href="ch7.html#SteadyCurrent">7</a>); це <em><span
+    class="textcolor"
+    style="color:#990000"
+>макроскопічні</span></em> струми, які течуть крізь речовину; їх задають або вимірюють ззовні (джерело ЕРС, амперметр).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>Молекулярні струми</span></em> — зумовлені орбітальним рухом електронів в атомах (молекулах) та їхнім спіном (власним моментом імпульсу), а також, значно меншою мірою, магнітними моментами ядер. Це <em>внутрішні</em>, властиві
+самій речовині струми.
+</p>
+</li>
+</ul>
+<!--
+...... section Намагнічування ......
+-->
+<h4 id="autosec-838"><span class="sectionnumber">&#xA7;&#x202F;10.2&#x2003;</span>Намагнічування</h4>
+<a id="main-html-autopage-838"></a>
+
+
+<p>
+<a id="LWR-ht-magnetization"></a>
+</p>
+<!--
+...... subsection Вектор намагніченості ......
+-->
+<h5 id="autosec-839">Вектор намагніченості</h5>
+<a id="main-html-autopage-839"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Вектором намагніченості</span></em> (<em><span
+    class="textcolor"
+    style="color:#990000"
+>намагніченістю</span></em>) називають величину, що характеризує сумарний магнітний момент одиниці об’єму речовини:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{0}\)</span>
+
+<!--
+
+
+                                                     1
+                                               𝐉=        ∑ 𝐩 ,      𝐩𝑚,𝑖 — момент \(i\)-го атома,                                            (10.1)                                         --><a id="eq:MagnetizationDef"></a><!--
+                                                    Δ𝑉 𝑖 ∈ Δ𝑉 𝑚,𝑖
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:MagnetizationDef} \tcbhighmath { \vect J = \frac 1{\Delta V}\sum \limits _{i\,\in \,\Delta V} \vect p_{m,i}, } \qquad \vect p_{m,i} \text { --- момент $i$-го атома,}
+\end{equation}
+
+</p>
+
+<p>
+де \(\Delta V\) — той самий <em>фізично нескінченно малий</em> об’єм. Намагніченість називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>однорідною</span></em>, якщо вектор \(\vect J\) не залежить від точки в речовині; якщо \(\vect J \neq \const \) — <em><span
+    class="textcolor"
+    style="color:#990000"
+>неоднорідною</span></em>.
+</p>
+
+<p>
+Вектор \(\vect J\) — магнітний аналог вектора поляризації \(\vect P\) (розділ&nbsp;<a href="ch5.html#FieldInDielectrics">5</a>): там \(\vect P\) — густина електричних дипольних моментів, тут \(\vect J\) — густина магнітних. Далі
+логіка розділу (зв’язані струми, допоміжний вектор \(\Hfield \), граничні умови) повторює логіку розділу про діелектрики; точну відповідність величин зведено в таблицю&nbsp;<a href="ch10.html#tab:DielMagAnalogy">10.1</a>.
+</p>
+<!--
+...... subsection Основна задача теорії магнітостатики в речовині ......
+-->
+<h5 id="autosec-840">Основна задача теорії магнітостатики в речовині</h5>
+<a id="main-html-autopage-840"></a>
+
+
+<p>
+Пряме обчислення поля в намагніченій речовині вимагало б підсумовування магнітних полів від колосальної кількості (порядку числа Авогадро) молекулярних струмів — завдання абсолютно нездійсненне практично. Основна ідея теорії
+магнітостатики в речовині — <em>вилучити</em> молекулярні струми з рівнянь, замінивши їх іншою, макроскопічно <em>вимірюваною</em> величиною — вектором намагніченості \(\vect J\). Це, за аналогією з тим, що ми вже робили для
+зв’язаних зарядів у діелектриках, істотно спрощує розрахунок полів у магнетиках.
+</p>
+<!--
+...... subsection Зв'язок намагніченості з молекулярними струмами ......
+-->
+<h5 id="autosec-841">Зв’язок намагніченості з молекулярними струмами</h5>
+<a id="main-html-autopage-841"></a>
+
+
+<p>
+Виділимо в намагніченій речовині косокутний циліндр таких малих розмірів, що намагніченість \(\vect J\) у ньому можна вважати однорідною, і орієнтуємо його так, щоб \(\vect J\) була напрямлена по нормалі \(\vect n\) до торців
+(рис.&nbsp;<a href="ch10.html#pic:Cylinder">10.2</a>); тобто молекулярні струми течуть у площинах, паралельних торцям. У товщі циліндра кільцеві молекулярні струми сусідніх атомів течуть у протилежних напрямках і взаємно
+компенсуються — в усіх точках, <em>окрім</em> точок бічної поверхні (рис.&nbsp;<a href="ch10.html#pic:CylinderTop">10.3</a>, вигляд торця): там компенсація неповна, і залишається нескомпенсований поверхневий струм, що тече бічною
+поверхнею циліндра.
+</p>
+
+<figure id="autoid-294" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:232pt ; ">
+
+<a id="main-html-autopage-843"></a>
+
+<p>
+<span
+    id="lateximage-main-html-175"
+    class="lateximagesource"
+><!--
+    𝐉
+        ℓ𝝉
+
+
+𝜃       ℓ
+--><img
+   src="main-html-images\image-175.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.2. Косокутний циліндр у намагніченій речовині
+
+</div>
+
+<a id="pic:Cylinder"></a>
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:232pt ; ">
+
+<a id="main-html-autopage-846"></a>
+
+<p>
+<span
+    id="lateximage-main-html-176"
+    class="lateximagesource"
+><!--
+--><img
+   src="main-html-images\image-176.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.3. Вигляд торця циліндра: кільцеві струми компенсуються всюди, крім бічної поверхні
+
+</div>
+
+<a id="pic:CylinderTop"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Магнітний момент такого циліндрика, з одного боку, дорівнює \(\vect p_m = \vect J V\) (за означенням намагніченості), а з іншого — визначається нескомпенсованим поверхневим струмом \(I_m\), що тече по бічній поверхні, за формулою для
+магнітного моменту витка&nbsp;<span class="textup">(<a href="ch9.html#eq:MagMomentLoop">9.22</a>)</span> (розділ&nbsp;<a href="ch9.html#MagFieldVacuum">9</a>), \(\vect p_m = \frac 1c I_m S\vect n\), де \(S\) — площа торця
+циліндра, \(\vect n\) — нормаль до торця, а \(\theta \) — кут між твірною \(\vect \tau \) циліндра і цією нормаллю. Об’єм косокутного циліндра дорівнює \(V = S\,\ell \cos \theta \), де \(\ell \) — довжина твірної. Прирівнюючи обидва
+вирази й проєктуючи рівність на напрям твірної:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{1}\)</span>
+
+<!--
+
+
+                                                                                              1                                  1
+                                                                                       𝐉𝑉 =     𝐼 𝑆𝐧   ⇒   (𝐉 ⋅ 𝝉) 𝑆 ℓ cos 𝜃 =     𝐼 𝑆 (𝐧 ⋅ 𝝉),   𝐧 ⋅ 𝝉 = cos 𝜃.
+                                                                                              𝑐 𝑚                                𝑐 𝑚
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect J\, V = \frac 1c I_m S\vect n \quad \Rightarrow \quad (\vect J\cdot \vect \tau )\, S\,\ell \cos \theta = \frac 1c I_m\, S\,(\vect n\cdot \vect \tau ), \qquad \vect n\cdot \vect \tau = \cos \theta .
+\end{equation*}
+
+</p>
+
+<p>
+Скорочуючи на \(S\cos \theta \) і ділячи на \(\ell \), знаходимо <em><span
+    class="textcolor"
+    style="color:#990000"
+>поверхневу густину молекулярного струму</span></em> \(i_m = I_m/\ell \) (струм на одиницю довжини твірної):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{1}\)</span>
+
+<!--
+
+
+                                                               𝑖𝑚 = 𝑐 𝐉 ⋅ 𝝉.                                                                      (10.2)                              --><a id="eq:MolecularSurfaceCurrent"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:MolecularSurfaceCurrent} \tcbhighmath { i_m = c\, \vect J\cdot \vect \tau . }
+\end{equation}
+</p>
+
+<p>
+Тут \(i_m\)&nbsp;— струм через одиницю довжини твірної; у векторній формі \(\vect i_m = c\,[\vect J\times \vect \nu ]\), де \(\vect \nu \)&nbsp;— зовнішня нормаль до поверхні речовини. Звідси видно, що <em>поверхневий</em>
+молекулярний струм перпендикулярний до намагніченості, \(\vect i_m\perp \vect J\), і визначається <em>тангенціальною</em> складовою \(\vect J\). Це відрізняється від електричного аналога: зв’язаний поверхневий заряд \(\sigma
+&apos;=P_n\) визначається <em>нормальною</em> складовою \(\vect P\) (розділ&nbsp;<a href="ch5.html#FieldInDielectrics">5</a>). Причина в тому, що \(\vect P\) і заряд пов’язані через дивергенцію (скалярне джерело), а \(\vect J\) і
+струм&nbsp;— через ротор.
+</p>
+<!--
+...... section Теорема про циркуляцію в речовині ......
+-->
+<h4 id="autosec-850"><span class="sectionnumber">&#xA7;&#x202F;10.3&#x2003;</span>Теорема про циркуляцію в речовині</h4>
+<a id="main-html-autopage-850"></a>
+
+
+<p>
+<a id="LWR-ht-circulation-theorem-in-matter"></a>
+</p>
+<!--
+...... subsection Циркуляція вектора намагніченості ......
+-->
+<h5 id="autosec-851">Циркуляція вектора намагніченості</h5>
+<a id="main-html-autopage-851"></a>
+
+
+<p>
+Виберемо тепер у речовині <em>довільний</em> замкнений контур \(L\) (рис.&nbsp;<a href="ch10.html#pic:Jloop">10.4</a>). Молекулярний струм, що перетинає елемент контуру \(d\symbfscr {l}\),&nbsp;— це якраз нескомпенсований
+струм на бічній поверхні тонкого циліндра з твірною \(d\symbfscr {l}\), тож за формулою&nbsp;<span class="textup">(<a href="ch10.html#eq:MolecularSurfaceCurrent">10.2</a>)</span> він дорівнює \(dI_m = i_m\, d\ell = c\,\vect
+J\cdot d\symbfscr {l}\), тому повний молекулярний струм, що перетинає (пронизує) контур,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{2}\)</span>
+
+<!--
+
+                                                                        ˛
+                                                               𝐼𝑚 = 𝑐       𝐉 ⋅ 𝑑𝓵.                                                         (10.3)                                        --><a id="eq:CirculationJ"></a><!--
+                                                                        𝐿
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CirculationJ} I_m = c\oint \limits _L \vect J\cdot d\symbfscr {l}.
+\end{equation}
+
+</p>
+
+<figure id="autoid-295" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-177"
+    class="lateximagesource"
+><!--
+𝑑𝐒
+--><img
+   src="main-html-images\image-177.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.4. Довільний замкнений контур \(L\) у намагніченій речовині<a id="pic:Jloop"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+За теоремою Стокса цей вираз перетворюється так:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{3}\)</span>
+
+<!--
+
+                                                                                                               ˛                ¨
+                                                                                                      𝐼𝑚 = 𝑐       𝐉 ⋅ 𝑑𝓵 = 𝑐       𝛁 × 𝐉 ⋅ 𝑑𝐒,
+                                                                                                               𝐿                𝑆
+
+-->
+
+<p>
+
+\begin{equation*}
+I_m = c\oint \limits _L \vect J\cdot d\symbfscr {l} = c\iint \limits _S \rot \vect J\cdot d\vect S,
+\end{equation*}
+
+</p>
+
+<p>
+де \(S\) — будь-яка поверхня, натягнута на контур \(L\). З іншого боку, той самий струм \(I_m\) можна виразити через його <em>об’ємну</em> густину \(\vect j_m\): \(I_m = \iint _S \vect j_m\cdot d\vect S\). Порівнюючи два вирази,
+отримуємо <em>зв’язок молекулярного струму з вектором намагніченості в диференціальній формі</em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{3}\)</span>
+
+<!--
+
+
+                                                             𝐣𝑚 = 𝑐𝛁 × 𝐉.                                                                         (10.4)                             --><a id="eq:MolecularCurrentDensity"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:MolecularCurrentDensity} \tcbhighmath { \vect j_m = c\rot \vect J. }
+\end{equation}
+
+</p>
+<!--
+...... subsection Вектор напруженості магнітного поля ......
+-->
+<h5 id="autosec-855">Вектор напруженості магнітного поля</h5>
+<a id="main-html-autopage-855"></a>
+
+
+<p>
+Циркуляцію повного магнітного поля \(\Bfield \) у речовині породжують <em>усі</em> струми — і струми провідності \(I\), і молекулярні струми \(I_m\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{4}\)</span>
+
+<!--
+
+                                                                                                ˛                                         ¨
+                                                                                                               4𝜋             4𝜋
+                                                                                                    𝐁 ⋅ 𝑑𝓵 =      (𝐼 + 𝐼𝑚 ) =    (𝐼 + 𝑐       𝛁 × 𝐉 ⋅ 𝑑𝐒) .
+                                                                                                                𝑐              𝑐
+                                                                                                𝐿                                         𝑆
+
+-->
+
+<p>
+
+\begin{equation*}
+\oint \limits _L \Bfield \cdot d\symbfscr {l} = \frac {4\pi }c\left (I + I_m\right ) = \frac {4\pi }c\left (I + c\iint \limits _S \rot \vect J\cdot d\vect S\right ).
+\end{equation*}
+
+</p>
+
+<p>
+Щоб <em>вилучити</em> невимірюваний молекулярний струм \(I_m\) з цього рівняння, введемо допоміжну величину — <em><span
+    class="textcolor"
+    style="color:#990000"
+>напруженість магнітного поля</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{4}\)</span>
+
+<!--
+
+
+                                                                          𝐇 = 𝐁 − 4𝜋𝐉.                                                                                  (10.5)                              --><a id="eq:HDef"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:HDef} \tcbhighmath { \Hfield = \Bfield - 4\pi \vect J. }
+\end{equation}
+
+</p>
+
+<p>
+Підставляючи це означення в попереднє рівняння, молекулярний струм скорочується, і <em><span
+    class="textcolor"
+    style="color:#990000"
+>теорема про циркуляцію в речовині</span></em> набуває вигляду
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{5}\)</span>
+
+<!--
+
+                                                                 ˛
+                                                                                4𝜋
+                                                                     𝐇 ⋅ 𝑑𝓵 =      𝐼.                                                                          (10.6)                            --><a id="eq:CirculationHInt"></a><!--
+                                                                                 𝑐
+                                                                 𝐿
+
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CirculationHInt} \tcbhighmath { \oint \limits _L \Hfield \cdot d\symbfscr {l} = \frac {4\pi }c I. }
+\end{equation}
+
+</p>
+
+<p>
+Еквівалентна диференціальна форма цієї теореми:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{6}\)</span>
+
+<!--
+
+
+                                                                            4𝜋
+                                                                  𝛁×𝐇=         𝐣.                                                                             (10.7)                            --><a id="eq:CirculationHDiff"></a><!--
+                                                                             𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CirculationHDiff} \tcbhighmath { \rot \Hfield = \frac {4\pi }c\vect j. }
+\end{equation}
+
+</p>
+
+<p>
+У гауссовій системі \(\Bfield \) і \(\Hfield \) мають однакову розмірність: одиниця \(\Bfield \)&nbsp;— гаус (Гс), одиниця \(\Hfield \)&nbsp;— ерстед (Е); у вакуумі \(1~\text {Е}=1~\text {Гс}\).
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Вектор \(\Hfield \)&nbsp;— <em>допоміжна</em> величина, що слугує лише для спрощення рівнянь; принципово важливо, що <em>його циркуляція визначається тільки струмами провідності</em>&nbsp;— тими, які ми задаємо чи вимірюємо
+ззовні, а не невідомими молекулярними струмами. За роллю в рівняннях \(\Hfield \) подібний до вектора \(\Dfield \): той дав змогу записати теорему Гаусса лише через вільні заряди (розділ&nbsp;<a
+href="ch5.html#FieldInDielectrics">5</a>). Але за формою означення відповідність інша (таблиця&nbsp;<a href="ch10.html#tab:DielMagAnalogy">10.1</a>).
+</p>
+</div>
+<!--
+...... section Магнітна сприйнятливість речовини ......
+-->
+<h4 id="autosec-856"><span class="sectionnumber">&#xA7;&#x202F;10.4&#x2003;</span>Магнітна сприйнятливість речовини</h4>
+<a id="main-html-autopage-856"></a>
+
+
+<p>
+<a id="LWR-ht-magnetic-susceptibility"></a>
+</p>
+<!--
+...... subsection Лінійні ізотропні середовища ......
+-->
+<h5 id="autosec-857">Лінійні ізотропні середовища</h5>
+<a id="main-html-autopage-857"></a>
+
+
+<p>
+Розглянемо <em><span
+    class="textcolor"
+    style="color:#990000"
+>лінійні ізотропні</span></em> середовища — ті, в яких намагніченість пропорційна полю, а магнітні властивості однакові в усіх напрямках. Середовище (речовина), що реагує на зовнішнє магнітне поле, називатимемо <em><span
+    class="textcolor"
+    style="color:#990000"
+>магнетиком</span></em>. Якщо поле не надто сильне, а в середовищі немає початкової (залишкової) намагніченості, намагніченість, як показує дослід, прямо пропорційна полю:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{7}\)</span>
+
+<!--
+
+
+                                                                     𝐉 = 𝜒𝑚 𝐇,                                                                      (10.8)                                         --><a id="eq:LinearMedium"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:LinearMedium} \vect J = \chi _m\Hfield ,
+\end{equation}
+
+</p>
+
+<p>
+де \(\chi _m\) — <em><span
+    class="textcolor"
+    style="color:#990000"
+>магнітна сприйнятливість</span></em> середовища (безрозмірна величина). Підставляючи це в означення&nbsp;<span class="textup">(<a href="ch10.html#eq:HDef">10.5</a>)</span>, \(\Bfield = \Hfield + 4\pi \vect J = (1+4\pi
+\chi _m)\Hfield \), тобто
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{8}\)</span>
+
+<!--
+
+
+                                                                  𝐁 = 𝜇𝐇,    𝜇 = 1 + 4𝜋𝜒𝑚 ,                                                                  (10.9)                                         --><a id="eq:BMuH"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:BMuH} \tcbhighmath { \Bfield = \mu \Hfield , \qquad \mu = 1+4\pi \chi _m, }
+\end{equation}
+
+</p>
+
+<p>
+де величину \(\mu \) називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>магнітною проникністю середовища</span></em>.
+</p>
+
+<p>
+Тепер можна точно зіставити електричну й магнітну теорії (таблиця&nbsp;<a href="ch10.html#tab:DielMagAnalogy">10.1</a>). За <em>формою</em> означень відповідність така: \(\Dfield =\Efield +4\pi \vect P\)
+&#x202f;\(\leftrightarrow \)&#x202f; \(\Bfield =\Hfield +4\pi \vect J\), тобто \(\Dfield \leftrightarrow \Bfield \), \(\Efield \leftrightarrow \Hfield \), \(\vect P\leftrightarrow \vect J\), \(\epsilon \leftrightarrow \mu
+\); саме тому однаково виглядають граничні умови й закони заломлення. За <em>роллю</em> в теоремі про вільні джерела \(\Hfield \) подібний до \(\Dfield \) (обидва означено так, щоб молекулярні джерела випали), але зв’язані джерела
+виражаються по-різному: через дивергенцію для \(\vect P\) і через ротор для \(\vect J\).
+</p>
+
+<figure id="autoid-296" class="table ">
+
+
+<div class="figurecaption">
+Таблиця&nbsp;10.1. Відповідність величин у діелектриках і магнетиках (гауссова система)<a id="tab:DielMagAnalogy"></a>
+
+</div>
+<table>
+
+<tr style="display:none"><th>.</th></tr>
+
+<tr class="hline">
+<td colspan="1" class="tdc tvertbarl tvertbarr" style="background:#0064AA; border-left: 1px solid black; border-right: 1px solid black"></td>
+<td class="tdp tvertbarr tdcenter" style="background:#0064AA; border-right: 1px solid black">
+
+<p>
+<span
+    class="textcolor"
+    style="color:#FFFFFF"
+><b>Діелектрик</b></span>
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#0064AA; border-right: 1px solid black">
+
+<p>
+<span
+    class="textcolor"
+    style="color:#FFFFFF"
+><b>Магнетик</b></span>
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Густина дипольних моментів
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(\vect P\)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(\vect J\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="background:#F2F2F2; border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Зв’язані джерела
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+\(\rho &apos;=-\divg \vect P\)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+\(\vect j_m=c\rot \vect J\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Допоміжний вектор
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(\Dfield =\Efield +4\pi \vect P\)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(\Bfield =\Hfield +4\pi \vect J\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="background:#F2F2F2; border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Лінійне середовище
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+\(\vect P=\chi \Efield \), \(\Dfield =\epsilon \Efield \), \(\epsilon =1+4\pi \chi \)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+\(\vect J=\chi _m\Hfield \), \(\Bfield =\mu \Hfield \), \(\mu =1+4\pi \chi _m\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Теорема з вільними джерелами
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(\divg \Dfield =4\pi \rho \)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(\rot \Hfield =\dfrac {4\pi }c\vect j\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="background:#F2F2F2; border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Неперервні на межі без вільних джерел
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+\(E_\tau \), \(D_n\)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="background:#F2F2F2; border-right: 1px solid black">
+
+<p>
+\(H_\tau \), \(B_n\)
+</p>
+</td>
+</tr>
+
+<tr class="hline">
+<td class="tdp tvertbarl tvertbarr tdleft" style="border-left: 1px solid black; border-right: 1px solid black">
+
+<p>
+Закон заломлення
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(\dfrac {\tg \alpha _2}{\tg \alpha _1}=\dfrac {\epsilon _2}{\epsilon _1}\)
+</p>
+</td>
+<td class="tdp tvertbarr tdcenter" style="border-right: 1px solid black">
+
+<p>
+\(\dfrac {\tg \alpha _2}{\tg \alpha _1}=\dfrac {\mu _2}{\mu _1}\)
+</p>
+</td>
+</tr>
+
+<tr class="hline" aria-hidden="true">
+<td class="tdp tdleft">
+
+</td>
+<td class="tdp tdcenter">
+
+</td>
+<td class="tdp tdcenter">
+
+</td>
+</tr>
+</table>
+
+</figure>
+<!--
+...... subsection Класифікація магнетиків ......
+-->
+<h5 id="autosec-859">Класифікація магнетиків</h5>
+<a id="main-html-autopage-859"></a>
+
+
+<p>
+Магнетиком є <em>будь-яка</em> речовина. Термін «діелектрик» виділяє лише частину речовин і протиставляється провіднику; термін «магнетик» не протиставляється нічому&nbsp;— магнітно інертних речовин не існує. Причина&nbsp;—
+діамагнітний відгук: зовнішнє поле змінює рух електронів у <em>кожному</em> атомі й наводить момент, напрямлений проти поля (його механізм розглянуто нижче, у&nbsp;розділі про ларморову прецесію).
+</p>
+
+<p>
+Наявність мікрострумів, однак, ще не означає наявності <em><span
+    class="textcolor"
+    style="color:#990000"
+>магнітного моменту</span></em>: у більшості атомів орбітальні й спінові моменти електронів в основному стані взаємно компенсуються, і сумарний момент атома дорівнює нулю — точний аналог неполярних молекул у діелектриках. Тому
+речовини відрізняються не наявністю мікрострумів, а тим, чи скомпенсовані їхні моменти за відсутності поля і як ці струми відгукуються на його ввімкнення.
+</p>
+
+<p>
+Залежно від знака й величини магнітної сприйнятливості виділяють такі основні класи лінійних магнетиків:
+</p>
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Якщо \(\chi _m &gt; 0\) (а отже, \(\mu &gt;1\)), магнетик називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>парамагнетиком</span></em>. Парамагнітні властивості мають, наприклад, <span
+    id="lateximage-main-html-178"
+    class="lateximagesource"
+><!--
+Al
+--><img
+   src="main-html-images\741707ED75F1957DFFB5BA6E4C5939BD.svg"
+   alt="\ce{Al}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-179"
+   class="lateximagesource"
+><!--
+Pt
+--><img
+   src="main-html-images\8F6D0CEA5CC5F0DC865283C043A38452.svg"
+   alt="\ce{Pt}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-180"
+   class="lateximagesource"
+><!--
+FeCl2
+--><img
+   src="main-html-images\1625A882B7A9196D25C72658FC304DE7.svg"
+   alt="\ce{FeCl2}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-181"
+   class="lateximagesource"
+><!--
+O2
+--><img
+   src="main-html-images\29404E849785FA970A0C17CC1758E215.svg"
+   alt="\ce{O2}"
+   style=""
+   class="lateximage"
+></span>, більшість лужних і лужноземельних металів. (У&nbsp;металах парамагнетизм здебільшого зумовлений електронами провідності&nbsp;— це так званий парамагнетизм Паулі, слабкий і&nbsp;майже незалежний від температури; закон
+Кюрі, виведений нижче, описує речовини з&nbsp;власними магнітними моментами атомів чи молекул, як <span
+   id="lateximage-main-html-182"
+   class="lateximagesource"
+><!--
+O2
+--><img
+   src="main-html-images\29404E849785FA970A0C17CC1758E215.svg"
+   alt="\ce{O2}"
+   style=""
+   class="lateximage"
+></span> чи солі заліза.)
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Якщо \(\chi _m &lt; 0\) (а отже, \(\mu &lt;1\)), магнетик називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>діамагнетиком</span></em>. Діамагнетиками є <span
+    id="lateximage-main-html-183"
+    class="lateximagesource"
+><!--
+Bi
+--><img
+   src="main-html-images\342FBEF20752EC27432DC95736FDD15D.svg"
+   alt="\ce{Bi}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-184"
+   class="lateximagesource"
+><!--
+Cu
+--><img
+   src="main-html-images\341087293D5446F4D312452428154EE5.svg"
+   alt="\ce{Cu}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-185"
+   class="lateximagesource"
+><!--
+Au
+--><img
+   src="main-html-images\0EA708B33341AF66894ABB474A0F9809.svg"
+   alt="\ce{Au}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-186"
+   class="lateximagesource"
+><!--
+Sb
+--><img
+   src="main-html-images\C9122819C5B39829113A68D484BB9C7B.svg"
+   alt="\ce{Sb}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-187"
+   class="lateximagesource"
+><!--
+Si
+--><img
+   src="main-html-images\885A94CED99A29EFFB22EB6FB3A92D66.svg"
+   alt="\ce{Si}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-188"
+   class="lateximagesource"
+><!--
+H2 O
+--><img
+   src="main-html-images\3BD50A5CF48F9588DE1B1A127A250217.svg"
+   alt="\ce{H2O}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-189"
+   class="lateximagesource"
+><!--
+H2
+--><img
+   src="main-html-images\B210D6A401BAC692FAB8840283B0CE59.svg"
+   alt="\ce{H2}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-190"
+   class="lateximagesource"
+><!--
+N2
+--><img
+   src="main-html-images\320403B2D8B7F4EAD45738B5A49BE91A.svg"
+   alt="\ce{N2}"
+   style=""
+   class="lateximage"
+></span> тощо.
+</p>
+</li>
+</ul>
+
+<p>
+За порядком величини магнітна сприйнятливість пара- і діамагнетиків мала: \(|\chi _m|\sim 10^{-7}\)–\(10^{-3}\), тобто \(\mu \) відрізняється від одиниці лише на частки відсотка й менше — зовсім інший масштаб, ніж \(\mu \gg 1\) у
+феромагнетиків, про які йдеться нижче.
+</p>
+
+<p>
+І парамагнетики, і діамагнетики належать до класу лінійних ізотропних середовищ, розглянутих вище. Граничний випадок діамагнетика&nbsp;— надпровідник, у якому \(\chi _m=-1/4\pi \) і \(\mu =0\): поле повністю виштовхується з його
+об’єму.
+</p>
+
+<p>
+Деякі речовини здатні зберігати намагніченість \(\vect J\) навіть за <em>відсутності</em> зовнішнього поля — для них лінійне співвідношення&nbsp;<span class="textup">(<a href="ch10.html#eq:LinearMedium">10.8</a>)</span> узагалі
+не виконується. Такі речовини називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>феромагнетиками</span></em> (<span
+    id="lateximage-main-html-191"
+    class="lateximagesource"
+><!--
+Fe
+--><img
+   src="main-html-images\7515033AA4E56F84173849118D1C305F.svg"
+   alt="\ce{Fe}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-192"
+   class="lateximagesource"
+><!--
+Co
+--><img
+   src="main-html-images\ED2F18E8ECF050BB633DB32C838671E3.svg"
+   alt="\ce{Co}"
+   style=""
+   class="lateximage"
+></span>, <span
+   id="lateximage-main-html-193"
+   class="lateximagesource"
+><!--
+Ni
+--><img
+   src="main-html-images\4EDD7C2FC3331A21EF8474EF2EF2DD48.svg"
+   alt="\ce{Ni}"
+   style=""
+   class="lateximage"
+></span> та багато їхніх сплавів). Для них відношення \(\mu =B/H\) залежить від \(H\) і від передісторії зразка; характерні значення \(\mu \)&nbsp;— тисячі й навіть десятки тисяч, \(\mu \gg 1\). Детальніше про феромагнетики&nbsp;—
+наприкінці цього розділу.
+</p>
+<!--
+...... section Граничні умови ......
+-->
+<h4 id="autosec-892"><span class="sectionnumber">&#xA7;&#x202F;10.5&#x2003;</span>Граничні умови</h4>
+<a id="main-html-autopage-892"></a>
+
+
+<p>
+<a id="LWR-ht-magnetic-boundary-conditions"></a>
+</p>
+<!--
+...... subsection Перша гранична умова (для нормальної складової ) ......
+-->
+<h5 id="autosec-893">Перша гранична умова (для нормальної складової \(\Bfield \))</h5>
+<a id="main-html-autopage-893"></a>
+
+
+<p>
+Застосуємо теорему Гаусса для вектора \(\Bfield \) (яка, нагадаємо, залишається справедливою в будь-якому середовищі, оскільки джерел магнітного поля, на відміну від електричного, — магнітних зарядів — не існує) до нескінченно малого
+циліндра, що охоплює невелику ділянку межі розділу двох магнетиків (рис.&nbsp;<a href="ch10.html#pic:BC1Mag">10.5</a>). Вважаючи \(d\vect S_2 = -d\vect S_1 = \vect n\, dS\) (\(\vect n\) — нормаль від середовища 1 до середовища
+2, як на рисунку):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{9}\)</span>
+
+<!--
+
+                                                                                                 ‹
+                                                                                                      𝐁 ⋅ 𝑑𝐒 = 0   ⇒   𝐁1 ⋅ 𝑑𝐒1 + 𝐁2 ⋅ 𝑑𝐒2 = 0.
+                                                                                                  𝑆
+
+-->
+
+<p>
+
+\begin{equation*}
+\oiint \limits _S \Bfield \cdot d\vect S = 0 \quad \Rightarrow \quad \Bfield _1\cdot d\vect S_1 + \Bfield _2\cdot d\vect S_2 = 0.
+\end{equation*}
+
+</p>
+
+<figure id="autoid-297" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-194"
+    class="lateximagesource"
+><!--
+           𝐁2
+
+     𝑑𝐒2
+
+
+
+
+     𝐧
+
+
+
+
+𝐁1
+
+     𝑑𝐒1
+--><img
+   src="main-html-images\image-194.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.5. Циліндр Гаусса на межі розділу двох магнетиків<a id="pic:BC1Mag"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Звідси перша гранична умова:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{9}\)</span>
+
+<!--
+
+
+                                                                     𝐵1𝑛 = 𝐵2𝑛                                                                     (10.10)                                          --><a id="eq:BC1Magnetic"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:BC1Magnetic} \tcbhighmath { B_{1n} = B_{2n} }
+\end{equation}
+
+</p>
+
+<p>
+— <em>нормальна складова вектора \(\Bfield \) не зазнає стрибка</em> при переході через межу розділу середовищ (дослівний магнітний аналог неперервності \(D_n\) за відсутності вільного заряду на межі, розділ&nbsp;<a
+href="ch5.html#FieldInDielectrics">5</a>).
+</p>
+<!--
+...... subsection Друга гранична умова (для тангенціальної складової ) ......
+-->
+<h5 id="autosec-897">Друга гранична умова (для тангенціальної складової \(\Hfield \))</h5>
+<a id="main-html-autopage-897"></a>
+
+
+<p>
+Застосуємо теорему про циркуляцію&nbsp;<span class="textup">(<a href="ch10.html#eq:CirculationHInt">10.6</a>)</span> до нескінченно малого прямокутного контуру \(ABCD\), довгі сторони якого проходять на нескінченно малій
+відстані по обидва боки від межі розділу (рис.&nbsp;<a href="ch10.html#pic:BC2Mag">10.6</a>). Поверхневий струм провідності (якщо він там є) характеризуємо одиничним вектором \(\vect b\) уздовж напряму струму й лінійною густиною
+\(i_b\); контур орієнтуємо <em>впоперек</em> струму, так щоб струм пронизував його, тобто вздовж орта \(\vect \tau = \vect b\times \vect n\). Обходячи контур так, що \(d\vect r_2 = \vect \tau \, d\ell \) (сторона в середовищі 2) і
+\(d\vect r_1 = -d\vect r_2\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{10}\)</span>
+
+<!--
+
+                                                                                             ˛
+                                                                                                            4𝜋                                 4𝜋
+                                                                                                 𝐇 ⋅ 𝑑𝓵 =      𝐼   ⇒   𝐇1 ⋅ 𝑑𝐫1 + 𝐇2 ⋅ 𝑑𝐫2 =      𝑖 𝑑ℓ.
+                                                                                                             𝑐                                  𝑐 𝑏
+                                                                                             𝐿
+
+-->
+
+<p>
+
+\begin{equation*}
+\oint \limits _L \Hfield \cdot d\symbfscr {l} = \frac {4\pi }c I \quad \Rightarrow \quad \Hfield _1\cdot d\vect r_1 + \Hfield _2\cdot d\vect r_2 = \frac {4\pi }c\, i_b\, d\ell .
+\end{equation*}
+
+</p>
+
+<figure id="autoid-298" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-195"
+    class="lateximagesource"
+><!--
+    𝐧
+
+𝐵           𝐛
+
+            𝝉
+    𝐢   𝐶
+
+𝐴
+            ℎ
+
+        𝐷
+--><img
+   src="main-html-images\image-195.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.6. Контур циркуляції на межі розділу двох магнетиків<a id="pic:BC2Mag"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Звідси друга гранична умова:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{10}\)</span>
+
+<!--
+
+
+                                                                            4𝜋
+                                                              𝐻2𝜏 − 𝐻1𝜏 =      𝑖 .                                                        (10.11)                                          --><a id="eq:BC2MagneticScalar"></a><!--
+                                                                             𝑐 𝑏
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:BC2MagneticScalar} \tcbhighmath { H_{2\tau } - H_{1\tau } = \frac {4\pi }c\, i_b. }
+\end{equation}
+
+</p>
+
+<p>
+Оскільки \((\Hfield _2-\Hfield _1)\cdot (\vect b\times \vect n)=\vect b\cdot [\vect n\times (\Hfield _2-\Hfield _1)]\), а контур іншої орієнтації струм не пронизує (циркуляція по ньому дорівнює нулю), умову записують у
+векторному вигляді:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{11}\)</span>
+
+<!--
+
+
+                                                                               4𝜋
+                                                            𝐧 × (𝐇2 − 𝐇1 ) =      𝐢 .                                                     (10.12)                                          --><a id="eq:BC2MagneticVector"></a><!--
+                                                                                𝑐 𝑏
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:BC2MagneticVector} \tcbhighmath { \vect n\times \left (\Hfield _2 - \Hfield _1\right ) = \frac {4\pi }c\, \vect i_b. }
+\end{equation}
+
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Тангенціальна складова \(\Hfield \) зазнає стрибка <em>тільки</em> там, де по поверхні розділу течуть <em><span
+    class="textcolor"
+    style="color:#990000"
+>струми провідності</span></em> \(i_b\) (наприклад, обмотка, намотана безпосередньо на межі двох магнетиків). Без таких струмів \(H_{1\tau }=H_{2\tau }\), а \(B_\tau =\mu H_\tau \) узагалі кажучи <em>стрибає</em>, бо \(\mu _1\neq
+\mu _2\)&nbsp;— так само, як на межі діелектриків без вільного заряду неперервна \(E_\tau \), а \(D_\tau =\epsilon E_\tau \) стрибає (таблиця&nbsp;<a href="ch10.html#tab:DielMagAnalogy">10.1</a>).
+</p>
+</div>
+<!--
+...... subsection Заломлення силових ліній на межі магнетиків ......
+-->
+<h5 id="autosec-901">Заломлення силових ліній на межі магнетиків</h5>
+<a id="main-html-autopage-901"></a>
+
+
+<p>
+Розглянемо межу розділу двох магнетиків з проникностями \(\mu _1\) і \(\mu _2\), на якій немає струмів провідності (рис.&nbsp;<a href="ch10.html#pic:RefractionM">10.7</a>). Нехай силова лінія утворює кут \(\alpha _1\) з нормаллю в
+середовищі 1 і кут \(\alpha _2\) — в середовищі 2. Граничні умови дають:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{12}\)</span>
+
+<!--
+
+
+                                                                                                     𝐻1𝜏 = 𝐻2𝜏 ⇒ 𝐻1 sin 𝛼1 = 𝐻2 sin 𝛼2 ,
+                                                                                                 {
+                                                                                                     𝐵1𝑛 = 𝐵2𝑛 ⇒ 𝜇1 𝐻1 cos 𝛼1 = 𝜇2 𝐻2 cos 𝛼2 .
+
+-->
+
+<p>
+
+\begin{equation*}
+\begin{cases} H_{1\tau }=H_{2\tau } \ \Rightarrow \ H_1\sin \alpha _1 = H_2\sin \alpha _2, \\ B_{1n}=B_{2n} \ \Rightarrow \ \mu _1H_1\cos \alpha _1 = \mu _2H_2\cos \alpha _2. \end {cases}
+\end{equation*}
+
+</p>
+
+<figure id="autoid-299" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-196"
+    class="lateximagesource"
+><!--
+         𝛼2
+
+2
+
+
+
+
+1
+
+    𝛼1
+
+
+
+
+              Поле вектора 𝐇   Поле вектора 𝐁
+--><img
+   src="main-html-images\image-196.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.7. Заломлення силових ліній \(\Hfield \) і \(\Bfield \) на межі розділу двох магнетиків<a id="pic:RefractionM"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Ділячи ці рівняння одне на одне, отримуємо <em><span
+    class="textcolor"
+    style="color:#990000"
+>закон заломлення</span></em> силових ліній, однаковий і для \(\Bfield \), і для \(\Hfield \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{12}\)</span>
+
+<!--
+
+
+                                                                     tg 𝛼2  𝜇
+                                                                           = 2.                                                    (10.13)   --><a id="eq:RefractionLaw"></a><!--
+                                                                     tg 𝛼1  𝜇1
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RefractionLaw} \tcbhighmath { \frac {\tg \alpha _2}{\tg \alpha _1} = \frac {\mu _2}{\mu _1}. }
+\end{equation}
+
+</p>
+
+<p>
+У середовищі з більшим значенням \(\mu \) силові лінії відхиляються на більший кут від нормалі до межі розділу.
+</p>
+<!--
+...... subsection Магнітне екранування ......
+-->
+<h5 id="autosec-905">Магнітне екранування</h5>
+<a id="main-html-autopage-905"></a>
+
+
+<p>
+На заломленні силових ліній ґрунтується явище <em>магнітного захисту (екранування)</em>. Якщо замкнену оболонку з феромагнетика (наприклад, залізну) внести в зовнішнє магнітне поле, то, оскільки \(\mu _\text {залізо} \gg \mu _\text
+{повітря}\approx 1\), за законом заломлення&nbsp;<span class="textup">(<a href="ch10.html#eq:RefractionLaw">10.13</a>)</span> силові лінії всередині оболонки відхиляються майже до дотичної площини до її поверхні — тобто
+<em>«втягуються» в товщу оболонки</em> і концентруються переважно в ній самій, майже не проникаючи у внутрішню порожнину (рис.&nbsp;<a href="ch10.html#pic:MagShield">10.8</a>). У результаті поле всередині порожнини
+виявляється істотно ослабленим порівняно із зовнішнім&nbsp;— але не нульовим: на відміну від електростатичного захисту, магнітна оболонка лише <em>послаблює</em> поле, тим сильніше, чим більші \(\mu \) і&nbsp;товщина стінки (за
+порядком величини&nbsp;— у&nbsp;\(\sim \mu d/R\) разів, де \(d\)&nbsp;— товщина, \(R\)&nbsp;— радіус оболонки; це так, якщо \(\mu d/R\gg 1\)). У змінних полях поле додатково послаблюють вихрові струми в провідній оболонці.
+</p>
+
+<figure id="autoid-300" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="MagFieldMedia/Pictures/MagShield.jpg" target="_blank" ><img
+   src="MagFieldMedia/Pictures/MagShield.jpg"
+   style="
+   width:195pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.8. Магнітне екранування: силові лінії концентруються в товщі феромагнітної оболонки<a id="pic:MagShield"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+
+<div class="cb-attention">
+
+<p>
+Магнітне екранування — принципово <em>інше</em> явище, ніж електростатичне: провідник у електростатиці <em>виштовхує</em> поле зі свого об’єму, тоді як феромагнітна оболонка, навпаки, <em>затягує</em> лінії поля в себе, немов
+пропонуючи їм «шлях найменшого опору». Тому магнітний захист вимагає <em>суцільної замкненої</em> оболонки з високопроникного матеріалу — на відміну від електростатичного, для якого досить навіть тонкої провідної сітки. Цей принцип
+застосовують для захисту чутливих приладів (магнітометрів, детекторів) від зовнішніх завад.
+</p>
+</div>
+<!--
+...... section Мікроскопічна природа діа-, пара- і феромагнетизму ......
+-->
+<h4 id="autosec-907"><span class="sectionnumber">&#xA7;&#x202F;10.6&#x2003;</span>Мікроскопічна природа діа-, пара- і феромагнетизму</h4>
+<a id="main-html-autopage-907"></a>
+
+
+<p>
+<a id="LWR-ht-dia-para-ferromagnetism-microscopic"></a>
+</p>
+
+<p>
+Усе, що було в цьому розділі до цього моменту, — феноменологія: \(\vect J\), \(\Hfield \), \(\chi _m\) введені через дослідні факти й формальні означення, без жодного припущення про будову атома. Тепер з’ясуємо, звідки вона береться —
+тобто розкриємо мікроскопічну природу діа- і парамагнетизму, а наостанок з’ясуємо, звідки береться значно сильніше й принципово інше явище — спонтанне впорядкування у феромагнетиках.
+</p>
+<!--
+...... subsection Природа діамагнетизму: прецесія Лармора ......
+-->
+<h5 id="autosec-908">Природа діамагнетизму: прецесія Лармора</h5>
+<a id="main-html-autopage-908"></a>
+
+
+<p>
+Скористаємося класичною (борівською) моделлю атома, де електрон рухається коловою орбітою навколо ядра — саме в цій моделі діамагнетизм найпростіше побачити кількісно.<sup>1</sup> За формулою&nbsp;<span class="textup">(<a
+href="ch9.html#eq:GyromagneticClassical">9.23</a>)</span> (розділ&nbsp;<a href="ch9.html#MagFieldVacuum">9</a>) його орбітальний магнітний момент пов’язаний з орбітальним моментом імпульсу \(\vect L\) гіромагнітним
+відношенням \(\vect p = \gamma \vect L\), \(\gamma =-e/(2m_ec)\). У зовнішньому полі \(\Bfield \) на цей момент діє момент сили&nbsp;<span class="textup">(<a href="ch9.html#eq:TorqueDipoleAnalogy">9.1</a>)</span>, який
+змінює \(\vect L\) за рівнянням
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{13}\)</span>
+
+<!--
+
+
+                                                                                                𝑑𝐋
+                                                                                                   = 𝐩 × 𝐁 = 𝛾 (𝐋 × 𝐁) = 𝝎𝐿 × 𝐋,   𝝎𝐿 ≡ −𝛾𝐁.
+                                                                                                𝑑𝑡
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {d\vect L}{dt} = \vect p\times \Bfield = \gamma \left (\vect L\times \Bfield \right ) = \vect \omega _L\times \vect L, \qquad \vect \omega _L\equiv -\gamma \Bfield .
+\end{equation*}
+
+</p>
+
+<p>
+Це — рівняння рівномірної <em><span
+    class="textcolor"
+    style="color:#990000"
+>прецесії</span></em> вектора \(\vect L\) (а разом з ним — і всієї площини орбіти) навколо напрямку \(\Bfield \) з кутовою швидкістю
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{13}\)</span>
+
+<!--
+
+
+                                                                               𝑒𝐵
+                                                                𝜔𝐿 = |𝛾|𝐵 =                                                                    (10.14)                                         --><a id="eq:LarmorFreqMag"></a><!--
+                                                                              2𝑚𝑒 𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:LarmorFreqMag} \tcbhighmath { \omega _L = |\gamma |B = \frac {eB}{2m_ec} }
+\end{equation}
+
+</p>
+
+<p>
+— <em><span
+    class="textcolor"
+    style="color:#990000"
+>ларморовою частотою</span></em>, однаковою для будь-якого електрона незалежно від радіуса й швидкості його орбіти (<em><span
+    class="textcolor"
+    style="color:#990000"
+>теорема Лармора</span></em>). Це справедливо, поки \(\omega _L\) мала порівняно з частотою обертання електрона в атомі, тобто для \(B\ll 10^{9}\)&nbsp;Гс&nbsp;— для лабораторних полів із великим запасом.
+</p>
+
+<figure id="autoid-301" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-197"
+    class="lateximagesource"
+><!--
+         𝐁
+
+
+
+             𝝎𝐿
+𝐩𝑚
+     𝜌
+
+             Δ𝐩𝑚
+--><img
+   src="main-html-images\image-197.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.9. Прецесія орбіти електрона в зовнішньому полі \(\Bfield \): магнітний момент \(\vect {p}_m\) (а разом з ним і площина орбіти) обертається навколо \(\Bfield \) з ларморовою частотою \(\omega _L\). Ця прецесія еквівалентна
+додатковому коловому струму \(I=-e\omega _L/(2\pi )\), який створює індукований магнітний момент \(\Delta \vect p\), напрямлений проти \(\Bfield \).
+
+</div>
+
+<a id="pic:LarmorPrecession"></a>
+
+</div>
+
+</figure>
+
+<p>
+До ввімкнення поля електрон рухався по коловій орбіті; щойно поле накладено, ця орбіта починає прецесувати (рис.&nbsp;<a href="ch10.html#pic:LarmorPrecession">10.9</a>). Прецесія орбіти — це додатковий круговий рух заряду \(-e\) з
+частотою \(\omega _L\) навколо осі, паралельної \(\Bfield \), тобто додатковий коловий струм \(I=-e\omega _L/(2\pi )\) на відстані \(\rho \) від цієї осі (якщо орбіта перпендикулярна до \(\Bfield \), то \(\rho \)&nbsp;— радіус орбіти; у
+загальному випадку \(\rho \) змінюється вздовж орбіти, і далі ми усереднимо \(\rho ^2\)). За формулою для моменту колового витка&nbsp;<span class="textup">(<a href="ch9.html#eq:MagMomentLoop">9.22</a>)</span> цей струм створює
+додатковий (<em><span
+    class="textcolor"
+    style="color:#990000"
+>індукований</span></em>) магнітний момент
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{14}\)</span>
+
+<!--
+
+
+                                                               𝐼𝜋𝜌2 𝐁   𝑒𝜔 𝜌2 𝐁     𝑒2 𝜌2
+                                                       Δ𝐩𝑚 =          =− 𝐿      =−        𝐁,                                                                   (10.15)                                 --><a id="eq:InducedDiaMag"></a><!--
+                                                                 𝑐 𝐵      2𝑐 𝐵     4𝑚𝑒 𝑐2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:InducedDiaMag} \Delta \vect {p}_m = \frac {I\pi \rho ^2}{c}\,\frac {\Bfield }{B} = -\frac {e\omega _L\rho ^2}{2c}\,\frac {\Bfield }{B} = -\frac {e^2\rho ^2}{4m_ec^2}\, \Bfield ,
+\end{equation}
+
+</p>
+
+<p>
+напрямлений, зверніть увагу, <em>проти</em> поля \(\Bfield \) — незалежно від того, у який бік електрон обертався початково: це і є мікроскопічний прояв правила Ленца.
+</p>
+
+
+<div class="cb-example">
+
+<p>
+<b>Індукований момент із закону електромагнітної індукції*.</b> Той самий результат&nbsp;<span class="textup">(<a href="ch10.html#eq:InducedDiaMag">10.15</a>)</span> випливає із закону електромагнітної індукції. При
+вмиканні поля потік крізь орбіту \(\Phi =\pi r^2 B\) змінюється, і виникає ЕРС \(\mathcal {E}=-(1/c)\,d\Phi /dt\). Вона створює дотичне поле \(E_{\text {ін}}=r\dot B/(2c)\), яке за час \(dt\) змінює швидкість електрона на
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{15}\)</span>
+
+<!--
+
+                                                                                                                      𝑒𝐸ін       𝑒𝑟
+                                                                                                               𝑑𝑣 =        𝑑𝑡 =       𝑑𝐵.
+                                                                                                                       𝑚𝑒       2𝑚𝑒 𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+dv = \frac {eE_{\text {ін}}}{m_e}\,dt = \frac {er}{2m_ec}\,dB .
+\end{equation*}
+
+</p>
+
+<p>
+Відповідна зміна струму \(dI=-e\,dv/(2\pi r)\) дає
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{15}\)</span>
+
+<!--
+
+
+                                                                                                        𝜋𝑟2         𝑒2 𝑟 2                        𝑒2 𝑟 2
+                                                                                               𝑑Δ𝑝𝑚 =       𝑑𝐼 = −         𝑑𝐵    ⟹     Δ𝑝𝑚 = −           𝐵.
+                                                                                                         𝑐         4𝑚𝑒 𝑐2                        4𝑚𝑒 𝑐2
+
+-->
+
+<p>
+
+\begin{equation*}
+d\Delta p_m = \frac {\pi r^2}{c}\,dI = -\frac {e^2 r^2}{4m_ec^2}\,dB \quad \Longrightarrow \quad \Delta p_m = -\frac {e^2 r^2}{4m_ec^2}\,B .
+\end{equation*}
+
+</p>
+
+<p>
+Знак мінус — це правило Ленца: індукований момент напрямлений проти поля, яке його викликало. Тут орбіта перпендикулярна до \(\Bfield \), тому \(\rho =r\); зміна швидкості електрона однакова за напрямом для обох напрямів обертання,
+тож \(\Delta p_m\) завжди напрямлений проти поля.
+</p>
+</div>
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch10.html#eq:InducedDiaMag">10.15</a>)</span> виведена для однієї класичної орбіти. У квантовій механіці електрон не має траєкторії: його стан описується хвильовою функцією, а заряд
+розподілений у просторі з густиною \(-e|\psi |^2\). Тому замість фіксованого \(\rho \) слід підставити середнє \(\langle \rho ^2\rangle \) за цією електронною хмарою. Електронна хмара сферично симетрична, тож
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{15}\)</span>
+
+<!--
+
+                                                                                                                             2
+                                                                                                                      ⟨𝜌2 ⟩ = ⟨𝑟2 ⟩.
+                                                                                                                             3
+
+-->
+
+<p>
+
+\begin{equation*}
+\langle \rho ^2\rangle = \tfrac 23\langle r^2\rangle .
+\end{equation*}
+
+</p>
+
+<p>
+Підсумовуючи внесок усіх \(Z\) електронів атома (нижче \(\langle r^2\rangle \)&nbsp;— середнє значення по них), отримуємо індукований момент атома, а тоді й магнітну сприйнятливість речовини з концентрацією атомів \(n\) (<em><span
+    class="textcolor"
+    style="color:#990000"
+>формула Ланжевена для діамагнетизму</span></em>&nbsp;<a id="main-html-autopage-911"></a>[<a href="ch23.html#LWR-ht-cite.0@Langevin1905">58</a>]):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{15}\)</span>
+
+<!--
+
+
+                                                                        𝑛𝑍𝑒2 ⟨𝑟2 ⟩
+                                                                𝜒діа
+                                                                 𝑚 =−              < 0.                                                                       (10.16)                                --><a id="eq:LangevinDiaMag"></a><!--
+                                                                         6𝑚𝑒 𝑐2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:LangevinDiaMag} \tcbhighmath { \chi _m^{\text {діа}} = -\frac {nZe^2\langle r^2\rangle }{6m_ec^2} &lt; 0. }
+\end{equation}
+
+</p>
+
+<p>
+Ця величина не залежить від температури (розмір атома \(\langle r^2\rangle \) від неї практично не залежить) і за порядком величини становить \(10^{-7}\)–\(10^{-6}\) (у гауссовій системі; у СІ відповідні значення в \(4\pi \) разів більші) —
+слабкий, але <em>універсальний</em> ефект, наявний в атомах будь-якої речовини, включно з пара- і феромагнетиками.
+</p>
+<div role="note" class="footnotes">
+
+<a id="main-html-autopage-912"></a>
+<p>
+<sup>1</sup>&nbsp;Це лише наочна оцінка. Строго кажучи, класична статистична фізика дає для системи зарядів у&nbsp;магнітному полі <em>нульову</em> намагніченість (теорема Бора–ван&nbsp;Левен&nbsp;[<a
+href="ch23.html#LWR-ht-cite.0@Bohr1911">56</a>, <a href="ch23.html#LWR-ht-cite.0@VanLeeuwen1921">57</a>]): діамагнетизм, як і&nbsp;парамагнетизм та феромагнетизм,&nbsp;— квантове явище. Модель зі «збереженою» орбітою
+неявно спирається на квантову стійкість атома й&nbsp;дає правильний за порядком і&nbsp;знаком результат.
+</p>
+
+
+</div>
+<!--
+...... subsection Природа парамагнетизму: закон Кюрі ......
+-->
+<h5 id="autosec-913">Природа парамагнетизму: закон Кюрі</h5>
+<a id="main-html-autopage-913"></a>
+
+
+<p>
+Якщо атом має власний (нескомпенсований) магнітний момент \(p_0\neq 0\), до щойно знайденого діамагнітного внеску додається значно потужніший ефект — часткова <em>орієнтація</em> вже наявних моментів уздовж поля. Це — дослівний
+магнітний аналог орієнтаційної поляризації полярних діелектриків (розділ&nbsp;<a href="ch5.html#FieldInDielectrics">5</a>, §&nbsp;<a href="ch5.html#sec:Langevin-Debye">5.7</a>): енергія моменту в полі дорівнює \(U=-p_0B\cos
+\theta \) (формула&nbsp;<span class="textup">(<a href="ch9.html#eq:PotentialEnergyDipole">9.35</a>)</span>, розділ&nbsp;<a href="ch9.html#MagFieldVacuum">9</a>), а рівноважний розподіл орієнтацій підпорядковується
+розподілу Больцмана. У практично важливій межі слабкого поля й не надто низької температури (\(p_0B\ll kT\)) середня проекція моменту на напрямок поля лінійна за полем, за тією самою викладкою, що й для електричного диполя&nbsp;<span
+class="textup">(<a href="ch5.html#eq:LangevinDebye">5.17</a>)</span>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{16}\)</span>
+
+<!--
+
+
+                                                                                 𝑝20 𝐵
+                                                                       ⟨𝑝𝑧 ⟩ =         .                                                            (10.17)                                         --><a id="eq:ParaAvgMag"></a><!--
+                                                                                 3𝑘𝑇
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:ParaAvgMag} \langle p_z\rangle = \frac {p_0^2 B}{3kT}.
+\end{equation}
+
+</p>
+
+<p>
+Звідси намагніченість \(n\) атомів в одиниці об’єму дорівнює \(J=n\langle p_z\rangle \). Оскільки \(\chi _m\ll 1\), у&nbsp;самій речовині \(B\approx H\), тож \(\chi _m=J/H\approx J/B\), а сприйнятливість спадає обернено пропорційно
+температурі — <em><span
+    class="textcolor"
+    style="color:#990000"
+>закон Кюрі</span></em>&nbsp;[<a href="ch23.html#LWR-ht-cite.0@Curie1895">59</a>] (пряма аналогія закону&nbsp;<span class="textup">(<a href="ch5.html#eq:CurieLaw">5.18</a>)</span> для полярних діелектриків):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{17}\)</span>
+
+<!--
+
+
+                                                                пара       𝑛𝑝20   𝐶
+                                                               𝜒𝑚      =        ≡   > 0,                                                          (10.18)                                          --><a id="eq:CurieLawMag"></a><!--
+                                                                           3𝑘𝑇    𝑇
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CurieLawMag} \tcbhighmath { \chi _m^{\text {пара}} = \frac {np_0^2}{3kT} \equiv \frac {C}T &gt; 0, }
+\end{equation}
+
+</p>
+
+<p>
+де \(C=np_0^2/3k\) — <em><span
+    class="textcolor"
+    style="color:#990000"
+>стала Кюрі</span></em>. Оскільки за кімнатної температури \(\chi _m^{\text {пара}}\), як правило, на один-два порядки перевищує \(\bigl |\chi _m^{\text {діа}}\bigr |\), саме вона визначає знак і величину сумарної
+сприйнятливості речовини, щойно в її атомах з’являється власний момент, — а слабший діамагнітний внесок&nbsp;<span class="textup">(<a href="ch10.html#eq:LangevinDiaMag">10.16</a>)</span> лишається практично непомітним на
+його тлі. (У квантовій теорії проєкції магнітного моменту атома набувають лише дискретних значень, і замість \(p_0^2\) стоїть величина того самого порядку: для атома зі спіном \(\tfrac 12\) — \(3\mu _B^2\), де \(\mu _B=e\hbar
+/2m_ec\)&nbsp;— магнетон Бора. Закон \(\chi \propto 1/T\) при цьому зберігається.)
+</p>
+<!--
+...... subsection Природа феромагнетизму: обмінна взаємодія і поле Вейса ......
+-->
+<h5 id="autosec-914">Природа феромагнетизму: обмінна взаємодія і поле Вейса</h5>
+<a id="main-html-autopage-914"></a>
+
+
+<p>
+Закон Кюрі&nbsp;<span class="textup">(<a href="ch10.html#eq:CurieLawMag">10.18</a>)</span> описує <em>незалежні</em> атомні моменти, що орієнтуються лише під дією зовнішнього поля й теплового хаосу. Але у феромагнетику є
+локальні області — <em><span
+    class="textcolor"
+    style="color:#990000"
+>домени</span></em> — типовим розміром від часток до сотень мікрометрів. У межах кожного домену магнітні моменти всіх атомів спонтанно вишикувані в одному напрямку (рис.&nbsp;<a href="ch10.html#pic:Domains">10.10</a>) — без
+жодного зовнішнього поля. У різних доменах напрями намагніченості, як правило, різні, тому сумарна намагніченість ненамагніченого зразка загалом близька до нуля. Доменна структура цілком аналогічна до доменної структури
+сегнетоелектриків (розділ&nbsp;<a href="ch5.html#FieldInDielectrics">5</a>). Розбиття на домени вигідне енергетично: воно зменшує енергію магнітного поля, яке однорідно намагнічений зразок створював би в навколишньому просторі.
+</p>
+
+<figure id="autoid-302" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="MagFieldMedia/Pictures/domains.png" target="_blank" ><img
+   src="MagFieldMedia/Pictures/domains.png"
+   style="
+   width:152pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.10. Доменна структура феромагнетика. <a id="pic:Domains"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Формальне пояснення спонтанної орієнтації магнітних моментів у межах домену запропонував П.&nbsp;Вейс&nbsp;<a id="main-html-autopage-915"></a>[<a href="ch23.html#LWR-ht-cite.0@Weiss1907">60</a>]: припустимо, що на кожен
+атомний момент, окрім зовнішнього поля \(\Hfield \), діє ще й <em><span
+    class="textcolor"
+    style="color:#990000"
+>молекулярне поле</span></em> \(\Hfield _{\text {мол}} = \lambda \vect J\), пропорційне намагніченості <em>сусідніх</em> атомів (тут \(\lambda \) — стала Вейса). Підставивши це ефективне поле \(\Hfield +\lambda \vect J\) у закон
+Кюрі&nbsp;<span class="textup">(<a href="ch10.html#eq:CurieLawMag">10.18</a>)</span> замість \(\Hfield \) (для слабких полів, коли \(B\approx H\)), дістаємо самоузгоджене рівняння для намагніченості:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{18}\)</span>
+
+<!--
+
+                                                                                                      𝐶                       𝐽     𝐶
+                                                                                                 𝐽=     (𝐻 + 𝜆𝐽)   ⟹   𝜒𝑚 =     =        .
+                                                                                                      𝑇                       𝐻   𝑇 − 𝐶𝜆
+
+-->
+
+<p>
+
+\begin{equation*}
+J = \frac CT\left (H+\lambda J\right ) \quad \Longrightarrow \quad \chi _m = \frac JH = \frac {C}{T-C\lambda }.
+\end{equation*}
+
+</p>
+
+<p>
+Позначивши \(T_C\equiv C\lambda \) — <em><span
+    class="textcolor"
+    style="color:#990000"
+>температуру Кюрі</span></em> (для заліза \(T_C\approx 770\,^\circ \)C), отримуємо <em><span
+    class="textcolor"
+    style="color:#990000"
+>закон Кюрі–Вейса</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{10.}{18}\)</span>
+
+<!--
+
+
+                                                                          𝐶
+                                                                 𝜒𝑚 =          .                                                                (10.19)                                         --><a id="eq:CurieWeissLaw"></a><!--
+                                                                        𝑇 − 𝑇𝐶
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CurieWeissLaw} \tcbhighmath { \chi _m = \frac {C}{T-T_C}. }
+\end{equation}
+
+</p>
+
+<p>
+Вище \(T_C\) речовина парамагнітна: власні моменти атомів орієнтовані хаотично, і без зовнішнього поля намагніченість дорівнює нулю. Коли \(T\to T_C^+\), сприйнятливість&nbsp;<span class="textup">(<a
+href="ch10.html#eq:CurieWeissLaw">10.19</a>)</span> прямує до нескінченності — парамагнітний стан втрачає стійкість. Щойно \(T\) опускається нижче \(T_C\), будь-яке мале відхилення \(\vect J\) від нуля підсилюється молекулярним
+полем швидше, ніж його руйнує тепловий рух, — і в системі самочинно встановлюється ненульова намагніченість навіть без зовнішнього поля. Це — феромагнітний стан. (Зростання \(J\) зупиняється, коли всі моменти вишикувано, тобто на
+насиченні; щоб описати це кількісно, лінійний закон Кюрі вже не годиться.)
+</p>
+
+<p>
+Залишається питання: чим фізично зумовлене поле Вейса \(\Hfield _{\text {мол}}\)? Щоб упорядкування витримувало тепловий рух аж до кімнатної температури, потрібне поле порядку \(10^6\)–\(10^7\)&nbsp;Гс (з умови \(p_0B\sim kT\)).
+Натомість поле, яке реально створює сусідній атомний диполь на міжатомній відстані, становить лише \(\sim 10^3\)&nbsp;Гс — на три-чотири порядки менше. Отже, <em>справжня</em> причина — не магнітна взаємодія диполів, а <em><span
+    class="textcolor"
+    style="color:#990000"
+>обмінна взаємодія</span></em>&nbsp;[<a href="ch23.html#LWR-ht-cite.0@Heisenberg1928">61</a>]. Це — суто квантовий ефект, що не має класичного аналога: енергія системи двох електронів залежить не лише від їхніх зарядів і відстані, а
+й від взаємної орієнтації їхніх спінів, причому ця залежність не зводиться до магнітної. Причина — у принципі Паулі: повна хвильова функція двох електронів мусить бути антисиметричною, тому за <em>паралельних</em> спінів
+антисиметричною мусить бути її координатна частина. Це автоматично <em>розводить</em> такі електрони в просторі й тим самим <em>зменшує</em> енергію їхнього кулонівського відштовхування порівняно з випадком антипаралельних спінів.
+</p>
+
+<p>
+Обмінна взаємодія <em>короткодійна</em> (діє практично лише між найближчими сусідами в ґратці) і в різних речовинах може сприяти як <em>паралельній</em>, так і <em>антипаралельній</em> орієнтації сусідніх моментів. Якщо вона
+вирівнює їх паралельно&nbsp;— маємо <em><span
+    class="textcolor"
+    style="color:#990000"
+>феромагнетик</span></em>; якщо антипаралельно, причому моменти рівні за величиною,&nbsp;— сумарна намагніченість зникає, і речовину називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>антиферомагнетиком</span></em>; якщо ж антипаралельно, але моменти різні за величиною (наприклад, належать різним типам вузлів ґратки),&nbsp;— повної компенсації не відбувається, і виникає <em><span
+    class="textcolor"
+    style="color:#990000"
+>феримагнетик</span></em> (класичний приклад&nbsp;— магнетит <span
+    id="lateximage-main-html-198"
+    class="lateximagesource"
+><!--
+Fe3 O4
+--><img
+   src="main-html-images\BE61DD73F7045488200901F51B3A0380.svg"
+   alt="\ce{Fe3O4}"
+   style=""
+   class="lateximage"
+></span>, магнітний залізняк, з&nbsp;якого складалися перші відомі людству природні магніти). У всіх трьох випадках природа взаємодії та сама, квантова; різні лише <em>знак і геометрія</em> її прояву.
+</p>
+<!--
+...... subsection Гістерезис у феромагнетиках ......
+-->
+<h5 id="autosec-918">Гістерезис у феромагнетиках</h5>
+<a id="main-html-autopage-918"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Гістерезисом</span></em> називають неоднозначну петлеподібну залежність намагніченості \(J\) феромагнетика від зовнішнього поля \(H\) за його циклічної зміни (рис.&nbsp;<a href="ch10.html#pic:Hysteresis">10.11</a>).
+</p>
+
+<figure id="autoid-303" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-199"
+    class="lateximagesource"
+><!--
+      𝐽
+
+      𝐽𝑟
+−𝐻𝑐
+                 𝐻𝑐   𝐻
+           −𝐽𝑟
+--><img
+   src="main-html-images\image-199.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.11. Петля гістерезису феромагнетика: \(J_r\) — залишкова намагніченість, \(H_c\) — коерцитивна сила<a id="pic:Hysteresis"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Проходження петлі відбувається за такими стадіями:
+</p>
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> За достатньо великого поля \(H\) намагніченість досягає <em><span
+    class="textcolor"
+    style="color:#990000"
+>насичення</span></em>: усі домени вже зорієнтовані вздовж поля, і зростання \(J\) практично припиняється, \(J\to J_s=\const \). Індукція \(\Bfield = \Hfield +4\pi \vect J\) при цьому й далі зростає — але вже лише за рахунок самого
+\(\Hfield \), з таким самим нахилом, як у вакуумі.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Коли поле зменшують до нуля (\(H=0\)), намагніченість <em>не</em> повертається до нуля, а залишається на рівні залишкової намагніченості \(J_r\) — саме тому постійні магніти взагалі можуть існувати.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Щоб звести намагніченість до нуля, потрібно прикласти поле протилежного напрямку — <em>коерцитивну силу</em> \(-H_c\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> З подальшим зростанням поля в тому самому (від’ємному) напрямку намагніченість знову зростає за модулем до насичення \(-J_s\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Коли від’ємне поле зменшують за модулем до нуля, намагніченість знову залишається ненульовою, на рівні \(-J_r\), — а при подальшому зростанні поля, через \(+H_c\), до \(+J_s\) цикл замикається.
+</p>
+</li>
+</ul>
+
+<p>
+Причина петлі&nbsp;— у тому, як змінюється доменна структура. У слабких полях ростуть домени, намагнічені вздовж поля, за рахунок сусідніх: межі між доменами (доменні стінки) зміщуються. Цей рух <em>необоротний</em>: стінки
+зачіплюються за дефекти кристала й долають їх стрибками, тому після зняття поля частина доменів лишається зорієнтованою.
+</p>
+
+<p>
+Площа петлі має пряму фізичну інтерпретацію: енергія, що незворотно розсіюється у вигляді тепла в&nbsp;одиниці об’єму за один цикл перемагнічування, дорівнює \(w=\frac 1{4\pi }\oint H\,dB=\oint H\,dJ\), тобто площі петлі \(J(H)\)
+(вихрові струми дають окремий внесок). Тому вузька петля означає малі втрати, а широка&nbsp;— великі.
+</p>
+
+<p>
+Залежно від ширини петлі гістерезису феромагнетики поділяють на дві категорії. <em><span
+    class="textcolor"
+    style="color:#990000"
+>Магнітом’які</span></em> матеріали (рис.&nbsp;<a href="ch10.html#pic:Soft">10.12</a>), які застосовують як осердя в трансформаторах, електромагнітах та інших приладах, мають дуже <em>вузьку</em> петлю гістерезису. Вузькість петлі
+(мала коерцитивна сила \(H_c\)) означає малі втрати на перемагнічування — важливо, наприклад, для трансформаторів, які перемагнічуються десятки чи сотні разів за секунду.
+</p>
+
+<figure id="autoid-304" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:top ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-923"></a>
+
+<p>
+
+<a href="MagFieldMedia/Pictures/Soft.jpg" target="_blank" ><img
+   src="MagFieldMedia/Pictures/Soft.jpg"
+   style="
+   height:199pt ;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.12. Вузька петля гістерезису магнітом’якого матеріалу<a id="pic:Soft"></a>
+
+</div>
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:top ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-924"></a>
+
+<p>
+
+<a href="MagFieldMedia/Pictures/Hard.jpg" target="_blank" ><img
+   src="MagFieldMedia/Pictures/Hard.jpg"
+   style="
+   height:199pt ;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;10.13. Широка петля гістерезису магнітотвердого матеріалу<a id="pic:Hard"></a>
+
+</div>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Постійні ж магніти, навпаки, виготовляють із <em><span
+    class="textcolor"
+    style="color:#990000"
+>магнітотвердих</span></em> матеріалів (рис.&nbsp;<a href="ch10.html#pic:Hard">10.13</a>), наприклад із загартованої сталі, сплавів Nd–Fe–B, феритів, з широкою петлею гістерезису й великою коерцитивною силою \(H_c\) — саме це
+забезпечує збереження намагніченості магніту з часом і під дією випадкових зовнішніх завад.
+</p>
+<!--
+...... section Підсумки ......
+-->
+<h4 id="autosec-925">Підсумки</h4>
+<a id="main-html-autopage-925"></a>
+
+
+<p>
+Уся теорія магнітного поля в речовині побудована за єдиним лекалом, яке ми вже бачили в теорії діелектриків: (1)&nbsp;ввести густину мікроскопічних джерел поля (там — \(\vect P\), тут — \(\vect J\)); (2)&nbsp;виразити через неї зв’язані
+(молекулярні) джерела — там через дивергенцію (\(\rho &apos; = -\divg \vect P\)), тут через ротор (\(\vect j_m = c\rot \vect J\)) — відмінність, пов’язана з тим, що \(\Efield \) потенціальне, а \(\Bfield \) вихрове; (3)&nbsp;ввести
+допоміжний вектор (\(\Dfield \) або \(\Hfield \)), теорема для якого містить <em>лише</em> вільні (вимірювані) джерела; (4)&nbsp;для лінійних середовищ пов’язати допоміжний і основний вектори простим коефіцієнтом (\(\epsilon \) або
+\(\mu \)); точну відповідність величин дає таблиця&nbsp;<a href="ch10.html#tab:DielMagAnalogy">10.1</a>. Розуміння цієї загальної структури — найкращий спосіб не заплутатися в позначеннях і знаках обох розділів курсу.
+</p>
+
+<p>
+Мікроскопічно магнітні властивості речовини визначаються тим, чи мають її атоми власний магнітний момент. <em>Діамагнетизм</em>&nbsp;— універсальний слабкий ефект: зовнішнє поле спричиняє ларморову прецесію електронних орбіт
+і&nbsp;наводить момент, напрямлений проти поля (\(\chi _m&lt;0\), не залежить від температури). <em>Парамагнетизм</em> виникає, коли атоми мають власні моменти, які поле частково орієнтує всупереч тепловому руху (закон Кюрі, \(\chi
+_m=C/T&gt;0\)). У&nbsp;<em>феромагнетиках</em> обмінна взаємодія&nbsp;— квантовий ефект, у&nbsp;тисячі разів сильніший за магнітну взаємодію диполів,&nbsp;— вишиковує моменти в&nbsp;доменах самочинно; вище температури Кюрі
+речовина стає парамагнітною (закон Кюрі–Вейса). Феромагнетики нелінійні й&nbsp;мають гістерезис: площа петлі визначає втрати на перемагнічування, ширина&nbsp;— поділ на магнітом’які й&nbsp;магнітотверді матеріали. На межі магнетиків
+неперервні \(B_n\) і&nbsp;\(H_\tau \) (без струмів провідності), а&nbsp;на цьому ґрунтується, зокрема, магнітне екранування феромагнітними оболонками.
+</p>
+<!--
+...... section Задачі ......
+-->
+<h4 id="autosec-926">Задачі</h4>
+<a id="main-html-autopage-926"></a>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-305"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 10.1.</span></span> <a id="autoid-306" ></a ><a id="LWR-ht-problem:10.{1}"></a><a id="prb:SolenoidParamagnet"></a> <em>Соленоїд з&nbsp;магнетиком.</em>
+Знайдіть індукцію магнітного поля всередині нескінченного соленоїда з&nbsp;густиною намотки \(n\) витків на одиницю довжини, по витках якого тече струм \(I\), якщо об’єм усередині соленоїда заповнено магнетиком із проникністю \(\mu \).
+Яка частина поля створена молекулярними струмами? <a href="ch21.html#LWR-ht-solution:10.{1}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-307"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 10.2.</span></span> <a id="autoid-308" ></a ><a id="LWR-ht-problem:10.{2}"></a><a id="prb:ParamagneticWire"></a> <em>Молекулярні струми
+в&nbsp;парамагнітному провіднику.</em> Постійний струм \(I\) тече вздовж довгого циліндричного провідника круглого перерізу радіуса \(R\), виготовленого з&nbsp;парамагнетика зі сприйнятливістю \(\chi _m\); струм розподілений по
+перерізу рівномірно. Знайдіть об’ємний і&nbsp;поверхневий молекулярні струми та з’ясуйте, як вони напрямлені один відносно одного й&nbsp;відносно \(I\). <a href="ch21.html#LWR-ht-solution:10.{2}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-309"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 10.3.</span></span> <a id="autoid-310" ></a ><a id="LWR-ht-problem:10.{3}"></a><a id="prb:MagnetizedNeedlePlate"></a> <em>Однорідно намагнічене тіло.</em>
+(а)&nbsp;Довгий тонкий стрижень (довжина \(\gg \) діаметра) однорідно намагнічений вздовж осі з намагніченістю \(J\). Знайдіть поверхневий молекулярний струм і поля \(\Bfield \), \(\Hfield \) усередині стрижня далеко від торців.
+(б)&nbsp;Те саме для тонкої необмеженої пластини, однорідно намагніченої перпендикулярно до її площини. Підказка: скористайтеся неперервністю \(H_\tau \) і \(B_n\) на поверхні та тим, що поза тілом зовнішнього поля немає (у&nbsp;(а) — з
+точністю до малого поля торців). <a href="ch21.html#LWR-ht-solution:10.{3}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-311"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 10.4.</span></span> <a id="autoid-312" ></a ><a id="LWR-ht-problem:10.{4}"></a><a id="prb:MagneticCircuitGap"></a> <em>Магнітопровід із зазором.</em>
+Замкнений магнітопровід із магнетика з проникністю \(\mu \) (довжина середньої лінії в магнетику \(l\)) має вузький повітряний зазор \(\delta \ll l\); розсіянням поля й крайовими ефектами знехтуйте. На магнітопровід рівномірно намотано
+\(N\) витків зі струмом \(I\). Знайдіть \(\Bfield \) і \(\Hfield \) у магнетику та в зазорі. У скільки разів зменшується \(B\) через зазор при \(\mu =10^3\), \(l=50\)&nbsp;см, \(\delta =1\)&nbsp;мм? <a
+href="ch21.html#LWR-ht-solution:10.{4}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-313"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 10.5.</span></span> <a id="autoid-314" ></a ><a id="LWR-ht-problem:10.{5}"></a><a id="prb:ParaVsDia"></a> <em>Пара- чи діамагнетизм?</em> Речовина
+складається з атомів із концентрацією \(n=5\cdot 10^{22}\)&nbsp;см\(^{-3}\), кожен з яких має один власний магнітний момент \(p_0=\mu _B=9{,}3\cdot 10^{-21}\)&nbsp;ерг/Гс і одному електрону відповідає \(\langle r^2\rangle
+=10^{-16}\)&nbsp;см\(^2\). Оцініть за порядком величини при \(T=300\)&nbsp;К: (а)&nbsp;парамагнітну сприйнятливість за законом Кюрі; (б)&nbsp;діамагнітну сприйнятливість (\(Z=1\)); (в)&nbsp;порівняйте їх; (г)&nbsp;перевірте, що при
+\(B=10^4\)&nbsp;Гс виконується \(p_0B\ll kT\). (\(k=1{,}38\cdot 10^{-16}\)&nbsp;ерг/К, \(e=4{,}8\cdot 10^{-10}\)&nbsp;СГСЕ, \(m_ec^2=8{,}2\cdot 10^{-7}\)&nbsp;ерг.) <a href="ch21.html#LWR-ht-solution:10.{5}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-315"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 10.6.</span></span> <a id="autoid-316" ></a ><a id="LWR-ht-problem:10.{6}"></a><a id="prb:WeissField"></a> <em>Молекулярне поле Вейса.</em> Вважаючи, що
+феромагнітне впорядкування руйнується, коли \(p_0H_\text {мол}\sim kT_C\), оцініть поле Вейса для заліза (\(T_C=1043\)&nbsp;К, \(p_0\approx 2{,}2\,\mu _B\), \(\mu _B=9{,}3\cdot 10^{-21}\)&nbsp;ерг/Гс) і порівняйте його з полем
+сусіднього атомного диполя на відстані \(a=2{,}5\cdot 10^{-8}\)&nbsp;см (за порядком величини \(p_0/a^3\)). Який висновок випливає щодо природи молекулярного поля? <a href="ch21.html#LWR-ht-solution:10.{6}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> У чому полягала гіпотеза Ампера про природу магнетизму речовини? Як сучасна атомна фізика (рух електронів, їхній спін) пояснює, звідки в речовині беруться струми, про які здогадався Ампер?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Що таке мікрополе \(\Bfield _\text {micro}\) і середнє (макроскопічне) поле \(\langle \Bfield \rangle \) у речовині? У чому полягає аналогія цієї конструкції з переходом від мікро- до макрополя в
+діелектриках?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Чим струми провідності принципово відрізняються від молекулярних струмів?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> Дайте означення вектора намагніченості \(\vect J\) як густини магнітних дипольних моментів. У чому полягає точна аналогія між \(\vect J\) і вектором поляризації \(\vect P\) в діелектриках?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Чому пряме обчислення поля намагніченої речовини через підсумовування всіх молекулярних струмів практично нездійсненне, і яку ідею пропонує теорія магнетизму для розв’язання цієї проблеми?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> Виведіть формулу поверхневої густини молекулярного струму \(i_m = c\,\vect J\cdot \vect \tau \), розглядаючи косокутний циліндр у намагніченій речовині. Чому молекулярний поверхневий струм
+визначається саме тангенціальною складовою \(\vect J\), на відміну від зв’язаного заряду, що визначається нормальною складовою \(\vect P\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> Виведіть зв’язок об’ємної густини молекулярного струму з намагніченістю в диференціальній формі \(\vect j_m = c\rot \vect J\), застосувавши теорему Стокса до циркуляції \(\vect J\) по довільному
+контуру.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Виведіть означення вектора напруженості магнітного поля \(\Hfield = \Bfield - 4\pi \vect J\) з теореми про циркуляцію \(\Bfield \), що враховує і струми провідності, і молекулярні струми.
+Запишіть теорему про циркуляцію в речовині в інтегральній та диференціальній формах.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> Чому вектор \(\Hfield \) вважають допоміжною, а не фундаментальною величиною? У чому полягає аналогія між парами \((\Efield ,\Dfield )\) і \((\Hfield ,\Bfield )\) (таблиця&nbsp;<a
+href="ch10.html#tab:DielMagAnalogy">10.1</a>) і чим вона неповна&nbsp;— дивергенція проти ротора?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Запишіть лінійне співвідношення \(\vect J = \chi _m\Hfield \) для лінійних ізотропних магнетиків та виведіть зв’язок \(\Bfield =\mu \Hfield \), \(\mu =1+4\pi \chi _m\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> Чому термін «магнетик» не протиставляється нічому, на відміну від терміна «діелектрик»? Чим відрізняється наявність мікрострумів від наявності магнітного моменту атома?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Дайте класифікацію лінійних магнетиків за знаком \(\chi _m\): чим парамагнетики відрізняються від діамагнетиків за порядком величини сприйнятливості? Чим феромагнетики принципово
+відрізняються від обох цих класів?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">13.</span> Виведіть першу граничну умову \(B_{1n}=B_{2n}\) для нормальної складової \(\Bfield \) на межі двох магнетиків із теореми Гаусса для \(\Bfield \).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">14.</span> Виведіть другу граничну умову \(H_{2\tau }-H_{1\tau } = (4\pi /c)\,i_b\) для тангенціальної складової \(\Hfield \) з теореми про циркуляцію. За яких умов \(H_\tau \) неперервна, а \(B_\tau \) —
+ні?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">15.</span> Виведіть закон заломлення силових ліній \(\tg \alpha _2/\tg \alpha _1 = \mu _2/\mu _1\) на межі двох магнетиків.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">16.</span> Що таке магнітне екранування і чим воно принципово відрізняється від електростатичного захисту? Чому феромагнітна оболонка «затягує» силові лінії в себе, а не виштовхує поле зі свого об’єму?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">17.</span> Виведіть формулу ларморової частоти \(\omega _L = eB/(2m_ec)\), розглядаючи прецесію орбітального моменту імпульсу електрона в зовнішньому полі. Чому ця частота однакова для будь-якого електрона
+незалежно від параметрів орбіти?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">18.</span> Виведіть формулу індукованого магнітного моменту \(\Delta p_m = -e^2\rho ^2 B/(4m_ec^2)\), зумовленого прецесією Лармора. Чому цей момент завжди напрямлений проти поля, незалежно від
+початкового напрямку обертання електрона?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">19.</span> Виведіть формулу Ланжевена для діамагнітної сприйнятливості \(\chi _m^{\text {діа}} = -nZe^2\langle r^2\rangle /(6m_ec^2)\). Чому діамагнетизм — універсальний ефект, присутній в атомах
+будь-якої речовини, і чому він не залежить від температури?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">20.</span> Виведіть закон Кюрі для парамагнітної сприйнятливості \(\chi _m^{\text {пара}} = C/T\), використовуючи розподіл Больцмана для орієнтації власних магнітних моментів атомів. Чому парамагнітний
+внесок, коли він є, зазвичай на порядки перевищує діамагнітний?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">21.</span> У чому полягає гіпотеза Вейса про молекулярне поле \(\Hfield _{\text {мол}} = \lambda \vect J\)? Виведіть закон Кюрі–Вейса \(\chi _m = C/(T-T_C)\) і поясніть, чому при \(T\to T_C^+\)
+парамагнітний стан втрачає стійкість.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">22.</span> Чому справжньою причиною феромагнітного впорядкування є обмінна, а не пряма магнітна взаємодія диполів? Як принцип Паулі пояснює залежність енергії електронів від взаємної орієнтації їхніх спінів?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">23.</span> Чим відрізняються феро-, антиферо- та феримагнетики за характером обмінної взаємодії між сусідніми моментами?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">24.</span> Опишіть петлю гістерезису феромагнетика: що таке намагніченість насичення \(J_s\), залишкова намагніченість \(J_r\) та коерцитивна сила \(H_c\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">25.</span> Яким чином площа петлі гістерезису пов’язана з енергетичними втратами при перемагнічуванні? Чим магнітом’які матеріали відрізняються від магнітотвердих і де застосовується кожен з цих класів?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">26.</span> Опишіть загальну логічну схему побудови теорії поля в речовині — діелектриків і магнетиків: як вона проходить від густини мікроскопічних джерел до допоміжного вектора й лінійного співвідношення в
+обох випадках?
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>

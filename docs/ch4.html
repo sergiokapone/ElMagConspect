@@ -1,0 +1,4790 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Електричне поле у провідниках</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-236"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span><span class="toctitle">&#x2003;Електричні заряди та їх взаємодія</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span><span class="toctitle">&#x2003;Сили (взаємодії) в природі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span><span class="toctitle">&#x2003;Електричний заряд</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-13" class="tocsection" >
+<span class="sectionnumber">1.3</span><span class="toctitle">&#x2003;Як заряджають тіла?</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-18" class="tocsection" >
+<span class="sectionnumber">1.4</span><span class="toctitle">&#x2003;Закон Кулона</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-27" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocchapter" >
+<span class="sectionnumber">2</span><span class="toctitle">&#x2003;Постійне електричне поле у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.1</span><span class="toctitle">&#x2003;Електромагнітне поле</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-35" class="tocsection" >
+<span class="sectionnumber">2.2</span><span class="toctitle">&#x2003;Напруженість поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-50" class="tocsection" >
+<span class="sectionnumber">2.3</span><span class="toctitle">&#x2003;Силові лінії та математичне поняття поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-66" class="tocsection" >
+<span class="sectionnumber">2.4</span><span class="toctitle">&#x2003;Теорема Гаусса</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-100" class="tocsection" >
+<span class="sectionnumber">2.5</span><span class="toctitle">&#x2003;Потенціальність електростатичного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-115" class="tocsection" >
+<span class="sectionnumber">2.6</span><span class="toctitle">&#x2003;Циркуляція вектора \(\symbf {E}\)</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+<span class="sectionnumber">2.7</span><span class="toctitle">&#x2003;Граничні умови</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-142" class="tocsection" >
+<span class="sectionnumber">2.8</span><span class="toctitle">&#x2003;Рівняння Пуассона та Лапласа</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-147" class="tocsection" >
+<span class="sectionnumber">2.9</span><span class="toctitle">&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-152" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-153" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-166" class="tocchapter" >
+<span class="sectionnumber">3</span><span class="toctitle">&#x2003;Електричне поле статичної системи зарядів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-167" class="tocsection" >
+<span class="sectionnumber">3.1</span><span class="toctitle">&#x2003;Дипольний момент системи зарядів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-171" class="tocsection" >
+<span class="sectionnumber">3.2</span><span class="toctitle">&#x2003;Потенціал точкового диполя</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-175" class="tocsection" >
+<span class="sectionnumber">3.3</span><span class="toctitle">&#x2003;Поле точкового диполя</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-181" class="tocsection" >
+<span class="sectionnumber">3.4</span><span class="toctitle">&#x2003;Потенціал системи зарядів на далеких відстанях</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-198" class="tocsection" >
+<span class="sectionnumber">3.5</span><span class="toctitle">&#x2003;Диполь в електричному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-216" class="tocsection" >
+<span class="sectionnumber">3.6</span><span class="toctitle">&#x2003;Енергія довільної системи зарядів у зовнішньому полі*</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-217" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-220" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-238" class="tocchapter" >
+<span class="sectionnumber">4</span><span class="toctitle">&#x2003;Електричне поле у провідниках</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-239" class="tocsection" >
+<span class="sectionnumber">4.1</span><span class="toctitle">&#x2003;Структура провідників</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-243" class="tocsection" >
+<span class="sectionnumber">4.2</span><span class="toctitle">&#x2003;Провідник у полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-268" class="tocsection" >
+<span class="sectionnumber">4.3</span><span class="toctitle">&#x2003;Електричне поле біля вістря</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-277" class="tocsection" >
+<span class="sectionnumber">4.4</span><span class="toctitle">&#x2003;Єдиність розв’язку електростатичної задачі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-287" class="tocsection" >
+<span class="sectionnumber">4.5</span><span class="toctitle">&#x2003;Металева куля в однорідному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-299" class="tocsection" >
+<span class="sectionnumber">4.6</span><span class="toctitle">&#x2003;Сили, що діють на поверхню провідника в полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-303" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-304" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-317" class="tocchapter" >
+<span class="sectionnumber">5</span><span class="toctitle">&#x2003;Основи електростатики діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-318" class="tocsection" >
+<span class="sectionnumber">5.1</span><span class="toctitle">&#x2003;Основні поняття</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-320" class="tocsection" >
+<span class="sectionnumber">5.2</span><span class="toctitle">&#x2003;Структура діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-357" class="tocsection" >
+<span class="sectionnumber">5.3</span><span class="toctitle">&#x2003;Поляризація діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-384" class="tocsection" >
+<span class="sectionnumber">5.4</span><span class="toctitle">&#x2003;Вектор поляризації</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-392" class="tocsection" >
+<span class="sectionnumber">5.5</span><span class="toctitle">&#x2003;Вектор електричної індукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-407" class="tocsection" >
+<span class="sectionnumber">5.6</span><span class="toctitle">&#x2003;Граничні умови в&nbsp;присутності діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-420" class="tocsection" >
+<span class="sectionnumber">5.7</span><span class="toctitle">&#x2003;Мікроскопічна теорія діелектричної проникності</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-427" class="tocsection" >
+<span class="sectionnumber">5.8</span><span class="toctitle">&#x2003;Типи діелектриків та їх застосування</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-450" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-451" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-466" class="tocchapter" >
+<span class="sectionnumber">6</span><span class="toctitle">&#x2003;Енергія електричного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-467" class="tocsection" >
+<span class="sectionnumber">6.1</span><span class="toctitle">&#x2003;Електрична ємність</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-488" class="tocsection" >
+<span class="sectionnumber">6.2</span><span class="toctitle">&#x2003;Енергія електричного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-501" class="tocsection" >
+<span class="sectionnumber">6.3</span><span class="toctitle">&#x2003;Пондеромоторні сили</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-511" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-512" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-524" class="tocchapter" >
+<span class="sectionnumber">7</span><span class="toctitle">&#x2003;Постійний електричний струм</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-525" class="tocsection" >
+<span class="sectionnumber">7.1</span><span class="toctitle">&#x2003;Основні поняття</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-532" class="tocsection" >
+<span class="sectionnumber">7.2</span><span class="toctitle">&#x2003;Природа носіїв заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-537" class="tocsection" >
+<span class="sectionnumber">7.3</span><span class="toctitle">&#x2003;Закон збереження заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-544" class="tocsection" >
+<span class="sectionnumber">7.4</span><span class="toctitle">&#x2003;Закон Ома</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-575" class="tocsection" >
+<span class="sectionnumber">7.5</span><span class="toctitle">&#x2003;Закон Джоуля–Ленца</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-576" class="tocsection" >
+<span class="sectionnumber">7.6</span><span class="toctitle">&#x2003;Струми в необмежених середовищах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-583" class="tocsection" >
+<span class="sectionnumber">7.7</span><span class="toctitle">&#x2003;Перехідні процеси в колі з конденсатором</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-596" class="tocsection" >
+<span class="sectionnumber">7.8</span><span class="toctitle">&#x2003;Максвеллівський час релаксації заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-598" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-611" class="tocchapter" >
+<span class="sectionnumber">8</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;різних середовищах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-613" class="tocsection" >
+<span class="sectionnumber">8.1</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;металах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-637" class="tocsection" >
+<span class="sectionnumber">8.2</span><span class="toctitle">&#x2003;Електричний струм в&nbsp;електролітах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-643" class="tocsection" >
+<span class="sectionnumber">8.3</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;газах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-654" class="tocsection" >
+<span class="sectionnumber">8.4</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-668" class="tocsection" >
+<span class="sectionnumber">8.5</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;напівпровідниках</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-689" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-691" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-723" class="tocchapter" >
+<span class="sectionnumber">9</span><span class="toctitle">&#x2003;Магнітне поле у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-724" class="tocsection" >
+<span class="sectionnumber">9.1</span><span class="toctitle">&#x2003;Означення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-728" class="tocsection" >
+<span class="sectionnumber">9.2</span><span class="toctitle">&#x2003;Характеристика магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-729" class="tocsection" >
+<span class="sectionnumber">9.3</span><span class="toctitle">&#x2003;Дія магнітного поля на заряджені частинки та струми</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-750" class="tocsection" >
+<span class="sectionnumber">9.4</span><span class="toctitle">&#x2003;Закон Біо–Савара–Лапласа</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-763" class="tocsection" >
+<span class="sectionnumber">9.5</span><span class="toctitle">&#x2003;Вектор-потенціал магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-768" class="tocsection" >
+<span class="sectionnumber">9.6</span><span class="toctitle">&#x2003;Теореми магнітостатики</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-790" class="tocsection" >
+<span class="sectionnumber">9.7</span><span class="toctitle">&#x2003;Магнітний момент</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-807" class="tocsection" >
+<span class="sectionnumber">9.8</span><span class="toctitle">&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-817" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-818" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-826" class="tocchapter" >
+<span class="sectionnumber">10</span><span class="toctitle">&#x2003;Магнітне поле в речовині</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-835" class="tocsection" >
+<span class="sectionnumber">10.1</span><span class="toctitle">&#x2003;Основні поняття</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-838" class="tocsection" >
+<span class="sectionnumber">10.2</span><span class="toctitle">&#x2003;Намагнічування</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-850" class="tocsection" >
+<span class="sectionnumber">10.3</span><span class="toctitle">&#x2003;Теорема про циркуляцію в речовині</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-856" class="tocsection" >
+<span class="sectionnumber">10.4</span><span class="toctitle">&#x2003;Магнітна сприйнятливість речовини</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-892" class="tocsection" >
+<span class="sectionnumber">10.5</span><span class="toctitle">&#x2003;Граничні умови</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-907" class="tocsection" >
+<span class="sectionnumber">10.6</span><span class="toctitle">&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-925" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-926" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-935" class="tocchapter" >
+<span class="sectionnumber">11</span><span class="toctitle">&#x2003;Рух заряджених частинок</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-936" class="tocsection" >
+<span class="sectionnumber">11.1</span><span class="toctitle">&#x2003;Рух частинок в&nbsp;однорідних полях</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-954" class="tocsection" >
+<span class="sectionnumber">11.2</span><span class="toctitle">&#x2003;Мас-спектрометр і&nbsp;циклотрон</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-963" class="tocsection" >
+<span class="sectionnumber">11.3</span><span class="toctitle">&#x2003;Застосування схрещених полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-971" class="tocsection" >
+<span class="sectionnumber">11.4</span><span class="toctitle">&#x2003;Методи вимірювання питомого заряду електрона</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-981" class="tocsection" >
+<span class="sectionnumber">11.5</span><span class="toctitle">&#x2003;Досліди Міллікена</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-985" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-986" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1003" class="tocchapter" >
+<span class="sectionnumber">12</span><span class="toctitle">&#x2003;Явище електромагнітної індукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1004" class="tocsection" >
+<span class="sectionnumber">12.1</span><span class="toctitle">&#x2003;Досліди Фарадея</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1010" class="tocsection" >
+<span class="sectionnumber">12.2</span><span class="toctitle">&#x2003;Закон електромагнітної індукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1019" class="tocsection" >
+<span class="sectionnumber">12.3</span><span class="toctitle">&#x2003;ЕРС руху: сила Лоренца в&nbsp;рухомому провіднику</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1030" class="tocsection" >
+<span class="sectionnumber">12.4</span><span class="toctitle">&#x2003;Куди йде робота</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1036" class="tocsection" >
+<span class="sectionnumber">12.5</span><span class="toctitle">&#x2003;Нерухомий контур: вихрове електричне поле</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1040" class="tocsection" >
+<span class="sectionnumber">12.6</span><span class="toctitle">&#x2003;Вихрове поле проти електростатичного: приклади</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1049" class="tocsection" >
+<span class="sectionnumber">12.7</span><span class="toctitle">&#x2003;Бетатрон</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1053" class="tocsection" >
+<span class="sectionnumber">12.8</span><span class="toctitle">&#x2003;Застосування: індукційний заряд і&nbsp;струми Фуко</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1058" class="tocsection" >
+<span class="sectionnumber">12.9</span><span class="toctitle">&#x2003;Явище самоіндукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1078" class="tocsection" >
+<span class="sectionnumber">12.10</span><span class="toctitle">&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1098" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1099" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1118" class="tocchapter" >
+<span class="sectionnumber">13</span><span class="toctitle">&#x2003;Енергія магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1119" class="tocsection" >
+<span class="sectionnumber">13.1</span><span class="toctitle">&#x2003;Енергія магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1126" class="tocsection" >
+<span class="sectionnumber">13.2</span><span class="toctitle">&#x2003;Взаємна індукція</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1142" class="tocsection" >
+<span class="sectionnumber">13.3</span><span class="toctitle">&#x2003;Енергія системи зв’язаних контурів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1145" class="tocsection" >
+<span class="sectionnumber">13.4</span><span class="toctitle">&#x2003;Принцип роботи трансформаторів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1149" class="tocsection" >
+<span class="sectionnumber">13.5</span><span class="toctitle">&#x2003;Магнітна енергія струмів як функція стану</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1151" class="tocsection" >
+<span class="sectionnumber">13.6</span><span class="toctitle">&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1157" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1158" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1170" class="tocchapter" >
+<span class="sectionnumber">14</span><span class="toctitle">&#x2003;Система рівнянь Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1175" class="tocsection" >
+<span class="sectionnumber">14.1</span><span class="toctitle">&#x2003;Струм зміщення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1196" class="tocsection" >
+<span class="sectionnumber">14.2</span><span class="toctitle">&#x2003;Система рівнянь Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1213" class="tocsection" >
+<span class="sectionnumber">14.3</span><span class="toctitle">&#x2003;Про рівняння Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1215" class="tocsection" >
+<span class="sectionnumber">14.4</span><span class="toctitle">&#x2003;Енергія електромагнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1229" class="tocsection" >
+<span class="sectionnumber">14.5</span><span class="toctitle">&#x2003;Скін-ефект</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1251" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1252" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1260" class="tocchapter" >
+<span class="sectionnumber">15</span><span class="toctitle">&#x2003;Відносність електричного і&nbsp;магнітного полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1262" class="tocsection" >
+<span class="sectionnumber">15.1</span><span class="toctitle">&#x2003;Нерелятивістські закони перетворення полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1265" class="tocsection" >
+<span class="sectionnumber">15.2</span><span class="toctitle">&#x2003;Релятивістські закони перетворення полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1271" class="tocsection" >
+<span class="sectionnumber">15.3</span><span class="toctitle">&#x2003;Тензор електромагнітного поля*</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1273" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1274" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1283" class="tocchapter" >
+<span class="sectionnumber">16</span><span class="toctitle">&#x2003;Електромагнітні хвилі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1284" class="tocsection" >
+<span class="sectionnumber">16.1</span><span class="toctitle">&#x2003;Хвильове рівняння</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1300" class="tocsection" >
+<span class="sectionnumber">16.2</span><span class="toctitle">&#x2003;Електромагнітні хвилі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1305" class="tocsection" >
+<span class="sectionnumber">16.3</span><span class="toctitle">&#x2003;Енергія та вектор Пойнтінга для хвилі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1315" class="tocsection" >
+<span class="sectionnumber">16.4</span><span class="toctitle">&#x2003;Імпульс і&nbsp;момент імпульсу електромагнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1321" class="tocsection" >
+<span class="sectionnumber">16.5</span><span class="toctitle">&#x2003;Відбивання хвиль від межі двох діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1341" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1342" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1354" class="tocchapter" >
+<span class="sectionnumber">17</span><span class="toctitle">&#x2003;Випромінювання електромагнітних хвиль</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">17.1</span><span class="toctitle">&#x2003;Історична довідка: досліди Герца</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1358" class="tocsection" >
+<span class="sectionnumber">17.2</span><span class="toctitle">&#x2003;Елементарна модель випромінювання</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1371" class="tocsection" >
+<span class="sectionnumber">17.3</span><span class="toctitle">&#x2003;Дипольне випромінювання</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1389" class="tocsection" >
+<span class="sectionnumber">17.4</span><span class="toctitle">&#x2003;Потужність випромінювання осцилятора</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1394" class="tocsection" >
+<span class="sectionnumber">17.5</span><span class="toctitle">&#x2003;Випромінювання рухомого заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1406" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1407" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1417" class="tocchapter" >
+<span class="sectionnumber">18</span><span class="toctitle">&#x2003;Коливальні процеси в&nbsp;електричних колах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+<span class="sectionnumber">18.1</span><span class="toctitle">&#x2003;Квазістаціонарне наближення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+<span class="sectionnumber">18.2</span><span class="toctitle">&#x2003;Вільні коливання в&nbsp;коливальному контурі</span></a>
+</p>
+<p>
+<a href="ch18.html#autosec-1444" class="tocsection" >
+<span class="sectionnumber">18.3</span><span class="toctitle">&#x2003;Вимушені коливання під дією гармонічної ЕРС</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1458" class="tocsection" >
+<span class="sectionnumber">18.4</span><span class="toctitle">&#x2003;Змінний струм</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1486" class="tocsection" >
+<span class="sectionnumber">18.5</span><span class="toctitle">&#x2003;Трансформатор</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1490" class="tocsection" >
+<span class="sectionnumber">18.6</span><span class="toctitle">&#x2003;Частотні фільтри</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1506" class="tocsection" >
+<span class="sectionnumber">18.7</span><span class="toctitle">&#x2003;Трифазний струм</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1510" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1511" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1524" class="tocchapter" >
+<span class="sectionnumber">19</span><span class="toctitle">&#x2003;Довгі лінії. Телеграфні рівняння</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1525" class="tocsection" >
+<span class="sectionnumber">19.1</span><span class="toctitle">&#x2003;Від зосереджених елементів до розподілених</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1526" class="tocsection" >
+<span class="sectionnumber">19.2</span><span class="toctitle">&#x2003;Виведення телеграфних рівнянь</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1530" class="tocsection" >
+<span class="sectionnumber">19.3</span><span class="toctitle">&#x2003;Гармонічний режим. Хвильове рівняння</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1531" class="tocsection" >
+<span class="sectionnumber">19.4</span><span class="toctitle">&#x2003;Лінія без втрат</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1538" class="tocsection" >
+<span class="sectionnumber">19.5</span><span class="toctitle">&#x2003;Польова картина. Зв’язок з&nbsp;рівняннями Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1545" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1546" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1554" class="tocchapter" >
+<span class="sectionnumber">20</span><span class="toctitle">&#x2003;Хвилеводи</span></a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1555" class="tocsection" >
+<span class="sectionnumber">20.1</span><span class="toctitle">&#x2003;Від довгої лінії до хвилеводу</span></a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1556" class="tocsection" >
+<span class="sectionnumber">20.2</span><span class="toctitle">&#x2003;Прямокутний хвилевід</span></a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1569" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1572" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1579" class="tocchapter" >
+Відповіді</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1606" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1607" class="tocsection" >
+<span class="sectionnumber">А</span><span class="toctitle">&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</span></a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1612" class="tocsection" >
+<span class="sectionnumber">Б</span><span class="toctitle">&#x2003;Основні позначення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1615" class="tocsection" >
+<span class="sectionnumber">В</span><span class="toctitle">&#x2003;Основні формули векторного аналізу</span></a>
+</p>
+
+
+
+<p>
+<a href="ch23.html#autosec-1637" class="tocchapter" >
+Література</a>
+</p>
+
+
+
+<p>
+<a href="ch23.html#autosec-1638" class="tocsection" >
+Підручники та посібники</a>
+</p>
+
+
+
+<p>
+<a href="ch23.html#autosec-1639" class="tocsection" >
+Джерела фактів і результатів</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Електричне поле у провідниках">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\newcommand {\allowbreak }{}\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Електричне поле у провідниках ......
+-->
+<h3 id="autosec-238"><span class="sectionnumber">4&#x2003;</span>Електричне поле у провідниках</h3>
+<a id="main-html-autopage-238"></a>
+<a id="main-html-autofile-4"></a>
+
+<a id="FieldInMetalls"></a>
+
+<p>
+<a id="LWR-ht-FieldInMetalls"></a>
+</p>
+<div class="epigraph" role="note">
+
+
+<div class="qitem">
+
+<p>
+Я зайшов у куб і жив у ньому, і, користуючись запаленими свічками, електрометрами та всіма іншими засобами виявлення електричних станів, не зміг виявити жодного впливу на них&#x2026; хоча весь цей час зовнішня поверхня куба була
+сильно заряджена, і великі іскри та китиці зривалися з усіх її частин.
+</p>
+
+
+<div class="epigraphsource">
+
+<p>
+Майкл Фарадей, «Експериментальні дослідження з електрики», §&#x202f;1174
+</p>
+</div>
+
+</div>
+
+</div>
+<!--
+...... section Структура провідників ......
+-->
+<h4 id="autosec-239"><span class="sectionnumber">&#xA7;&#x202F;4.1&#x2003;</span>Структура провідників</h4>
+<a id="main-html-autopage-239"></a>
+
+
+<p>
+<a id="LWR-ht-conductor-structure"></a>
+</p>
+
+<p>
+Провідниками називають речовини, в структурі яких є вільні заряди (електрони в металах, наприклад), які можуть переміщуватися під дією як завгодно слабких полів (рис.&nbsp;<a href="ch4.html#tikz:metall_structure">4.1</a>).
+</p>
+<figure id="autoid-89" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-50"
+    class="lateximagesource"
+><!--
+            −               −               −
+
+    +           +       +       +   −
+                                        +           +
+−                       −                               −
+        −       −                       −
+
+    +           +       +       +       +       −   +
+                    −               −                   −
+    −
+                            −
+
+    +       −
+                +       +       +   −
+                                        +   −
+                                                    +
+--><img
+   src="main-html-images\image-50.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.1. Модель будови металу (електронний газ у кристалічній решітці)
+
+</div>
+
+<a id="tikz:metall_structure"></a>
+
+</div>
+
+</figure>
+
+<p>
+Електронні оболонки атомів, що складають кристалічну решітку металів, сильно перекриваються, внаслідок чого не можна вказати, біля якого іона локалізовано той чи інший <em><span
+    class="textcolor"
+    style="color:#990000"
+>електрон валентної оболонки</span></em>, — вони легко перетікають від одного іона до іншого, і в цьому разі кажуть, що <em><span
+    class="textcolor"
+    style="color:#990000"
+>електрони колективізовані</span></em>. Іони — це ядра й електрони внутрішніх оболонок, які сильно локалізовані. Електрони, які делокалізовані, вільно переміщаються по кристалу. Саме вільні електрони відповідають за багато фізичних і,
+особливо, транспортних властивостей металів.
+</p>
+
+<p>
+Що вільні заряди в&nbsp;металі справді є і&nbsp;що це саме електрони, показали Р.&nbsp;Толмен і&nbsp;Т.&nbsp;Д.&nbsp;Стюарт (1916)&nbsp;<a id="main-html-autopage-242"></a>[<a
+href="ch23.html#LWR-ht-cite.0@Tolman1916">17</a>]. Ідея досліду проста до очевидності: котушку дроту розкручували й&nbsp;різко зупиняли. Вільні носії за інерцією продовжували рухатися відносно ґратки, як пасажири в&nbsp;автобусі, що
+гальмує, і&nbsp;гальванометр фіксував короткий імпульс струму. За його напрямком визначили знак носіїв (від’ємний), а&nbsp;за величиною&nbsp;— їхній питомий заряд, близький до \(e/m\) електрона. Так тонку мікроскопічну властивість
+металу виміряли макроскопічним поштовхом. Докладніше дослід розглянуто в&nbsp;розділі&nbsp;<a href="ch7.html#SteadyCurrent">7</a>.
+</p>
+<!--
+...... section Провідник у полі ......
+-->
+<h4 id="autosec-243"><span class="sectionnumber">&#xA7;&#x202F;4.2&#x2003;</span>Провідник у полі</h4>
+<a id="main-html-autopage-243"></a>
+
+
+<a id="sec:ConductorInField"></a>
+
+<p>
+<a id="LWR-ht-conductor-in-field"></a>
+</p>
+
+<p>
+Якщо провідник потрапляє в поле, електрони в ньому починають рухатися проти поля. На одній частині поверхні провідника виступає негативний заряд — ця поверхня стає збагаченою електронами. На протилежній частині поверхні електронів
+виявляється дещо менше, ніж потрібно для нейтралізації позитивного іонного заряду кристалічної решітки, і ця частина поверхні виявляється зарядженою позитивно. Позитивна і негативна частини поверхні створюють своє власне поле, за
+напрямком протилежне зовнішньому. Обидва поля — зовнішнє \(\Efield _\text {ex}\) і поле власних поверхневих зарядів провідника (\(\Efield _\text {in}\)) точно компенсують одне одного в усіх точках усередині провідника. Біля
+поверхні зовні лишається лише нормальна складова повного поля, \(E_n=4\pi \sigma \) (див. нижче і&nbsp;§&nbsp;<a href="ch2.html#sec:BC_vacuum">2.7</a>). Схема перерозподілу зарядів у провіднику, внесеному в зовнішнє електричне
+поле, показана на рис.&nbsp;<a href="ch4.html#pic:MetallInField">4.2</a>.
+</p>
+
+<p>
+Якби в якій-небудь ділянці провідника поля \(\Efield _\text {ex}\) і \(\Efield _\text {in}\) не компенсували одне одного, то в цій ділянці на електрони діяла б сила і йшов би струм. Відсутність струму означає повну компенсацію полів.
+</p>
+
+<figure id="autoid-90" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-245"></a>
+
+<p>
+<span
+    id="lateximage-main-html-51"
+    class="lateximagesource"
+><!--
+          −   +
+      −           +
+ −                     +
+−                      +
+−                     +
+  −               +
+      −       +
+--><img
+   src="main-html-images\image-51.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+(а) Перерозподіл зарядів до встановлення рівноваги
+
+</div>
+
+</div>
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-248"></a>
+
+<p>
+<span
+    id="lateximage-main-html-52"
+    class="lateximagesource"
+><!--
+              −   +
+          −           +
+      −                   +
+ −                             +
+−                              +
+−                             +
+  −                       +
+      −               +
+--><img
+   src="main-html-images\image-52.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+(б) Розподіл заряду після встановлення рівноваги
+
+</div>
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.2. Провідник в електричному полі
+
+</div>
+
+<a id="pic:MetallInField"></a>
+
+</div>
+
+</figure>
+
+<p>
+<em>У стаціонарному стані</em>, коли немає струмів, <em>в об’ємі провідника результуюче електричне поле</em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{0}\)</span>
+
+<!--
+
+
+                                                                                                                 𝐄=0                 (4.1)
+
+-->
+
+<p>
+
+\begin{equation}
+\Efield = 0
+\end{equation}
+
+</p>
+
+<p>
+Струм буде текти доти, доки заряди не розташуються так, щоб поле було відсутнє усюди в об’ємі провідника.
+</p>
+
+<p>
+З теореми Гаусса
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+<!--
+
+                                                                                                                  1
+                                                                                                        𝐄=0⇒𝜌=      div 𝐄 ⇒ 𝜌 = 0,
+                                                                                                                 4𝜋
+-->
+
+<p>
+
+\begin{equation*}
+\Efield = 0\ {\color {red}\Rightarrow }\ \rho = \frac 1{4\pi } \Div \Efield \ {\color {red}\Rightarrow }\ \rho = 0,
+\end{equation*}
+
+</p>
+
+<p>
+об’ємна густина зарядів у провіднику дорівнює нулю, <em>нескомпенсовані (надлишкові) заряди можуть розташовуватися тільки на поверхні</em>.
+</p>
+
+<p>
+Граничні умови
+</p>
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+
+<!--
+
+
+
+                                                                                                                𝐸𝑛 = 4𝜋𝜍,
+                                                                                                                 𝐸𝜏 = 0
+
+
+
+-->
+
+
+<p>
+
+\begin{align*}
+E_n &amp; = 4\pi \sigma , \\ E_{\tau } &amp; = 0
+\end{align*}
+показують, що <em>силові лінії підходять до поверхні провідника перпендикулярно</em> і&nbsp;закінчуються (або починаються) на поверхневих зарядах: усередині провідника поля немає.
+</p>
+
+<p>
+Звідси ще один важливий наслідок. Оскільки в&nbsp;металі \(\Efield = 0\), то вздовж будь-якого шляху всередині провідника \(d\phi = -\Efield \cdot d\vect r = 0\)&nbsp;<span class="textup">(<a
+href="ch2.html#eq:dphi">2.37</a>)</span>: потенціал в&nbsp;усьому об’ємі провідника однаковий і&nbsp;дорівнює потенціалу на його поверхні,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+<!--
+
+
+                                                                                                             𝜙𝑆 = 𝜙𝑉 = const,
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi _S = \phi _V = \const ,
+\end{equation*}
+
+</p>
+
+<p>
+тобто <em>поверхня провідника є еквіпотенціальною</em>. Це узгоджується з&nbsp;умовою \(E_\tau = 0\): поле, перпендикулярне до поверхні, не змінює потенціалу вздовж неї.
+</p>
+<!--
+...... subsection Поле в порожнині провідника ......
+-->
+<h5 id="autosec-252">Поле в порожнині провідника</h5>
+<a id="main-html-autopage-252"></a>
+
+
+<p>
+Сумарне поле зовнішніх зарядів і зарядів на поверхні провідника в товщі провідника дорівнює нулю. <em>Чи будуть з’являтись заряди на внутрішній поверхні провідника, в якому є порожнина?</em>
+</p>
+
+<figure id="autoid-91" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:top ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-254"></a>
+
+<p>
+<span
+    id="lateximage-main-html-53"
+    class="lateximagesource"
+><!--
+                    +       +
+
+
+
+
+            +
+                                    +
+                                            +
+
+
+
+
+        +
+
+
+
+
+                                            +
+         −                          −
+
+
+
+
+    +
+        −                           −
+        −                           −
+
+
+
+
+                                            +
+                    +
++
+        −                            −
+          −                          −
+
+
+
+
+                                            +
+              −                     −
++
+
+
+
+
+                                                +
+    +
+
+
+
+
+        +
+
+
+
+
+                                            +
+                +                       +
+                        +       +
+--><img
+   src="main-html-images\image-53.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.3. Заряд у порожнині<a id="tikz:charge_in_cavity"></a>
+
+</div>
+
+</div>
+<div class="minipage" style="vertical-align:top ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-257"></a>
+
+<p>
+<span
+    id="lateximage-main-html-54"
+    class="lateximagesource"
+><!--
+                    +       +
+
+
+
+
+            +
+                                    +
+                                            +
+
+
+
+
+        +
+
+
+
+
+                                            +
+    +
+        −                   ?       +
+
+
+
+
+                                            +
++
+        −                            +
+          −                          +
+
+
+
+
+                                            +
+              −                     +
++
+
+
+
+
+                                                +
+    +
+
+
+
+
+        +
+
+
+
+
+                                            +
+                +                       +
+                        +       +
+--><img
+   src="main-html-images\image-54.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.4. Чи будуть заряди на внутрішній поверхні провідника?<a id="tikz:charge_inside"></a>
+
+</div>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Нехай у&nbsp;<em>порожнині незарядженого провідника є заряд</em> \(q\) (рис.&nbsp;<a href="ch4.html#tikz:charge_in_cavity">4.3</a>). Проведемо замкнену поверхню в&nbsp;товщі металу навколо порожнини. На ній \(\Efield = 0\),
+тому за теоремою Гаусса повний заряд усередині неї дорівнює нулю: на внутрішній поверхні оболонки індукується заряд \(-q\). Оскільки оболонка в&nbsp;цілому нейтральна, на її зовнішній поверхні з’являється заряд \(+q\). Розподіл цього заряду
+по зовнішній поверхні визначається лише формою провідника й зовнішніми зарядами і&nbsp;не залежить від того, де саме в&nbsp;порожнині розташований заряд \(q\): поле цього заряду й&nbsp;індукованого заряду \(-q\) поза внутрішньою
+поверхнею взаємно компенсується.
+</p>
+
+<p>
+Якщо в&nbsp;<em>порожнині зарядженого провідника немає зарядів</em>, то чи будуть заряди на внутрішній поверхні оболонки (рис.&nbsp;<a href="ch4.html#tikz:charge_inside">4.4</a>)? За теоремою Гаусса (та сама поверхня
+в&nbsp;товщі металу) їхній <em>сумарний</em> заряд дорівнює нулю. Але, можливо, на одних ділянках внутрішньої поверхні є додатний заряд, а на інших&nbsp;— від’ємний? Тоді в&nbsp;порожнині була б силова лінія, що йде від «\(+\)» до
+«\(-\)». Замкнімо контур уздовж цієї лінії через порожнину й назад через метал: на першій ділянці \(\Efield \cdot d\vect {r} &gt; 0\), а в&nbsp;металі \(\Efield = 0\), тож \(\oint _L \Efield \cdot d\vect {r} &gt; 0\), що суперечить
+теоремі про циркуляцію. Отже, зарядів на внутрішній поверхні немає, і&nbsp;поля в&nbsp;порожнині теж немає.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Поле в&nbsp;порожнині замкненої провідної оболонки <em>не залежить</em> від зарядів зовні оболонки: зовнішні поля в&nbsp;порожнину не проникають. Навпаки, заряди в&nbsp;порожнині не впливають на <em>розподіл</em> заряду на
+зовнішній поверхні, але від них залежить <em>повний</em> заряд, що там з’являється. Якщо оболонку заземлити, цей заряд стікає в&nbsp;землю, і&nbsp;внутрішня та зовнішня частини простору стають електрично повністю незалежними.
+</p>
+</div>
+<!--
+...... subsection Електростатичний захист ......
+-->
+<h5 id="autosec-260">Електростатичний захист</h5>
+<a id="main-html-autopage-260"></a>
+
+
+<p>
+Електростатичний захист — це спосіб екранувати електричне поле, створюючи зону безпеки всередині замкненої металевої оболонки. На практиці для цього часто використовують металеві сітки: для статичних і&nbsp;повільно змінних полів сітка
+з&nbsp;комірками, малими порівняно з&nbsp;розмірами захищеної області, діє майже так само, як суцільна оболонка.
+</p>
+
+<figure id="autoid-92" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="FieldInMetalls/Pictures/FaradayCage.jpg" target="_blank" ><img
+   src="FieldInMetalls/Pictures/FaradayCage.jpg"
+   style="
+   width:325pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.5. Клітка Фарадея: людина всередині замкненої провідної сітки захищена від іскрових розрядів генератора Ван де Граафа навіть тоді, коли торкається її стінки: розряд стікає по зовнішньому каркасу, вся клітка має однаковий потенціал,
+а&nbsp;поля всередині немає.<a id="pic:man_in_faraday_cage"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Явище було відкрито Майклом Фарадеєм 1836 року (див. епіграф до розділу). Він звернув увагу, що зовнішнє електричне поле не може потрапити всередину металевої клітки. Електростатичний захист потрібен там, де необхідно екранувати
+електроприлади від зовнішніх електричних полів (наприклад, чутливі вимірювальні прилади, лабораторне обладнання, екрановані кабелі). Ці прилади поміщають у&nbsp;металевий корпус, який захищає їх від зовнішніх електричних перешкод
+(рис.&nbsp;<a href="ch4.html#pic:man_in_faraday_cage">4.5</a>). Для швидкозмінних полів екранування теж працює, якщо товщина стінок більша за так звану глибину скін-шару; про це йтиметься в&nbsp;розділах про змінні поля.
+</p>
+
+<p>
+Той самий ефект пояснює, чому <em>автомобіль і літак є відносно безпечним місцем під час грози</em>: металевий кузов чи фюзеляж діє як клітка Фарадея, і при ударі блискавки струм тече по зовнішній провідній обшивці, не проникаючи
+всередину салону, де електричне поле залишається практично нульовим. З цієї ж причини кабіни літаків, корпуси суден і навіть металізовані намети для чутливого обладнання захищають вміст від зовнішніх електромагнітних полів і розрядів.
+</p>
+<!--
+...... subsection Електростатичний генератор Ван де Граафа ......
+-->
+<h5 id="autosec-262">Електростатичний генератор Ван де Граафа</h5>
+<a id="main-html-autopage-262"></a>
+
+
+<p>
+Генератор Ван де Граафа — електростатичний генератор, в якому використовуються властивості циліндра Фарадея для створення високої напруги. Таким методом можна досягнути напруги до кількох мегавольт (рис.&nbsp;<a
+href="ch4.html#pic:VandeGraaf">4.6</a>).
+</p>
+
+<figure id="autoid-93" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="FieldInMetalls/Pictures/VandeGraaf.jpg" target="_blank" ><img
+   src="FieldInMetalls/Pictures/VandeGraaf.jpg"
+   style="
+   width:412pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.6. Генератор Ван де Граафа<a id="pic:VandeGraaf"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Простий генератор Ван де Граафа складається з діелектричної (шовкової або гумової) стрічки (\(4\) і \(5\) на малюнку), що обертається на роликах \(3\) і \(6\), причому верхній ролик діелектричний, а нижній металевий і з’єднаний із землею.
+Верхній ролик \(3\) разом із верхньою частиною стрічки розміщений усередині порожнистої металевої сфери \(1\). Два електроди \(2\) і \(7\) у формі щіток розташовані на невеликій відстані від стрічки зверху і знизу, причому електрод \(2\)
+з’єднаний з внутрішньою поверхнею сфери \(1\). Поблизу нижнього електрода повітря іонізується, утворюються позитивні іони, які під дією сили Кулона рухаються до заземленого ролика \(6\) й осідають на стрічці, завдяки чому частина стрічки,
+що рухається вгору, заряджається. Стрічка доставляє заряд усередину сфери \(1\), де його знімає щітка \(2\). Тут і&nbsp;полягає головна ідея: заряд самої сфери розташований на її зовнішній поверхні і&nbsp;всередині поля не створює, тому
+заряд переходить зі стрічки на сферу й одразу йде на її зовнішню поверхню, <em>хоч яким великим уже є потенціал сфери</em>. Таким чином на зовнішній поверхні сфери накопичується дедалі більший заряд. Можливість отримання високої
+напруги обмежена коронним розрядом, що виникає при іонізації повітря навколо сфери.
+</p>
+
+<p>
+Сучасні генератори Ван де Граафа замість стрічок використовують ланцюги, що складаються з металевих і пластикових ланок, що чергуються між собою.
+</p>
+<!--
+...... subsection Електрофорна машина (машина Вімсхерста) ......
+-->
+<h5 id="autosec-264">Електрофорна машина (машина Вімсхерста)</h5>
+<a id="main-html-autopage-264"></a>
+
+
+<p>
+Явище перерозподілу вільних зарядів у провіднику під дією зовнішнього поля (§&nbsp;<a href="ch4.html#sec:ConductorInField">4.2</a>) лежить в основі <em>електрофорної машини Вімсхерста</em> — індукційного генератора, який,
+обертаючись, сам нарощує заряд до високих напруг завдяки позитивному зворотному зв’язку, без потреби заряджати щось ззовні тертям (рис.&nbsp;<a href="ch4.html#pic:wimshurst">4.7</a>).
+</p>
+
+<p>
+Машина складається з двох дисків із діелектрика (скла чи ебоніту), закріплених на спільній осі, які обертаються в протилежних напрямках; на зовнішньому боці кожного диска симетрично наклеєні радіальні металеві сектори. Біля кожного диска
+розташований <em>нейтралізатор</em>&nbsp;— діагональний металевий стрижень зі щітками на обох кінцях, які торкаються двох діаметрально протилежних секторів цього диска; нейтралізатори двох дисків повернуті один відносно одного
+(зазвичай на кут близько \(90^\circ \)).
+</p>
+
+<p>
+Заряд наростає завдяки індукції. Нехай сектор диска&nbsp;А має невеликий випадковий додатний заряд. Коли він проходить навпроти сектора диска&nbsp;Б, що саме торкається щітки нейтралізатора&nbsp;Б, його поле притягує на цей сектор
+від’ємний заряд, а на з’єднаний із ним через нейтралізатор протилежний сектор&nbsp;— додатний. Обертаючись, заряджені сектори диска&nbsp;Б проходять навпроти секторів диска&nbsp;А біля нейтралізатора&nbsp;А й так само індукують на
+них заряди, вже більші за величиною. Так з кожним обертом заряд наростає лавиноподібно (позитивний зворотний зв’язок), аж поки не встановиться рівновага між його приростом і втратами (іонізацією повітря, коронним розрядом тощо).
+</p>
+
+<p>
+Накопичений заряд знімають гребінчасті збирачі біля країв дисків, розташовані там, де сектори проходять із найбільшим потенціалом, — і подають на дві лейденські банки (конденсатори, внизу на рис.&nbsp;<a
+href="ch4.html#pic:wimshurst">4.7</a>) та на вихідні електроди з кульками на кінцях довгих стрижнів. Коли різниця потенціалів між кульками перевищує напругу пробою повітряного проміжку, відбувається іскровий розряд.
+</p>
+
+<figure id="autoid-94" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-55"
+    class="lateximagesource"
+><!--
+Б   А
+--><img
+   src="main-html-images\image-55.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.7. Схема машини Вімсхерста. Диски А і&nbsp;Б обертаються назустріч один одному (привід&nbsp;— ручка й&nbsp;два паси, один із&nbsp;них перехрещений). Нейтралізатори зі щітками торкаються секторів, збирачі біля країв дисків
+знімають заряд і&nbsp;передають його лейденським банкам та кулькам розрядника.
+
+</div>
+
+<a id="pic:wimshurst"></a>
+
+</div>
+
+</figure>
+<!--
+...... section Електричне поле біля вістря ......
+-->
+<h4 id="autosec-268"><span class="sectionnumber">&#xA7;&#x202F;4.3&#x2003;</span>Електричне поле біля вістря</h4>
+<a id="main-html-autopage-268"></a>
+
+
+<p>
+<a id="LWR-ht-field-near-tip"></a>
+</p>
+
+<p>
+Електричні заряди завжди розподіляються тільки на поверхні провідника. Однак цей розподіл різний залежно від форми провідника: <em>напруженість електричного поля і поверхнева густина заряду мають найбільші значення біля загострення
+провідника</em>. Покажемо це на найпростішій моделі.
+</p>
+
+<figure id="autoid-95" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-56"
+    class="lateximagesource"
+><!--
+              𝜙1 = 𝜙2 = 𝜙
+
+
+                               𝑅2
+       𝑅1     дріт
+
+
+
+
+        𝜙
+𝜎1 =
+       4𝜋𝑅1                         𝜙
+                            𝜎2 =
+                                   4𝜋𝑅2
+--><img
+   src="main-html-images\image-56.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.8. Дві провідні кулі різних радіусів, з’єднані тонким дротом: обидві мають однаковий потенціал \(\phi \), проте на меншій кулі густина заряду й поле біля поверхні більші.<a id="tikz:two_spheres_wire"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Розглянемо дві провідні кулі різних радіусів \(R_1\) і \(R_2\) (\(R_1 &lt; R_2\)), з’єднані тонким провідним дротом і розташовані далеко одна від одної — настільки, що взаємним впливом їхніх полів одна на одну (а також зарядом самого дроту)
+можна знехтувати (рис.&nbsp;<a href="ch4.html#tikz:two_spheres_wire">4.8</a>). Тоді заряд кожної кулі можна вважати розподіленим по її поверхні рівномірно, як у відокремленої кулі.
+</p>
+
+<p>
+Оскільки кулі з’єднані провідником, увесь цей провідник (обидві кулі й дріт) є єдиним провідником у стані рівноваги, а отже, еквіпотенціальним:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+<!--
+
+
+                                                                                                                     𝜙1 = 𝜙2 = 𝜙.
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi _1 = \phi _2 = \phi .
+\end{equation*}
+
+</p>
+
+<p>
+Потенціал відокремленої зарядженої кулі радіуса \(R\) із зарядом \(Q\) дорівнює \(\phi = Q/R\). Виразимо звідси заряд через потенціал і радіус, а тоді знайдемо поверхневу густину заряду:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+<!--
+
+
+                                                                                                                               𝑄      𝜙
+                                                                                                           𝑄 = 𝜙𝑅,      𝜍=         =     .
+                                                                                                                              4𝜋𝑅2   4𝜋𝑅
+
+-->
+
+<p>
+
+\begin{equation*}
+Q = \phi R, \qquad \sigma = \frac {Q}{4\pi R^2} = \frac {\phi }{4\pi R}.
+\end{equation*}
+
+</p>
+
+<p>
+Отже, для обох куль
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+<!--
+
+                                                                                                                               𝜙
+                                                                                                            𝜍1 𝑅1 = 𝜍2 𝑅2 =      = const,
+                                                                                                                              4𝜋
+
+-->
+
+<p>
+
+\begin{equation*}
+\sigma _1 R_1 = \sigma _2 R_2 = \frac {\phi }{4\pi } = \const ,
+\end{equation*}
+
+</p>
+
+<p>
+тобто поверхнева густина заряду обернено пропорційна радіусу кулі: \(\sigma \sim 1/R\). Оскільки напруженість поля біля поверхні провідника \(E = 4\pi \sigma \), вона також обернено пропорційна радіусу:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+<!--
+
+                                                                                                                𝐸1  𝜍   𝑅
+                                                                                                                   = 1 = 2 > 1,
+                                                                                                                𝐸2  𝜍2  𝑅1
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {E_1}{E_2} = \frac {\sigma _1}{\sigma _2} = \frac {R_2}{R_1} &gt; 1,
+\end{equation*}
+
+</p>
+
+<p>
+тобто на кулі меншого радіуса і густина заряду, і поле сильніші.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Для провідника довільної форми це лише <em>якісне</em> правило: густина заряду зростає зі зменшенням локального радіуса кривизни поверхні, але точної пропорційності \(\sigma \sim 1/R\) немає. Тому біля вістря (малий радіус кривизни)
+густина заряду й&nbsp;поле різко зростають, а&nbsp;на плоских ділянках вони значно менші (рис.&nbsp;<a href="ch4.html#pic:tip">4.9</a>).
+</p>
+</div>
+
+<figure id="autoid-96" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="FieldInMetalls/Pictures/tip.png" target="_blank" ><img
+   src="FieldInMetalls/Pictures/tip.png"
+   style="
+   width:173pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.9. Поле біля вістря
+
+</div>
+
+<a id="pic:tip"></a>
+
+</div>
+
+</figure>
+<!--
+...... subsection Іонний вітер ......
+-->
+<h5 id="autosec-273">Іонний вітер</h5>
+<a id="main-html-autopage-273"></a>
+
+
+<p>
+«Іонний вітер» — явище, за якого рух повітря створюється за допомогою електричного поля.
+</p>
+
+<p>
+Наявні в повітрі в невеликій кількості вільні заряди (іони обох знаків і електрони) поблизу вістря розганяються сильним полем і, вдаряючись об молекули газу, іонізують їх. Створюється область просторового заряду, звідки іони того ж знака, що й
+вістря, виштовхуються полем, захоплюючи за собою молекули газу. Потік молекул та іонів, спрямований від вістря, створює враження «стікання зарядів». При цьому вістря розряджається (іонами протилежного знака, що потрапляють на нього) і
+одночасно отримує імпульс, спрямований проти стікання (рис.&nbsp;<a href="ch4.html#pic:IonWind">4.10</a>).
+</p>
+
+<figure id="autoid-97" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="FieldInMetalls/Pictures/ion_wind.jpg" target="_blank" ><img
+   src="FieldInMetalls/Pictures/ion_wind.jpg"
+   style="
+   width:412pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.10. Ілюстрація іонного вітру
+
+</div>
+
+<a id="pic:IonWind"></a>
+
+</div>
+
+</figure>
+
+<p>
+Отже, загострений провідник у сильному полі не просто «притягує» розряд — він активно <em>змінює</em> повітря навколо себе: іонізує його й жене іони разом із молекулами газу від вістря. Це явище саме собою цікаве, але воно має й цілком
+практичне застосування: якщо підняти загострений заземлений металевий стрижень над будівлею, ми отримаємо пристрій, відомий під назвою <em>громовідвід</em>.
+</p>
+<!--
+...... subsection Громовідвід (блискавковідвід) ......
+-->
+<h5 id="autosec-275">Громовідвід (блискавковідвід)</h5>
+<a id="main-html-autopage-275"></a>
+
+
+<p>
+Концентрація поля біля загострень і пов’язаний з нею іонний вітер (див. попередній підрозділ) лежать в основі <em>громовідводу</em>, винайденого Б.&nbsp;Франкліном 1752 року. Пристрій складається з металевого стрижня, піднятого над
+найвищою точкою будівлі, товстого провідника (<em>струмовідводу</em>), що з’єднує стрижень із землею вздовж стіни споруди, і заземлювача — металевого електрода, закопаного в ґрунт (рис.&nbsp;<a
+href="ch4.html#pic:lightning_rod">4.11</a>).
+</p>
+
+<figure id="autoid-98" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="FieldInMetalls/Pictures/lightning_rod.jpg" target="_blank" ><img
+   src="FieldInMetalls/Pictures/lightning_rod.jpg"
+   style="
+   width:217pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.11. Громовідвід: стрижень на даху будівлі, струмовідвід уздовж стіни та заземлювач.
+
+</div>
+
+<a id="pic:lightning_rod"></a>
+
+</div>
+
+</figure>
+
+<p>
+Громовідвід захищає будівлю двома способами. Перший — <em>послаблення заряду хмари заздалегідь</em>. Біля вістря стрижня поле грозової хмари стає набагато сильнішим, ніж навколо, і повітря починає іонізуватися — виникає той самий
+іонний вітер, який ми щойно розглянули. Частина заряду хмари над будівлею поступово нейтралізується, і поле не встигає (або майже не встигає) досягти тієї величини, за якої повітря пробивається і виникає блискавка над самою спорудою.
+</p>
+
+<p>
+Другий — <em>перехоплення розряду</em>. Якщо блискавка все ж починає розвиватися, то найімовірніше вона «вибере» саме вістря стрижня, бо там поле найсильніше. Від вістря назустріч розряду піднімається зустрічний канал іонізованого
+повітря; з’єднавшись, вони утворюють шлях блискавки, який веде до громовідводу, а не до будівлі. Далі струм по струмовідводу й заземлювачу йде прямо в землю, і конструкція та все, що в ній, не нагріваються й не займаються.
+</p>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> Історично Франклін вважав головним саме перший механізм — поступове «розряджання» хмари&nbsp;<a id="main-html-autopage-276"></a>[<a href="ch23.html#LWR-ht-cite.0@Krider2006">18</a>]. Сучасні
+дослідження&nbsp;[<a href="ch23.html#LWR-ht-cite.0@UmanRakov2002">19</a>] показують, що на практиці основний захист дає саме <em>перехоплення розряду</em>: внесок превентивного ефекту в реальне зниження ймовірності удару
+блискавки значно менший, ніж думали раніше, і це досі є предметом наукової дискусії.
+</p>
+</div>
+
+<p>
+Область простору навколо громовідводу, куди практично не влучає блискавка (оскільки розряд «обирає» ближчий і сильніший осередок поля — сам стрижень), називають <em>зоною захисту</em>; її розміри й форма залежать від висоти стрижня і
+використовуються під час проєктування блискавкозахисту будівель.
+</p>
+<!--
+...... section Єдиність розв'язку електростатичної задачі ......
+-->
+<h4 id="autosec-277"><span class="sectionnumber">&#xA7;&#x202F;4.4&#x2003;</span>Єдиність розв’язку електростатичної задачі</h4>
+<a id="main-html-autopage-277"></a>
+
+
+<p>
+<a id="LWR-ht-uniqueness-theorem"></a>
+</p>
+
+<p>
+Задача електростатики зводиться до <em>знаходження розв’язку</em> рівняння Пуассона&nbsp;<span class="textup">(<a href="ch2.html#eq:Puasson">2.45</a>)</span> (або Лапласа <span class="textup">(<a
+href="ch2.html#eq:Laplase">2.46</a>)</span>). Нагадаємо (§&nbsp;<a href="ch2.html#sec:Uniqueness">2.8</a>), що за <em>теоремою єдиності</em> розв’язок, який задовольняє рівняння й&nbsp;граничні умови, єдиний. Тому розв’язок
+задачі можна <em>вгадати</em>: якщо вгадана функція в&nbsp;деякій області задовольняє рівняння Лапласа (або Пуассона) і&nbsp;<em>умови на границі області</em>, то вона і&nbsp;є правильним розв’язком.
+</p>
+
+<p>
+Для задач із провідниками граничні умови мають простий вигляд: на поверхні кожного провідника потенціал сталий, і&nbsp;задано <em>або</em> сам цей потенціал (зокрема, \(\phi = 0\) для заземленого провідника), <em>або</em> повний
+заряд ізольованого провідника. В&nbsp;обох випадках розв’язок єдиний.
+</p>
+
+
+<div class="cb-example">
+
+<p>
+<b>Доведення через тотожність Гріна.</b> Це доведення доповнює наведене в&nbsp;§&nbsp;<a href="ch2.html#sec:Uniqueness">2.8</a> і&nbsp;придатне як для заданого на межі потенціалу, так і&nbsp;для заданої нормальної складової
+поля.
+</p>
+
+<p>
+Нехай \(\phi _1\) і \(\phi _2\) — два розв’язки рівняння Пуассона з однією й тією ж густиною заряду \(\rho \) в об’ємі \(V\), що задовольняють однакові умови на межі \(S\) цього об’єму. Розглянемо їхню різницю \(\psi = \phi _1 - \phi
+_2\). Вона задовольняє рівняння Лапласа \(\nabla ^2\psi = 0\) в \(V\), а на \(S\) або \(\psi = 0\) (задано потенціал), або \(\partial \psi /\partial n = 0\) (задано \(E_n\)).
+</p>
+
+<p>
+Скориставшись першою тотожністю Гріна&nbsp;<span class="textup">(<a href="ch22.html#Grin1">В.40</a>)</span> (теоремою про дивергенцію, застосованою до \(\psi \Grad \psi \)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+<!--
+
+                                                                                                 ˆ                    ˛                     ˆ
+                                                                                                     (grad 𝜓)2 𝑑𝑉 =       𝜓 grad 𝜓 ⋅ 𝑑𝐒 −       𝜓 ∇2 𝜓 𝑑𝑉 ,
+                                                                                                 𝑉                    𝑆                     𝑉
+
+-->
+
+<p>
+
+\begin{equation*}
+\int \limits _V (\Grad \psi )^2\, dV = \oint \limits _S \psi \,\Grad \psi \cdot d\vect {S} - \int \limits _V \psi \, \nabla ^2\psi \, dV,
+\end{equation*}
+
+</p>
+
+<p>
+бачимо, що обидва доданки праворуч зникають: другий — бо \(\nabla ^2\psi = 0\) в \(V\), перший — бо на \(S\) дорівнює нулю \(\psi \) або \(\Grad \psi \cdot d\vect {S} = (\partial \psi /\partial n)\,dS\). Отже,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+<!--
+
+                                                                                                                ˆ
+                                                                                                                    (grad 𝜓)2 𝑑𝑉 = 0.
+                                                                                                                𝑉
+
+-->
+
+<p>
+
+\begin{equation*}
+\int \limits _V (\Grad \psi )^2\, dV = 0.
+\end{equation*}
+
+</p>
+
+<p>
+Підінтегральна функція невід’ємна, тому рівність нулю інтеграла можлива лише за умови \(\Grad \psi = 0\) в усьому об’ємі \(V\), тобто \(\psi = \const \): поля \(\Efield _1\) і&nbsp;\(\Efield _2\) збігаються. Якщо на межі задано потенціал,
+то \(\psi = 0\) на \(S\), і&nbsp;ця стала дорівнює нулю: \(\phi _1 \equiv \phi _2\). Розв’язок єдиний.
+</p>
+</div>
+<!--
+...... subsection Метод електричних зображень ......
+-->
+<h5 id="autosec-278">Метод електричних зображень</h5>
+<a id="main-html-autopage-278"></a>
+
+
+<p>
+Метод <em><span
+    class="textcolor"
+    style="color:#990000"
+>ґрунтується на теоремі єдиності</span></em> і <em>полягає у вгадуванні конфігурації зарядів</em>, у якій поле в цікавій для нас частині простору було б тим же самим, що й у розглядуваній задачі.
+</p>
+
+<p>
+Розглянемо ідею цього методу на прикладі, коли точковий заряд \(q\) знаходиться біля нескінченної заземленої провідної площини (рис.&nbsp;<a href="ch4.html#tikz:charge_near_plane">4.12</a>).
+</p>
+
+<figure id="autoid-99" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="FieldInMetalls/Pictures/charge_near_plane.svg" target="_blank" ><img
+   src="FieldInMetalls/Pictures/charge_near_plane.svg"
+   style="
+   width:171pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.12. Точковий заряд \(q\) поблизу нескінченної заземленої провідної площини.<a id="tikz:charge_near_plane"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Як знайти поле у верхній частині простору? Як знайти розподіл заряду на площині?
+</p>
+
+<p>
+Можна вгадати таку конфігурацію зарядів, у якої є еквіпотенціальна поверхня з&nbsp;\(\phi = 0\), що збігається з&nbsp;площиною.
+</p>
+
+<p>
+Для обчислення поля достатньо ввести <em>фіктивний заряд-зображення \(q&apos; = -q\)</em>, помістивши його по інший бік площини на такій самій відстані від неї, що й заряд \(q\). Дійсно, для будь-якої точки на самій площині відстані до
+заряду \(q\) і до заряду-зображення \(q&apos;\) однакові (позначимо цю спільну відстань \(r\)) — через дзеркальну симетрію їхнього розташування відносно площини. Тому внески зарядів у потенціал скорочуються:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+<!--
+
+
+                                                                                                                  𝑞   𝑞′  𝑞 𝑞
+                                                                                                             𝜙=     +    = − = 0,
+                                                                                                                  𝑟   𝑟   𝑟 𝑟
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi = \frac {q}{r} + \frac {q&apos;}{r} = \frac {q}{r} - \frac {q}{r} = 0,
+\end{equation*}
+
+</p>
+
+<p>
+і площина справді виявляється еквіпотенціальною поверхнею з \(\phi = 0\) — саме такою, якою має бути заземлена провідна площина.
+</p>
+
+<p>
+Фіктивний заряд \(q&apos;\) створює у верхньому півпросторі точно таке саме поле, як і індуковані заряди на площині (див. рис.&nbsp;<a href="ch4.html#pic:image_method">4.13</a>). Зокрема, якщо заряд \(q\) перебуває на відстані \(d\) від
+площини, то він притягується до неї з&nbsp;силою, що дорівнює силі притягання до заряду-зображення: \(F = q^2/(2d)^2\).
+</p>
+
+
+<div class="cb-example">
+
+<p>
+<b>Робота відриву заряду від провідника.</b> Яку роботу треба виконати, щоб віддалити заряд \(q\) від заземленої провідної площини з&nbsp;відстані \(d\) на нескінченність? На відстані \(x\) від площини на заряд діє сила притягання до
+зображення \(q^2/(2x)^2\), тож
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+<!--
+
+                                                                                                                    ˆ∞
+                                                                                                                          𝑞2       𝑞2
+                                                                                                               𝐴=           2
+                                                                                                                              𝑑𝑥 =    .
+                                                                                                                         4𝑥        4𝑑
+                                                                                                                    𝑑
+
+-->
+
+<p>
+
+\begin{equation*}
+A = \int \limits _d^\infty \frac {q^2}{4x^2}\,dx = \frac {q^2}{4d}.
+\end{equation*}
+
+</p>
+
+<p>
+Зверніть увагу: це <em>вдвічі менше</em>, ніж енергія взаємодії двох реальних зарядів \(q\) і&nbsp;\(-q\) на відстані \(2d\), \(q^2/2d\). Причина в&nbsp;тому, що зображення не нерухоме: коли заряд зміщується на \(dx\), відстань до зображення
+зростає на \(2\,dx\), але сила діє лише на реальний заряд&nbsp;— над фіктивним зображенням роботи ніхто не виконує. Тому енергію заряду біля провідника не можна брати з&nbsp;формули для пари зарядів.
+</p>
+
+<p>
+Для електрона, що вийшов із металу на відстань \(d\sim 1\)&nbsp;Å, оцінка дає \(A = e^2/4d\approx (4{,}8\cdot 10^{-10})^2/(4\cdot 10^{-8})\approx 6\cdot 10^{-12}\)&nbsp;ерг&nbsp;\(\approx 4\)&nbsp;еВ. Це величина того самого
+порядку, що й&nbsp;<em>робота виходу</em> електронів з&nbsp;металів (4–5&nbsp;еВ): сила зображення&nbsp;— одна з&nbsp;причин, чому електрони не залишають метал самі собою (розділ&nbsp;<a href="ch8.html#CurrentsInMedia">8</a>).
+</p>
+</div>
+
+
+<div class="cb-attention">
+
+<p>
+Заряд-зображення відтворює правильне поле <em>лише в&nbsp;тій половині простору, де знаходиться реальний заряд</em>. Усередині провідника поле дорівнює нулю, а&nbsp;«поле зображення» там&nbsp;— математична фікція без фізичного
+змісту.
+</p>
+</div>
+
+<p>
+Ідея заряду-зображення лежить в основі опису взаємодії зонда з провідною поверхнею в <em>електростатичній силовій мікроскопії</em>: заряджений металевий зонд-вістря, піднесений близько до провідного зразка, індукує на поверхні
+заряд-зображення, і&nbsp;сила його притягання до поверхні (яку можна оцінити саме методом зображень) використовується для побудови зображення поверхні з нанометровою роздільною здатністю.
+</p>
+
+<figure id="autoid-100" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:top ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-281"></a>
+
+<p>
+
+<a href="FieldInMetalls/Pictures/two_charges.svg" target="_blank" ><img
+   src="FieldInMetalls/Pictures/two_charges.svg"
+   style="
+   width:171pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+(а) Конфігурація поля двох різнойменних зарядів.
+
+</div>
+
+</div>
+<div class="minipage" style="vertical-align:top ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-282"></a>
+
+<p>
+
+<a href="FieldInMetalls/Pictures/charge_image.svg" target="_blank" ><img
+   src="FieldInMetalls/Pictures/charge_image.svg"
+   style="
+   width:171pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+(б) Заряд над площиною та його зображення.
+
+</div>
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.13. Над площиною картини поля на обох рисунках однакові.
+
+</div>
+
+<a id="pic:image_method"></a>
+
+</div>
+
+</figure>
+<!--
+...... subsection Заряд поблизу сферичної поверхні ......
+-->
+<h5 id="autosec-283">Заряд поблизу сферичної поверхні</h5>
+<a id="main-html-autopage-283"></a>
+
+
+<p>
+Розглянемо систему двох різнойменних точкових зарядів, <em>різних за модулем</em>. Можна показати, що її еквіпотенціальна поверхня \(\phi = 0\) є сферою (для рівних за модулем зарядів вона вироджується в&nbsp;площину). Це дає змогу
+застосувати метод зображень до задачі про заряд поблизу провідної сфери (рис.&nbsp;<a href="ch4.html#pic:mirror_sphere">4.14</a>).
+</p>
+
+<figure id="autoid-101" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:top ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-285"></a>
+
+<p>
+
+<a href="FieldInMetalls/Pictures/mirrorsphere_fieldlines.svg" target="_blank" ><img
+   src="FieldInMetalls/Pictures/mirrorsphere_fieldlines.svg"
+   style="
+   width:195pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+(а) Конфігурація силових ліній.
+
+</div>
+
+<a id="pic:mirrorsphere2"></a>
+
+<a id="sub@pic:mirrorsphere2"></a>
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:top ; justify-content:flex-start ; ">
+
+<a id="main-html-autopage-286"></a>
+
+<p>
+
+<a href="FieldInMetalls/Pictures/mirrorsphere_scheme.svg" target="_blank" ><img
+   src="FieldInMetalls/Pictures/mirrorsphere_scheme.svg"
+   style="
+   width:195pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+(б) До розрахунку положення і величини заряду-зображення: \(A\)&nbsp;— довільна точка сфери, \(d_1\), \(d_2\)&nbsp;— відстані від неї до \(q\) і&nbsp;\(q&apos;\).
+
+</div>
+
+<a id="pic:mirrorsphere1"></a>
+
+<a id="sub@pic:mirrorsphere1"></a>
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.14. Заряд поблизу заземленої сфери: <a href="ch4.html#pic:mirrorsphere2">а</a>&nbsp;— конфігурація силових ліній; <a href="ch4.html#pic:mirrorsphere1">б</a>&nbsp;— геометрія для розрахунку положення і величини
+заряду-зображення.
+
+</div>
+
+<a id="pic:mirror_sphere"></a>
+
+</div>
+
+</figure>
+
+<p>
+Нехай точковий заряд \(q\) розташований на відстані \(b\) від центра <em>заземленої</em> провідної сфери радіуса \(R\) (рис.&nbsp;<a href="ch4.html#pic:mirrorsphere2">4.14а</a>). Поле поза сферою можна знайти, якщо підібрати такий
+фіктивний заряд-зображення \(q&apos;\), щоб поверхня сфери була еквіпотенціальною з \(\phi = 0\). За теоремою єдиності знайдений так розв’язок і&nbsp;є правильним.
+</p>
+
+<p>
+З&nbsp;міркувань симетрії заряд \(q&apos;\) лежить на прямій, що з’єднує центр сфери із зарядом \(q\), на відстані \(a\) від центра. Вимагаючи \(\phi = 0\) у&nbsp;найближчій і&nbsp;найвіддаленішій від \(q\) точках сфери, маємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+<!--
+
+
+                                                                                                     𝑞     𝑞′                 𝑞     𝑞′
+                                                                                                        +     = 0,               +     = 0.
+                                                                                                    𝑏−𝑅   𝑅−𝑎                𝑏+𝑅   𝑅+𝑎
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {q}{b - R} + \frac {q&apos;}{R - a} = 0, \qquad \frac {q}{b + R} + \frac {q&apos;}{R + a} = 0.
+\end{equation*}
+
+</p>
+
+<p>
+Розв’язуючи цю систему, отримаємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{1}\)</span>
+
+<!--
+
+
+                                                                                                                    𝑅2               𝑅
+                                                                                                               𝑎=      ,   𝑞′ = −      𝑞.                                              (4.2)        --><a id="eq:mirror_sphere"></a><!--
+                                                                                                                    𝑏                𝑏
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:mirror_sphere} a = \frac {R^2}{b}, \qquad q&apos; = -\frac {R}{b}\,q .
+\end{equation}
+
+</p>
+
+<p>
+За цих значень \(\phi = 0\) не лише у&nbsp;двох вибраних точках, а&nbsp;й&nbsp;на всій сфері. Справді, візьмемо довільну точку \(A\) сфери (рис.&nbsp;<a href="ch4.html#pic:mirrorsphere1">4.14б</a>); \(d_1\) і&nbsp;\(d_2\)&nbsp;— її
+відстані до зарядів \(q\) і&nbsp;\(q&apos;\), а&nbsp;\(O\)&nbsp;— центр сфери. Трикутники \(Oq&apos;A\) і&nbsp;\(OAq\) подібні: кут при \(O\) спільний, а&nbsp;\(a/R = R/b\). Тому \(d_2/d_1 = R/b\), і
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                               𝑞    𝑞′   𝑞     (𝑅/𝑏) 𝑞
+                                                                                                      𝜙(𝐴) =      +    =    −          = 0.
+                                                                                                               𝑑1   𝑑2   𝑑1   (𝑅/𝑏) 𝑑1
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi (A) = \frac {q}{d_1} + \frac {q&apos;}{d_2} = \frac {q}{d_1} - \frac {(R/b)\,q}{(R/b)\,d_1} = 0.
+\end{equation*}
+
+</p>
+
+<p>
+Повний індукований на сфері заряд дорівнює \(q&apos;\) (за теоремою Гаусса), а&nbsp;сила притягання заряду \(q\) до сфери дорівнює силі його взаємодії із зарядом-зображенням: \(F = qq&apos;/(b - a)^2\). Заряд-зображення лежить на тій
+самій прямій, що й реальний заряд \(q\), але з протилежного боку від центра сфери, всередині неї. Знак мінус означає, що індукований на сфері заряд має протилежний знак до \(q\).
+</p>
+
+<p>
+Якщо сфера <em>ізольована</em> й <em>несе повний заряд \(q_0\)</em>, то одного заряду-зображення вже недостатньо: потенціал ізольованої сфери вже не дорівнює нулю, а&nbsp;її повний заряд має дорівнювати \(q_0\). Тому до заряду
+\(q&apos;\) треба додати другий заряд-зображення \(q&apos;&apos;\), розміщений у центрі сфери. Заряд, поміщений точно в&nbsp;центр сфери, створює на її поверхні сталий потенціал \(q&apos;&apos;/R\), тож поверхня залишається
+еквіпотенціальною. Величина \(q&apos;&apos;\) визначається з умови, що повний заряд сфери (а&nbsp;за теоремою Гаусса він дорівнює сумі зарядів-зображень усередині неї) дорівнює \(q_0\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                                    𝑞′ + 𝑞″ = 𝑞0 .
+
+-->
+
+<p>
+
+\begin{equation*}
+q&apos; + q&apos;&apos; = q_0 .
+\end{equation*}
+
+</p>
+
+<p>
+Отже, поле поза ізольованою зарядженою сферою еквівалентне полю двох фіктивних зарядів: \(q&apos;\) на відстані \(a\) від центра (рис.&nbsp;<a href="ch4.html#pic:mirrorsphere1">4.14б</a>) і \(q&apos;&apos;\) у центрі сфери. Поле
+всередині провідної сфери при цьому дорівнює нулю, а поле заряду-зображення \(q&apos;\) у тій області є суто математичною фікцією, яка не має фізичного змісту.
+</p>
+<!--
+...... section Металева куля в однорідному полі ......
+-->
+<h4 id="autosec-287"><span class="sectionnumber">&#xA7;&#x202F;4.5&#x2003;</span>Металева куля в однорідному полі</h4>
+<a id="main-html-autopage-287"></a>
+
+
+<p>
+<a id="LWR-ht-metal-sphere-in-field"></a>
+</p>
+<!--
+...... subsection Постановка задачі ......
+-->
+<h5 id="autosec-288">Постановка задачі</h5>
+<a id="main-html-autopage-288"></a>
+
+
+<p>
+Металеву кулю радіуса \(R\) вміщено в однорідне зовнішнє електричне поле \(\Efield _0\). Метал — провідник, тому в стані рівноваги вільні заряди в ньому нерухомі, а отже, поле всередині дорівнює нулю:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                               𝐄 = 0,   𝑟 < 𝑅.
+
+-->
+
+<p>
+
+\begin{equation*}
+\Efield = 0, \qquad r &lt; R .
+\end{equation*}
+
+</p>
+
+<p>
+Індуковані заряди розташовуються на поверхні кулі (у&nbsp;цілому куля нейтральна). Потрібно знайти поле зовні, розподіл заряду на поверхні та наведений дипольний момент.
+</p>
+
+<p>
+Задача має аксіальну симетрію навколо напрямку \(\Efield _0\), тому природно вибрати сферичні координати з полярною віссю вздовж \(\Efield _0\), а початок координат сумістити з центром кулі (рис.&nbsp;<a
+href="ch4.html#fig:sphere_in_field">4.15</a>).
+</p>
+
+<figure id="autoid-102" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-57"
+    class="lateximagesource"
+><!--
+                       𝑃
+
+𝐄0       𝑟=𝑅
+                   𝐫
+
+               𝜃
+
+
+     𝑂                     𝑧
+--><img
+   src="main-html-images\image-57.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.15. Металева куля радіуса \(R\) в однорідному зовнішньому полі \(\Efield _0\). Початок координат \(O\) суміщено з центром кулі, полярну вісь напрямлено вздовж \(\Efield _0\). Положення точки \(P\) задається радіус-вектором
+\(\vect {r}\) та кутом \(\theta \) між \(\vect {r}\) і полярною віссю.
+
+</div>
+
+<a id="fig:sphere_in_field"></a>
+
+</div>
+
+</figure>
+<!--
+...... subsection Граничні умови на поле ......
+-->
+<h5 id="autosec-292">Граничні умови на поле</h5>
+<a id="main-html-autopage-292"></a>
+
+
+<p>
+На поверхні металу \(r = R\) мають виконуватися дві умови для поля.
+</p>
+
+<p>
+<em>Перша: тангенціальна складова неперервна.</em> Це загальна умова для будь-якої межі розділу, і вона випливає з \(\oint \Efield \cdot d\vect {r} = 0\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                             𝐸𝜏 (𝑅 + 0) = 𝐸𝜏 (𝑅 − 0).
+
+-->
+
+<p>
+
+\begin{equation*}
+E_{\tau }(R+0) = E_{\tau }(R-0) .
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки всередині поля немає, \(E_{\tau }(R-0) = 0\), а отже,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                                 𝐸𝜏 (𝑅 + 0) = 0.
+
+-->
+
+<p>
+
+\begin{equation*}
+E_{\tau }(R+0) = 0 .
+\end{equation*}
+
+</p>
+
+<p>
+Це означає, що зовні поле підходить до поверхні кулі строго перпендикулярно до неї.
+</p>
+
+<p>
+<em>Друга: стрибок нормальної складової.</em> Він визначається поверхневим зарядом і випливає з теореми Гаусса:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                          𝐸𝑟 (𝑅 + 0) − 𝐸𝑟 (𝑅 − 0) = 4𝜋𝜍.
+
+-->
+
+<p>
+
+\begin{equation*}
+E_{r}(R+0) - E_{r}(R-0) = 4\pi \sigma .
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки \(E_r(R-0) = 0\), маємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+                                                                                                                     1
+                                                                                                               𝜍=      𝐸 (𝑅 + 0).
+                                                                                                                    4𝜋 𝑟
+
+-->
+
+<p>
+
+\begin{equation*}
+\sigma = \frac {1}{4\pi }\,E_r(R+0) .
+\end{equation*}
+
+</p>
+
+<p>
+Зауважимо, що друга умова не обмежує поле: густина \(\sigma \) заздалегідь невідома і&nbsp;просто визначається вже знайденим полем. Отже, задача зводиться до такого: знайти поле зовні кулі, яке на її поверхні не має дотичної складової
+(\(E_\theta (R) = 0\)), а&nbsp;на великих відстанях переходить в&nbsp;однорідне поле \(\Efield _0\). Коли таке поле знайдено, друга умова дає розподіл заряду.
+</p>
+<!--
+...... subsection Поле зовні кулі ......
+-->
+<h5 id="autosec-293">Поле зовні кулі</h5>
+<a id="main-html-autopage-293"></a>
+
+
+<p>
+Зовні кулі поле складається із зовнішнього однорідного поля \(\Efield _0\) та поля наведених зарядів на поверхні. Наведений заряд в цілому нейтральний, тому його поле на великих відстанях зменшується як поле диполя. Тому спробуємо
+(«вгадаємо») розв’язок у&nbsp;вигляді
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                                 𝐄(𝑟, 𝜃) = 𝐄0 + 𝐄дип ,
+
+-->
+
+<p>
+
+\begin{equation*}
+\Efield (r,\theta ) = \Efield _0 + \Efield _{\text {дип}},
+\end{equation*}
+
+</p>
+
+<p>
+де \(\Efield _{\text {дип}}\) — поле точкового диполя, розташованого в&nbsp;центрі кулі й орієнтованого вздовж \(\Efield _0\), з невідомим поки що моментом \(\vect {p}\). Якщо вдасться підібрати \(\vect {p}\) так, щоб виконувалися
+граничні умови, то за теоремою єдиності цей розв’язок буде <em>точним</em> у&nbsp;всьому просторі поза кулею, а&nbsp;не лише на великих відстанях.
+</p>
+
+<p>
+У сферичних координатах зручно працювати з компонентами. Для однорідного поля, напрямленого вздовж осі \(z\),
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                      𝐸0,𝑟 = 𝐸0 cos 𝜃,       𝐸0,𝜃 = −𝐸0 sin 𝜃.
+
+-->
+
+<p>
+
+\begin{equation*}
+E_{0,r} = E_0\cos \theta , \qquad E_{0,\theta } = -E_0\sin \theta .
+\end{equation*}
+
+</p>
+
+<p>
+Для диполя з моментом \(\vect {p} = p\,\vect {e}_z\) (задача&nbsp;<a href="ch3.html#prb:DipolePolar">3.1</a>):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                                2𝑝 cos 𝜃                 𝑝 sin 𝜃
+                                                                                                     𝐸дип,𝑟 =            ,    𝐸дип,𝜃 =           .
+                                                                                                                   𝑟3                       𝑟3
+
+-->
+
+<p>
+
+\begin{equation*}
+E_{\text {дип},r} = \frac {2p\cos \theta }{r^3}, \qquad E_{\text {дип},\theta } = \frac {p\sin \theta }{r^3} .
+\end{equation*}
+
+</p>
+
+<p>
+Повне поле зовні:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                                2𝑝 cos 𝜃                             𝑝 sin 𝜃
+                                                                                              𝐸𝑟 = 𝐸0 cos 𝜃 +            ,   𝐸𝜃 = −𝐸0 sin 𝜃 +                .
+                                                                                                                   𝑟3                                   𝑟3
+
+-->
+
+<p>
+
+\begin{equation*}
+E_r = E_0\cos \theta + \frac {2p\cos \theta }{r^3}, \qquad E_\theta = -E_0\sin \theta + \frac {p\sin \theta }{r^3} .
+\end{equation*}
+
+</p>
+<!--
+...... subsection Застосування граничних умов ......
+-->
+<h5 id="autosec-294">Застосування граничних умов</h5>
+<a id="main-html-autopage-294"></a>
+
+
+<p>
+Підставляємо \(r = R\).
+</p>
+
+<p>
+З умови \(E_\theta (R) = 0\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                                 𝑝 sin 𝜃
+                                                                                                   −𝐸0 sin 𝜃 +           =0   ⟹   𝑝 = 𝐸0 𝑅 3 .
+                                                                                                                   𝑅3
+
+-->
+
+<p>
+
+\begin{equation*}
+-E_0\sin \theta + \frac {p\sin \theta }{R^3} = 0 \quad \Longrightarrow \quad p = E_0 R^3 .
+\end{equation*}
+
+</p>
+
+<p>
+З умови \(\sigma = E_r(R)/4\pi \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                            1             2𝑝 cos 𝜃     1                          3
+                                                                                  𝜍(𝜃) =      (𝐸0 cos 𝜃 +          )=    (𝐸 cos 𝜃 + 2𝐸0 cos 𝜃) =    𝐸 cos 𝜃.
+                                                                                           4𝜋                𝑅3       4𝜋 0                       4𝜋 0
+
+-->
+
+<p>
+
+\begin{equation*}
+\sigma (\theta ) = \frac {1}{4\pi } \left ( E_0\cos \theta + \frac {2p\cos \theta }{R^3} \right ) = \frac {1}{4\pi } \left ( E_0\cos \theta + 2E_0\cos \theta \right ) = \frac {3}{4\pi }\,E_0\cos \theta .
+\end{equation*}
+
+</p>
+
+<p>
+Отже, умова \(E_\theta (R) = 0\) визначила наведений дипольний момент, а&nbsp;поле на поверхні&nbsp;— розподіл поверхневого заряду. Поле біля поверхні \(E_r(R) = 3E_0\cos \theta \) найбільше на полюсах кулі (\(\theta = 0,\,\pi
+\)), де воно втричі перевищує зовнішнє: саме там у&nbsp;сильних полях насамперед починається пробій повітря.
+</p>
+<!--
+...... subsection Остаточні результати ......
+-->
+<h5 id="autosec-295">Остаточні результати</h5>
+<a id="main-html-autopage-295"></a>
+
+
+<p>
+Дипольний момент кулі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                                    𝐩 = 𝑅 3 𝐄0 .
+
+-->
+
+<p>
+
+\begin{equation*}
+\vect {p} = R^3\Efield _0 .
+\end{equation*}
+
+</p>
+
+<p>
+Поле зовні та всередині кулі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                            ⎧0,                      𝑟 ≤ 𝑅,
+                                                                                                       𝐄=
+                                                                                                            ⎨𝐄 − 𝐩 + 3 (𝐩 ⋅ 𝐫) 𝐫 ,   𝑟 > 𝑅.
+                                                                                                            ⎩ 0 𝑟3       𝑟5
+
+-->
+
+<p>
+
+\begin{equation*}
+\Efield = \begin{cases} 0, &amp; r \le R, \\[6pt] \Efield _0 - \dfrac {\vect {p}}{r^3} + \dfrac {3\left (\vect {p}\cdot \vect {r}\right )\vect {r}}{r^5}, &amp; r &gt; R . \end {cases}
+\end{equation*}
+
+</p>
+
+<p>
+Заряди на поверхні:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+                                                                                                               3            3 𝐄0 ⋅ 𝐫
+                                                                                                         𝜍=      𝐸 cos 𝜃 =           .
+                                                                                                              4𝜋 0         4𝜋 𝑅
+
+-->
+
+<p>
+
+\begin{equation*}
+\sigma = \frac {3}{4\pi }\,E_0\cos \theta = \frac {3}{4\pi }\,\frac {\Efield _0\cdot \vect {r}}{R} .
+\end{equation*}
+
+</p>
+
+<p>
+Потенціал поля (для повноти; його легко відновити інтегруванням поля, а&nbsp;сталу вибрано так, щоб потенціал кулі дорівнював нулю):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                           0,               𝑟 ≤ 𝑅,
+                                                                                                        𝜙={            𝐩⋅𝐫
+                                                                                                           − (𝐄0 ⋅ 𝐫) + 3 , 𝑟 > 𝑅.
+                                                                                                                        𝑟
+
+-->
+
+<p>
+
+\begin{equation*}
+\phi = \begin{cases} 0, &amp; r \le R, \\[4pt] -\left (\Efield _0\cdot \vect {r}\right ) + \dfrac {\vect {p}\cdot \vect {r}}{r^3}, &amp; r &gt; R . \end {cases}
+\end{equation*}
+
+</p>
+
+<p>
+Отже, всередині металевої кулі поле відсутнє, а зовні воно є суперпозицією зовнішнього однорідного поля \(\Efield _0\) і поля індукованого диполя \(\vect {p}\) (рис.&nbsp;<a href="ch4.html#tikz:EfieldMetall">4.16</a>).
+</p>
+
+<figure id="autoid-103" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-58"
+    class="lateximagesource"
+><!--
+        −   +
+
+    −           +
+−               +
+−                   +
+−               +
+    −           +
+
+        −   +
+--><img
+   src="main-html-images\image-58.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.16. Конфігурація поля навколо металевої кулі, вміщеної в однорідне електричне поле.
+
+</div>
+
+<a id="tikz:EfieldMetall"></a>
+
+</div>
+
+</figure>
+<!--
+...... section Сили, що діють на поверхню провідника в полі ......
+-->
+<h4 id="autosec-299"><span class="sectionnumber">&#xA7;&#x202F;4.6&#x2003;</span>Сили, що діють на поверхню провідника в полі</h4>
+<a id="main-html-autopage-299"></a>
+
+
+<p>
+<a id="LWR-ht-conductor-surface-force"></a>
+</p>
+
+<p>
+На малий елемент \(dS\) поверхні провідника діє сила:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                             𝑑𝐹 = 𝑑𝑞 𝐸 ′ = 𝜍𝑑𝑆 ⋅ 𝐸 ′ ,
+
+-->
+
+<p>
+
+\begin{equation*}
+dF = dq\, E&apos; = \sigma dS \cdot E&apos;,
+\end{equation*}
+
+</p>
+
+<p>
+з боку <em>поля \(E&apos;\) інших зарядів</em> у місці, де перебуває заряд \(dq = \sigma dS\) (власне поле площадки на неї саму не діє). Але прилад може виміряти лише <em>сумарне поле \(E\)</em>, тобто поле <em>інших зарядів
+\(E&apos;\)</em> плюс <em>власне поле площадки \(E_{\sigma }\)</em>, і&nbsp;розрізнити їх не може!
+</p>
+
+<figure id="autoid-104" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-59"
+    class="lateximagesource"
+><!--
+     𝐄
+
+
+𝐄′       𝐄𝜍
+
+
+          𝜍𝑑𝑆
+
+
+𝐄′       𝐄𝜍
+--><img
+   src="main-html-images\image-59.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;4.17. До виведення сили, що діє на поверхню провідника
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Задача полягає в тому, щоб виразити силу саме через сумарне поле.
+</p>
+
+<p>
+Мала площадка поблизу себе діє як нескінченна заряджена площина: її власне поле дорівнює \(E_\sigma = 2\pi \sigma \) і&nbsp;напрямлене від площадки в&nbsp;обидва боки (для \(\sigma &gt; 0\))&nbsp;— назовні з&nbsp;одного боку
+і&nbsp;вглиб провідника з&nbsp;іншого. Поле \(E&apos;\) інших зарядів у&nbsp;цьому місці однакове з&nbsp;обох боків площадки. Усередині провідника сумарне поле дорівнює нулю:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                     𝐸 ′ − 𝐸𝜍 = 0   ⟹    𝐸 ′ = 𝐸𝜍 = 2𝜋𝜍,
+
+-->
+
+<p>
+
+\begin{equation*}
+E&apos; - E_{\sigma } = 0 \quad \Longrightarrow \quad E&apos; = E_{\sigma } = 2\pi \sigma ,
+\end{equation*}
+
+</p>
+
+<p>
+тобто <em>густина заряду підлаштовується під поле інших зарядів</em>! Зовні поля додаються, і&nbsp;гранична умова дає поле у&nbsp;вакуумі біля поверхні:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                          𝐸 = 𝐸 ′ + 𝐸𝜍 = 2𝐸 ′ = 4𝜋𝜍.
+
+-->
+
+<p>
+
+\begin{equation*}
+E = E&apos; + E_{\sigma } = 2 E&apos; = 4\pi \sigma .
+\end{equation*}
+
+</p>
+
+<p>
+Отже, сила, що діє на одиницю поверхні провідника, дорівнює
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{4.}{2}\)</span>
+
+<!--
+
+
+                                                                                                         𝑑𝐹             1     𝐸2
+                                                                                                            = 𝑓 = 𝜍𝐸 ′ = 𝜍𝐸 =    .
+                                                                                                         𝑑𝑆             2     8𝜋
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {dF}{dS} = f = \sigma E&apos; = \frac 12 \sigma E = \frac {E^2}{8\pi }.
+\end{equation*}
+
+</p>
+
+<p>
+Вона залежить лише від сумарного поля біля поверхні й&nbsp;завжди напрямлена <em>назовні</em> від провідника, незалежно від знака \(\sigma \): поле ніби «розтягує» поверхню провідника.
+</p>
+<!--
+...... section Підсумки ......
+-->
+<h4 id="autosec-303">Підсумки</h4>
+<a id="main-html-autopage-303"></a>
+
+
+<p>
+Провідник — це речовина з вільними зарядами; в металах ними є <em><span
+    class="textcolor"
+    style="color:#990000"
+>колективізовані</span></em> валентні електрони (досліди Толмена та Стюарта). У стані рівноваги поле в об’ємі провідника дорівнює нулю, \(\Efield = 0\), тому об’ємна густина заряду також нульова: надлишковий заряд розташовується лише
+на поверхні. Поверхня провідника є <em><span
+    class="textcolor"
+    style="color:#990000"
+>еквіпотенціальною</span></em>, а на ній виконуються граничні умови \(E_n = 4\pi \sigma \), \(E_\tau = 0\), тобто силові лінії підходять до неї перпендикулярно. Замкнена провідна оболонка електрично розділяє внутрішній і зовнішній
+простір: у порожнині без зарядів поля немає (це випливає з теореми про циркуляцію), а заряд усередині порожнини наводить на зовнішній поверхні такий самий заряд. На цьому ґрунтуються електростатичний захист (клітка Фарадея) і генератор
+Ван де Граафа, а перерозподіл зарядів у зовнішньому полі лежить в основі машини Вімсхерста.
+</p>
+
+<p>
+Густина заряду й поле біля поверхні зростають зі збільшенням кривизни (\(\sigma \sim 1/R\), \(E = 4\pi \sigma \)), звідки іонний вітер біля вістря й дія громовідводу. Розв’язок рівнянь Пуассона й Лапласа з заданими граничними умовами
+<em>єдиний</em>; цей факт дає змогу розв’язок <em>вгадувати</em>, що й робить метод електричних зображень. Для заземленої площини заряд-зображення \(q&apos; = -q\) стоїть дзеркально, а для заземленої сфери \(a = R^2/b\), \(q&apos; =
+-Rq/b\); для ізольованої зарядженої сфери додається другий заряд-зображення \(q&apos;&apos;\) у центрі, причому \(q&apos; + q&apos;&apos; = q_0\). Металева куля в однорідному полі набуває дипольного моменту \(\vect {p} =
+R^3\Efield _0\); поле всередині неї нульове, а поверхневий заряд \(\sigma = \frac {3}{4\pi }E_0\cos \theta \). На поверхню провідника діє напрямлена назовні сила з густиною \(f = \frac 12\sigma E = E^2/8\pi \), яка залежить лише
+від сумарного поля.
+</p>
+
+<p>
+У провіднику заряди рухаються вільно й повністю екранують внутрішнє поле. Більшість речовин, однак, — діелектрики, у яких заряди зв’язані й можуть лише незначно зміщуватися під дією поля. Як таке зміщення (<em><span
+    class="textcolor"
+    style="color:#990000"
+>поляризація</span></em>) змінює поле всередині речовини, розглянемо в наступному розділі (розділ&nbsp;<a href="ch5.html#FieldInDielectrics">5</a>).
+</p>
+<!--
+...... section Задачі ......
+-->
+<h4 id="autosec-304">Задачі</h4>
+<a id="main-html-autopage-304"></a>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-105"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 4.1.</span></span> <a id="autoid-106" ></a ><a id="LWR-ht-problem:4.{1}"></a>Точковий заряд \(q\) розташований на відстані \(d\) від нескінченної заземленої
+металевої площини. Знайдіть густину \(\sigma (x)\) індукованого заряду на площині, де \(x\)&nbsp;— відстань уздовж площини від точки, що лежить навпроти заряду. Чому дорівнює повний індукований заряд? <a
+href="ch21.html#LWR-ht-solution:4.{1}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-107"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 4.2.</span></span> <a id="autoid-108" ></a ><a id="LWR-ht-problem:4.{2}"></a>Знайдіть потенціал <em>незарядженої</em> і <em>незаземленої</em> металевої сфери
+радіуса \(R\), що перебуває в полі заряду \(q\), розташованого на відстані \(b\) (\(b &gt; R\)) від центра сфери. <a href="ch21.html#LWR-ht-solution:4.{2}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-109"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 4.3.</span></span> <a id="autoid-110" ></a ><a id="LWR-ht-problem:4.{3}"></a>На відстані \(b= 10R\) від центра заземленої металевої сфери радіусом \(R\)
+розташований точковий електричний диполь з моментом \(p\), причому вісь диполя перпендикулярна прямій, що сполучає центр сфери з серединою осі диполя (див. рисунок). Знайдіть силу взаємодії між диполем і сферою.
+</p>
+<div class="center">
+
+<p>
+<span
+      id="lateximage-main-html-60"
+      class="lateximagesource"
+><!--
+        𝐩
+𝑅
+    𝑏
+--><img
+      src="main-html-images\image-60.svg"
+      alt="(-tikz-&nbsp;diagram)"
+      style=""
+      class="lateximage"
+></span>
+</p>
+</div>
+
+<p>
+<a href="ch21.html#LWR-ht-solution:4.{3}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-111"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 4.4.</span></span> <a id="autoid-112" ></a ><a id="LWR-ht-problem:4.{4}"></a>Дві заземлені провідні півплощини утворюють прямий двогранний кут. Точковий заряд
+\(q\) розташований на бісектрисі кута на відстані \(d\) від кожної з&nbsp;площин. Скільки зарядів-зображень потрібно і&nbsp;де вони розташовані? Знайдіть силу, що діє на заряд. <a href="ch21.html#LWR-ht-solution:4.{4}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-113"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 4.5.</span></span> <a id="autoid-114" ></a ><a id="LWR-ht-problem:4.{5}"></a>Знайдіть силу взаємодії двох різнойменно заряджених металевих пластин, що
+розташовані на малій відстані одна від одної. Поверхнева густина заряду пластин \(\pm \sigma \), площа пластин \(S\).
+</p>
+
+<p>
+Якщо пластини мають форму дисків радіуса \(R\), чому буде дорівнювати сила взаємодії між ними на відстані \(\ell \gg R\)? <a href="ch21.html#LWR-ht-solution:4.{5}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-115"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 4.6.</span></span> <a id="autoid-116" ></a ><a id="LWR-ht-problem:4.{6}"></a>Металева сфера радіуса \(R\) складена з двох півсфер. Знайдіть силу \(F\), з якою
+відштовхуються ці півсфери, якщо повний заряд сфери дорівнює&nbsp;\(Q\). <a href="ch21.html#LWR-ht-solution:4.{6}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-117"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 4.7.</span></span> <a id="autoid-118" ></a ><a id="LWR-ht-problem:4.{7}"></a><em>Поле біля вістря.</em> Голку під потенціалом \(U=10\)&nbsp;кВ (відносно далекої
+землі) замінимо кулькою радіуса \(r=0{,}1\)&nbsp;мм&nbsp;— радіусом закруглення її вістря. Оцініть поле біля вістря і&nbsp;порівняйте з&nbsp;напруженістю пробою повітря \(E_\text {пр}\approx 3\)&nbsp;МВ/м. Яке поле біля поверхні кулі
+радіуса \(R=10\)&nbsp;см під тим самим потенціалом? До якого найбільшого потенціалу можна зарядити таку кулю в&nbsp;повітрі? (Для відокремленої кулі \(\phi =Q/R\) і&nbsp;\(E=Q/R^2\), тож \(E=\phi /R\); це співвідношення не залежить від
+системи одиниць.) <a href="ch21.html#LWR-ht-solution:4.{7}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Що таке провідник з мікроскопічної точки зору? Чому в металах кажуть про «колективізовані» електрони і чим вони відрізняються від електронів, локалізованих на іонах?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Чому в стаціонарному стані поле всередині провідника дорівнює нулю? Як з теореми Гаусса випливає, що об’ємна густина заряду в провіднику також дорівнює нулю і всі вільні заряди розташовуються лише
+на поверхні?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Виведіть граничні умови \(E_n = 4\pi \sigma \), \(E_\tau = 0\) на поверхні провідника. Що вони означають для напрямку силових ліній поля біля поверхні і&nbsp;де ці лінії закінчуються?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> Чому поверхня провідника є еквіпотенціальною, а потенціал в усьому його об’ємі сталий?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Чи з’являються індуковані заряди на внутрішній поверхні провідника, якщо в порожнині всередині нього немає зарядів? Доведіть це, спираючись на теорему про циркуляцію поля.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> Чому поле в&nbsp;порожнині замкненої провідної оболонки не залежить від зовнішніх зарядів? Що змінюється, якщо в&nbsp;порожнині є заряд, і&nbsp;навіщо оболонку заземлюють? У чому суть
+електростатичного захисту (клітки Фарадея) і чому автомобіль чи літак відносно безпечні під час грози?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> Опишіть принцип роботи електростатичного генератора Ван де Граафа. Чому заряд, занесений стрічкою всередину сфери, повністю переходить на її зовнішню поверхню?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Як влаштована електрофорна машина Вімсхерста і на якому фізичному принципі (перерозподіл зарядів під дією поля, позитивний зворотний зв’язок) ґрунтується наростання заряду з кожним обертом?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> Виведіть співвідношення \(\sigma \sim 1/R\) і \(E\sim 1/R\) для двох з’єднаних провідним дротом куль різного радіуса за однакового потенціалу. Чому цей результат узагальнюється на залежність густини
+заряду від локального радіуса кривизни поверхні провідника довільної форми?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Сформулюйте теорему єдиності розв’язку електростатичної задачі (рівняння Пуассона чи Лапласа з граничними умовами). Які граничні умови задають на поверхнях провідників?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> У чому полягає метод електричних зображень і на якому факті (теоремі єдиності) він ґрунтується?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Виведіть конфігурацію заряду-зображення \(q&apos;=-q\) для точкового заряду поблизу нескінченної заземленої провідної площини. Чому ця конфігурація відтворює правильне поле лише в тій половині
+простору, де знаходиться реальний заряд?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">13.</span> Чому робота, потрібна для відриву заряду \(q\) від провідної площини з&nbsp;відстані \(d\), дорівнює \(q^2/4d\), а&nbsp;не \(q^2/2d\)? Оцініть цю роботу для електрона і&nbsp;порівняйте
+з&nbsp;роботою виходу з&nbsp;металу.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">14.</span> Як метод зображень застосовується для заряду поблизу заземленої провідної сфери? Запишіть формули для величини \(q&apos;\) і положення \(a\) заряду-зображення через \(R\), \(b\) і \(q\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">15.</span> Чим відрізняється задача про заряд поблизу ізольованої зарядженої сфери від задачі із заземленою сферою? Скільки зарядів-зображень потрібно в цьому випадку і яка умова на їхню суму?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">16.</span> Сформулюйте задачу про металеву кулю в однорідному зовнішньому полі \(\Efield _0\). Які умови визначають розв’язок і&nbsp;яку роль відіграє стрибок нормальної складової поля?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">17.</span> Як шукають поле зовні кулі у вигляді суми однорідного поля та поля точкового диполя? Виведіть наведений дипольний момент \(\vect p = R^3\Efield _0\) із граничної умови \(E_\theta (R)=0\).
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">18.</span> Виведіть розподіл поверхневого заряду \(\sigma (\theta ) = \dfrac {3}{4\pi }E_0\cos \theta \) на металевій кулі в однорідному полі. Де поле біля поверхні кулі найбільше і&nbsp;в&nbsp;скільки
+разів воно перевищує \(E_0\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">19.</span> Виведіть формулу тиску електричного поля на поверхню провідника \(f = E^2/(8\pi )\). Чому сила дорівнює \(\frac 12\sigma E\), а не \(\sigma E\)? Куди напрямлена ця сила?
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>

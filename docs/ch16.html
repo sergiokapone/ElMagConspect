@@ -1,0 +1,5095 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Електрика та магнетизм — Електромагнітні хвилі</title>
+<link rel="stylesheet" type="text/css" href="assets/conspect.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+   subequations: "0",
+   section: "",
+   loader: {
+     load: ['[tex]/tagformat', '[tex]/textmacros'],
+   },
+   startup: {
+     ready() {
+       // These would be replaced by import commands if you wanted to make
+       // a proper extension.
+       const Configuration = MathJax._.input.tex.Configuration.Configuration;
+       const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+       const Macro = MathJax._.input.tex.Symbol.Macro;
+       const TexError = MathJax._.input.tex.TexError.default;
+       const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+       const expandable = MathJax._.util.Options.expandable;
+
+        // Insert the replacement string into the TeX string, and check
+        // that there haven't been too many maxro substitutions (prevents
+        // infinite loops).
+        const useArgument = (parser, text) => {
+          parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+          parser.i = 0;
+          if (++parser.macroCount > parser.configuration.options.maxMacros) {
+            throw new TexError('MaxMacroSub1',
+            'MathJax maximum macro substitution count exceeded; ' +
+            'is there a recursive macro call?');
+          }
+        }
+
+        // Create the command map for:
+        //     \ifstar, \ifnextchar, \ifblank, \ifstrequal, \gsub, \seteqnumber
+        new CommandMap('Lwarp-macros', {
+          ifstar: 'IfstarFunction',
+          ifnextchar: 'IfnextcharFunction',
+          ifblank: 'IfblankFunction',
+          ifstrequal: 'IfstrequalFunction',
+          gsubstitute: 'GsubstituteFunction',
+          seteqnumber: 'SeteqnumberFunction'
+        }, {
+          // This function implements an ifstar macro.
+          IfstarFunction(parser, name) {
+             const resultstar = parser.GetArgument(name);
+             const resultnostar = parser.GetArgument(name);
+             const star = parser.GetStar();                 // true if there is a *
+             useArgument(parser, star ? resultstar : resultnostar);
+          },
+
+          // This function implements an ifnextchar macro.
+          IfnextcharFunction(parser, name) {
+             let whichchar = parser.GetArgument(name);
+             if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+               // $ syntax highlighting
+               whichchar = String.fromCodePoint(parseInt(whichchar));
+             }
+             const resultnextchar = parser.GetArgument(name);
+             const resultnotnextchar = parser.GetArgument(name);
+             const gotchar = (parser.GetNext() === whichchar);
+             useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+          },
+
+          // This function implements an ifblank macro.
+          IfblankFunction(parser, name) {
+             const blankarg = parser.GetArgument(name);
+             const resultblank = parser.GetArgument(name);
+             const resultnotblank = parser.GetArgument(name);
+             const isblank = (blankarg.trim() == "");
+             useArgument(parser, isblank ? resultblank : resultnotblank);
+          },
+
+          // This function implements an ifstrequal macro.
+          IfstrequalFunction(parser, name) {
+             const strequalfirst = parser.GetArgument(name);
+             const strequalsecond = parser.GetArgument(name);
+             const resultequal = parser.GetArgument(name);
+             const resultnotequal = parser.GetArgument(name);
+             const isequal = (strequalfirst == strequalsecond);
+             useArgument(parser, isequal ? resultequal : resultnotequal);
+          },
+
+          // This function implements a gsub macro.
+          GsubstituteFunction(parser, name) {
+             const gsubfirst = parser.GetArgument(name);
+             const gsubsecond = parser.GetArgument(name);
+             const gsubthird = parser.GetArgument(name);
+             let gsubresult=gsubfirst.replace(gsubsecond, gsubthird);
+             useArgument(parser, gsubresult);
+          },
+
+          // This function modifies the equation numbers.
+          SeteqnumberFunction(parser, name) {
+              // Get the macro parameters
+              const star = parser.GetStar();                  // true if there is a *
+              const optBrackets = parser.GetBrackets(name);   // contents of optional brackets
+              const newsubequations = parser.GetArgument(name); // the subequations argument
+              const neweqsection = parser.GetArgument(name); // the eq section argument
+              const neweqnumber = parser.GetArgument(name);   // the eq number argument
+              MathJax.config.subequations=newsubequations ;   // a string with boolean meaning
+              MathJax.config.section=neweqsection ;           // a string with numeric meaning
+              parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+          }
+
+        });
+
+        // Create the Lwarp-macros package
+        Configuration.create('Lwarp-macros', {
+          handler: {macro: ['Lwarp-macros']}
+        });
+
+        MathJax.startup.defaultReady();
+
+        // For forward references:
+        MathJax.startup.input[0].preFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              MathJax.config.subequations = math.inputData.recompile.subequations;
+              MathJax.config.section = math.inputData.recompile.section;
+          }
+        });
+        MathJax.startup.input[0].postFilters.add(({math}) => {
+          if (math.inputData.recompile){
+              math.inputData.recompile.subequations = MathJax.config.subequations;
+              math.inputData.recompile.section = MathJax.config.section;
+          }
+        });
+
+          // For \left, \right with unicode-math:
+          const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+          const {Symbol} = MathJax._.input.tex.Symbol;
+          const {MapHandler} = MathJax._.input.tex.MapHandler;
+          const delimiter = MapHandler.getMap('delimiter');
+          delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+          delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+          delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+          delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+          delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+          delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+          delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+          delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+          delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+          delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+          delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+          delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+          delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+          delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+          delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+          delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+          delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+          delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+          delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+          delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+          delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+          delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+          delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+          delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+          delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+          delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+          delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+          delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+          delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+          delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+          delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+          delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+          delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+          delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+          delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+          delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+          delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+          delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+          delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+    }     // ready
+  },      // startup
+
+  tex: {
+    packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+    tags: "ams",
+         tagformat: {
+             number: function (n) {
+                 if(MathJax.config.subequations==0)
+                      return(MathJax.config.section + n);
+                 else
+                      return(MathJax.config.section + String.fromCharCode(96+n));
+             },
+         },
+  }
+}
+</script>
+
+<script
+    id="MathJax-script"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+></script>
+
+</head>
+<body>
+
+
+<a id="main-html-autopage-1281"></a>
+<div class="pagegrid">
+
+
+<nav class="topnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+<div class="sidetoccontainer">
+
+
+<nav class="sidetoc">
+
+
+<div class="sidetoctitle">
+
+<p>
+<span class="sidetocthetitle">Електрика та магнетизм</span>
+</p>
+
+<p class="sidetoc-meta"><a href="index.html">Про посібник</a><span aria-hidden="true">·</span><a href="ElMagConspect.pdf">PDF</a></p>
+</div>
+
+
+<div class="sidetoccontents">
+
+<p>
+<a href="main-html.html" class="linkhome" >
+Головна</a>
+</p>
+
+<p>
+<a href="ch1.html#autosec-7" class="tocchapter" >
+<span class="sectionnumber">1</span><span class="toctitle">&#x2003;Електричні заряди та їх взаємодія</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-8" class="tocsection" >
+<span class="sectionnumber">1.1</span><span class="toctitle">&#x2003;Сили (взаємодії) в природі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-11" class="tocsection" >
+<span class="sectionnumber">1.2</span><span class="toctitle">&#x2003;Електричний заряд</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-13" class="tocsection" >
+<span class="sectionnumber">1.3</span><span class="toctitle">&#x2003;Як заряджають тіла?</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-18" class="tocsection" >
+<span class="sectionnumber">1.4</span><span class="toctitle">&#x2003;Закон Кулона</span></a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-26" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch1.html#autosec-27" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-33" class="tocchapter" >
+<span class="sectionnumber">2</span><span class="toctitle">&#x2003;Постійне електричне поле у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-34" class="tocsection" >
+<span class="sectionnumber">2.1</span><span class="toctitle">&#x2003;Електромагнітне поле</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-35" class="tocsection" >
+<span class="sectionnumber">2.2</span><span class="toctitle">&#x2003;Напруженість поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-50" class="tocsection" >
+<span class="sectionnumber">2.3</span><span class="toctitle">&#x2003;Силові лінії та математичне поняття поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-66" class="tocsection" >
+<span class="sectionnumber">2.4</span><span class="toctitle">&#x2003;Теорема Гаусса</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-100" class="tocsection" >
+<span class="sectionnumber">2.5</span><span class="toctitle">&#x2003;Потенціальність електростатичного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-115" class="tocsection" >
+<span class="sectionnumber">2.6</span><span class="toctitle">&#x2003;Циркуляція вектора \(\symbf {E}\)</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-135" class="tocsection" >
+<span class="sectionnumber">2.7</span><span class="toctitle">&#x2003;Граничні умови</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-142" class="tocsection" >
+<span class="sectionnumber">2.8</span><span class="toctitle">&#x2003;Рівняння Пуассона та Лапласа</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-147" class="tocsection" >
+<span class="sectionnumber">2.9</span><span class="toctitle">&#x2003;Повна система рівнянь електростатичного поля у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-152" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch2.html#autosec-153" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-166" class="tocchapter" >
+<span class="sectionnumber">3</span><span class="toctitle">&#x2003;Електричне поле статичної системи зарядів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-167" class="tocsection" >
+<span class="sectionnumber">3.1</span><span class="toctitle">&#x2003;Дипольний момент системи зарядів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-171" class="tocsection" >
+<span class="sectionnumber">3.2</span><span class="toctitle">&#x2003;Потенціал точкового диполя</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-175" class="tocsection" >
+<span class="sectionnumber">3.3</span><span class="toctitle">&#x2003;Поле точкового диполя</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-181" class="tocsection" >
+<span class="sectionnumber">3.4</span><span class="toctitle">&#x2003;Потенціал системи зарядів на далеких відстанях</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-198" class="tocsection" >
+<span class="sectionnumber">3.5</span><span class="toctitle">&#x2003;Диполь в електричному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-216" class="tocsection" >
+<span class="sectionnumber">3.6</span><span class="toctitle">&#x2003;Енергія довільної системи зарядів у зовнішньому полі*</span></a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-217" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch3.html#autosec-220" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-238" class="tocchapter" >
+<span class="sectionnumber">4</span><span class="toctitle">&#x2003;Електричне поле у провідниках</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-239" class="tocsection" >
+<span class="sectionnumber">4.1</span><span class="toctitle">&#x2003;Структура провідників</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-243" class="tocsection" >
+<span class="sectionnumber">4.2</span><span class="toctitle">&#x2003;Провідник у полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-268" class="tocsection" >
+<span class="sectionnumber">4.3</span><span class="toctitle">&#x2003;Електричне поле біля вістря</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-277" class="tocsection" >
+<span class="sectionnumber">4.4</span><span class="toctitle">&#x2003;Єдиність розв’язку електростатичної задачі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-287" class="tocsection" >
+<span class="sectionnumber">4.5</span><span class="toctitle">&#x2003;Металева куля в однорідному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-299" class="tocsection" >
+<span class="sectionnumber">4.6</span><span class="toctitle">&#x2003;Сили, що діють на поверхню провідника в полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-303" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch4.html#autosec-304" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-317" class="tocchapter" >
+<span class="sectionnumber">5</span><span class="toctitle">&#x2003;Основи електростатики діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-318" class="tocsection" >
+<span class="sectionnumber">5.1</span><span class="toctitle">&#x2003;Основні поняття</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-320" class="tocsection" >
+<span class="sectionnumber">5.2</span><span class="toctitle">&#x2003;Структура діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-357" class="tocsection" >
+<span class="sectionnumber">5.3</span><span class="toctitle">&#x2003;Поляризація діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-384" class="tocsection" >
+<span class="sectionnumber">5.4</span><span class="toctitle">&#x2003;Вектор поляризації</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-392" class="tocsection" >
+<span class="sectionnumber">5.5</span><span class="toctitle">&#x2003;Вектор електричної індукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-407" class="tocsection" >
+<span class="sectionnumber">5.6</span><span class="toctitle">&#x2003;Граничні умови в&nbsp;присутності діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-420" class="tocsection" >
+<span class="sectionnumber">5.7</span><span class="toctitle">&#x2003;Мікроскопічна теорія діелектричної проникності</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-427" class="tocsection" >
+<span class="sectionnumber">5.8</span><span class="toctitle">&#x2003;Типи діелектриків та їх застосування</span></a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-450" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch5.html#autosec-451" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-466" class="tocchapter" >
+<span class="sectionnumber">6</span><span class="toctitle">&#x2003;Енергія електричного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-467" class="tocsection" >
+<span class="sectionnumber">6.1</span><span class="toctitle">&#x2003;Електрична ємність</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-488" class="tocsection" >
+<span class="sectionnumber">6.2</span><span class="toctitle">&#x2003;Енергія електричного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-501" class="tocsection" >
+<span class="sectionnumber">6.3</span><span class="toctitle">&#x2003;Пондеромоторні сили</span></a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-511" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch6.html#autosec-512" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-524" class="tocchapter" >
+<span class="sectionnumber">7</span><span class="toctitle">&#x2003;Постійний електричний струм</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-525" class="tocsection" >
+<span class="sectionnumber">7.1</span><span class="toctitle">&#x2003;Основні поняття</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-532" class="tocsection" >
+<span class="sectionnumber">7.2</span><span class="toctitle">&#x2003;Природа носіїв заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-537" class="tocsection" >
+<span class="sectionnumber">7.3</span><span class="toctitle">&#x2003;Закон збереження заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-544" class="tocsection" >
+<span class="sectionnumber">7.4</span><span class="toctitle">&#x2003;Закон Ома</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-575" class="tocsection" >
+<span class="sectionnumber">7.5</span><span class="toctitle">&#x2003;Закон Джоуля–Ленца</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-576" class="tocsection" >
+<span class="sectionnumber">7.6</span><span class="toctitle">&#x2003;Струми в необмежених середовищах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-583" class="tocsection" >
+<span class="sectionnumber">7.7</span><span class="toctitle">&#x2003;Перехідні процеси в колі з конденсатором</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-596" class="tocsection" >
+<span class="sectionnumber">7.8</span><span class="toctitle">&#x2003;Максвеллівський час релаксації заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch7.html#autosec-598" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-611" class="tocchapter" >
+<span class="sectionnumber">8</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;різних середовищах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-613" class="tocsection" >
+<span class="sectionnumber">8.1</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;металах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-637" class="tocsection" >
+<span class="sectionnumber">8.2</span><span class="toctitle">&#x2003;Електричний струм в&nbsp;електролітах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-643" class="tocsection" >
+<span class="sectionnumber">8.3</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;газах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-654" class="tocsection" >
+<span class="sectionnumber">8.4</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-668" class="tocsection" >
+<span class="sectionnumber">8.5</span><span class="toctitle">&#x2003;Електричний струм у&nbsp;напівпровідниках</span></a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-689" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch8.html#autosec-691" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-723" class="tocchapter" >
+<span class="sectionnumber">9</span><span class="toctitle">&#x2003;Магнітне поле у&nbsp;вакуумі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-724" class="tocsection" >
+<span class="sectionnumber">9.1</span><span class="toctitle">&#x2003;Означення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-728" class="tocsection" >
+<span class="sectionnumber">9.2</span><span class="toctitle">&#x2003;Характеристика магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-729" class="tocsection" >
+<span class="sectionnumber">9.3</span><span class="toctitle">&#x2003;Дія магнітного поля на заряджені частинки та струми</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-750" class="tocsection" >
+<span class="sectionnumber">9.4</span><span class="toctitle">&#x2003;Закон Біо–Савара–Лапласа</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-763" class="tocsection" >
+<span class="sectionnumber">9.5</span><span class="toctitle">&#x2003;Вектор-потенціал магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-768" class="tocsection" >
+<span class="sectionnumber">9.6</span><span class="toctitle">&#x2003;Теореми магнітостатики</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-790" class="tocsection" >
+<span class="sectionnumber">9.7</span><span class="toctitle">&#x2003;Магнітний момент</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-807" class="tocsection" >
+<span class="sectionnumber">9.8</span><span class="toctitle">&#x2003;Потенціальна енергія диполя та сила, що діє на диполь у&nbsp;магнітному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-817" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch9.html#autosec-818" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-826" class="tocchapter" >
+<span class="sectionnumber">10</span><span class="toctitle">&#x2003;Магнітне поле в речовині</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-835" class="tocsection" >
+<span class="sectionnumber">10.1</span><span class="toctitle">&#x2003;Основні поняття</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-838" class="tocsection" >
+<span class="sectionnumber">10.2</span><span class="toctitle">&#x2003;Намагнічування</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-850" class="tocsection" >
+<span class="sectionnumber">10.3</span><span class="toctitle">&#x2003;Теорема про циркуляцію в речовині</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-856" class="tocsection" >
+<span class="sectionnumber">10.4</span><span class="toctitle">&#x2003;Магнітна сприйнятливість речовини</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-892" class="tocsection" >
+<span class="sectionnumber">10.5</span><span class="toctitle">&#x2003;Граничні умови</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-907" class="tocsection" >
+<span class="sectionnumber">10.6</span><span class="toctitle">&#x2003;Мікроскопічна природа діа-, пара- і феромагнетизму</span></a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-925" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch10.html#autosec-926" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-935" class="tocchapter" >
+<span class="sectionnumber">11</span><span class="toctitle">&#x2003;Рух заряджених частинок</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-936" class="tocsection" >
+<span class="sectionnumber">11.1</span><span class="toctitle">&#x2003;Рух частинок в&nbsp;однорідних полях</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-954" class="tocsection" >
+<span class="sectionnumber">11.2</span><span class="toctitle">&#x2003;Мас-спектрометр і&nbsp;циклотрон</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-963" class="tocsection" >
+<span class="sectionnumber">11.3</span><span class="toctitle">&#x2003;Застосування схрещених полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-971" class="tocsection" >
+<span class="sectionnumber">11.4</span><span class="toctitle">&#x2003;Методи вимірювання питомого заряду електрона</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-981" class="tocsection" >
+<span class="sectionnumber">11.5</span><span class="toctitle">&#x2003;Досліди Міллікена</span></a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-985" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch11.html#autosec-986" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1003" class="tocchapter" >
+<span class="sectionnumber">12</span><span class="toctitle">&#x2003;Явище електромагнітної індукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1004" class="tocsection" >
+<span class="sectionnumber">12.1</span><span class="toctitle">&#x2003;Досліди Фарадея</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1010" class="tocsection" >
+<span class="sectionnumber">12.2</span><span class="toctitle">&#x2003;Закон електромагнітної індукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1019" class="tocsection" >
+<span class="sectionnumber">12.3</span><span class="toctitle">&#x2003;ЕРС руху: сила Лоренца в&nbsp;рухомому провіднику</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1030" class="tocsection" >
+<span class="sectionnumber">12.4</span><span class="toctitle">&#x2003;Куди йде робота</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1036" class="tocsection" >
+<span class="sectionnumber">12.5</span><span class="toctitle">&#x2003;Нерухомий контур: вихрове електричне поле</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1040" class="tocsection" >
+<span class="sectionnumber">12.6</span><span class="toctitle">&#x2003;Вихрове поле проти електростатичного: приклади</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1049" class="tocsection" >
+<span class="sectionnumber">12.7</span><span class="toctitle">&#x2003;Бетатрон</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1053" class="tocsection" >
+<span class="sectionnumber">12.8</span><span class="toctitle">&#x2003;Застосування: індукційний заряд і&nbsp;струми Фуко</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1058" class="tocsection" >
+<span class="sectionnumber">12.9</span><span class="toctitle">&#x2003;Явище самоіндукції</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1078" class="tocsection" >
+<span class="sectionnumber">12.10</span><span class="toctitle">&#x2003;Індукція в&nbsp;надпровідниках. Ефект Мейснера</span></a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1098" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch12.html#autosec-1099" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1118" class="tocchapter" >
+<span class="sectionnumber">13</span><span class="toctitle">&#x2003;Енергія магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1119" class="tocsection" >
+<span class="sectionnumber">13.1</span><span class="toctitle">&#x2003;Енергія магнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1126" class="tocsection" >
+<span class="sectionnumber">13.2</span><span class="toctitle">&#x2003;Взаємна індукція</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1142" class="tocsection" >
+<span class="sectionnumber">13.3</span><span class="toctitle">&#x2003;Енергія системи зв’язаних контурів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1145" class="tocsection" >
+<span class="sectionnumber">13.4</span><span class="toctitle">&#x2003;Принцип роботи трансформаторів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1149" class="tocsection" >
+<span class="sectionnumber">13.5</span><span class="toctitle">&#x2003;Магнітна енергія струмів як функція стану</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1151" class="tocsection" >
+<span class="sectionnumber">13.6</span><span class="toctitle">&#x2003;Пондеромоторні сили в&nbsp;магнітному полі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1157" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch13.html#autosec-1158" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1170" class="tocchapter" >
+<span class="sectionnumber">14</span><span class="toctitle">&#x2003;Система рівнянь Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1175" class="tocsection" >
+<span class="sectionnumber">14.1</span><span class="toctitle">&#x2003;Струм зміщення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1196" class="tocsection" >
+<span class="sectionnumber">14.2</span><span class="toctitle">&#x2003;Система рівнянь Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1213" class="tocsection" >
+<span class="sectionnumber">14.3</span><span class="toctitle">&#x2003;Про рівняння Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1215" class="tocsection" >
+<span class="sectionnumber">14.4</span><span class="toctitle">&#x2003;Енергія електромагнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1229" class="tocsection" >
+<span class="sectionnumber">14.5</span><span class="toctitle">&#x2003;Скін-ефект</span></a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1251" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch14.html#autosec-1252" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1260" class="tocchapter" >
+<span class="sectionnumber">15</span><span class="toctitle">&#x2003;Відносність електричного і&nbsp;магнітного полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1262" class="tocsection" >
+<span class="sectionnumber">15.1</span><span class="toctitle">&#x2003;Нерелятивістські закони перетворення полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1265" class="tocsection" >
+<span class="sectionnumber">15.2</span><span class="toctitle">&#x2003;Релятивістські закони перетворення полів</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1271" class="tocsection" >
+<span class="sectionnumber">15.3</span><span class="toctitle">&#x2003;Тензор електромагнітного поля*</span></a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1273" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch15.html#autosec-1274" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1283" class="tocchapter" >
+<span class="sectionnumber">16</span><span class="toctitle">&#x2003;Електромагнітні хвилі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1284" class="tocsection" >
+<span class="sectionnumber">16.1</span><span class="toctitle">&#x2003;Хвильове рівняння</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1300" class="tocsection" >
+<span class="sectionnumber">16.2</span><span class="toctitle">&#x2003;Електромагнітні хвилі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1305" class="tocsection" >
+<span class="sectionnumber">16.3</span><span class="toctitle">&#x2003;Енергія та вектор Пойнтінга для хвилі</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1315" class="tocsection" >
+<span class="sectionnumber">16.4</span><span class="toctitle">&#x2003;Імпульс і&nbsp;момент імпульсу електромагнітного поля</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1321" class="tocsection" >
+<span class="sectionnumber">16.5</span><span class="toctitle">&#x2003;Відбивання хвиль від межі двох діелектриків</span></a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1341" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch16.html#autosec-1342" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1354" class="tocchapter" >
+<span class="sectionnumber">17</span><span class="toctitle">&#x2003;Випромінювання електромагнітних хвиль</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1355" class="tocsection" >
+<span class="sectionnumber">17.1</span><span class="toctitle">&#x2003;Історична довідка: досліди Герца</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1358" class="tocsection" >
+<span class="sectionnumber">17.2</span><span class="toctitle">&#x2003;Елементарна модель випромінювання</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1371" class="tocsection" >
+<span class="sectionnumber">17.3</span><span class="toctitle">&#x2003;Дипольне випромінювання</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1389" class="tocsection" >
+<span class="sectionnumber">17.4</span><span class="toctitle">&#x2003;Потужність випромінювання осцилятора</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1394" class="tocsection" >
+<span class="sectionnumber">17.5</span><span class="toctitle">&#x2003;Випромінювання рухомого заряду</span></a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1406" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch17.html#autosec-1407" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1417" class="tocchapter" >
+<span class="sectionnumber">18</span><span class="toctitle">&#x2003;Коливальні процеси в&nbsp;електричних колах</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1418" class="tocsection" >
+<span class="sectionnumber">18.1</span><span class="toctitle">&#x2003;Квазістаціонарне наближення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1419" class="tocsection" >
+<span class="sectionnumber">18.2</span><span class="toctitle">&#x2003;Вільні коливання в&nbsp;коливальному контурі</span></a>
+</p>
+<p>
+<a href="ch18.html#autosec-1444" class="tocsection" >
+<span class="sectionnumber">18.3</span><span class="toctitle">&#x2003;Вимушені коливання під дією гармонічної ЕРС</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1458" class="tocsection" >
+<span class="sectionnumber">18.4</span><span class="toctitle">&#x2003;Змінний струм</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1486" class="tocsection" >
+<span class="sectionnumber">18.5</span><span class="toctitle">&#x2003;Трансформатор</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1490" class="tocsection" >
+<span class="sectionnumber">18.6</span><span class="toctitle">&#x2003;Частотні фільтри</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1506" class="tocsection" >
+<span class="sectionnumber">18.7</span><span class="toctitle">&#x2003;Трифазний струм</span></a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1510" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch18.html#autosec-1511" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1524" class="tocchapter" >
+<span class="sectionnumber">19</span><span class="toctitle">&#x2003;Довгі лінії. Телеграфні рівняння</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1525" class="tocsection" >
+<span class="sectionnumber">19.1</span><span class="toctitle">&#x2003;Від зосереджених елементів до розподілених</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1526" class="tocsection" >
+<span class="sectionnumber">19.2</span><span class="toctitle">&#x2003;Виведення телеграфних рівнянь</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1530" class="tocsection" >
+<span class="sectionnumber">19.3</span><span class="toctitle">&#x2003;Гармонічний режим. Хвильове рівняння</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1531" class="tocsection" >
+<span class="sectionnumber">19.4</span><span class="toctitle">&#x2003;Лінія без втрат</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1538" class="tocsection" >
+<span class="sectionnumber">19.5</span><span class="toctitle">&#x2003;Польова картина. Зв’язок з&nbsp;рівняннями Максвелла</span></a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1545" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch19.html#autosec-1546" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1554" class="tocchapter" >
+<span class="sectionnumber">20</span><span class="toctitle">&#x2003;Хвилеводи</span></a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1555" class="tocsection" >
+<span class="sectionnumber">20.1</span><span class="toctitle">&#x2003;Від довгої лінії до хвилеводу</span></a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1556" class="tocsection" >
+<span class="sectionnumber">20.2</span><span class="toctitle">&#x2003;Прямокутний хвилевід</span></a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1569" class="tocsection" >
+Підсумки</a>
+</p>
+
+
+
+<p>
+<a href="ch20.html#autosec-1572" class="tocsection" >
+Задачі</a>
+</p>
+
+
+
+<p>
+<a href="ch21.html#autosec-1579" class="tocchapter" >
+Відповіді</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1606" class="tocchapter" >
+Додатки</a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1607" class="tocsection" >
+<span class="sectionnumber">А</span><span class="toctitle">&#x2003;Таблиця переходу між гауссовою системою одиниць та SI</span></a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1612" class="tocsection" >
+<span class="sectionnumber">Б</span><span class="toctitle">&#x2003;Основні позначення</span></a>
+</p>
+
+
+
+<p>
+<a href="ch22.html#autosec-1615" class="tocsection" >
+<span class="sectionnumber">В</span><span class="toctitle">&#x2003;Основні формули векторного аналізу</span></a>
+</p>
+
+
+
+<p>
+<a href="ch23.html#autosec-1637" class="tocchapter" >
+Література</a>
+</p>
+
+
+
+<p>
+<a href="ch23.html#autosec-1638" class="tocsection" >
+Підручники та посібники</a>
+</p>
+
+
+
+<p>
+<a href="ch23.html#autosec-1639" class="tocsection" >
+Джерела фактів і результатів</a>
+</p>
+
+
+</div>
+
+</nav>
+
+</div>
+
+
+<main class="bodycontainer" data-pagefind-body data-pagefind-meta="title[data-title]" data-title="Електромагнітні хвилі">
+
+
+<section class="textbody">
+
+<h1 data-pagefind-ignore>Електрика та магнетизм</h1>
+
+<!--MathJax customizations:-->
+<div data-nosnippet
+   style="display:none"
+>
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\TextOrMath }[2]{#2}\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\def \oe {\unicode {x0153}}\)
+
+\(\def \OE {\unicode {x0152}}\)
+
+\(\def \ae {\unicode {x00E6}}\)
+
+\(\def \AE {\unicode {x00C6}}\)
+
+\(\def \aa {\unicode {x00E5}}\)
+
+\(\def \AA {\unicode {x00C5}}\)
+
+\(\def \o {\unicode {x00F8}}\)
+
+\(\def \O {\unicode {x00D8}}\)
+
+\(\def \l {\unicode {x0142}}\)
+
+\(\def \L {\unicode {x0141}}\)
+
+\(\def \ss {\unicode {x00DF}}\)
+
+\(\def \SS {\unicode {x1E9E}}\)
+
+\(\def \dag {\unicode {x2020}}\)
+
+\(\def \ddag {\unicode {x2021}}\)
+
+\(\def \P {\unicode {x00B6}}\)
+
+\(\def \copyright {\unicode {x00A9}}\)
+
+\(\def \pounds {\unicode {x00A3}}\)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+\( \newcommand {\multicolumn }[3]{#3}\)
+
+\(\require {textcomp}\)
+
+\(\require {colortbl}\)
+
+\(\let \LWRorigcolumncolor \columncolor \)
+
+\(\renewcommand {\columncolor }[2][named]{\LWRorigcolumncolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigrowcolor \rowcolor \)
+
+\(\renewcommand {\rowcolor }[2][named]{\LWRorigrowcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\let \LWRorigcellcolor \cellcolor \)
+
+\(\renewcommand {\cellcolor }[2][named]{\LWRorigcellcolor [#1]{#2}\LWRabsorbtwooptions }\)
+
+\(\newcommand {\intertext }[1]{\text {#1}\notag \\}\)
+
+\(\let \Hat \hat \)
+
+\(\let \Check \check \)
+
+\(\let \Tilde \tilde \)
+
+\(\let \Acute \acute \)
+
+\(\let \Grave \grave \)
+
+\(\let \Dot \dot \)
+
+\(\let \Ddot \ddot \)
+
+\(\let \Breve \breve \)
+
+\(\let \Bar \bar \)
+
+\(\let \Vec \vec \)
+
+\(\let \symnormal \mathit \)
+
+\(\let \symliteral \mathrm \)
+
+\(\let \symbb \mathbb \)
+
+\(\let \symbbit \mathbb \)
+
+\(\let \symcal \mathcal \)
+
+\(\let \symscr \mathscr \)
+
+\(\let \symfrak \mathfrak \)
+
+\(\let \symsfup \mathsf \)
+
+\(\let \symsfit \mathit \)
+
+\(\let \symbfsf \mathbf \)
+
+\(\let \symbfup \mathbf \)
+
+\(\newcommand {\symbfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symbfcal \mathcal \)
+
+\(\let \symbfscr \mathscr \)
+
+\(\let \symbffrak \mathfrak \)
+
+\(\let \symbfsfup \mathbf \)
+
+\(\newcommand {\symbfsfit }[1]{\boldsymbol {#1}}\)
+
+\(\let \symup \mathrm \)
+
+\(\let \symbf \mathbf \)
+
+\(\let \symit \mathit \)
+
+\(\let \symtt \mathtt \)
+
+\(\let \symbffrac \mathbffrac \)
+
+\(\newcommand {\mathfence }[1]{\mathord {#1}}\)
+
+\(\newcommand {\mathover }[1]{#1}\)
+
+\(\newcommand {\mathunder }[1]{#1}\)
+
+\(\newcommand {\mathaccent }[1]{#1}\)
+
+\(\newcommand {\mathbotaccent }[1]{#1}\)
+
+\(\newcommand {\mathalpha }[1]{\mathord {#1}}\)
+
+\(\def\upAlpha{\unicode{x0391}}\)
+
+\(\def\upBeta{\unicode{x0392}}\)
+
+\(\def\upGamma{\unicode{x0393}}\)
+
+\(\def\upDigamma{\unicode{x03DC}}\)
+
+\(\def\upDelta{\unicode{x0394}}\)
+
+\(\def\upEpsilon{\unicode{x0395}}\)
+
+\(\def\upZeta{\unicode{x0396}}\)
+
+\(\def\upEta{\unicode{x0397}}\)
+
+\(\def\upTheta{\unicode{x0398}}\)
+
+\(\def\upVartheta{\unicode{x03F4}}\)
+
+\(\def\upIota{\unicode{x0399}}\)
+
+\(\def\upKappa{\unicode{x039A}}\)
+
+\(\def\upLambda{\unicode{x039B}}\)
+
+\(\def\upMu{\unicode{x039C}}\)
+
+\(\def\upNu{\unicode{x039D}}\)
+
+\(\def\upXi{\unicode{x039E}}\)
+
+\(\def\upOmicron{\unicode{x039F}}\)
+
+\(\def\upPi{\unicode{x03A0}}\)
+
+\(\def\upVarpi{\unicode{x03D6}}\)
+
+\(\def\upRho{\unicode{x03A1}}\)
+
+\(\def\upSigma{\unicode{x03A3}}\)
+
+\(\def\upTau{\unicode{x03A4}}\)
+
+\(\def\upUpsilon{\unicode{x03A5}}\)
+
+\(\def\upPhi{\unicode{x03A6}}\)
+
+\(\def\upChi{\unicode{x03A7}}\)
+
+\(\def\upPsi{\unicode{x03A8}}\)
+
+\(\def\upOmega{\unicode{x03A9}}\)
+
+\(\def\itAlpha{\unicode{x1D6E2}}\)
+
+\(\def\itBeta{\unicode{x1D6E3}}\)
+
+\(\def\itGamma{\unicode{x1D6E4}}\)
+
+\(\def\itDigamma{\mathit{\unicode{x03DC}}}\)
+
+\(\def\itDelta{\unicode{x1D6E5}}\)
+
+\(\def\itEpsilon{\unicode{x1D6E6}}\)
+
+\(\def\itZeta{\unicode{x1D6E7}}\)
+
+\(\def\itEta{\unicode{x1D6E8}}\)
+
+\(\def\itTheta{\unicode{x1D6E9}}\)
+
+\(\def\itVartheta{\unicode{x1D6F3}}\)
+
+\(\def\itIota{\unicode{x1D6EA}}\)
+
+\(\def\itKappa{\unicode{x1D6EB}}\)
+
+\(\def\itLambda{\unicode{x1D6EC}}\)
+
+\(\def\itMu{\unicode{x1D6ED}}\)
+
+\(\def\itNu{\unicode{x1D6EE}}\)
+
+\(\def\itXi{\unicode{x1D6EF}}\)
+
+\(\def\itOmicron{\unicode{x1D6F0}}\)
+
+\(\def\itPi{\unicode{x1D6F1}}\)
+
+\(\def\itRho{\unicode{x1D6F2}}\)
+
+\(\def\itSigma{\unicode{x1D6F4}}\)
+
+\(\def\itTau{\unicode{x1D6F5}}\)
+
+\(\def\itUpsilon{\unicode{x1D6F6}}\)
+
+\(\def\itPhi{\unicode{x1D6F7}}\)
+
+\(\def\itChi{\unicode{x1D6F8}}\)
+
+\(\def\itPsi{\unicode{x1D6F9}}\)
+
+\(\def\itOmega{\unicode{x1D6FA}}\)
+
+\(\def\upalpha{\unicode{x03B1}}\)
+
+\(\def\upbeta{\unicode{x03B2}}\)
+
+\(\def\upvarbeta{\unicode{x03D0}}\)
+
+\(\def\upgamma{\unicode{x03B3}}\)
+
+\(\def\updigamma{\unicode{x03DD}}\)
+
+\(\def\updelta{\unicode{x03B4}}\)
+
+\(\def\upepsilon{\unicode{x03F5}}\)
+
+\(\def\upvarepsilon{\unicode{x03B5}}\)
+
+\(\def\upzeta{\unicode{x03B6}}\)
+
+\(\def\upeta{\unicode{x03B7}}\)
+
+\(\def\uptheta{\unicode{x03B8}}\)
+
+\(\def\upvartheta{\unicode{x03D1}}\)
+
+\(\def\upiota{\unicode{x03B9}}\)
+
+\(\def\upkappa{\unicode{x03BA}}\)
+
+\(\def\upvarkappa{\unicode{x03F0}}\)
+
+\(\def\uplambda{\unicode{x03BB}}\)
+
+\(\def\upmu{\unicode{x03BC}}\)
+
+\(\def\upnu{\unicode{x03BD}}\)
+
+\(\def\upxi{\unicode{x03BE}}\)
+
+\(\def\upomicron{\unicode{x03BF}}\)
+
+\(\def\uppi{\unicode{x03C0}}\)
+
+\(\def\upvarpi{\unicode{x03D6}}\)
+
+\(\def\uprho{\unicode{x03C1}}\)
+
+\(\def\upvarrho{\unicode{x03F1}}\)
+
+\(\def\upsigma{\unicode{x03C3}}\)
+
+\(\def\upvarsigma{\unicode{x03C2}}\)
+
+\(\def\uptau{\unicode{x03C4}}\)
+
+\(\def\upupsilon{\unicode{x03C5}}\)
+
+\(\def\upphi{\unicode{x03D5}}\)
+
+\(\def\upvarphi{\unicode{x03C6}}\)
+
+\(\def\upchi{\unicode{x03C7}}\)
+
+\(\def\uppsi{\unicode{x03C8}}\)
+
+\(\def\upomega{\unicode{x03C9}}\)
+
+\(\def\italpha{\unicode{x1D6FC}}\)
+
+\(\def\itbeta{\unicode{x1D6FD}}\)
+
+\(\def\itvarbeta{\unicode{x03D0}}\)
+
+\(\def\itgamma{\unicode{x1D6FE}}\)
+
+\(\def\itdigamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\itdelta{\unicode{x1D6FF}}\)
+
+\(\def\itepsilon{\unicode{x1D716}}\)
+
+\(\def\itvarepsilon{\unicode{x1D700}}\)
+
+\(\def\itzeta{\unicode{x1D701}}\)
+
+\(\def\iteta{\unicode{x1D702}}\)
+
+\(\def\ittheta{\unicode{x1D703}}\)
+
+\(\def\itvartheta{\unicode{x1D717}}\)
+
+\(\def\itiota{\unicode{x1D704}}\)
+
+\(\def\itkappa{\unicode{x1D705}}\)
+
+\(\def\itvarkappa{\unicode{x1D718}}\)
+
+\(\def\itlambda{\unicode{x1D706}}\)
+
+\(\def\itmu{\unicode{x1D707}}\)
+
+\(\def\itnu{\unicode{x1D708}}\)
+
+\(\def\itxi{\unicode{x1D709}}\)
+
+\(\def\itomicron{\unicode{x1D70A}}\)
+
+\(\def\itpi{\unicode{x1D70B}}\)
+
+\(\def\itvarpi{\unicode{x1D71B}}\)
+
+\(\def\itrho{\unicode{x1D70C}}\)
+
+\(\def\itvarrho{\unicode{x1D71A}}\)
+
+\(\def\itsigma{\unicode{x1D70E}}\)
+
+\(\def\itvarsigma{\unicode{x1D70D}}\)
+
+\(\def\ittau{\unicode{x1D70F}}\)
+
+\(\def\itupsilon{\unicode{x1D710}}\)
+
+\(\def\itphi{\unicode{x1D719}}\)
+
+\(\def\itvarphi{\unicode{x1D711}}\)
+
+\(\def\itchi{\unicode{x1D712}}\)
+
+\(\def\itpsi{\unicode{x1D713}}\)
+
+\(\def\itomega{\unicode{x1D714}}\)
+
+\(\let \lparen (\)
+
+\(\let \rparen )\)
+
+\(\newcommand {\cuberoot }[1]{\,{}^3\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\fourthroot }[1]{\,{}^4\!\!\sqrt {#1}}\,\)
+
+\(\newcommand {\longdivision }[1]{\mathord {\unicode {x027CC}#1}}\)
+
+\(\newcommand {\mathcomma }{,}\)
+
+\(\newcommand {\mathcolon }{:}\)
+
+\(\newcommand {\mathsemicolon }{;}\)
+
+\(\newcommand {\overbracket }[1]{\mathinner {\overline {\ulcorner {#1}\urcorner }}}\)
+
+\(\newcommand {\underbracket }[1]{\mathinner {\underline {\llcorner {#1}\lrcorner }}}\)
+
+\(\newcommand {\overbar }[1]{\mathord {#1\unicode {x00305}}}\)
+
+\(\newcommand {\ovhook }[1]{\mathord {#1\unicode {x00309}}}\)
+
+\(\newcommand {\ocirc }[1]{\mathord {#1\unicode {x0030A}}}\)
+
+\(\newcommand {\candra }[1]{\mathord {#1\unicode {x00310}}}\)
+
+\(\newcommand {\oturnedcomma }[1]{\mathord {#1\unicode {x00312}}}\)
+
+\(\newcommand {\ocommatopright }[1]{\mathord {#1\unicode {x00315}}}\)
+
+\(\newcommand {\droang }[1]{\mathord {#1\unicode {x0031A}}}\)
+
+\(\newcommand {\leftharpoonaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\rightharpoonaccent }[1]{\mathord {#1\unicode {x020D1}}}\)
+
+\(\newcommand {\vertoverlay }[1]{\mathord {#1\unicode {x020D2}}}\)
+
+\(\newcommand {\leftarrowaccent }[1]{\mathord {#1\unicode {x020D0}}}\)
+
+\(\newcommand {\annuity }[1]{\mathord {#1\unicode {x020E7}}}\)
+
+\(\newcommand {\widebridgeabove }[1]{\mathord {#1\unicode {x020E9}}}\)
+
+\(\newcommand {\asteraccent }[1]{\mathord {#1\unicode {x020F0}}}\)
+
+\(\newcommand {\threeunderdot }[1]{\mathord {#1\unicode {x020E8}}}\)
+
+\(\newcommand {\Bbbsum }{\mathop {\unicode {x2140}}\limits }\)
+
+\(\newcommand {\oiint }{\mathop {\unicode {x222F}}\limits }\)
+
+\(\newcommand {\oiiint }{\mathop {\unicode {x2230}}\limits }\)
+
+\(\newcommand {\intclockwise }{\mathop {\unicode {x2231}}\limits }\)
+
+\(\newcommand {\ointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\ointctrclockwise }{\mathop {\unicode {x2233}}\limits }\)
+
+\(\newcommand {\varointclockwise }{\mathop {\unicode {x2232}}\limits }\)
+
+\(\newcommand {\leftouterjoin }{\mathop {\unicode {x27D5}}\limits }\)
+
+\(\newcommand {\rightouterjoin }{\mathop {\unicode {x27D6}}\limits }\)
+
+\(\newcommand {\fullouterjoin }{\mathop {\unicode {x27D7}}\limits }\)
+
+\(\newcommand {\bigbot }{\mathop {\unicode {x27D8}}\limits }\)
+
+\(\newcommand {\bigtop }{\mathop {\unicode {x27D9}}\limits }\)
+
+\(\newcommand {\xsol }{\mathop {\unicode {x29F8}}\limits }\)
+
+\(\newcommand {\xbsol }{\mathop {\unicode {x29F9}}\limits }\)
+
+\(\newcommand {\bigcupdot }{\mathop {\unicode {x2A03}}\limits }\)
+
+\(\newcommand {\bigsqcap }{\mathop {\unicode {x2A05}}\limits }\)
+
+\(\newcommand {\conjquant }{\mathop {\unicode {x2A07}}\limits }\)
+
+\(\newcommand {\disjquant }{\mathop {\unicode {x2A08}}\limits }\)
+
+\(\newcommand {\bigtimes }{\mathop {\unicode {x2A09}}\limits }\)
+
+\(\newcommand {\modtwosum }{\mathop {\unicode {x2A0A}}\limits }\)
+
+\(\newcommand {\sumint }{\mathop {\unicode {x2A0B}}\limits }\)
+
+\(\newcommand {\intbar }{\mathop {\unicode {x2A0D}}\limits }\)
+
+\(\newcommand {\intBar }{\mathop {\unicode {x2A0E}}\limits }\)
+
+\(\newcommand {\fint }{\mathop {\unicode {x2A0F}}\limits }\)
+
+\(\newcommand {\cirfnint }{\mathop {\unicode {x2A10}}\limits }\)
+
+\(\newcommand {\awint }{\mathop {\unicode {x2A11}}\limits }\)
+
+\(\newcommand {\rppolint }{\mathop {\unicode {x2A12}}\limits }\)
+
+\(\newcommand {\scpolint }{\mathop {\unicode {x2A13}}\limits }\)
+
+\(\newcommand {\npolint }{\mathop {\unicode {x2A14}}\limits }\)
+
+\(\newcommand {\pointint }{\mathop {\unicode {x2A15}}\limits }\)
+
+\(\newcommand {\sqint }{\mathop {\unicode {x2A16}}\limits }\)
+
+\(\newcommand {\intlarhk }{\mathop {\unicode {x2A17}}\limits }\)
+
+\(\newcommand {\intx }{\mathop {\unicode {x2A18}}\limits }\)
+
+\(\newcommand {\intcap }{\mathop {\unicode {x2A19}}\limits }\)
+
+\(\newcommand {\intcup }{\mathop {\unicode {x2A1A}}\limits }\)
+
+\(\newcommand {\upint }{\mathop {\unicode {x2A1B}}\limits }\)
+
+\(\newcommand {\lowint }{\mathop {\unicode {x2A1C}}\limits }\)
+
+\(\newcommand {\bigtriangleleft }{\mathop {\unicode {x2A1E}}\limits }\)
+
+\(\newcommand {\zcmp }{\mathop {\unicode {x2A1F}}\limits }\)
+
+\(\newcommand {\zpipe }{\mathop {\unicode {x2A20}}\limits }\)
+
+\(\newcommand {\zproject }{\mathop {\unicode {x2A21}}\limits }\)
+
+\(\newcommand {\biginterleave }{\mathop {\unicode {x2AFC}}\limits }\)
+
+\(\newcommand {\bigtalloblong }{\mathop {\unicode {x2AFF}}\limits }\)
+
+\(\newcommand {\arabicmaj }{\mathop {\unicode {x1EEF0}}\limits }\)
+
+\(\newcommand {\arabichad }{\mathop {\unicode {x1EEF1}}\limits }\)
+
+\(\newcommand {\nicefrac }[3][]{\mathinner {{}^{#2}\!/\!_{#3}}}\)
+
+\(\require {mhchem}\)
+
+\(\newcommand {\toprule }[1][]{\hline }\)
+
+\(\let \midrule \toprule \)
+
+\(\let \bottomrule \toprule \)
+
+\(\def \LWRbooktabscmidruleparen (#1)#2{}\)
+
+\(\newcommand {\LWRbooktabscmidrulenoparen }[1]{}\)
+
+\(\newcommand {\cmidrule }[1][]{\ifnextchar (\LWRbooktabscmidruleparen \LWRbooktabscmidrulenoparen }\)
+
+\(\newcommand {\morecmidrules }{}\)
+
+\(\newcommand {\specialrule }[3]{\hline }\)
+
+\(\newcommand {\addlinespace }[1][]{}\)
+
+\(\newcommand {\LWRsubmultirow }[2][]{#2}\)
+
+\(\newcommand {\LWRmultirow }[2][]{\LWRsubmultirow }\)
+
+\(\newcommand {\multirow }[2][]{\LWRmultirow }\)
+
+\(\newcommand {\mrowcell }{}\)
+
+\(\newcommand {\mcolrowcell }{}\)
+
+\(\newcommand {\STneed }[1]{}\)
+
+\(\newcommand {\nfrac }[2]{{}^{#1}\!/{}_{#2}}\)
+
+\(\newcommand {\vect }[1]{\mathbf {#1}}\)
+
+\(\newcommand {\Efield }{\mathbf {E}}\)
+
+\(\newcommand {\Dfield }{\mathbf {D}}\)
+
+\(\newcommand {\Bfield }{\mathbf {B}}\)
+
+\(\newcommand {\Hfield }{\mathbf {H}}\)
+
+\(\newcommand {\rot }{\boldsymbol {\nabla }\times }\)
+
+\(\newcommand {\divg }{\boldsymbol {\nabla }\cdot }\)
+
+\(\newcommand {\grad }{\boldsymbol {\nabla }}\)
+
+\(\newcommand {\diff }[2]{\frac {\partial #1}{\partial #2}}\)
+
+\(\newcommand {\ddiff }[2]{\frac {\partial ^2 #1}{\partial #2^2}}\)
+
+\(\newcommand {\parttime }[1]{\frac {\partial {#1}}{\partial t}}\)
+
+\(\newcommand {\pparttime }[1]{\frac {\partial ^2{#1}}{\partial t^2}}\)
+
+\(\renewcommand {\phi }{\varphi }\)
+
+\(\renewcommand {\epsilon }{\varepsilon }\)
+
+\(\DeclareMathOperator {\const }{const}\)
+
+\(\DeclareMathOperator {\Div }{div}\)
+
+\(\DeclareMathOperator {\Rot }{rot}\)
+
+\(\DeclareMathOperator {\Grad }{grad}\)
+
+\(\DeclareMathOperator {\inv }{inv}\)
+
+\(\newcommand {\Laplasian }{\Delta }\)
+
+\(\renewcommand {\iiint }{\int }\)
+
+\(\renewcommand {\iint }{\int }\)
+
+\(\newcommand {\oiint }{\oint }\)
+
+\(\newcommand {\emf }{\mathcal {E}}\)
+
+\(\newcommand {\tikzmarknode }[2]{#2}\)
+
+\(\newcommand {\tikzmark }[1]{}\)
+
+\(\newcommand {\enquote }[1]{«#1»}\)
+
+\(\newcommand {\allowbreak }{}\)
+
+\(\newcommand {\tcbhighmath }[1]{\boxed {#1}}\)
+
+\(\DeclareMathOperator {\sh }{sh}\)
+
+\(\DeclareMathOperator {\ch }{ch}\)
+
+\(\DeclareMathOperator {\tg }{tg}\)
+
+\(\DeclareMathOperator {\ctg }{ctg}\)
+
+\(\DeclareMathOperator {\arctg }{arctg}\)
+
+\(\DeclareMathOperator {\arcctg }{arcctg}\)
+
+\(\DeclareMathOperator {\cth }{cth}\)
+
+\(\DeclareMathOperator {\cosec }{cosec}\)
+
+\(\let \symsf \symsfup \)
+
+\(\def\Alpha{\unicode{x0391}}\)
+
+\(\def\Beta{\unicode{x0392}}\)
+
+\(\def\Gamma{\unicode{x0393}}\)
+
+\(\def\Digamma{\unicode{x03DC}}\)
+
+\(\def\Delta{\unicode{x0394}}\)
+
+\(\def\Epsilon{\unicode{x0395}}\)
+
+\(\def\Zeta{\unicode{x0396}}\)
+
+\(\def\Eta{\unicode{x0397}}\)
+
+\(\def\Theta{\unicode{x0398}}\)
+
+\(\def\Vartheta{\unicode{x03F4}}\)
+
+\(\def\Iota{\unicode{x0399}}\)
+
+\(\def\Kappa{\unicode{x039A}}\)
+
+\(\def\Lambda{\unicode{x039B}}\)
+
+\(\def\Mu{\unicode{x039C}}\)
+
+\(\def\Nu{\unicode{x039D}}\)
+
+\(\def\Xi{\unicode{x039E}}\)
+
+\(\def\Omicron{\unicode{x039F}}\)
+
+\(\def\Pi{\unicode{x03A0}}\)
+
+\(\def\Varpi{\unicode{x03D6}}\)
+
+\(\def\Rho{\unicode{x03A1}}\)
+
+\(\def\Sigma{\unicode{x03A3}}\)
+
+\(\def\Tau{\unicode{x03A4}}\)
+
+\(\def\Upsilon{\unicode{x03A5}}\)
+
+\(\def\Phi{\unicode{x03A6}}\)
+
+\(\def\Chi{\unicode{x03A7}}\)
+
+\(\def\Psi{\unicode{x03A8}}\)
+
+\(\def\Omega{\unicode{x03A9}}\)
+
+\(\def\alpha{\unicode{x1D6FC}}\)
+
+\(\def\beta{\unicode{x1D6FD}}\)
+
+\(\def\varbeta{\unicode{x03D0}}\)
+
+\(\def\gamma{\unicode{x1D6FE}}\)
+
+\(\def\digamma{\mathit{\unicode{x03DD}}}\)
+
+\(\def\delta{\unicode{x1D6FF}}\)
+
+\(\def\epsilon{\unicode{x1D716}}\)
+
+\(\def\varepsilon{\unicode{x1D700}}\)
+
+\(\def\zeta{\unicode{x1D701}}\)
+
+\(\def\eta{\unicode{x1D702}}\)
+
+\(\def\theta{\unicode{x1D703}}\)
+
+\(\def\vartheta{\unicode{x1D717}}\)
+
+\(\def\iota{\unicode{x1D704}}\)
+
+\(\def\kappa{\unicode{x1D705}}\)
+
+\(\def\varkappa{\unicode{x1D718}}\)
+
+\(\def\lambda{\unicode{x1D706}}\)
+
+\(\def\mu{\unicode{x1D707}}\)
+
+\(\def\nu{\unicode{x1D708}}\)
+
+\(\def\xi{\unicode{x1D709}}\)
+
+\(\def\omicron{\unicode{x1D70A}}\)
+
+\(\def\pi{\unicode{x1D70B}}\)
+
+\(\def\varpi{\unicode{x1D71B}}\)
+
+\(\def\rho{\unicode{x1D70C}}\)
+
+\(\def\varrho{\unicode{x1D71A}}\)
+
+\(\def\sigma{\unicode{x1D70E}}\)
+
+\(\def\varsigma{\unicode{x1D70D}}\)
+
+\(\def\tau{\unicode{x1D70F}}\)
+
+\(\def\upsilon{\unicode{x1D710}}\)
+
+\(\def\phi{\unicode{x1D719}}\)
+
+\(\def\varphi{\unicode{x1D711}}\)
+
+\(\def\chi{\unicode{x1D712}}\)
+
+\(\def\psi{\unicode{x1D713}}\)
+
+\(\def\omega{\unicode{x1D714}}\)
+
+</div>
+
+<!--
+...... chapter Електромагнітні хвилі ......
+-->
+<h3 id="autosec-1283"><span class="sectionnumber">16&#x2003;</span>Електромагнітні хвилі</h3>
+<a id="main-html-autopage-1283"></a>
+<a id="main-html-autofile-16"></a>
+
+<a id="ElMagWaves"></a>
+
+<p>
+<a id="LWR-ht-ElMagWaves"></a>
+</p>
+<div class="epigraph" role="note">
+
+
+<div class="qitem">
+
+<p>
+Ми навряд чи можемо уникнути висновку, що світло полягає в&nbsp;поперечних коливаннях того самого середовища, яке є причиною електричних і&nbsp;магнітних явищ.
+</p>
+
+
+<div class="epigraphsource">
+
+<p>
+Джеймс Клерк Максвелл, «Про фізичні силові лінії» (1862)
+</p>
+</div>
+
+</div>
+
+</div>
+<!--
+...... section Хвильове рівняння ......
+-->
+<h4 id="autosec-1284"><span class="sectionnumber">&#xA7;&#x202F;16.1&#x2003;</span>Хвильове рівняння</h4>
+<a id="main-html-autopage-1284"></a>
+
+
+<p>
+<a id="LWR-ht-wave-equation"></a>
+</p>
+<!--
+...... subsection Хвильовий процес ......
+-->
+<h5 id="autosec-1285">Хвильовий процес</h5>
+<a id="main-html-autopage-1285"></a>
+
+
+<p>
+Попри величезну різноманітність фізичних процесів, що спричиняють хвилі (коливання струни чи ланцюжка зв’язаних тягарців, хвилі на поверхні води, звукові хвилі, електромагнітні хвилі), їхнє утворення підпорядковане спільному принципу:
+збурення, що виникло в&nbsp;деякий момент часу в одному місці, з&nbsp;часом поширюється в&nbsp;просторі з&nbsp;певною швидкістю. <em>Хвиля&nbsp;— це процес поширення збурень у&nbsp;просторі</em>.
+</p>
+
+<p>
+Хвилю описують деякою величиною \(u = f(x,y,z,t)\), що є функцією як просторових координат, так і&nbsp;часу. Наприклад, для хвилі на поверхні води \(u\)&nbsp;— це висота підняття поверхні над рівноважним рівнем; для механічної хвилі
+в&nbsp;ланцюжку зв’язаних пружинками тягарців (рис.&nbsp;<a href="ch16.html#pic:Chain">16.1</a>) \(u\)&nbsp;— зміщення тягарця від положення рівноваги; для електромагнітної хвилі \(u\)&nbsp;— змінна складова електричного чи
+магнітного поля, що накладається на їхнє (можливо, нульове) статичне значення.
+</p>
+
+<figure id="autoid-465" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-254"
+    class="lateximagesource"
+><!--
+    𝐯
+𝑢           𝑢
+
+
+        𝑢
+
+                𝑥
+--><img
+   src="main-html-images\image-254.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;16.1. Механічна хвиля в&nbsp;ланцюжку зв’язаних пружинками тягарців&nbsp;— наочна модель для розуміння хвильового процесу<a id="pic:Chain"></a>
+
+</div>
+
+</div>
+
+</figure>
+<!--
+...... subsection Загальний розв'язок і-рівняння ......
+-->
+<h5 id="autosec-1289">Загальний розв’язок і&nbsp;рівняння</h5>
+<a id="main-html-autopage-1289"></a>
+
+
+<p>
+Розглянемо збурення, що поширюється вздовж осі \(x\) без зміни форми зі швидкістю \(v\) (рис.&nbsp;<a href="ch16.html#pic:Perturbation">16.2</a>). Якщо в&nbsp;момент \(t=0\) профіль збурення описувався функцією \(u=f(x)\), то
+через час \(t\) те саме за формою збурення просто зміститься на відстань \(vt\), тобто опишеться функцією \(u = f(x-vt)\) (для хвилі, що біжить у&nbsp;додатному напрямку осі \(x\)) або \(u=g(x+vt)\) (для хвилі, що біжить у&nbsp;від’ємному
+напрямку). Загалом (суперпозиція обох):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{0}\)</span>
+
+<!--
+
+
+                                                      ᵆ = 𝑓(𝑥 − 𝑣𝑡) + 𝑔(𝑥 + 𝑣𝑡).                                                   (16.1)                                                        --><a id="eq:DAlembertSolution"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:DAlembertSolution} u = f(x-vt) + g(x+vt).
+\end{equation}
+
+</p>
+
+<figure id="autoid-466" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-255"
+    class="lateximagesource"
+><!--
+𝑢
+        𝑓(𝜉)
+
+
+
+                                   𝑣
+
+
+                                       𝑥
+    𝜉
+𝑢
+                            𝑓(𝜉)
+                       𝑣𝑡
+
+                                   𝑣
+
+
+                   |
+                                       𝑥
+               𝑥
+--><img
+   src="main-html-images\image-255.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;16.2. Збурення, що поширюється без зміни форми зі швидкістю \(v\): профіль у&nbsp;момент \(t\) — це профіль у&nbsp;момент \(0\), зсунутий на \(vt\)<a id="pic:Perturbation"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Конкретний вигляд функцій \(f\) і&nbsp;\(g\) визначається початковими умовами (початковою формою збурення й&nbsp;початковим розподілом швидкостей) і&nbsp;може бути яким завгодно. Знайдемо диференціальне рівняння, якому
+підпорядковується <em>будь-яка</em> функція вигляду&nbsp;<span class="textup">(<a href="ch16.html#eq:DAlembertSolution">16.1</a>)</span>, незалежно від її конкретного вигляду. Позначимо \(\xi = x-vt\); тоді, за правилом
+диференціювання складеної функції,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{1}\)</span>
+
+<!--
+
+
+                                                                                       𝜕ᵆ             𝜕2 ᵆ             𝜕ᵆ                 𝜕2 ᵆ
+                                                                                          = 𝑓′ (𝜉),        = 𝑓″ (𝜉);      = −𝑣𝑓′ (𝜉),          = 𝑣2 𝑓″ (𝜉)
+                                                                                       𝜕𝑥             𝜕𝑥2              𝜕𝑡                 𝜕𝑡2
+
+-->
+
+<p>
+
+\begin{equation*}
+\frac {\partial u}{\partial x} = f&apos;(\xi ), \qquad \frac {\partial ^2 u}{\partial x^2} = f&apos;&apos;(\xi ); \qquad \frac {\partial u}{\partial t} = -vf&apos;(\xi ), \qquad \frac {\partial ^2u}{\partial
+t^2} = v^2f&apos;&apos;(\xi )
+\end{equation*}
+
+</p>
+
+<p>
+(і&nbsp;аналогічно для доданка \(g(x+vt)\), з&nbsp;тим самим кінцевим результатом через парність других похідних за знаком швидкості). Порівнюючи другі похідні, знаходимо <em>хвильове рівняння</em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{1}\)</span>
+
+<!--
+
+
+                                                           𝜕2 ᵆ   1 𝜕2 ᵆ
+                                                                = 2      .                                                              (16.2)                                                  --><a id="eq:WaveEquation1D"></a><!--
+                                                           𝜕𝑥2   𝑣 𝜕𝑡2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:WaveEquation1D} \frac {\partial ^2 u}{\partial x^2} = \frac 1{v^2}\frac {\partial ^2u}{\partial t^2}.
+\end{equation}
+
+</p>
+
+<p>
+У&nbsp;тривимірному випадку, коли збурення поширюється в&nbsp;довільних напрямках, хвильове рівняння узагальнюють, замінюючи другу похідну за \(x\) на лапласіан \(\nabla ^2 = \dfrac {\partial ^2}{\partial x^2}+\dfrac
+{\partial ^2}{\partial y^2}+\dfrac {\partial ^2}{\partial z^2}\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{2}\)</span>
+
+<!--
+
+
+                                                                    1 𝜕2 ᵆ
+                                                           ∇2 ᵆ =          .                                                            (16.3)                                                  --><a id="eq:WaveEquation3D"></a><!--
+                                                                    𝑣2 𝜕𝑡2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:WaveEquation3D} \tcbhighmath { \nabla ^2 u = \frac 1{v^2}\frac {\partial ^2u}{\partial t^2}. }
+\end{equation}
+
+</p>
+
+<p>
+Рівняння&nbsp;<span class="textup">(<a href="ch16.html#eq:WaveEquation3D">16.3</a>)</span>&nbsp;— своєрідний «пароль», за яким фізики впізнають хвильові процеси в&nbsp;зовсім різних розділах фізики: <em>якщо якісь закони
+фізики (механіки, акустики, електродинаміки, теорії поля) приводять до рівняння саме такого вигляду, то ці закони описують поширення хвиль</em> зі швидкістю \(v\), яка входить у&nbsp;це рівняння,&nbsp;— незалежно від конкретної
+фізичної природи величини \(u\).
+</p>
+<!--
+...... subsection Плоска монохроматична хвиля ......
+-->
+<h5 id="autosec-1293">Плоска монохроматична хвиля</h5>
+<a id="main-html-autopage-1293"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Плоскою хвилею</span></em> називають хвилю, що має однакове значення \(u\) в&nbsp;усіх точках площини, перпендикулярної до напряму її поширення (<em><span
+    class="textcolor"
+    style="color:#990000"
+>хвильової площини</span></em>, рис.&nbsp;<a href="ch16.html#pic:WavevectorGeometry">16.3</a>). Хвилю називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>монохроматичною</span></em>, якщо \(u\) змінюється з&nbsp;часом за гармонічним законом з&nbsp;певною частотою. Для плоскої монохроматичної хвилі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{3}\)</span>
+
+<!--
+
+
+                                                           ᵆ = ᵆ𝑚 cos(𝜔𝑡 − 𝐤 ⋅ 𝐫).                                                (16.4)                      --><a id="eq:PlaneWaveDef"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PlaneWaveDef} u = u_m\cos (\omega t - \vect k\cdot \vect r).
+\end{equation}
+
+</p>
+
+<figure id="autoid-467" class="figure ">
+<div class="center">
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:232pt ; ">
+
+<a id="main-html-autopage-1295"></a>
+
+<p>
+<span
+    id="lateximage-main-html-256"
+    class="lateximagesource"
+><!--
+𝑦
+            Хвильові
+            площини
+
+
+
+
+        𝐤
+
+            Хвильовий вектор
+             — задає напрям
+            поширення хвилі
+
+
+    𝐫
+
+
+
+                               𝑥
+--><img
+   src="main-html-images\image-256.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+</div>
+
+&#x2003;
+
+&#x2003;
+<div class="minipage" style="vertical-align:bottom ; justify-content:flex-start ; width:232pt ; ">
+
+<a id="main-html-autopage-1298"></a>
+
+<p>
+
+<a href="ElMagWaves/Pictures/plane_wave.png" target="_blank" ><img
+   src="ElMagWaves/Pictures/plane_wave.png"
+   style="
+   width:208pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+</div>
+
+
+<div class="figurecaption">
+Рис.&nbsp;16.3. Хвильовий вектор \(\vect k\) вказує напрям поширення плоскої хвилі й&nbsp;перпендикулярний до хвильових площин<a id="pic:WavevectorGeometry"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Для зручності плоску монохроматичну хвилю часто подають у&nbsp;комплексній формі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{4}\)</span>
+
+<!--
+
+
+                                                           ᵆ = ᵆ𝑚 𝑒𝑖(𝜔𝑡−𝐤⋅𝐫) ,                                             (16.5)                                                    --><a id="eq:PlaneWaveComplex"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PlaneWaveComplex} u = u_m\, e^{i(\omega t - \vect k\cdot \vect r)},
+\end{equation}
+
+</p>
+
+<p>
+розуміючи, що фізичний зміст має лише <em>дійсна</em> частина цього виразу (сама ж комплексна форма&nbsp;— лише зручний обчислювальний прийом: формула Ейлера \(e^{i\theta }=\cos \theta +i\sin \theta \) дає змогу компактно
+поєднати синус і&nbsp;косинус, а&nbsp;диференціювання й&nbsp;інтегрування зводяться до простого множення на \(i\omega \) чи \(-i\vect k\)).
+</p>
+<!--
+...... subsection Характеристики монохроматичної хвилі ......
+-->
+<h5 id="autosec-1299">Характеристики монохроматичної хвилі</h5>
+<a id="main-html-autopage-1299"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Довжиною хвилі</span></em> \(\lambda \) називають найменшу відстань між двома точками простору, що коливаються цілком синхронно (в&nbsp;одній фазі), виміряну вздовж напряму поширення:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{5}\)</span>
+
+<!--
+
+                                                                           2𝜋
+                                                                      𝜆=      ,                                                    (16.6)                                                    --><a id="eq:Wavelength"></a><!--
+                                                                            𝑘
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Wavelength} \lambda = \frac {2\pi }{k},
+\end{equation}
+
+</p>
+
+<p>
+де \(\vect k\)&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>хвильовий вектор</span></em>, напрямлений уздовж поширення хвилі перпендикулярно до хвильової площини, а&nbsp;\(k=|\vect k|\) — <em><span
+    class="textcolor"
+    style="color:#990000"
+>хвильове число</span></em>. Величину \(\omega \) у&nbsp;формулі&nbsp;<span class="textup">(<a href="ch16.html#eq:PlaneWaveDef">16.4</a>)</span> називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>коловою частотою</span></em> хвилі, а&nbsp;\(T=2\pi /\omega \) — <em><span
+    class="textcolor"
+    style="color:#990000"
+>періодом</span></em>. Нарешті, <em><span
+    class="textcolor"
+    style="color:#990000"
+>фазовою швидкістю</span></em> хвилі називають швидкість, з&nbsp;якою в&nbsp;просторі переміщується точка з&nbsp;фіксованою фазою \(\omega t - \vect k\cdot \vect r = \const \):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{6}\)</span>
+
+<!--
+
+
+                                                                𝜔             𝜔 𝐤
+                                                           𝑣=     ,    𝐯=         .                                             (16.7)                                                     --><a id="eq:PhaseVelocity"></a><!--
+                                                                𝑘             𝑘 𝑘
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PhaseVelocity} v = \frac \omega k, \qquad \vect v = \frac \omega k\,\frac {\vect k}k.
+\end{equation}
+
+</p>
+<!--
+...... section Електромагнітні хвилі ......
+-->
+<h4 id="autosec-1300"><span class="sectionnumber">&#xA7;&#x202F;16.2&#x2003;</span>Електромагнітні хвилі</h4>
+<a id="main-html-autopage-1300"></a>
+
+
+<p>
+<a id="LWR-ht-electromagnetic-waves"></a>
+</p>
+<!--
+...... subsection Виведення хвильових рівнянь з-рівнянь Максвелла ......
+-->
+<h5 id="autosec-1301">Виведення хвильових рівнянь з&nbsp;рівнянь Максвелла</h5>
+<a id="main-html-autopage-1301"></a>
+
+
+<p>
+Розглянемо електромагнітне поле в&nbsp;однорідній ділянці простору, де немає вільних зарядів і&nbsp;струмів провідності (\(\rho =0\), \(\vect j=0\)). Рівняння Максвелла (розділ&nbsp;<a href="ch14.html#MaxwellEqns">14</a>)
+у&nbsp;цьому випадку спрощуються:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{7}\)</span>
+
+<!--
+
+                                                             1 𝜕𝐁                                  1 𝜕𝐃
+                                     𝛁 ⋅ 𝐁 = 0,   𝛁×𝐄=−           ,       𝛁 ⋅ 𝐃 = 0,        𝛁×𝐇=        ,                                    (16.8)                                           --><a id="eq:MaxwellNoSources"></a><!--
+                                                             𝑐 𝜕𝑡                                  𝑐 𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:MaxwellNoSources} \divg \Bfield =0, \qquad \rot \Efield = -\frac 1c\parttime {\Bfield }, \qquad \divg \Dfield =0, \qquad \rot \Hfield = \frac 1c\parttime {\Dfield },
+\end{equation}
+
+</p>
+
+<p>
+доповнені матеріальними рівняннями \(\Dfield =\epsilon \Efield \), \(\Bfield =\mu \Hfield \) (нехай середовище однорідне й&nbsp;ізотропне, без дисперсії: \(\epsilon ,\mu =\const \)).
+</p>
+
+<p>
+Застосуємо операцію \(\rot \) до другого рівняння:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{8}\)</span>
+
+<!--
+
+
+                                                                                                                  1 𝜕              𝜇 𝜕             𝜖𝜇 𝜕2 𝐄
+                                                                                                        𝛁×𝛁×𝐄=−        (𝛁 × 𝐁) = −      (𝛁 × 𝐇) = − 2
+                                                                                                                  𝑐 𝜕𝑡             𝑐 𝜕𝑡            𝑐 𝜕𝑡2
+
+-->
+
+<p>
+
+\begin{equation*}
+\rot \rot \Efield = -\frac 1c\parttime {}\left (\rot \Bfield \right ) = -\frac \mu {c}\parttime {}\left (\rot \Hfield \right ) = -\frac {\epsilon \mu }{c^2}\pparttime {\Efield }
+\end{equation*}
+
+</p>
+
+<p>
+(в&nbsp;останній рівності скористались четвертим рівнянням). З&nbsp;іншого боку, за тотожністю векторного аналізу й&nbsp;\(\divg \Efield =0\) (яке випливає з \(\divg \Dfield =0\)): \(\rot \rot \Efield = \grad (\divg \Efield
+)-\nabla ^2\Efield = -\nabla ^2\Efield \). Прирівнюючи, отримуємо хвильове рівняння для електричного поля:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{8}\)</span>
+
+<!--
+
+
+                                                                               1 𝜕2 𝐄
+                                                                      ∇2 𝐄 =          .                                                                 (16.9)                                          --><a id="eq:WaveEqE"></a><!--
+                                                                               𝑣2 𝜕𝑡2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:WaveEqE} \tcbhighmath { \nabla ^2\Efield = \frac 1{v^2}\pparttime {\Efield }. }
+\end{equation}
+
+</p>
+
+<p>
+Цілком аналогічно, застосувавши \(\rot \) до четвертого рівняння й&nbsp;підставивши друге, отримуємо те саме рівняння для магнітного поля:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{9}\)</span>
+
+<!--
+
+
+                                                                    1 𝜕2 𝐇                 𝑐
+                                                           ∇2 𝐇 =          ,        𝑣=        .                                                        (16.10)                                          --><a id="eq:WaveEqH"></a><!--
+                                                                    𝑣2 𝜕𝑡2                √𝜖𝜇
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:WaveEqH} \tcbhighmath { \nabla ^2\Hfield = \frac 1{v^2}\pparttime {\Hfield }, \qquad v = \frac {c}{\sqrt {\epsilon \mu }}. }
+\end{equation}
+
+</p>
+<!--
+...... subsection Швидкість поширення і-показник заломлення ......
+-->
+<h5 id="autosec-1302">Швидкість поширення і&nbsp;показник заломлення</h5>
+<a id="main-html-autopage-1302"></a>
+
+
+<p>
+Отже, поля \(\Efield \) і&nbsp;\(\Hfield \) підпорядковуються <em><span
+    class="textcolor"
+    style="color:#990000"
+>хвильовому рівнянню</span></em>, тобто описують процес поширення збурень електромагнітного поля&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>електромагнітну хвилю</span></em>,&nbsp;— зі швидкістю
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{10}\)</span>
+
+<!--
+
+                                                                     𝑐
+                                                               𝑣=       .                                                              (16.11)                                                --><a id="eq:WaveSpeed"></a><!--
+                                                                    √𝜖𝜇
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:WaveSpeed} v = \frac {c}{\sqrt {\epsilon \mu }}.
+\end{equation}
+
+</p>
+
+<p>
+У&nbsp;вакуумі (\(\epsilon =\mu =1\)) швидкість поширення дорівнює електродинамічній сталій \(c\approx 3\cdot 10^{10}\)&nbsp;см/с&nbsp;— <em><span
+    class="textcolor"
+    style="color:#990000"
+>швидкості світла</span></em>. У середовищі з&nbsp;\(\epsilon ,\mu \geqslant 1\) швидкість поширення менша, \(v=c/n&lt;c\), де
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{11}\)</span>
+
+<!--
+
+
+                                                            𝑛 = √𝜖𝜇,                                                         (16.12)                                                    --><a id="eq:RefractiveIndex"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RefractiveIndex} n = \sqrt {\epsilon \mu },
+\end{equation}
+
+</p>
+
+<p>
+— <em><span
+    class="textcolor"
+    style="color:#990000"
+>абсолютний показник заломлення</span></em> середовища.
+</p>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> Швидкість, що випливає з&nbsp;рівнянь Максвелла, у&nbsp;вакуумі дорівнює відношенню електромагнітної й&nbsp;електростатичної одиниць заряду. Цю величину виміряли В.&nbsp;Вебер і&nbsp;Р.&nbsp;Кольрауш
+(1856&nbsp;р.)&nbsp;[<a href="ch23.html#LWR-ht-cite.0@WeberKohlrausch1856">46</a>]: вона становила близько \(3{,}1\cdot 10^{10}\)&nbsp;см/с і&nbsp;майже збігалася зі швидкістю світла, виміряною А.&nbsp;Фізо (\(\approx
+3{,}15\cdot 10^{10}\)&nbsp;см/с). Помітивши цей збіг, Максвелл (1861–1865&nbsp;рр.)&nbsp;[<a href="ch23.html#LWR-ht-cite.0@Maxwell1865">16</a>] висунув гіпотезу, що <em>світло&nbsp;— це електромагнітна хвиля</em>,
+а&nbsp;оптика&nbsp;— розділ електродинаміки. Це один із найграндіозніших результатів класичної фізики: рівняння, сформульовані на основі дослідів з&nbsp;електрикою й&nbsp;магнетизмом, <em>самі собою</em> описують світло.
+Експериментально електромагнітні хвилі отримав Г.&nbsp;Герц у 1886–1888&nbsp;рр.&nbsp;[<a href="ch23.html#LWR-ht-cite.0@Hertz1893ElectricWaves">27</a>], уже після смерті Максвелла (1879&nbsp;р.); його досліди описано
+в&nbsp;розділі&nbsp;<a href="ch17.html#Radiation">17</a>.
+</p>
+</div>
+<!--
+...... subsection Плоскі електромагнітні хвилі ......
+-->
+<h5 id="autosec-1303">Плоскі електромагнітні хвилі</h5>
+<a id="main-html-autopage-1303"></a>
+
+
+<p>
+Розглянемо гармонічні електромагнітні хвилі в&nbsp;комплексній формі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{12}\)</span>
+
+<!--
+
+
+                                                  𝐄 = 𝐄𝑚 𝑒𝑖(𝜔𝑡−𝐤⋅𝐫) ,      𝐇 = 𝐇𝑚 𝑒𝑖(𝜔𝑡−𝐤⋅𝐫) .                                (16.13)                                                --><a id="eq:PlaneEMWave"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PlaneEMWave} \vect E = \vect E_m\, e^{i(\omega t-\vect k\cdot \vect r)}, \qquad \vect H = \vect H_m\, e^{i(\omega t-\vect k\cdot \vect r)}.
+\end{equation}
+
+</p>
+
+<p>
+Підставляючи ці вирази в&nbsp;рівняння Максвелла, диференціальні операції заміняються алгебраїчними за правилом
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{13}\)</span>
+
+<!--
+
+                                                                        𝜕
+                                                     𝛁 → −𝑖𝐤,              → 𝑖𝜔                                    (16.14)                                                   --><a id="eq:OperatorSubstitution"></a><!--
+                                                                        𝜕𝑡
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:OperatorSubstitution} \grad \to -i\vect k, \qquad \parttime {} \to i\omega
+\end{equation}
+
+</p>
+
+<p>
+(легко переконатися прямим диференціюванням&nbsp;<span class="textup">(<a href="ch16.html#eq:PlaneEMWave">16.13</a>)</span>). Рівняння Максвелла&nbsp;<span class="textup">(<a
+href="ch16.html#eq:MaxwellNoSources">16.8</a>)</span> набувають вигляду
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{14}\)</span>
+
+<!--
+
+                                                                            𝜔                    𝜔
+                                     𝐤 ⋅ 𝐄 = 0,   𝐤 ⋅ 𝐁 = 0,     𝐤×𝐄=         𝐁,    −𝐤 × 𝐇 =       𝜖𝐄.                  (16.15)                                                  --><a id="eq:MaxwellPlaneWave"></a><!--
+                                                                            𝑐                    𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:MaxwellPlaneWave} \vect k\cdot \Efield =0, \qquad \vect k\cdot \Bfield =0, \qquad \vect k\times \Efield = \frac \omega {c}\Bfield , \qquad -\vect k\times \Hfield = \frac \omega c\epsilon \Efield .
+\end{equation}
+
+</p>
+<!--
+...... subsection Поперечність електромагнітних хвиль ......
+-->
+<h5 id="autosec-1304">Поперечність електромагнітних хвиль</h5>
+<a id="main-html-autopage-1304"></a>
+
+
+<p>
+Перші два рівняння системи&nbsp;<span class="textup">(<a href="ch16.html#eq:MaxwellPlaneWave">16.15</a>)</span> показують, що
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{15}\)</span>
+
+<!--
+
+
+                                                            𝐄 ⟂ 𝐤,      𝐇⟂𝐤∶                                                     (16.16)                                                      --><a id="eq:Transversality"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Transversality} \Efield \perp \vect k, \qquad \Hfield \perp \vect k:
+\end{equation}
+
+</p>
+
+<p>
+вектори \(\Efield \) і&nbsp;\(\Hfield \) перпендикулярні до напряму поширення хвилі. Цю властивість називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>поперечністю</span></em> електромагнітних хвиль. Два інші рівняння дають співвідношення для амплітуд (і&nbsp;показують, що \(\Efield \perp \Hfield \), тобто \(\Efield \), \(\Hfield \), \(\vect k\) утворюють правовинтову трійку
+взаємно перпендикулярних векторів):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{16}\)</span>
+
+<!--
+
+
+                                                 𝑛𝐸𝑚 = 𝐵𝑚 ,          √𝜖 𝐸𝑚 = √𝜇 𝐻𝑚 .                                          (16.17)                                                     --><a id="eq:AmplitudeRelation"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:AmplitudeRelation} \tcbhighmath { nE_m = B_m, \qquad \sqrt \epsilon \, E_m = \sqrt \mu \, H_m. }
+\end{equation}
+
+</p>
+
+<p>
+Поперечність&nbsp;— принципова властивість, що відрізняє електромагнітні хвилі, наприклад, від звуку в&nbsp;газах і&nbsp;рідинах (поздовжнього). Разом з&nbsp;<span class="textup">(<a
+href="ch16.html#eq:AmplitudeRelation">16.17</a>)</span> вона означає, що в&nbsp;біжучій електромагнітній хвилі \(\Efield \) і&nbsp;\(\Hfield \) не є незалежними: досить знати одне з них (наприклад, \(\Efield \)) у&nbsp;кожен
+момент часу, щоб миттєво відновити й&nbsp;друге.
+</p>
+<!--
+...... section Енергія та вектор Пойнтінга для хвилі ......
+-->
+<h4 id="autosec-1305"><span class="sectionnumber">&#xA7;&#x202F;16.3&#x2003;</span>Енергія та вектор Пойнтінга для хвилі</h4>
+<a id="main-html-autopage-1305"></a>
+
+
+<p>
+<a id="LWR-ht-poynting-vector-energy"></a>
+</p>
+
+<p>
+Густина енергії електромагнітного поля (розділ&nbsp;<a href="ch14.html#MaxwellEqns">14</a>) для амплітудних значень:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{17}\)</span>
+
+<!--
+
+                                                              2
+                                                            𝜖𝐸𝑚   𝜇𝐻𝑚2
+                                                    𝑤𝑚 =        +      .                                                 (16.18)                                                --><a id="eq:EnergyDensityAmplitude"></a><!--
+                                                             8𝜋    8𝜋
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:EnergyDensityAmplitude} w_m = \frac {\epsilon E_m^2}{8\pi }+\frac {\mu H_m^2}{8\pi }.
+\end{equation}
+
+</p>
+
+<p>
+Скориставшись співвідношенням амплітуд&nbsp;<span class="textup">(<a href="ch16.html#eq:AmplitudeRelation">16.17</a>)</span>, \(\sqrt {\epsilon /\mu }\,E_m = H_m\), електрична й&nbsp;магнітна частини густини енергії
+виявляються <em>рівними</em> одна одній, і
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{18}\)</span>
+
+<!--
+
+                                                                                                                   2
+                                                                                                                 𝜖𝐸𝑚   𝜇𝐻𝑚2
+                                                                                                          𝑤𝑚 =       =      .
+                                                                                                                  4𝜋    4𝜋
+
+-->
+
+<p>
+
+\begin{equation*}
+w_m = \frac {\epsilon E_m^2}{4\pi } = \frac {\mu H_m^2}{4\pi }.
+\end{equation*}
+
+</p>
+
+<p>
+Плоску монохроматичну електромагнітну хвилю, у&nbsp;якій вектори \(\Efield \) і&nbsp;\(\Hfield \) взаємно перпендикулярні та поширюються вздовж \(\vect k\), зображено на рис.&nbsp;<a href="ch16.html#pic:EMWave">16.4</a>.
+</p>
+
+<figure id="autoid-468" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-257"
+    class="lateximagesource"
+><!--
+    𝑦
+            𝐄
+        𝐇
+                𝐤
+𝑧
+
+
+
+
+                    𝑥
+--><img
+   src="main-html-images\image-257.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;16.4. Плоска монохроматична електромагнітна хвиля: взаємно перпендикулярні коливання \(\Efield \) і&nbsp;\(\Hfield \), що поширюються вздовж \(\vect k\)
+
+</div>
+
+<a id="pic:EMWave"></a>
+
+</div>
+
+</figure>
+
+<p>
+Знайдемо вектор Пойнтінга \(\vect \Pi = \dfrac {c}{4\pi }\left [\Efield \times \Hfield \right ]\) для хвилі. Вектори \(\Efield \), \(\Hfield \), \(\vect k\) утворюють праву трійку взаємно перпендикулярних векторів, тому
+\(\Efield \times \Hfield \) напрямлений уздовж \(\vect k\), а&nbsp;за&nbsp;<span class="textup">(<a href="ch16.html#eq:AmplitudeRelation">16.17</a>)</span> (воно справедливе й&nbsp;для миттєвих значень полів) \(E=\sqrt
+{\mu /\epsilon }\,H\). Отже,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{18}\)</span>
+
+<!--
+
+
+                                                   𝑐   𝜇 2𝐤     𝑐   𝜇𝐻 2 𝐤
+                                             𝚷=          𝐻   =    (     ) .                                              (16.19)                                                       --><a id="eq:PoyntingWaveDerivation"></a><!--
+                                                  4𝜋 √ 𝜖   𝑘   √𝜖𝜇 4𝜋 𝑘
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PoyntingWaveDerivation} \vect \Pi = \frac {c}{4\pi }\sqrt {\frac \mu \epsilon }\,H^2\,\frac {\vect k}{k} = \frac {c}{\sqrt {\epsilon \mu }}\left (\frac {\mu H^2}{4\pi }\right )\frac {\vect k}{k}.
+\end{equation}
+
+</p>
+
+<p>
+Тут \(\mu H^2/(4\pi ) = w\)&nbsp;— густина енергії, а&nbsp;\(c/\sqrt {\epsilon \mu }\cdot \vect k/k = \vect v\) (за&nbsp;<span class="textup">(<a href="ch16.html#eq:WaveSpeed">16.11</a>)</span>), тож отримуємо простий
+результат:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{19}\)</span>
+
+<!--
+
+
+                                                            𝚷 = 𝑤𝐯.                                                           (16.20)                                                      --><a id="eq:PoyntingWaveResult"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:PoyntingWaveResult} \tcbhighmath { \vect \Pi = w\vect v. }
+\end{equation}
+
+</p>
+
+<p>
+Формула&nbsp;<span class="textup">(<a href="ch16.html#eq:PoyntingWaveResult">16.20</a>)</span> має простий фізичний зміст: енергія електромагнітної хвилі <em>переноситься разом з&nbsp;нею</em> зі швидкістю поширення самої
+хвилі \(\vect v\)&nbsp;— вектор Пойнтінга просто дорівнює густині енергії, помноженій на швидкість її «течії», за повною аналогією з&nbsp;потоком речовини (густина \(\times \) швидкість).
+</p>
+
+<p>
+Оптичні поля змінюються надто швидко (\(\sim 10^{15}\)&nbsp;Гц), тому приймачі реєструють не миттєвий, а&nbsp;<em><span
+    class="textcolor"
+    style="color:#990000"
+>усереднений</span></em> за період потік енергії. Його модуль називають <em>інтенсивністю</em> випромінювання; оскільки середнє від \(\cos ^2\) дорівнює \(1/2\), то \(\langle w\rangle = w_m/2\) і
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{20}\)</span>
+
+<!--
+
+
+                                                                          𝑐   𝜖 2
+                                                    𝐼 = ⟨|𝚷|⟩ = ⟨𝑤⟩𝑣 =              2 .
+                                                                               𝐸 ∝ 𝐸𝑚                                                   (16.21)                                                       --><a id="eq:Intensity"></a><!--
+                                                                         8𝜋 √ 𝜇 𝑚
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:Intensity} I = \left \langle |\vect \Pi |\right \rangle = \langle w\rangle v = \frac {c}{8\pi }\sqrt {\frac {\epsilon }{\mu }}\,E_m^2 \propto E_m^2.
+\end{equation}
+
+</p>
+<!--
+...... subsection Тиск електромагнітної хвилі ......
+-->
+<h5 id="autosec-1309">Тиск електромагнітної хвилі</h5>
+<a id="main-html-autopage-1309"></a>
+
+
+<p>
+Електромагнітні хвилі, відбиваючись від тіл чи поглинаючись ними, чинять на них тиск. Цей тиск виникає внаслідок дії магнітного поля хвилі на електричні струми, збуджені в&nbsp;тілі електричним полем тієї самої хвилі (рис.&nbsp;<a
+href="ch16.html#pic:EMPressure">16.5</a>).
+</p>
+
+<figure id="autoid-469" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-258"
+    class="lateximagesource"
+><!--
+    𝑦
+
+
+
+
+    𝐄
+            𝑑𝐟
+                 𝑥
+
+
+        𝐁
+            𝑧
+𝐜
+--><img
+   src="main-html-images\image-258.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;16.5. Механізм виникнення тиску електромагнітної хвилі: сила Ампера \(d\vect f\), що діє на струм, збуджений полем \(\Efield \), у&nbsp;полі \(\Bfield \)<a id="pic:EMPressure"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Електричне поле хвилі збуджує в&nbsp;тілі струм густиною \(\vect j=\sigma \Efield \) (тут \(\sigma \)&nbsp;— питома провідність; у&nbsp;розділі&nbsp;<a href="ch14.html#MaxwellEqns">14</a> її позначено \(\lambda \), але цю літеру
+ми залишаємо для довжини хвилі), на який з&nbsp;боку магнітного поля хвилі \(B=nE=(c/v)E\) діє сила Ампера \(d\vect F = \tfrac 1c[\vect j\times \Bfield ]\,dV\), спрямована вздовж поширення хвилі. Якщо вся енергія, що падає на
+поверхню тіла (\(\Pi \, dS = wv\, dS\)), перетворюється на теплоту (\(\vect j\cdot \Efield \, dV\)), тобто \(wv\,dS = jE\,dV\), то сила, що діє на поверхню:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{21}\)</span>
+
+<!--
+
+                                                1        1 𝑐      1       1
+                                         𝑑𝐹 =     𝑗𝐵 𝑑𝑉 = 𝑗 𝐸 𝑑𝑉 = 𝑗𝐸 𝑑𝑉 = 𝑤𝑣 𝑑𝑆 = 𝑤 𝑑𝑆,                                             (16.22)                                                     --><a id="eq:RadiationForce"></a><!--
+                                                𝑐        𝑐 𝑣      𝑣       𝑣
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RadiationForce} dF = \frac 1c jB\,dV = \frac 1c j\frac {c}{v}E\,dV = \frac 1v jE\,dV = \frac 1v wv\,dS = w\,dS,
+\end{equation}
+
+</p>
+
+<p>
+звідки тиск при повному поглинанні
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{22}\)</span>
+
+<!--
+
+
+                                                            𝑝 = 𝑤.                                                         (16.23)                                                     --><a id="eq:RadiationPressureFull"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RadiationPressureFull} p = w.
+\end{equation}
+
+</p>
+
+<p>
+У&nbsp;випадку часткового відбивання (коефіцієнт відбивання за енергією \(0\leqslant \mathcal R\leqslant 1\)) тіло отримує додатковий імпульс від відбитої хвилі, і&nbsp;тиск
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{23}\)</span>
+
+<!--
+
+
+                                                      𝑝 = 𝑤(1 + ℛ).                                                    (16.24)                                                     --><a id="eq:RadiationPressurePartial"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RadiationPressurePartial} p = w(1+\mathcal R).
+\end{equation}
+
+</p>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> При повному відбиванні (\(\mathcal R=1\)) тиск <em>вдвічі</em> більший, ніж при повному поглинанні (\(\mathcal R=0\)). Тиск світла передбачив Дж.&nbsp;К.&nbsp;Максвелл (1873&nbsp;р.)&nbsp;<a
+id="main-html-autopage-1312"></a>[<a href="ch23.html#LWR-ht-cite.0@Maxwell1865">16</a>], а&nbsp;А.&nbsp;Бартоллі (1876&nbsp;р.)&nbsp;[<a href="ch23.html#LWR-ht-cite.0@Bartolli1876">85</a>] отримав його
+з&nbsp;термодинаміки. Експериментально тиск світла вперше виміряв П.&nbsp;М.&nbsp;Лебедєв (1899–1901&nbsp;рр.)&nbsp;[<a href="ch23.html#LWR-ht-cite.0@Lebedew1901">86</a>]: у&nbsp;крутильних терезах у&nbsp;високому вакуумі,
+на тонких крильцях&nbsp;— зачорненому (поглинальному) і&nbsp;дзеркальному (відбивальному),&nbsp;— світло створювало різні моменти сил, у&nbsp;згоді з&nbsp;формулою&nbsp;<span class="textup">(<a
+href="ch16.html#eq:RadiationPressurePartial">16.24</a>)</span> (рис.&nbsp;<a href="ch16.html#pic:LebedevExp">16.6</a>). Головна складність полягала в&nbsp;усуненні радіометричних і&nbsp;конвекційних ефектів
+у&nbsp;залишковому газі, які на порядки перевищують сам тиск світла.
+</p>
+</div>
+
+<figure id="autoid-470" class="figure ">
+<div class="center">
+
+<p>
+
+<a href="ElMagWaves/Pictures/LebedevExp.png" target="_blank" ><img
+   src="ElMagWaves/Pictures/LebedevExp.png"
+   style="
+   width:282pt;
+   "
+   class="inlineimage"
+   alt="(image)"
+></a>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;16.6. Схема досліду П.&nbsp;М.&nbsp;Лебедєва (1899&nbsp;р.) з&nbsp;вимірювання тиску світла<a id="pic:LebedevExp"></a>
+
+</div>
+
+</div>
+
+</figure>
+<!--
+...... subsection Тиск світла в-природі та техніці ......
+-->
+<h5 id="autosec-1314">Тиск світла в&nbsp;природі та техніці</h5>
+<a id="main-html-autopage-1314"></a>
+
+
+<p>
+Тиск сонячного світла, попри свою мізерну величину (на орбіті Землі&nbsp;— близько \(5\cdot 10^{-6}\)&nbsp;Па при повному поглинанні), відіграє помітну роль і&nbsp;в&nbsp;природних явищах, і&nbsp;в&nbsp;сучасних космічних
+технологіях.
+</p>
+
+<p>
+В&nbsp;астрофізиці тиск випромінювання, поряд із тиском газу, протидіє гравітаційному стисканню й&nbsp;забезпечує стійкість зір. У&nbsp;масивних гарячих зорях він стає настільки суттєвим, що визначає їхню структуру та еволюцію. Саме
+тиском сонячного світла пояснюється пиловий хвіст комети: дрібні пилинки «здуваються» в&nbsp;напрямку <em>від</em> Сонця, тому хвіст завжди орієнтований приблизно протилежно до Сонця, незалежно від напряму руху самої комети
+(задача&nbsp;<a href="ch16.html#prb:DustGrain">16.4</a>). Прямий іонний хвіст формує не тиск світла, а&nbsp;сонячний вітер.
+</p>
+
+<p>
+Ідея <em><span
+    class="textcolor"
+    style="color:#990000"
+>сонячного вітрила</span></em> полягає в&nbsp;тому, щоб використати тиск світла для розгону космічного апарата без витрати палива.
+</p>
+
+
+<div class="cb-historical">
+
+<p>
+<b>Історична довідка.</b> Першу спробу випробувати вітрило в&nbsp;космосі здійснила Планетарна спілка у 2005&nbsp;році (місія <em>Cosmos&nbsp;1</em>)&nbsp;[<a href="ch23.html#LWR-ht-cite.0@PlanetaryCosmos1">87</a>], але
+ракета-носій зазнала аварії, і&nbsp;апарат не досяг орбіти. Першим апаратом, який успішно використав сонячне вітрило для руху, став японський <em>IKAROS</em> (2010&nbsp;р., політ до Венери)&nbsp;[<a
+href="ch23.html#LWR-ht-cite.0@Tsuda2013">88</a>]. У 2019&nbsp;році <em>LightSail&nbsp;2</em> Планетарної спілки вперше серед малих апаратів змінив свою орбіту навколо Землі виключно за рахунок тиску сонячних фотонів&nbsp;[<a
+href="ch23.html#LWR-ht-cite.0@PlanetaryLightSail2">89</a>], а&nbsp;у 2024&nbsp;році NASA розгорнуло композитне вітрило <em>ACS3</em> площею близько \(80\)&nbsp;м\(^2\)&nbsp;[<a
+href="ch23.html#LWR-ht-cite.0@NASA_ACS3">90</a>]. Найамбітнішою залишається концепція лазерного вітрила для розгону грамових зондів до часток швидкості світла (проєкт <em>Breakthrough Starshot</em>)&nbsp;[<a
+href="ch23.html#LWR-ht-cite.0@BreakthroughStarshot">91</a>], хоча станом на середину 2020-х років вона далека від практичної реалізації.
+</p>
+</div>
+<!--
+...... section Імпульс і-момент імпульсу електромагнітного поля ......
+-->
+<h4 id="autosec-1315"><span class="sectionnumber">&#xA7;&#x202F;16.4&#x2003;</span>Імпульс і&nbsp;момент імпульсу електромагнітного поля</h4>
+<a id="main-html-autopage-1315"></a>
+
+
+<p>
+<a id="LWR-ht-em-field-momentum"></a>
+</p>
+<!--
+...... subsection Густина імпульсу поля ......
+-->
+<h5 id="autosec-1316">Густина імпульсу поля</h5>
+<a id="main-html-autopage-1316"></a>
+
+
+<p>
+Оскільки поле має енергію, а&nbsp;електромагнітна хвиля чинить тиск на речовину (передаючи їй імпульс), логічно припустити, що й&nbsp;саме поле, в&nbsp;одиниці об’єму, має певний <em><span
+    class="textcolor"
+    style="color:#990000"
+>імпульс</span></em>. Для електромагнітної хвилі у&nbsp;вакуумі \(\Pi = wc\). З&nbsp;релятивістського співвідношення енергії й&nbsp;імпульсу, \(E^2 = m^2c^4+p^2c^2\), для частинки з&nbsp;нульовою масою спокою (наприклад, фотона)
+\(E=pc\), тобто \(p=E/c\). Тому потоку енергії \(\Pi = wc\) має відповідати густина імпульсу \(w/c = \Pi /c^2\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{24}\)</span>
+
+<!--
+
+
+                                                                   𝚷
+                                                              𝐠=      .                                                                  (16.25)                                         --><a id="eq:MomentumDensityDef"></a><!--
+                                                                   𝑐2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:MomentumDensityDef} \tcbhighmath { \vect g = \frac {\vect \Pi }{c^2}. }
+\end{equation}
+
+</p>
+
+<p>
+Переконаємось у&nbsp;цьому прямим розрахунком, повторюючи міркування про тиск хвилі. Густина сили Ампера \(\vect f = \tfrac 1c[\vect j\times \Bfield ]\), що діє на струм, збуджений хвилею в&nbsp;тілі, за час \(dt\) змінює
+імпульс одиниці об’єму тіла на величину
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{25}\)</span>
+
+<!--
+
+                                                                                                          1             𝜍            4𝜋𝜍       4𝜋𝜍
+                                                                                            𝑑𝐠 = 𝐟 𝑑𝑡 =     [𝐣 × 𝐁] 𝑑𝑡 = [𝐄 × 𝐁] 𝑑𝑡 = 2 𝚷 𝑑𝑡 =     𝑤𝐧 𝑑𝑡,
+                                                                                                          𝑐             𝑐             𝑐         𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+d\vect g = \vect f\, dt = \frac 1c\left [\vect j\times \Bfield \right ]dt = \frac \sigma c\left [\Efield \times \Bfield \right ]dt = \frac {4\pi \sigma }{c^2}\vect \Pi \, dt = \frac {4\pi \sigma }c\, w\vect n\,
+dt,
+\end{equation*}
+
+</p>
+
+<p>
+тоді як за той самий час у&nbsp;тій самій одиниці об’єму поглинається (передається від поля речовині) енергія
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{25}\)</span>
+
+<!--
+
+
+                                                                                                                                    𝐸2
+                                                                                                    𝑑𝑤 = 𝐣 ⋅ 𝐄 𝑑𝑡 = 𝜍𝐸 2 𝑑𝑡 = 4𝜋𝜍      𝑑𝑡 = 4𝜋𝜍𝑤 𝑑𝑡.
+                                                                                                                                    4𝜋
+
+-->
+
+<p>
+
+\begin{equation*}
+dw = \vect j\cdot \Efield \, dt = \sigma E^2\, dt = 4\pi \sigma \frac {E^2}{4\pi }\, dt = 4\pi \sigma w\, dt.
+\end{equation*}
+
+</p>
+
+<p>
+Звідси \(d\vect g = \dfrac {dw}{c}\vect n\), тобто за весь час дії хвилі
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{25}\)</span>
+
+<!--
+
+                                                                 𝑤    𝚷
+                                                            𝐠=     𝐧= 2                                                                  (16.26)                                         --><a id="eq:MomentumDerivation"></a><!--
+                                                                 𝑐   𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:MomentumDerivation} \vect g = \frac {w}c\vect n = \frac {\vect \Pi }{c^2}
+\end{equation}
+
+</p>
+
+<p>
+— прямий розрахунок підтверджує результат&nbsp;<span class="textup">(<a href="ch16.html#eq:MomentumDensityDef">16.25</a>)</span>, отриманий раніше з&nbsp;релятивістської аналогії.
+</p>
+<!--
+...... subsection Приклад: момент імпульсу поля циліндричного конденсатора (парадокс Фейнмана) ......
+-->
+<h5 id="autosec-1317">Приклад: момент імпульсу поля циліндричного конденсатора (парадокс Фейнмана)</h5>
+<a id="main-html-autopage-1317"></a>
+
+
+<p>
+Заряджений циліндричний конденсатор (зовнішня обкладка радіуса \(R\), внутрішньою знехтуємо) вміщений у&nbsp;зовнішнє однорідне магнітне поле \(\Bfield \), напрямлене вздовж його осі; конденсатор може вільно обертатись навколо цієї
+осі. Внутрішня обкладка несе заряд \(+q\), зовнішня&nbsp;— \(-q\); маса конденсатора&nbsp;— \(m\) (рис.&nbsp;<a href="ch16.html#pic:CapacitorAngularMomentum">16.7</a>). Знайдемо момент імпульсу поля конденсатора та кутову
+швидкість, з&nbsp;якою конденсатор почне обертатися після вимкнення поля \(\Bfield \).
+</p>
+
+<figure id="autoid-471" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-259"
+    class="lateximagesource"
+><!--
+                                 𝐁
+
+
+ зовнішня обкладка
+              (−𝑞)
+                             𝐄
+
+                                     ℎ
+внутрішня обкладка
+              (+𝑞)   𝚷
+
+
+
+
+                         𝑅
+--><img
+   src="main-html-images\image-259.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;16.7. Циліндричний конденсатор: стрижень (внутрішня обкладка, \(+q\)) усередині труби (зовнішня обкладка, \(-q\)) в&nbsp;аксіальному магнітному полі \(\Bfield \). Радіальне поле \(\Efield \) між обкладками і&nbsp;поле \(\Bfield
+\) дають вектор Пойнтінга \(\vect \Pi \), що циркулює навколо осі<a id="pic:CapacitorAngularMomentum"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Густина моменту імпульсу поля відносно осі:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{26}\)</span>
+
+<!--
+
+                                                     𝚷     1                   1
+                                            ℒ=𝐫×        =     𝐫 × [𝐄 × 𝐁] = −     𝐁 (𝐫 ⋅ 𝐄)                                 (16.27)                                                       --><a id="eq:AngularMomentumDensity"></a><!--
+                                                     𝑐2   4𝜋𝑐                 4𝜋𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:AngularMomentumDensity} \vect {\mathcal L} = \vect r\times \frac {\vect \Pi }{c^2} = \frac 1{4\pi c}\vect {r}\times \left [\Efield \times \Bfield \right ] = -\frac 1{4\pi c}\Bfield \left (\vect
+r\cdot \Efield \right )
+\end{equation}
+
+</p>
+
+<p>
+(тут скористались тотожністю подвійного векторного добутку й&nbsp;тим, що \(\Bfield \perp \vect r\)). Поле між обкладками конденсатора, за теоремою Гаусса, \(E = 2q/(rh)\), де \(h\)&nbsp;— висота циліндра. Інтегруючи
+модуль&nbsp;<span class="textup">(<a href="ch16.html#eq:AngularMomentumDensity">16.27</a>)</span> за об’ємом між обкладками:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{27}\)</span>
+
+<!--
+
+                                        ˚
+                                                      1   2𝑞         𝑞𝐵𝑅2                𝑞𝑅2
+                                   𝐿=       ℒ 𝑑𝑉 =      𝐵    𝜋𝑅2 ℎ =      ,        𝐋=−       𝐁.                          (16.28)                                                        --><a id="eq:CapacitorAngularMomentum"></a><!--
+                                                     4𝜋𝑐 ℎ            2𝑐                  2𝑐
+                                        𝑉
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CapacitorAngularMomentum} L = \iiint \limits _V \mathcal L\, dV = \frac 1{4\pi c}B\,\frac {2q}h\,\pi R^2 h = \frac {qBR^2}{2c}, \qquad \vect L = -\frac {qR^2}{2c}\Bfield .
+\end{equation}
+
+</p>
+
+<p>
+При вимкненні магнітного поля момент імпульсу, який раніше «зберігався» в&nbsp;самому електромагнітному полі, нікуди не зникає&nbsp;— за законом збереження моменту імпульсу він переходить у&nbsp;механічне обертання самого
+конденсатора, \(L = mR^2\omega \) (наближено вважаючи всю масу розподіленою на радіусі \(R\)), звідки
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{28}\)</span>
+
+<!--
+
+                                                                         𝑞
+                                                                  𝝎=−       𝐁.                                                        (16.29)                                                      --><a id="eq:CapacitorOmega"></a><!--
+                                                                        2𝑚𝑐
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CapacitorOmega} \vect \omega = -\frac {q}{2mc}\Bfield .
+\end{equation}
+
+</p>
+
+<p>
+Це варіант відомого <em>парадоксу Фейнмана</em>: до вимкнення поля конденсатор <em>нерухомий</em>, і жодного механічного моменту імпульсу у&nbsp;видимій системі немає&nbsp;— проте <em><span
+    class="textcolor"
+    style="color:#990000"
+>момент імпульсу самого електромагнітного поля</span></em>, обчислений за формулою&nbsp;<span class="textup">(<a href="ch16.html#eq:CapacitorAngularMomentum">16.28</a>)</span>, відмінний від нуля! Коли поле \(\Bfield \)
+вимикають, змінне магнітне поле (розділ&nbsp;<a href="ch12.html#ElMagInduction">12</a>) породжує вихрове електричне поле, яке й&nbsp;розкручує заряджені обкладки конденсатора: момент імпульсу «перетікає» з&nbsp;поля в механічне
+обертання речовини, а&nbsp;повний момент імпульсу системи <em>поле + речовина</em> зберігається протягом усього процесу.
+</p>
+
+<p>
+Це легко перевірити незалежним розрахунком. За законом індукції вихрове поле на зовнішній обкладці \(E_\varphi \cdot 2\pi R = -\dfrac 1c\,\pi R^2\,\dfrac {dB}{dt}\), тож на заряд \(-q\) діє момент сили \(qR\cdot \dfrac
+{R}{2c}\dfrac {dB}{dt}\) (внутрішню обкладку, що лежить на осі, не враховуємо). Інтегруючи за часом від \(B\) до \(0\), знаходимо момент імпульсу, який набуває конденсатор, \(qR^2B/(2c)\) за модулем&nbsp;— рівно той, що було в&nbsp;полі.
+Це переконливий приклад того, що електромагнітне поле&nbsp;— цілком повноцінний фізичний об’єкт, здатний нести не лише енергію, а&nbsp;й&nbsp;імпульс, і&nbsp;момент імпульсу,&nbsp;— так само, як і&nbsp;звичайна речовина.
+</p>
+<!--
+...... section Відбивання хвиль від межі двох діелектриків ......
+-->
+<h4 id="autosec-1321"><span class="sectionnumber">&#xA7;&#x202F;16.5&#x2003;</span>Відбивання хвиль від межі двох діелектриків</h4>
+<a id="main-html-autopage-1321"></a>
+
+
+<p>
+<a id="LWR-ht-wave-reflection-dielectrics"></a>
+</p>
+
+<p>
+Ми розглядали електромагнітну хвилю, що поширюється в&nbsp;необмеженому однорідному середовищі. Однак хвиля рідко поширюється в&nbsp;однорідному середовищі необмежено довго&nbsp;— рано чи пізно вона зустрічає <em>межу
+розділу</em> двох середовищ із різними показниками заломлення, і&nbsp;саме там відбуваються найцікавіші явища: частина хвилі відбивається назад, а&nbsp;частина проходить у&nbsp;друге середовище. Покажемо, що закони відбивання
+й&nbsp;заломлення, а&nbsp;також кількісні співвідношення для амплітуд відбитої й&nbsp;заломленої хвиль (формули Френеля)&nbsp;— традиційно предмет геометричної та хвильової оптики&nbsp;— <em>прямо випливають</em> із граничних
+умов для електромагнітного поля на межі розділу (розділ&nbsp;<a href="ch14.html#MaxwellEqns">14</a>), без жодних додаткових постулатів, крім самих рівнянь Максвелла.
+</p>
+<!--
+...... subsection Поляризація хвиль ......
+-->
+<h5 id="autosec-1322">Поляризація хвиль</h5>
+<a id="main-html-autopage-1322"></a>
+
+
+<p>
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>Поляризація</span></em>&nbsp;— характеристика поперечних хвиль, що описує поведінку вектора величини, яка коливається (для електромагнітної хвилі — вектора \(\Efield \)), у&nbsp;площині, перпендикулярній до напряму поширення.
+При розгляді відбивання й&nbsp;заломлення хвилі на межі розділу двох середовищ зручно окремо розглядати два незалежні випадки поляризації відносно <em><span
+    class="textcolor"
+    style="color:#990000"
+>площини падіння</span></em> (площини, що містить хвильовий вектор падаючої хвилі й&nbsp;нормаль до межі розділу):
+</p>
+<ul class="itemize" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">•</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>\(s\)-поляризація</span></em> (від нім. <em>senkrecht</em>&nbsp;— перпендикулярний): вектор \(\Efield \) перпендикулярний до площини падіння (а отже, паралельний до межі розділу середовищ);
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">•</span> <em><span
+    class="textcolor"
+    style="color:#990000"
+>\(p\)-поляризація</span></em> (від <em>parallel</em>&nbsp;— паралельний): вектор \(\Efield \) лежить у&nbsp;площині падіння.
+</p>
+</li>
+</ul>
+
+<p>
+Довільну поляризацію хвилі завжди можна розкласти на суперпозицію цих двох незалежних випадків.
+</p>
+<!--
+...... subsection Закони відбивання й-заломлення (-поляризація) ......
+-->
+<h5 id="autosec-1323">Закони відбивання й&nbsp;заломлення (\(s\)-поляризація)</h5>
+<a id="main-html-autopage-1323"></a>
+
+
+<p>
+Розглянемо межу розділу (\(x=0\)) двох діелектриків з&nbsp;показниками заломлення \(n_1\) (при \(x&lt;0\)) і&nbsp;\(n_2\) (при \(x&gt;0\)), на яку під кутом \(i\) падає плоска \(s\)-поляризована хвиля (рис.&nbsp;<a
+href="ch16.html#pic:SPolarization">16.8</a>). Породжуються <em><span
+    class="textcolor"
+    style="color:#990000"
+>відбита</span></em> хвиля (кут \(i&apos;\)) і&nbsp;<em><span
+    class="textcolor"
+    style="color:#990000"
+>заломлена</span></em> хвиля (кут \(r\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{29}\)</span>
+
+<!--
+
+                                                                                                                              ′   ′    ′                     ″   ″     ″
+                                                                                    𝐸 = 𝐸𝑚 𝑒𝑖(𝜔𝑡−𝑘𝑥 𝑥−𝑘𝑦 𝑦) ,          ′ 𝑒𝑖(𝜔 𝑡−𝑘𝑥 𝑥−𝑘𝑦 𝑦) ,
+                                                                                                                𝐸 ′ = 𝐸𝑚                              ″ 𝑒𝑖(𝜔 𝑡−𝑘𝑥 𝑥−𝑘𝑦 𝑦) .
+                                                                                                                                               𝐸 ″ = 𝐸𝑚
+
+-->
+
+<p>
+
+\begin{equation*}
+E = E_m e^{i(\omega t - k_xx-k_yy)}, \qquad E&apos; = E&apos;_m e^{i(\omega &apos; t-k&apos;_xx-k&apos;_yy)}, \qquad E&apos;&apos; = E&apos;&apos;_m e^{i(\omega
+&apos;&apos;t-k&apos;&apos;_xx-k&apos;&apos;_yy)}.
+\end{equation*}
+
+</p>
+
+<figure id="autoid-472" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-260"
+    class="lateximagesource"
+><!--
+                         𝑦
+
+
+          ′         𝐁′       𝑘𝑦″   𝐤″
+      𝐤′ 𝑘𝑦
+
+𝑘𝑥′                          𝐄″    𝑘𝑥″
+       𝐄′
+                                   𝐁″
+                𝑖′           𝑟
+                 𝑖                   𝑥
+      𝑘𝑦    𝐤
+
+      𝐄             𝑘𝑥
+
+
+                𝐁
+--><img
+   src="main-html-images\image-260.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;16.8. Падаюча, відбита й&nbsp;заломлена \(s\)-поляризовані хвилі на межі розділу двох діелектриків<a id="pic:SPolarization"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Гранична умова для тангенціальної складової \(\Efield \) (\(E_{\tau _1}=E_{\tau _2}\), розділ&nbsp;<a href="ch14.html#MaxwellEqns">14</a>) при \(x=0\) мусить виконуватись у <em>кожен</em> момент часу \(t\)
+і&nbsp;в&nbsp;<em>кожній</em> точці \(y\) межі розділу одночасно:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{29}\)</span>
+
+<!--
+
+                                                                                                                          ′    ′             ″     ″
+                                                                                                                   ′ 𝑒𝑖(𝜔 𝑡−𝑘𝑦 𝑦) = 𝐸 ″ 𝑒𝑖(𝜔 𝑡−𝑘𝑦 𝑦) .
+                                                                                                 𝐸𝑚 𝑒𝑖(𝜔𝑡−𝑘𝑦 𝑦) + 𝐸𝑚                 𝑚
+
+
+-->
+
+<p>
+
+\begin{equation*}
+E_m\, e^{i(\omega t-k_yy)} + E&apos;_m\, e^{i(\omega &apos; t-k&apos;_yy)} = E&apos;&apos;_m\, e^{i(\omega &apos;&apos; t-k&apos;&apos;_yy)}.
+\end{equation*}
+
+</p>
+
+<p>
+Ця рівність виконується при всіх \(t\) і&nbsp;\(y\) лише тоді, коли збігаються показники експонент (експоненти з&nbsp;різними показниками лінійно незалежні), тобто
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{29}\)</span>
+
+<!--
+
+
+                                                  𝜔 = 𝜔′ = 𝜔 ″ ,        𝑘𝑦 = 𝑘′𝑦 = 𝑘″
+                                                                                    𝑦,                                                  (16.30)                                               --><a id="eq:BoundaryConditionE"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:BoundaryConditionE} \omega = \omega &apos; = \omega &apos;&apos;, \qquad k_y = k&apos;_y = k&apos;&apos;_y,
+\end{equation}
+
+</p>
+
+<p>
+після чого гранична умова спрощується до \(E_m + E&apos;_m = E&apos;&apos;_m\). Рівність частот означає, що колір (частота) світла не змінюється при відбиванні чи заломленні. З&nbsp;рівності \(k_y = k&apos;_y\) (з&nbsp;огляду на те, що
+падаюча й&nbsp;відбита хвилі перебувають в&nbsp;одному середовищі, \(k=k&apos;=n_1\omega /c\), а \(k_y = k\sin i\), \(k&apos;_y=k&apos;\sin i&apos;\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{30}\)</span>
+
+<!--
+
+
+                                                                   𝑖 = 𝑖′                                                                   (16.31)                                              --><a id="eq:SnellReflection"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SnellReflection} i = i&apos;
+\end{equation}
+
+</p>
+
+<p>
+— <em><span
+    class="textcolor"
+    style="color:#990000"
+>закон відбивання</span></em>, добре відомий з&nbsp;геометричної оптики. З&nbsp;рівності \(k&apos;_y=k&apos;&apos;_y\) (тепер \(k&apos;=n_1\omega /c\), \(k&apos;&apos;=n_2\omega /c\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{31}\)</span>
+
+<!--
+
+
+                                                                            sin 𝑖  𝑛
+                                                𝑛1 sin 𝑖 = 𝑛2 sin 𝑟,              = 2 = 𝑛21                                                 (16.32)                                              --><a id="eq:SnellRefraction"></a><!--
+                                                                            sin 𝑟  𝑛1
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:SnellRefraction} \tcbhighmath { n_1\sin i = n_2\sin r, \qquad \frac {\sin i}{\sin r} = \frac {n_2}{n_1} = n_{21} }
+\end{equation}
+
+</p>
+
+<p>
+— <em><span
+    class="textcolor"
+    style="color:#990000"
+>закон заломлення</span></em> (закон Снелла), де \(n_{21}\)&nbsp;— відносний показник заломлення другого середовища відносно першого. Оскільки більшість діелектриків не проявляють магнітних властивостей (\(\mu _1=\mu _2\approx 1\)),
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{32}\)</span>
+
+<!--
+
+
+                                                                         𝜖2  𝑣
+                                                             𝑛21 =          = 1.                                                                 (16.33)                                            --><a id="eq:RelativeIndex"></a><!--
+                                                                       √ 𝜖1  𝑣2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:RelativeIndex} n_{21} = \sqrt {\frac {\epsilon _2}{\epsilon _1}} = \frac {v_1}{v_2}.
+\end{equation}
+
+</p>
+
+<p>
+Отже, класичні закони геометричної оптики&nbsp;— відбивання й&nbsp;заломлення, відомі задовго до Максвелла й&nbsp;зазвичай постульовані окремо (чи виведені з&nbsp;принципу Ферма)&nbsp;— виявляються <em>прямим наслідком</em>
+граничних умов для електромагнітного поля на межі розділу середовищ. Максвеллівська електродинаміка не просто узгоджується з&nbsp;геометричною оптикою&nbsp;— вона <em>містить</em> її як частинний, найпростіший випадок.
+</p>
+<!--
+...... subsection Формули Френеля для -поляризації ......
+-->
+<h5 id="autosec-1327">Формули Френеля для \(s\)-поляризації</h5>
+<a id="main-html-autopage-1327"></a>
+
+
+<p>
+Крім уже отриманої граничної умови для \(\Efield \) (яка звелась до \(E_m+E&apos;_m=E&apos;&apos;_m\)), потрібна ще одна&nbsp;— гранична умова для \(\Hfield \). Для \(s\)-поляризованої хвилі \(\Efield =E\vect e_z\) напрямлений
+уздовж осі \(z\) (перпендикулярно до площини падіння \(xy\)); амплітуда й&nbsp;напрям магнітного поля плоскої хвилі в&nbsp;середовищі з&nbsp;показником заломлення \(n\) зв’язані з&nbsp;електричним співвідношенням \(\Bfield =n(\vect
+e_k\times \Efield )\), де \(\vect e_k=\vect k/k\)&nbsp;— одиничний вектор напрямку поширення хвилі (сам хвильовий вектор \(\vect k=k\vect e_k\) має модуль \(k=n\omega /c\)), звідки, зокрема, \(B_m=nE_m\). Оскільки одиничні
+вектори напрямку поширення падаючої, відбитої й&nbsp;заломленої хвиль дорівнюють \(\vect e_k=(\cos i,\sin i,0)\), \(\vect e_k&apos;=(-\cos i,\sin i,0)\), \(\vect e_k&apos;&apos;=(\cos r,\sin r,0)\) (вісь \(x\)&nbsp;— нормаль
+до межі, \(y\)&nbsp;— уздовж межі в&nbsp;площині падіння), безпосереднє обчислення \(\vect e_k\times \vect e_z\) дає для тангенціальної (уздовж \(y\)) складової \(\Bfield =\Hfield \) (з&nbsp;огляду на \(\mu _1=\mu _2\approx 1\)):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{33}\)</span>
+
+<!--
+
+
+                                                                                                𝐻𝑦 = −𝑛1 𝐸𝑚 cos 𝑖,                 ′ cos 𝑖,
+                                                                                                                         𝐻𝑦′ = 𝑛1 𝐸𝑚                        ″ cos 𝑟.
+                                                                                                                                                 𝐻𝑦″ = −𝑛2 𝐸𝑚
+
+-->
+
+<p>
+
+\begin{equation*}
+H_y = -n_1E_m\cos i, \qquad H&apos;_y = n_1E&apos;_m\cos i, \qquad H&apos;&apos;_y = -n_2E&apos;&apos;_m\cos r.
+\end{equation*}
+
+</p>
+
+<p>
+Гранична умова неперервності \(H_{\tau _1}=H_{\tau _2}\), тобто \(H_y+H&apos;_y=H&apos;&apos;_y\), набуває вигляду
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{33}\)</span>
+
+<!--
+
+                                                                 ′ ) = 𝑛 cos 𝑟 𝐸 ″ .
+                                                 𝑛1 cos 𝑖 (𝐸𝑚 − 𝐸𝑚      2       𝑚                                                                (16.34)                                   --><a id="eq:FresnelSBoundaryH"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:FresnelSBoundaryH} n_1\cos i\,(E_m-E&apos;_m) = n_2\cos r\,E&apos;&apos;_m.
+\end{equation}
+
+</p>
+
+<p>
+Виражаючи \(n_1=n_2\sin r/\sin i\) за законом Снелла&nbsp;<span class="textup">(<a href="ch16.html#eq:SnellRefraction">16.32</a>)</span> і&nbsp;підставляючи \(E&apos;&apos;_m=E_m+E&apos;_m\), отримуємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{34}\)</span>
+
+<!--
+
+                                                                                                          ′ ) = sin 𝑖 cos 𝑟 (𝐸 + 𝐸 ′ )
+                                                                                       sin 𝑟 cos 𝑖 (𝐸𝑚 − 𝐸𝑚                              ⟹                       ′ sin(𝑖 + 𝑟),
+                                                                                                                                                𝐸𝑚 sin(𝑟 − 𝑖) = 𝐸𝑚
+                                                                                                                              𝑚   𝑚
+
+
+-->
+
+<p>
+
+\begin{equation*}
+\sin r\cos i\,(E_m-E&apos;_m) = \sin i\cos r\,(E_m+E&apos;_m) \quad \Longrightarrow \quad E_m\sin (r-i) = E&apos;_m\sin (i+r),
+\end{equation*}
+
+</p>
+
+<p>
+де використано формулу синуса різниці кутів. Підставляючи знайдене \(E&apos;_m\) назад у&nbsp;\(E&apos;&apos;_m=E_m+E&apos;_m\) й&nbsp;скориставшись \(\sin (i+r)-\sin (i-r)=2\cos i\sin r\), остаточно дістаємо <em><span
+    class="textcolor"
+    style="color:#990000"
+>формули Френеля</span></em> для \(s\)-поляризації (тут і&nbsp;далі \(\perp \) та \(\parallel \) означають напрям \(\Efield \) відносно площини падіння, тобто \(s\)- і&nbsp;\(p\)-поляризацію):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{34}\)</span>
+
+<!--
+
+
+                                                               sin(𝑖 − 𝑟)
+                                                       ′
+                                                      𝐸⟂ =−               𝐸⟂ ,                                                                  (16.35)                                   --><a id="eq:FresnelSReflection"></a><!--
+                                                               sin(𝑖 + 𝑟)
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:FresnelSReflection} \tcbhighmath { E&apos;_\perp = -\frac {\sin (i-r)}{\sin (i+r)}\, E_\perp , }
+\end{equation}
+
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{35}\)</span>
+
+<!--
+
+                                                            2 sin 𝑟 cos 𝑖
+                                                      ″
+                                                     𝐸⟂ =                 𝐸⟂ .                                                                (16.36)                                  --><a id="eq:FresnelSTransmission"></a><!--
+                                                             sin(𝑖 + 𝑟)
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:FresnelSTransmission} E&apos;&apos;_\perp = \frac {2\sin r\cos i}{\sin (i+r)}\, E_\perp .
+\end{equation}
+
+</p>
+<!--
+...... subsection Формули Френеля для -поляризації ......
+-->
+<h5 id="autosec-1328">Формули Френеля для \(p\)-поляризації</h5>
+<a id="main-html-autopage-1328"></a>
+
+
+<p>
+Для \(p\)-поляризованої хвилі (рис.&nbsp;<a href="ch16.html#pic:PPolarization">16.9</a>), навпаки, у&nbsp;площині падіння \(xy\) лежить вектор \(\Efield \), а&nbsp;\(\Bfield =B\vect e_z\) напрямлений уздовж осі \(z\). Обираючи
+напрям \(\Efield \) так, щоб трійка \(\Efield ,\Bfield ,\vect e_k\) лишалась правою (тобто за тим самим правилом \(\Bfield =n(\vect e_k\times \Efield )\), як і&nbsp;для \(s\)-поляризації), одиничний вектор \(\Efield \) дорівнює
+\(\vect e_E=\vect e_z\times \vect e_k\), що для падаючої, відбитої й&nbsp;заломленої хвиль дає тангенціальні (уздовж \(y\)) складові
+</p>
+<span class="hidden"> \(\seteqnumber{0}{16.}{36}\)</span>
+
+
+<!--
+
+
+
+  𝐸𝑦 = 𝐸𝑚 cos 𝑖,           ′ cos 𝑖,
+                   𝐸𝑦′ = −𝐸𝑚                 ″ cos 𝑟;
+                                      𝐸𝑦″ = 𝐸𝑚
+                                                                                                                                                                                                     𝐵𝑧 = 𝑛1 𝐸𝑚 ,              ′ ,
+                                                                                                                                                                                                                     𝐵𝑧′ = 𝑛1 𝐸𝑚               ″
+                                                                                                                                                                                                                                     𝐵𝑧″ = 𝑛2 𝐸𝑚
+
+
+
+-->
+
+
+<p>
+
+\begin{multline*}
+E_y = E_m\cos i,\quad E&apos;_y=-E&apos;_m\cos i,\quad E&apos;&apos;_y=E&apos;&apos;_m\cos r; \\ B_z=n_1E_m,\quad B&apos;_z=n_1E&apos;_m,\quad B&apos;&apos;_z=n_2E&apos;&apos;_m
+\end{multline*}
+(складова \(B_z\) тут цілком тангенціальна, оскільки \(\Bfield \parallel \vect e_z\)). Неперервність тангенціальних складових \(\Efield \) і \(\Hfield =\Bfield \) дає систему двох рівнянь
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{36}\)</span>
+
+<!--
+
+                                                                     ′ ) = cos 𝑟 𝐸 ″ ,
+                                                        cos 𝑖 (𝐸𝑚 − 𝐸𝑚            𝑚
+                                                                                                        ′ ) = 𝑛 𝐸″ .
+                                                                                              𝑛1 (𝐸𝑚 + 𝐸𝑚      2 𝑚                                    (16.37)                                  --><a id="eq:FresnelPBoundary"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:FresnelPBoundary} \cos i\,(E_m-E&apos;_m) = \cos r\,E&apos;&apos;_m, \qquad n_1(E_m+E&apos;_m)=n_2E&apos;&apos;_m.
+\end{equation}
+
+</p>
+
+<p>
+Виключаючи з&nbsp;другого рівняння \(n_1=n_2\sin r/\sin i\) (закон Снелла) і&nbsp;підставляючи в&nbsp;нього \(E&apos;&apos;_m\) з&nbsp;першого рівняння, маємо
+</p>
+<span class="hidden"> \(\seteqnumber{0}{16.}{37}\)</span>
+
+
+<!--
+
+
+
+                     ′ ) = sin 𝑖 cos 𝑖 (𝐸 − 𝐸 ′ )
+  sin 𝑟 cos 𝑟 (𝐸𝑚 + 𝐸𝑚                              ⟹
+                                         𝑚   𝑚
+                                                                                                                                                                                                                              ′ [ sin 2𝑖 + sin 2𝑟]
+                                                                                                                                                                                                     𝐸𝑚 [ sin 2𝑖 − sin 2𝑟] = 𝐸𝑚
+
+
+
+-->
+
+
+<p>
+
+\begin{multline*}
+\sin r\cos r\,(E_m+E&apos;_m) = \sin i\cos i\,(E_m-E&apos;_m) \quad \Longrightarrow \\E_m\big [\sin 2i-\sin 2r\big ] = E&apos;_m\big [\sin 2i+\sin 2r\big ]
+\end{multline*}
+(тут використано \(\sin 2\alpha =2\sin \alpha \cos \alpha \)). Застосувавши до різниці й&nbsp;суми синусів подвійних кутів формули \(\sin 2i-\sin 2r=2\cos (i+r)\sin (i-r)\) та \(\sin 2i+\sin 2r=2\sin (i+r)\cos (i-r)\),
+знаходимо \(E&apos;_m/E_m=\tg (i-r)/\tg (i+r)\); підстановка цього результату в&nbsp;\(E&apos;&apos;_m=\dfrac {n_1}{n_2}(E_m+E&apos;_m)=\dfrac {\sin r}{\sin i}(E_m+E&apos;_m)\) дає \(E&apos;&apos;_m\). Разом це&nbsp;—
+<em><span
+    class="textcolor"
+    style="color:#990000"
+>формули Френеля</span></em> для \(p\)-поляризації:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{37}\)</span>
+
+<!--
+
+
+                                                                                   tg(𝑖 − 𝑟)
+                                                                           𝐸∥′ =             𝐸∥ ,                                                  (16.38)                                   --><a id="eq:FresnelPReflection"></a><!--
+                                                                                   tg(𝑖 + 𝑟)
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:FresnelPReflection} \tcbhighmath { E&apos;_\parallel = \frac {\tg (i-r)}{\tg (i+r)}\, E_\parallel , }
+\end{equation}
+
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{38}\)</span>
+
+<!--
+
+                                                                              2 sin 𝑟 cos 𝑖
+                                                                  𝐸∥″ =                         𝐸∥ .                                             (16.39)                                   --><a id="eq:FresnelPTransmission"></a><!--
+                                                                          sin(𝑖 + 𝑟) cos(𝑖 − 𝑟)
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:FresnelPTransmission} E&apos;&apos;_\parallel = \frac {2\sin r\cos i}{\sin (i+r)\cos (i-r)}\, E_\parallel .
+\end{equation}
+
+</p>
+
+<p>
+Знаки амплітуд \(s\)- і&nbsp;\(p\)-хвилі порівнювати не можна: вони залежать від вибору напряму \(\Efield \) (для \(p\)-хвилі ми взяли \(\vect e_E=\vect e_z\times \vect e_k\), і&nbsp;у&nbsp;відбитої хвилі цей орт змінює напрям). Через
+це при нормальному падінні виходить \(E&apos;_\perp =-\dfrac {n_2-n_1}{n_2+n_1}E_\perp \), але \(E&apos;_\parallel =+\dfrac {n_2-n_1}{n_2+n_1}E_\parallel \), хоча фізична ситуація однакова; коефіцієнт відбивання від знака не
+залежить.
+</p>
+
+<figure id="autoid-473" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-261"
+    class="lateximagesource"
+><!--
+                              𝑦
+
+
+            𝑘𝑦′                        𝑘𝑦″
+        𝐤   ′                 𝐄″             𝐤″
+
+𝑘𝑥′                                          𝑘𝑥″
+            𝐁′                         𝐁″
+
+    ′
+𝐄
+                        𝑖′         𝑟
+                         𝑖                     𝑥
+ 𝐄          𝑘𝑦
+                    𝐤
+
+                         𝑘𝑥
+                𝐁
+--><img
+   src="main-html-images\image-261.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;16.9. Падаюча, відбита й&nbsp;заломлена \(p\)-поляризовані хвилі на межі розділу двох діелектриків<a id="pic:PPolarization"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+
+<div class="cb-attention">
+
+<p>
+З&nbsp;формули&nbsp;<span class="textup">(<a href="ch16.html#eq:FresnelPReflection">16.38</a>)</span> випливає цікавий наслідок: якщо \(i+r=90^\circ \), то \(\tg (i+r)\to \infty \), і&nbsp;\(E&apos;_\parallel =0\) —
+відбита хвиля <em>повністю відсутня</em> для \(p\)-поляризації! Кут падіння, за якого це відбувається, називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>кутом Брюстера</span></em>: за умови \(i+r=90^\circ \) маємо \(\sin r=\cos i\), тому за законом Снелла \(\tg i_B=n_{21}\) (для скла \(i_B\approx 56^\circ \), для води \(\approx 53^\circ \)). За цього кута відбите світло, незалежно
+від поляризації падаючого, виявляється <em>повністю \(s\)-поляризованим</em>&nbsp;— явище, широко застосовуване в&nbsp;поляризаційній оптиці й&nbsp;фотографії (світло, відбите від води чи скла, переважно \(s\)-поляризоване, тому
+поляризаційні фільтри прибирають відблиски).
+</p>
+</div>
+<!--
+...... subsection Відбивання за інтенсивністю ......
+-->
+<h5 id="autosec-1332">Відбивання за інтенсивністю</h5>
+<a id="main-html-autopage-1332"></a>
+
+
+<p>
+Частку енергії, що відбивається, задає <em><span
+    class="textcolor"
+    style="color:#990000"
+>коефіцієнт відбивання</span></em> \(\mathcal R=(E&apos;_m/E_m)^2\). Із формул Френеля
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{39}\)</span>
+
+<!--
+
+
+                                                                                                            sin2 (𝑖 − 𝑟)              tg2 (𝑖 − 𝑟)
+                                                                                                     ℛ⟂ =      2
+                                                                                                                           ,   ℛ∥ =                 ,
+                                                                                                            sin (𝑖 + 𝑟)               tg2 (𝑖 + 𝑟)
+
+-->
+
+<p>
+
+\begin{equation*}
+\mathcal R_\perp =\frac {\sin ^2(i-r)}{\sin ^2(i+r)},\qquad \mathcal R_\parallel =\frac {\tg ^2(i-r)}{\tg ^2(i+r)},
+\end{equation*}
+
+</p>
+
+<p>
+а&nbsp;решта енергії, \(1-\mathcal R\), переноситься заломленою хвилею (закон збереження енергії; рівності \(E&apos;^2_m+E&apos;&apos;^2_m=E_m^2\) немає, бо заломлена хвиля має іншу швидкість і&nbsp;поширюється під іншим кутом).
+При нормальному падінні (\(i\to 0\), \(r\approx i\,n_1/n_2\)) обидві формули дають
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{39}\)</span>
+
+<!--
+
+
+                                                                         𝑛2 − 𝑛 1 2
+                                                                   ℛ=(            ) .                                                                   (16.40)                               --><a id="eq:NormalReflectance"></a><!--
+                                                                         𝑛2 + 𝑛 1
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:NormalReflectance} \tcbhighmath { \mathcal R=\left (\frac {n_2-n_1}{n_2+n_1}\right )^{\!2}. }
+\end{equation}
+
+</p>
+
+<p>
+Для межі повітря-скло (\(n=1{,}5\)) \(\mathcal R=4\,\%\), для межі повітря-вода (\(n=1{,}33\))&nbsp;— \(2\,\%\). Саме тому кожна непросвітлена поверхня в&nbsp;оптичних приладах забирає кілька відсотків світла,
+а&nbsp;<em>просвітлювальні покриття</em> (плівки товщиною \(\lambda /4\) з&nbsp;показником \(\sqrt {n_1n_2}\)) зменшують ці втрати завдяки інтерференції відбитих хвиль.
+</p>
+<!--
+...... subsection Повне внутрішнє відбивання ......
+-->
+<h5 id="autosec-1333">Повне внутрішнє відбивання</h5>
+<a id="main-html-autopage-1333"></a>
+
+
+<p>
+Якщо світло переходить з&nbsp;оптично густішого середовища в&nbsp;оптично менш густе, \(n_2&lt;n_1\), то, за законом заломлення&nbsp;<span class="textup">(<a href="ch16.html#eq:SnellRefraction">16.32</a>)</span>, \(\sin
+i/\sin r = n_2/n_1&lt;1\), тобто \(i&lt;r\): кут заломлення завжди <em>більший</em> за кут падіння (рис.&nbsp;<a href="ch16.html#pic:TotalReflection">16.10</a>).
+</p>
+
+<figure id="autoid-474" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-262"
+    class="lateximagesource"
+><!--
+                              𝑛2
+
+
+               𝑟1
+                    𝑟 = 90∘
+
+
+     𝑖𝑏
+
+𝑖2        𝑖1          𝑖2      𝑛1
+--><img
+   src="main-html-images\image-262.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;16.10. Заломлений промінь наближається до поверхні розділу при зростанні кута падіння<a id="pic:TotalReflection"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+Зі зростанням кута падіння \(i\) заломлений промінь усе більше наближається до межі розділу. При деякому значенні \(i=i_b\) кут заломлення досягає \(r=90^\circ \)&nbsp;— на рисунку цьому відповідає промінь, що йде вздовж самої межі
+розділу. Кут \(i_b\) називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>граничним кутом</span></em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{40}\)</span>
+
+<!--
+
+
+                                                               𝑛2                                     𝑛1
+                                                    sin 𝑖𝑏 =      = 𝑛21 ,   або   𝑛 sin 𝑖𝑏 = 1, 𝑛 =      > 1.                                           (16.41)                                   --><a id="eq:CriticalAngle"></a><!--
+                                                               𝑛1                                     𝑛2
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:CriticalAngle} \tcbhighmath { \sin i_b = \frac {n_2}{n_1} = n_{21}, \qquad \text {або}\qquad n\sin i_b=1,\ \ n=\frac {n_1}{n_2}&gt;1. }
+\end{equation}
+
+</p>
+
+<p>
+При кутах падіння \(i&gt;i_b\) виникає <em><span
+    class="textcolor"
+    style="color:#990000"
+>повне внутрішнє відбивання</span></em>: уся енергія падаючої хвилі відбивається назад у&nbsp;перше середовище, а проходження заломленої хвилі в&nbsp;геометрично-оптичному сенсі стає неможливим.
+</p>
+<!--
+...... subsection Що відбувається за граничним кутом: згасаюча хвиля ......
+-->
+<h5 id="autosec-1337">Що відбувається за граничним кутом: згасаюча хвиля</h5>
+<a id="main-html-autopage-1337"></a>
+
+
+<p>
+«Неможливість» існування заломленої хвилі при \(i&gt;i_b\)&nbsp;— це висновок саме геометричної оптики. З’ясуємо, що відбувається із заломленою хвилею формально, виходячи з&nbsp;<em><span
+    class="textcolor"
+    style="color:#990000"
+>рівнянь Максвелла</span></em>. Заломлена хвиля \(\Efield &apos;&apos; = \Efield &apos;&apos;_m\, e^{i(\omega t-k&apos;&apos;_xx-k&apos;&apos;_yy)}\) (частота \(\omega &apos;&apos;=\omega \)&nbsp;— за&nbsp;<span
+class="textup">(<a href="ch16.html#eq:BoundaryConditionE">16.30</a>)</span>) повинна задовольняти дисперсійне співвідношення для другого середовища, \(k&apos;&apos;^2={k&apos;&apos;_x}^2+{k&apos;&apos;_y}^2\), де
+\(k&apos;&apos;=n_2\omega /c\). З&nbsp;граничної умови \(k_y=k&apos;&apos;_y\)&nbsp;<span class="textup">(<a href="ch16.html#eq:BoundaryConditionE">16.30</a>)</span> (а&nbsp;\(k_y=k\sin i\), де \(k=n_1\omega /c\)&nbsp;—
+хвильове число падаючої хвилі в&nbsp;першому середовищі) маємо
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{41}\)</span>
+
+<!--
+
+
+                                                                                              2                 𝑛2 𝜔 2   𝑛 𝜔 2        𝜔2
+                                                                                            𝑘″
+                                                                                             𝑥 =𝑘
+                                                                                                  ″2 − 𝑘2 = (
+                                                                                                        𝑦           ) − ( 1 ) sin2 𝑖 = 2 (𝑛22 − 𝑛21 sin2 𝑖) .
+                                                                                                                 𝑐        𝑐            𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+{k&apos;&apos;_x}^2 = k&apos;&apos;^2-k_y^2 = \left (\frac {n_2\omega }c\right )^{\!2}-\left (\frac {n_1\omega }c\right )^{\!2}\sin ^2i = \frac {\omega ^2}{c^2}\left (n_2^2-n_1^2\sin ^2i\right ).
+\end{equation*}
+
+</p>
+
+<p>
+Оскільки при \(i&gt;i_b\) виконується \(n_1\sin i&gt;n_2\) (тобто й&nbsp;\(n_1^2\sin ^2i&gt;n_2^2\)), вираз у&nbsp;дужках&nbsp;— <em>від’ємний</em>, тому \({k&apos;&apos;_x}^2&lt;0\), тобто \(k&apos;&apos;_x\)&nbsp;—
+<em>уявне</em> число: \(k&apos;&apos;_x = -iK\) (знак обираємо так, щоб поле спадало вглиб середовища), де, повертаючись до позначення \(n=n_1/n_2\) з&nbsp;формули&nbsp;<span class="textup">(<a
+href="ch16.html#eq:CriticalAngle">16.41</a>)</span>,
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{41}\)</span>
+
+<!--
+
+
+                                                                                                       𝜔                  𝑛 𝜔
+                                                                                                  𝐾=     𝑛2 sin2 𝑖 − 𝑛22 = 2 √𝑛2 sin2 𝑖 − 1 > 0.
+                                                                                                       𝑐√ 1                𝑐
+
+-->
+
+<p>
+
+\begin{equation*}
+K = \frac \omega c\sqrt {n_1^2\sin ^2i-n_2^2} = \frac {n_2\omega }c\sqrt {n^2\sin ^2i-1} &gt; 0.
+\end{equation*}
+
+</p>
+
+<p>
+Розв’язок рівнянь Максвелла в&nbsp;другому середовищі при цьому набуває вигляду
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{41}\)</span>
+
+<!--
+
+
+                                                                                     ″
+                                                                𝐄″ = 𝐄″
+                                                                      𝑚𝑒
+                                                                        −𝐾𝑥 𝑒𝑖(𝜔𝑡−𝑘𝑦 𝑦) .                                                                       (16.42)                         --><a id="eq:EvanescentWave"></a><!--
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:EvanescentWave} \tcbhighmath { \Efield &apos;&apos; = \Efield &apos;&apos;_m\, e^{-Kx}\, e^{i(\omega t-k&apos;&apos;_yy)}. }
+\end{equation}
+
+</p>
+
+<p>
+Отже, поле в&nbsp;другому середовищі <em>існує</em> навіть при куті падіння, більшому за граничний: воно «чіпляється» за межу розділу й&nbsp;проникає в&nbsp;друге середовище на глибину порядку довжини хвилі світла \(\lambda _0\),
+а&nbsp;амплітуда цього поля <em>експоненційно спадає</em> вглиб середовища (уздовж \(x\)). Таке поле називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>згасаючою хвилею</span></em> (рис.&nbsp;<a href="ch16.html#tikz:EvanescentWave">16.11</a>). На рисунку крива неперервно переходить із середовища \(n_1\) (де поле&nbsp;— суперпозиція падаючої й&nbsp;відбитої хвиль)
+у&nbsp;середовище \(n_2\), де хвиля біжить уздовж межі розділу (у&nbsp;напрямку \(\vect {k}&apos;&apos;\)).
+</p>
+
+<figure id="autoid-475" class="figure ">
+<div class="center">
+
+<p>
+<span
+    id="lateximage-main-html-263"
+    class="lateximagesource"
+><!--
+     𝑥
+
+
+
+
+𝑛2
+
+
+
+              𝑦
+
+
+
+𝑛1       𝐤″
+--><img
+   src="main-html-images\image-263.svg"
+   alt="(-tikz-&nbsp;diagram)"
+   style=""
+   class="lateximage"
+></span>
+</p>
+
+
+<div class="figurecaption">
+Рис.&nbsp;16.11. Згасаюча хвиля в&nbsp;другому середовищі при \(i&gt;i_b\) (\(s\)-поляризація: \(\Efield =E_z\vect e_z\), перпендикулярно до рисунка): амплітуда \(|E_z|=A_0e^{-Kx}\) спадає вглиб середовища; глибина проникнення \(1/K\)
+порядку \(\lambda _0\)<a id="tikz:EvanescentWave"></a>
+
+</div>
+
+</div>
+
+</figure>
+
+<p>
+При \(i\to i_b\) маємо \(K\to 0\), тобто глибина проникнення \(1/K\to \infty \)&nbsp;— саме тому граничний промінь на рис.&nbsp;<a href="ch16.html#pic:TotalReflection">16.10</a> (\(i=i_b\), \(r=90^\circ \)) виглядає як
+звичайний біжучий промінь уздовж межі розділу. Це узгоджується з&nbsp;уже отриманими формулами Френеля для проходження, <span class="textup">(<a href="ch16.html#eq:FresnelSTransmission">16.36</a>)</span> і&nbsp;<span
+class="textup">(<a href="ch16.html#eq:FresnelPTransmission">16.39</a>)</span>: підставляючи \(r\to 90^\circ \), маємо \(E&apos;&apos;_\perp \to 2E_\perp \) і&nbsp;\(E&apos;&apos;_\parallel \to 2n\,E_\parallel \)&nbsp;—
+обидві границі скінченні й&nbsp;ненульові, тобто поле на межі при \(i=i_b\) цілком реальне.
+</p>
+
+<p>
+Переконаємось прямим розрахунком, що нормальна до межі складова потоку Пойнтінга згасаючої хвилі дорівнює нулю в&nbsp;середньому. Для \(s\)-поляризації (\(\Efield &apos;&apos;=E&apos;&apos;_z\vect e_z\)) магнітне поле знаходимо
+із&nbsp;<span class="textup">(<a href="ch16.html#eq:MaxwellPlaneWave">16.15</a>)</span>, \(\vect k\times \Efield =\dfrac \omega c\Bfield \), справедливого й&nbsp;для комплексного \(\vect
+k&apos;&apos;=(-iK,k&apos;&apos;_y,0)\):
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{42}\)</span>
+
+<!--
+
+                                                                                                𝑐 ″        𝑐 ″ ″                        𝑐 ″ ″              𝑐
+                                                                                         𝐁″ =     𝐤 × 𝐄″ =  𝐸 (𝑘 , 𝑖𝐾, 0)   ⟹   𝐵𝑥″ =    𝑘 𝐸 ,   𝐵𝑦″ = 𝑖     𝐾𝐸𝑧″ .
+                                                                                                𝜔          𝜔 𝑧 𝑦                        𝜔 𝑦 𝑧              𝜔
+
+-->
+
+<p>
+
+\begin{equation*}
+\Bfield &apos;&apos; = \frac {c}{\omega }\,\vect k&apos;&apos;\times \Efield &apos;&apos; = \frac {c}{\omega }\,E&apos;&apos;_z\,(k&apos;&apos;_y,\,iK,\,0) \quad \Longrightarrow \quad B&apos;&apos;_x = \frac
+{c}{\omega }k&apos;&apos;_y E&apos;&apos;_z, \qquad B&apos;&apos;_y = i\frac {c}{\omega }K E&apos;&apos;_z.
+\end{equation*}
+
+</p>
+
+<p>
+Усереднений за період вектор Пойнтінга для комплексних амплітуд дорівнює \(\langle \vect \Pi \rangle =\dfrac {c}{8\pi }\,\mathrm {Re}\,(\Efield &apos;&apos;\times \Hfield &apos;&apos;^{*})\), звідки \(\langle \Pi
+_x\rangle =-\dfrac {c}{8\pi }\mathrm {Re}(E&apos;&apos;_z{H&apos;&apos;_y}^{\!*})\), \(\langle \Pi _y\rangle =\dfrac {c}{8\pi }\mathrm {Re}(E&apos;&apos;_z{H&apos;&apos;_x}^{\!*})\). Оскільки коефіцієнт при
+\(E&apos;&apos;_z\) у \(H&apos;&apos;_y\)&nbsp;— <em>уявний</em>, а&nbsp;в&nbsp;\(H&apos;&apos;_x\)&nbsp;— <em>дійсний</em>:
+</p>
+
+<span class="hidden"> \(\seteqnumber{0}{16.}{42}\)</span>
+
+<!--
+
+
+                                                                                𝑐2 𝑘″
+                                                                                    𝑦
+                                                         ⟨Π𝑥 ⟩ = 0,   ⟨Π𝑦 ⟩ =         |𝐸″ |2 𝑒−2𝐾𝑥 ≠ 0.                                                               (16.43)                    --><a id="eq:NormalFluxZero"></a><!--
+                                                                                8𝜋𝜔 𝑚
+
+-->
+
+<p>
+
+\begin{equation}
+\label {eq:NormalFluxZero} \langle \Pi _x\rangle = 0, \qquad \langle \Pi _y\rangle = \frac {c^2k&apos;&apos;_y}{8\pi \omega }\,|E&apos;&apos;_m|^2\,e^{-2Kx} \neq 0.
+\end{equation}
+
+</p>
+
+<p>
+Звідси видно, що потік \(\langle \Pi _y\rangle \ne 0\) показує поширення енергії хвилі вздовж межі, а&nbsp;не вглиб другого середовища.
+</p>
+
+
+<div class="cb-attention">
+
+<p>
+Згасаюча хвиля&nbsp;— не «нуль поля» за межею: поле в&nbsp;другому середовищі є, але середній потік енергії вглиб дорівнює нулю. Тому, якщо на відстані порядку \(\lambda _0\) від межі розділу розташувати третє середовище (наприклад,
+наблизити впритул ще один шматок скла до межі повного внутрішнього відбивання), «хвіст» згасаючої хвилі виявиться там ще достатньо відчутним, щоб розхитати електрони цього середовища й&nbsp;породити нову, вже <em><span
+    class="textcolor"
+    style="color:#990000"
+>біжучу хвилю</span></em>&nbsp;— частина світла <em>пройде</em> крізь проміжок, попри те, що кожна з&nbsp;двох меж окремо давала б повне відбивання. Це явище називають <em><span
+    class="textcolor"
+    style="color:#990000"
+>порушеним повним внутрішнім відбиванням</span></em>&nbsp;— оптичний аналог квантовомеханічного тунелювання, який легко спостерігати експериментально для сантиметрових радіохвиль (де \(\lambda _0\)&nbsp;— сантиметри, тому
+проміжок легко зробити порівнянним з&nbsp;довжиною хвилі) і&nbsp;значно важче&nbsp;— для видимого світла (де \(\lambda _0\sim 10^{-5}\)&nbsp;см вимагає надзвичайно вузького проміжку).
+</p>
+</div>
+<!--
+...... section Підсумки ......
+-->
+<h4 id="autosec-1341">Підсумки</h4>
+<a id="main-html-autopage-1341"></a>
+
+
+<p>
+Рівняння Максвелла в&nbsp;однорідному діелектрику без вільних зарядів і&nbsp;струмів приводять до хвильових рівнянь для \(\Efield \) і&nbsp;\(\Hfield \) зі швидкістю \(v=c/n\), \(n=\sqrt {\epsilon \mu }\): збурення електромагнітного
+поля поширюється у&nbsp;вигляді <em><span
+    class="textcolor"
+    style="color:#990000"
+>електромагнітної хвилі</span></em>, швидкість якої у&nbsp;вакуумі дорівнює швидкості світла. Плоска монохроматична хвиля <em><span
+    class="textcolor"
+    style="color:#990000"
+>поперечна</span></em>: \(\Efield \), \(\Hfield \) і&nbsp;\(\vect k\) утворюють праву трійку взаємно перпендикулярних векторів, а&nbsp;амплітуди пов’язані співвідношенням \(nE_m=B_m\), \(\sqrt \epsilon E_m=\sqrt \mu H_m\). Звідси
+Максвелл дійшов гіпотези, що світло&nbsp;— електромагнітна хвиля, а&nbsp;оптика&nbsp;— розділ електродинаміки.
+</p>
+
+<p>
+Хвиля переносить енергію (\(\vect \Pi =w\vect v\)), імпульс (\(\vect g=\vect \Pi /c^2\)) і, як показує приклад із циліндричним конденсатором, момент імпульсу; звідси тиск світла \(p=w(1+\mathcal R)\), який визначає форму пилових
+хвостів комет і&nbsp;лежить в&nbsp;основі сонячних вітрил.
+</p>
+
+<p>
+Закони відбивання й&nbsp;заломлення та формули Френеля&nbsp;— не окремі постулати геометричної оптики, а&nbsp;наслідок граничних умов для електромагнітного поля на межі розділу. З&nbsp;них випливають кут Брюстера, повне
+внутрішнє відбивання та <em><span
+    class="textcolor"
+    style="color:#990000"
+>згасаюча хвиля</span></em> в&nbsp;другому середовищі: вона не переносить енергії вглиб середовища, але за наявності третього середовища зумовлює порушене повне внутрішнє відбивання.
+</p>
+<!--
+...... section Задачі ......
+-->
+<h4 id="autosec-1342">Задачі</h4>
+<a id="main-html-autopage-1342"></a>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-476"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 16.1.</span></span> <a id="autoid-477" ></a ><a id="LWR-ht-problem:16.{1}"></a><a id="prb:LightInGlass"></a> <em>Світло в&nbsp;склі.</em> Монохроматичне
+світло з&nbsp;довжиною хвилі \(\lambda _0=600\)&nbsp;нм у&nbsp;вакуумі входить у&nbsp;скло з&nbsp;показником заломлення \(n=1{,}5\) (\(\mu =1\)). Знайдіть частоту, швидкість, довжину хвилі й&nbsp;хвильове число в&nbsp;склі,
+а&nbsp;також \(\epsilon \) скла на цій частоті. <a href="ch21.html#LWR-ht-solution:16.{1}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-478"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 16.2.</span></span> <a id="autoid-479" ></a ><a id="LWR-ht-problem:16.{2}"></a><a id="prb:LaserBeam"></a> <em>Лазерний пучок.</em> Пучок потужністю
+\(1\)&nbsp;Вт і&nbsp;діаметром \(2\)&nbsp;мм падає нормально на поглинальну поверхню. Знайдіть інтенсивність, амплітуди \(E_m\) і&nbsp;\(B_m\) та тиск світла. Як зміниться тиск для ідеального дзеркала? (Використайте \(1\)&nbsp;Вт
+\(=10^{7}\)&nbsp;ерг/с, \(1\)&nbsp;СГСЕ напруженості поля \(=300\)&nbsp;В/см.) <a href="ch21.html#LWR-ht-solution:16.{2}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-480"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 16.3.</span></span> <a id="autoid-481" ></a ><a id="LWR-ht-problem:16.{3}"></a><a id="prb:SolarSail"></a> <em>Сонячне вітрило.</em> Вітрило площею
+\(100\)&nbsp;м\(^2\) з&nbsp;коефіцієнтом відбивання \(\mathcal R=0{,}9\) перпендикулярне до сонячних променів поблизу орбіти Землі (інтенсивність \(1{,}37\cdot 10^{6}\)&nbsp;ерг/(с\(\cdot \)см\(^2\))). Знайдіть силу тиску світла,
+прискорення апарата масою \(10\)&nbsp;кг та приріст швидкості за рік. <a href="ch21.html#LWR-ht-solution:16.{3}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-482"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 16.4.</span></span> <a id="autoid-483" ></a ><a id="LWR-ht-problem:16.{4}"></a><a id="prb:DustGrain"></a> <em>Пилинка в&nbsp;променях Сонця.</em> Сферична
+поглинальна пилинка густиною \(\rho =1\)&nbsp;г/см\(^3\) перебуває на відстані \(r\) від Сонця (світність \(L=3{,}85\cdot 10^{33}\)&nbsp;ерг/с, маса \(M=2\cdot 10^{33}\)&nbsp;г). Знайдіть радіус \(a\), за якого сила тиску світла дорівнює
+силі гравітації. Чому результат не залежить від \(r\)? <a href="ch21.html#LWR-ht-solution:16.{4}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-484"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 16.5.</span></span> <a id="autoid-485" ></a ><a id="LWR-ht-problem:16.{5}"></a><a id="prb:FeynmanNumbers"></a> <em>Парадокс Фейнмана: оцінка.</em>
+Циліндричний конденсатор із зарядом \(q=3\cdot 10^{3}\)&nbsp;СГСЕ (\(\approx 1\)&nbsp;мкКл), зовнішній радіус якого \(R=5\)&nbsp;см, маса \(m=10\)&nbsp;г, перебуває у&nbsp;полі \(B=10^{4}\)&nbsp;Гс вздовж осі. Знайдіть момент
+імпульсу поля й&nbsp;кутову швидкість, з&nbsp;якою конденсатор почне обертатися після вимкнення поля. <a href="ch21.html#LWR-ht-solution:16.{5}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-486"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 16.6.</span></span> <a id="autoid-487" ></a ><a id="LWR-ht-problem:16.{6}"></a><a id="prb:NormalReflectance"></a> <em>Відбивання від скла.</em> Знайдіть
+коефіцієнти відбивання за інтенсивністю при нормальному падінні на межу повітря-скло (\(n=1{,}5\)) і&nbsp;повітря-вода (\(n=1{,}33\)). Яка частка енергії проходить крізь скляну пластинку (дві поверхні; поглинання не враховуйте,
+багаторазові відбивання враховуйте)? <a href="ch21.html#LWR-ht-solution:16.{6}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-488"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 16.7.</span></span> <a id="autoid-489" ></a ><a id="LWR-ht-problem:16.{7}"></a><a id="prb:BrewsterAngles"></a> <em>Кут Брюстера.</em> Знайдіть кут Брюстера
+для межі повітря-скло (\(n=1{,}5\)), повітря-вода (\(n=1{,}33\)) і&nbsp;для виходу зі скла в&nbsp;повітря. Покажіть, що відбитий і&nbsp;заломлений промені при цьому перпендикулярні. <a
+href="ch21.html#LWR-ht-solution:16.{7}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-490"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 16.8.</span></span> <a id="autoid-491" ></a ><a id="LWR-ht-problem:16.{8}"></a><a id="prb:EvanescentDepth"></a> <em>Глибина згасаючої хвилі.</em> Світло
+з&nbsp;\(\lambda _0=600\)&nbsp;нм падає зсередини скла (\(n=1{,}5\)) на межу з&nbsp;повітрям під кутом \(45^\circ \). Знайдіть граничний кут і&nbsp;глибину, на якій амплітуда згасаючої хвилі в&nbsp;повітрі зменшується в&nbsp;\(e\)
+разів. <a href="ch21.html#LWR-ht-solution:16.{8}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+<div class="theorembodyproblemX">
+
+<ul class="list" style="list-style-type:none">
+
+
+
+<a id="autoid-492"></a>
+<li>
+<p>
+<span class="listmarker"> <span class="theoremheaderplain"> 16.9.</span></span> <a id="autoid-493" ></a ><a id="LWR-ht-problem:16.{9}"></a><a id="prb:OpticalFiber"></a> <em>Оптичне волокно.</em> Серцевина волокна
+має \(n_1=1{,}5\), оболонка&nbsp;— \(n_2=1{,}48\). Знайдіть граничний кут на межі серцевина–оболонка й&nbsp;максимальний кут \(\theta _\text {макс}\) променя, що падає на торець з&nbsp;повітря, з&nbsp;віссю волокна, за якого
+світло ще поширюється волокном (числова апертура \(\mathrm {NA}=\sin \theta _\text {макс}\)). <a href="ch21.html#LWR-ht-solution:16.{9}">[відповідь]</a>
+</p>
+
+
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="cb-questions">
+
+<p>
+<b>Контрольні питання</b>
+</p>
+
+<ul class="enumerate" style="list-style-type:none">
+
+<li>
+<p>
+<span class="listmarker">1.</span> Що таке хвиля в&nbsp;загальному сенсі? Наведіть кілька прикладів фізичних процесів, що описуються хвилями, і&nbsp;поясніть, що означає величина \(u\) в&nbsp;кожному з&nbsp;них.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">2.</span> Виведіть хвильове рівняння \(\partial ^2u/\partial x^2 = (1/v^2)\,\partial ^2u/\partial t^2\) для збурення \(u=f(x-vt)+g(x+vt)\), що поширюється без зміни форми, і&nbsp;поясніть, як воно
+узагальнюється на тривимірний випадок. Чому рівняння \(\nabla ^2u = (1/v^2)\,\partial ^2u/\partial t^2\) вважають «паролем» хвильового процесу в&nbsp;різних розділах фізики?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">3.</span> Що таке плоска монохроматична хвиля? Запишіть її дійсну та комплексну форми. У&nbsp;чому зручність комплексного запису?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">4.</span> Дайте означення довжини хвилі, хвильового вектора, хвильового числа, колової частоти, періоду та фазової швидкості хвилі. Як вони пов’язані між собою?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">5.</span> Виведіть хвильові рівняння для \(\Efield \) і&nbsp;\(\Hfield \) з&nbsp;рівнянь Максвелла в&nbsp;однорідному середовищі без вільних зарядів і&nbsp;струмів. Чому дорівнює швидкість поширення
+електромагнітних хвиль і&nbsp;як з&nbsp;неї отримати показник заломлення \(n\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">6.</span> Чому збіг швидкості електромагнітних хвиль зі швидкістю світла, отриманий суто з&nbsp;рівнянь електрики й&nbsp;магнетизму, вважають одним із найважливіших результатів класичної фізики?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">7.</span> Запишіть рівняння Максвелла для плоскої гармонічної хвилі в&nbsp;комплексній формі. Яке правило заміни диференціальних операцій алгебраїчними при цьому використовується?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">8.</span> Доведіть поперечність електромагнітних хвиль (\(\Efield \perp \vect k\), \(\Hfield \perp \vect k\)). Яке співвідношення пов’язує амплітуди \(E_m\) і&nbsp;\(H_m\), і&nbsp;що з&nbsp;нього випливає
+для незалежності полів \(\Efield \) і&nbsp;\(\Hfield \)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">9.</span> Покажіть, що електрична й&nbsp;магнітна частини густини енергії хвилі рівні між собою. Виведіть формулу \(\vect \Pi = w\vect v\) для вектора Пойнтінга хвилі та поясніть її фізичний зміст.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">10.</span> Що таке інтенсивність випромінювання і&nbsp;чому вона пропорційна \(E_m^2\)?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">11.</span> Виведіть формулу тиску електромагнітної хвилі \(p=w\) при повному поглинанні та \(p=w(1+\mathcal R)\) при частковому відбиванні, і&nbsp;опишіть дослід Лебедєва, яким цю різницю тисків для
+поглинального й&nbsp;відбивального крилець було виміряно.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">12.</span> Яку роль відіграє тиск світла в&nbsp;астрофізиці (рівновага зір, хвости комет) і&nbsp;в&nbsp;космічній техніці (сонячні та лазерні вітрила)? Наведіть приклади місій, що використовують цей принцип.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">13.</span> Чому відношення сили світлового тиску до сили гравітації для пилинки в&nbsp;полі Сонця не залежить від відстані до нього і&nbsp;від чого воно залежить?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">14.</span> Виведіть формулу для густини імпульсу поля \(\vect g = \vect \Pi /c^2\) двома способами: з&nbsp;релятивістського співвідношення енергія-імпульс для безмасової частинки та прямим розрахунком
+сили Ампера.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">15.</span> У&nbsp;чому полягає парадокс Фейнмана з&nbsp;циліндричним конденсатором в&nbsp;аксіальному магнітному полі? Виведіть момент імпульсу поля конденсатора \(L=qBR^2/(2c)\) та кутову швидкість
+його обертання після вимкнення поля, і&nbsp;поясніть, як це демонструє, що електромагнітне поле&nbsp;— повноцінний фізичний об’єкт, здатний нести імпульс і&nbsp;момент імпульсу.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">16.</span> Що таке \(s\)- та \(p\)-поляризація хвилі відносно площини падіння? Чому довільну поляризацію можна розкласти на суперпозицію цих двох випадків?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">17.</span> Виведіть закони відбивання (\(i=i&apos;\)) та заломлення (\(n_1\sin i = n_2\sin r\)) з&nbsp;граничної умови неперервності тангенціальної складової \(\Efield \) для \(s\)-поляризованої хвилі. Чому
+рівність частот \(\omega =\omega &apos;=\omega &apos;&apos;\) означає незмінність кольору світла при відбиванні й&nbsp;заломленні, і&nbsp;чому закони геометричної оптики вважають прямим наслідком граничних умов, а&nbsp;не
+окремим постулатом?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">18.</span> Запишіть формули Френеля для \(s\)-поляризації. Що вони визначають?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">19.</span> Запишіть формули Френеля для \(p\)-поляризації. Що таке кут Брюстера і&nbsp;чому за цієї умови відбите світло виявляється повністю \(s\)-поляризованим?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">20.</span> Що таке коефіцієнт відбивання за інтенсивністю? Чому дорівнює він при нормальному падінні на межу двох діелектриків і&nbsp;чому кожна непросвітлена скляна поверхня втрачає кілька відсотків світла?
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">21.</span> Що таке граничний кут повного внутрішнього відбивання? Виведіть умову \(\sin i_b = n_2/n_1\) і&nbsp;поясніть, чому вона можлива лише при переході з&nbsp;оптично густішого середовища
+в&nbsp;менш густе.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">22.</span> Що відбувається з&nbsp;полем у&nbsp;другому середовищі при куті падіння, більшому за граничний? Виведіть вигляд згасаючої (evanescent) хвилі та поясніть, чому вона не переносить енергії
+в&nbsp;середньому вглиб середовища.
+</p>
+
+</li>
+<li>
+
+<p>
+<span class="listmarker">23.</span> Що таке порушене повне внутрішнє відбивання? Чому його легше спостерігати для радіохвиль, ніж для видимого світла?
+</p>
+</li>
+</ul>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="botnavigation"><a href="main-html.html" class="linkhome" >
+Головна</a></nav>
+
+</div><!-- grid -->
+<script src="assets/book.js" defer></script>
+</body>
+</html>
