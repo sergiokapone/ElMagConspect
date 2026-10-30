@@ -968,12 +968,25 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 		\step[fieldset=userf, fieldvalue=facts]}}}
 	\defbibcheck{textbooks}{\iffieldequalstr{userf}{facts}{\skipentry}{}}
 	\defbibcheck{facts}{\iffieldequalstr{userf}{facts}{}{\skipentry}}
+	% Анотація (поле annotation у .bib): з нового рядка, дрібнішим шрифтом, колір головної теми
+	% книги (themecolormain); стандартний gost-numeric її не друкує. Для HTML — той самий код
+	% (ConspectBookHTML.cls, ConspectShared{biblio}).
+	% \foreignlanguage: анотація українська, а langid запису може бути іншим (англійська стаття);
+	% інакше переноси йдуть за правилами тієї мови, і українські слова не переносяться
+	\DeclareFieldFormat{annotation}{\par\small\color{themecolormain}\foreignlanguage{ukrainian}{#1}}
+	\renewbibmacro*{finentry}{%
+		\finentry
+		\iffieldundef{annotation}{}{\printfield{annotation}}}
 	% Заголовок підрозділу списку: запис у змісті на рівні section
 	\defbibheading{bibsub}[\bibname]{\section*{#1}\addcontentsline{toc}{section}{#1}}
 	\newcommand{\printbibliographies}{%
 		\printbibheading[heading=bibintoc]%
 		\printbibliography[check=textbooks, heading=bibsub, title={Підручники та посібники}]%
-		\printbibliography[check=facts, heading=bibsub, title={Джерела фактів і результатів}]}
+		% Джерела фактів — у порядку появи в тексті (sorting=none), per-list: через refcontext,
+		% бо опції sorting у \printbibliography вже немає
+		\begin{refcontext}[sorting=none]
+		\printbibliography[check=facts, heading=bibsub, title={Джерела фактів і результатів}]
+		\end{refcontext}}
 
 	% Перевизначає стандартний заголовок "bibintoc" (як його викликає
 	% \printbibliography[heading=bibintoc] у майстер-файлі): замість
