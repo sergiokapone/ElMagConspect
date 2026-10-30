@@ -113,6 +113,11 @@ def cmd_push(args):
     return git('push')
 
 
+def cmd_commit(args):
+    """Interactive commit (commit.py): shows files, suggests messages (sources and docs/ separately), offers push."""
+    return py('commit.py', *args)
+
+
 COMMANDS = {
     'pdf': (cmd_pdf, ['--no-publish', '--full', '--publish-only']),
     'chapter': (cmd_chapter, ['--png', '--tikz', '--full']),
@@ -124,6 +129,7 @@ COMMANDS = {
     'size': (cmd_size, []),
     'status': (cmd_status, []),
     'push': (cmd_push, []),
+    'commit': (cmd_commit, ['--no-push']),
 }
 
 
