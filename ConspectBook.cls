@@ -977,6 +977,9 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 	\renewbibmacro*{finentry}{%
 		\finentry
 		\iffieldundef{annotation}{}{\printfield{annotation}}}
+	% Ініціали в авторах ("J. L.") дають крапку, а \addperiod після імен додавав ще одну ("J. L..");
+	% після ініціала (велика літера, spacefactor 999) крапка вже є, тож не додаємо другу
+	\renewcommand*{\labelnamepunct}{\ifnum\spacefactor=999 \else\addperiod\fi\space}
 	% Заголовок підрозділу списку: запис у змісті на рівні section
 	\defbibheading{bibsub}[\bibname]{\section*{#1}\addcontentsline{toc}{section}{#1}}
 	\newcommand{\printbibliographies}{%
