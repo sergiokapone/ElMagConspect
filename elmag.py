@@ -56,6 +56,11 @@ def cmd_lint(args):
     return py('layout_lint.py', *args)
 
 
+def cmd_surfcharges(args):
+    """Regenerates the two numerically computed pictures of the surface charges (SteadyCurrent/tikz/SurfChargesA,B.tikz)."""
+    return py('surfcharges_fig.py', *args)
+
+
 def cmd_html(args):
     """HTML version (lwarp) -> docs/: build-html.ps1 with its flags, e.g.  html -SkipPrepare -NoImages"""
     return ps('build-html.ps1', *args)
@@ -122,6 +127,7 @@ COMMANDS = {
     'pdf': (cmd_pdf, ['--no-publish', '--full', '--publish-only']),
     'chapter': (cmd_chapter, ['--png', '--tikz', '--full']),
     'lint': (cmd_lint, ['--chapter', '--sheet', '--all', '--min-gap', '--max-inside', '--sliver']),
+    'surfcharges': (cmd_surfcharges, []),
     'html': (cmd_html, HTML_FLAGS),
     'serve': (cmd_serve, ['8000', '--no-browser']),
     'clean': (cmd_clean, ['aux', 'bak', 'html', 'all']),
