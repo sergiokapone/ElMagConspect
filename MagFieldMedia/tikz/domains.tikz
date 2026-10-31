@@ -1,0 +1,61 @@
+% Доменна структура феромагнетика (одне зерно, вісь легкого намагнічування вертикальна).
+% а) H = 0: 180°-домени й трикутні домени замикання (потік замкнений усередині зразка);
+% б) слабке H: зміщення стінок, домени вздовж поля ростуть, напрями J у доменах не змінюються;
+% в) сильне H: домени зникли, вектор J повертається до напрямку поля.
+\def\DomJup#1#2#3{\begin{scope}[shift={(#1,#2)},rotate=-#3]\draw[domJ] (0,-0.4)--(0,0.4);\end{scope}}
+\def\DomJdn#1#2#3{\begin{scope}[shift={(#1,#2)},rotate=-#3]\draw[domJ] (0,0.4)--(0,-0.4);\end{scope}}
+% домен замикання: центр основи (#1,#2), #3 = ±1 — напрям J (вправо/вліво); #2>2 — верхня поверхня
+\def\DomClos#1#2#3{%
+  \pgfmathsetmacro{\dy}{#2>2 ? -1 : 1}
+  \draw[domwall] (#1-1,#2) -- (#1,#2+\dy) -- (#1+1,#2);
+  \draw[domJ] (#1-0.45*#3,#2+0.3*\dy) -- (#1+0.45*#3,#2+0.3*\dy);
+  \draw[domJ] (#1-0.2*#3,#2+0.6*\dy) -- (#1+0.2*#3,#2+0.6*\dy);}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+  >={Stealth[length=2.6mm,width=2.2mm]},
+  domJ/.style={red!80!black, line width=1.3pt, ->},
+  domwall/.style={black, line width=1pt},
+  dombox/.style={black, line width=1.4pt, fill=gray!8}
+]
+%--- а) H = 0 ---
+\begin{scope}
+  \draw[dombox] (0,0) rectangle (8,5);
+  \foreach \x in {2,4,6} \draw[domwall] (\x,1) -- (\x,4);
+  \foreach \y in {1.8,2.6,3.4}{
+    \DomJup{0.6}{\y}{0} \DomJup{1.4}{\y}{0}
+    \DomJdn{2.6}{\y}{0} \DomJdn{3.4}{\y}{0}
+    \DomJup{4.6}{\y}{0} \DomJup{5.4}{\y}{0}
+    \DomJdn{6.6}{\y}{0} \DomJdn{7.4}{\y}{0}
+  }
+  \DomClos{2}{5}{1}  \DomClos{4}{5}{-1}  \DomClos{6}{5}{1}
+  \DomClos{2}{0}{-1} \DomClos{4}{0}{1}   \DomClos{6}{0}{-1}
+  \node[below, align=center] at (4,-0.1) {а) $\Hfield=0$:\\домени замикання};
+\end{scope}
+%--- б) слабке поле ---
+\begin{scope}[xshift=10cm]
+  \draw[dombox] (0,0) rectangle (8,5);
+  \foreach \x in {3,4,7} \draw[domwall] (\x,0) -- (\x,5);
+  \foreach \y in {0.9,1.9,2.9,3.9}{
+    \DomJup{0.6}{\y}{0} \DomJup{1.5}{\y}{0} \DomJup{2.4}{\y}{0}
+    \DomJdn{3.5}{\y}{0}
+    \DomJup{4.6}{\y}{0} \DomJup{5.5}{\y}{0} \DomJup{6.4}{\y}{0}
+    \DomJdn{7.5}{\y}{0}
+  }
+  \node[below, align=center] at (4,-0.1) {б) слабке $\Hfield$:\\зміщення стінок};
+\end{scope}
+%--- в) сильне поле ---
+\begin{scope}[xshift=20.5cm]
+  \draw[dombox] (0,0) rectangle (8,5);
+  \foreach \x in {1,2.5,4,5.5,7}
+    \foreach \y in {0.9,1.9,2.9,3.9}{
+      \DomJup{\x}{\y}{20}}
+\end{scope}
+% підпис в) окремо, поза циклами
+\node[below, align=center] at (24.5,-0.1) {в) сильне $\Hfield$:\\обертання $\vect J$};
+% напрям H (20° від вертикалі) для б) і в); для б) зсунуто вліво, щоб не налізати на в)
+\foreach \xs in {18.3,28.9}{
+  \begin{scope}[shift={(\xs,1.0)},rotate=-20]
+    \draw[blue!70!black, line width=2.2pt, ->] (0,0) -- (0,2.6) node[blue!70!black, above]  {$\Hfield$};
+  \end{scope}
+}
+\end{tikzpicture}}
