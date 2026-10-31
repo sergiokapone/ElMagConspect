@@ -679,3 +679,9 @@ html.lightbox-open{overflow:hidden}
 
 /* додатковий матеріал, позначений "*": дрібніший шрифт */
 .cb-extra{font-size:.92em}
+
+/* анотація до джерела з літератури: другий абзац пункту списку, що містить посилання на джерело
+   (LaTeX: поле annotation, \color{themecolormain}, \small) */
+li:has(> p > a[id^="LWR-ht-cite"]) > p + p{
+  margin:.2rem 0 .6rem;padding-left:.8rem;border-left:2px solid var(--indigo);
+  font-size:.92em;line-height:1.45;color:var(--indigo)}
