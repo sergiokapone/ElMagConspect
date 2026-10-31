@@ -1,5 +1,4 @@
-\begin{tikzpicture}[>=Stealth, font=\sffamily\small,
-        spy using outlines={circle, magnification=4, size=3.6cm, connect spies}]
+\begin{tikzpicture}[>=Stealth, font=\sffamily\small]
     \useasboundingbox (-3.60,-6.40) rectangle (7.60,3.40);
     \begin{scope}
     \clip (-3.60,-6.40) rectangle (3.60,3.40);
@@ -24,7 +23,6 @@
     \draw[line width=0.5pt, black!75, midarrow] (3.88,1.36) -- (3.90,1.18) -- (3.93,1.00) -- (3.96,0.82) -- (3.98,0.65) -- (4.00,0.47) -- (4.02,0.29) -- (4.02,0.11) -- (4.03,-0.07) -- (4.02,-0.25) -- (4.01,-0.43) -- (3.99,-0.61) -- (3.96,-0.79) -- (3.93,-0.97) -- (3.91,-1.14) -- (3.88,-1.38);
     \draw[line width=0.5pt, black!75, midarrow] (4.40,1.47) -- (4.52,1.60) -- (4.66,1.72) -- (4.81,1.81) -- (4.97,1.90) -- (5.14,1.97) -- (5.31,2.03) -- (5.48,2.07) -- (5.66,2.11) -- (5.84,2.13) -- (6.02,2.14) -- (6.20,2.14) -- (6.38,2.12);
     \draw[line width=0.5pt, black!75, midarrow] (4.79,0.83) -- (4.73,0.66) -- (4.71,0.48) -- (4.69,0.30) -- (4.69,0.13) -- (4.69,-0.05) -- (4.69,-0.23) -- (4.70,-0.41) -- (4.72,-0.59) -- (4.78,-0.82);
-    \draw[line width=0.5pt, black!75, midarrow] (0.00,-0.58) -- (0.06,-0.75) -- (0.13,-0.91) -- (0.20,-1.08) -- (0.25,-1.25) -- (0.27,-1.37);
     \draw[line width=0.5pt, black!75, midarrow] (-0.83,-3.57) -- (-0.69,-3.45) -- (-0.57,-3.32) -- (-0.44,-3.19) -- (-0.33,-3.05) -- (-0.21,-2.92) -- (-0.10,-2.77) -- (0.00,-2.62) -- (0.10,-2.47) -- (0.18,-2.31) -- (0.26,-2.15) -- (0.32,-1.98) -- (0.37,-1.81) -- (0.39,-1.63);
     \draw[line width=0.5pt, black!75, midarrow] (6.37,-2.32) -- (6.19,-2.32) -- (6.01,-2.31) -- (5.83,-2.29) -- (5.65,-2.26) -- (5.48,-2.22) -- (5.30,-2.17) -- (5.13,-2.10) -- (4.97,-2.03) -- (4.81,-1.94) -- (4.66,-1.84) -- (4.52,-1.73) -- (4.40,-1.60) -- (4.32,-1.51);
     \draw[line width=0.5pt, black!75, midarrow] (4.75,-3.59) -- (4.62,-3.47) -- (4.49,-3.34) -- (4.37,-3.21) -- (4.25,-3.08) -- (4.13,-2.94) -- (4.02,-2.80) -- (3.91,-2.66) -- (3.81,-2.51) -- (3.72,-2.35) -- (3.63,-2.19) -- (3.55,-2.03) -- (3.49,-1.86) -- (3.43,-1.63);
@@ -36,10 +34,17 @@
     \draw[line width=0.5pt, black!75, midarrow] (0.45,-3.56) -- (0.51,-3.39) -- (0.56,-3.22) -- (0.61,-3.05) -- (0.66,-2.88) -- (0.70,-2.70) -- (0.74,-2.53) -- (0.77,-2.35) -- (0.79,-2.17) -- (0.81,-1.99) -- (0.81,-1.81) -- (0.81,-1.63);
     \end{scope}
     \end{scope}
-    \begin{scope}[rotate=-90]
-    \shade[left color=blue!30!black!30, right color=blue!5!black!8, draw=gray!70, line width=0.5pt, rounded corners=3pt] (-2.80,-2.10) rectangle (0.00,2.10);
-    \end{scope}
-    \draw[black!80, line width=0.6pt] (1.50,0) -- (1.50,1.60) to[battery2] (-1.50,1.60) -- (-1.50,0);
+    % пальчикова батарейка (АА): мінус ліворуч, плюс праворуч
+    \draw[black!80, line width=0.6pt] (1.50,0) -- (1.50,1.60) -- (1.20,1.60);
+    \draw[black!80, line width=0.6pt] (-1.50,0) -- (-1.50,1.60) -- (-1.20,1.60);
+    \shade[shading=axis, top color=gray!70, bottom color=gray!70, middle color=gray!10, draw=gray!80, line width=0.4pt] (1.00,1.45) rectangle (1.20,1.75);
+    \shade[shading=axis, top color=orange!60!black, bottom color=orange!60!black, middle color=orange!25, draw=black!60, line width=0.4pt, rounded corners=1.5pt] (-1.05,1.15) rectangle (0.85,2.05);
+    \shade[shading=axis, top color=yellow!50!black, bottom color=yellow!50!black, middle color=yellow!30, draw=black!60, line width=0.4pt] (0.85,1.15) rectangle (1.00,2.05);
+    \shade[shading=axis, top color=gray!70, bottom color=gray!70, middle color=gray!10, draw=gray!80, line width=0.4pt, rounded corners=1.5pt] (-1.20,1.15) rectangle (-1.05,2.05);
+    % умовне позначення джерела, ледь помітне на корпусі
+    \draw[black, opacity=0.6, line width=0.5pt] (-1.05,1.60) -- (-0.05,1.60) (0.20,1.60) -- (1.00,1.60);
+    \draw[black, opacity=0.6, line width=1.4pt] (-0.05,1.43) -- (-0.05,1.77);
+    \draw[black, opacity=0.6, line width=0.5pt] (0.20,1.28) -- (0.20,1.92);
     \begin{scope}[rotate=-90]
     \node[red!70!black, font=\bfseries\large] at (-0.35, 1.50) {$+$};
     \node[blue!70!black, font=\bfseries\large] at (-0.35, -1.50) {$-$};
@@ -69,15 +74,35 @@
     \node[blue!80!black, font=\bfseries\scriptsize, inner sep=0] at (1.11,-1.74) {$-$};
     \node[blue!80!black, font=\bfseries\scriptsize, inner sep=0] at (0.81,-1.26) {$-$};
     \node[blue!80!black, font=\bfseries\scriptsize, inner sep=0] at (0.63,-1.74) {$-$};
-    \begin{scope}[red!80!black, thin, {>={Latex[scale=0.4]}}, ->]
-        \draw (3.30,1.62) -- ++(0.10,0) coordinate (Et);
-        \draw (3.30,1.62) -- ++(0,0.44) coordinate (En);
-        \draw (3.30,1.62) -- ++(0.10,0.44) coordinate (E);
     \end{scope}
-    \draw[dashed, very thin, red!80!black] (Et) -- (E) -- (En);
-    \node[below, red!80!black, inner sep=0.5pt, font=\fontsize{2.4pt}{2.8pt}\selectfont] at (Et) {$\Efield_\tau$};
-    \node[above, red!80!black, inner sep=0.5pt, font=\fontsize{2.4pt}{2.8pt}\selectfont] at ($(3.30,1.62)!0.5!(En)$) {$\Efield_n$};
-    \node[right, red!80!black, inner sep=0.5pt, font=\fontsize{2.4pt}{2.8pt}\selectfont] at (E) {$\Efield$};
+    % струм j уздовж дроту: від «+» клеми до «−»
+    \begin{scope}[-{Stealth[length=2.4mm]}, line width=1pt, green!45!black]
+        \draw (1.50,-1.50) -- (1.50,-2.30);
+        \draw (0.35,-5.20) -- (-0.35,-5.20);
+        \draw (-1.50,-2.30) -- (-1.50,-1.50);
     \end{scope}
-    \spy[gray, line width=0.6pt] on (1.84,-3.35) in node[fill=white] at (5.60,-3.30);
+    \node[green!45!black, fill=white, fill opacity=0.85, text opacity=1, inner sep=1pt] at (2.25,-1.90) {$\vect j$};
+    \node[anchor=north, inner sep=2pt] at (0,-5.45) {$\Efield=\vect j/\lambda$ у дроті};
+    % виноска: увеличений фрагмент поверхні дроту (малюється вручну, а не через spy, щоб вектори були читабельні)
+    \draw[gray, line width=0.6pt] (1.84,-3.35) circle (0.45);
+    \draw[gray, line width=0.4pt] (2.29,-3.34) -- (3.80,-3.30);
+    \begin{scope}
+        \clip (5.60,-3.30) circle (1.8);
+        \fill[white] (3.70,-5.20) rectangle (7.50,-1.40);
+        \fill[gray!25] (3.70,-5.20) rectangle (4.58,-1.40);
+        \fill[white, opacity=0.8] (4.05,-5.20) rectangle (4.25,-1.40);
+        \fill[gray!70] (4.58,-5.20) rectangle (4.72,-1.40);
+        \draw[line width=0.8pt, black!75, midarrow] (4.72,-2.30) .. controls (5.30,-2.45) and (5.70,-2.65) .. (6.60,-3.05);
+        \draw[line width=0.8pt, black!75, midarrow] (4.72,-4.20) .. controls (5.30,-4.35) and (5.70,-4.55) .. (6.60,-4.95);
+    \end{scope}
+    \draw[gray, line width=0.6pt] (5.60,-3.30) circle (1.8);
+    \begin{scope}[red!80!black, line width=0.9pt, {>={Stealth[length=2.2mm]}}, ->]
+        \draw (4.72,-3.30) -- ++(1.10,0) coordinate (En);
+        \draw (4.72,-3.30) -- ++(0,-0.45) coordinate (Et);
+        \draw (4.72,-3.30) -- ++(1.10,-0.45) coordinate (E);
+    \end{scope}
+    \draw[dashed, thin, red!80!black] (En) -- (E) -- (Et);
+    \node[above, red!80!black, inner sep=1pt] at ($(4.72,-3.30)!0.5!(En)$) {$\Efield_n$};
+    \node[below right, red!80!black, inner sep=1pt] at (Et) {$\Efield_\tau$};
+    \node[right, red!80!black, inner sep=1pt] at (E) {$\Efield$};
 \end{tikzpicture}
