@@ -11,3 +11,13 @@ Every request resends the whole context, and what was read stays there until `/c
 - Layout check: view only the PNG pages with the changed place.
 - Build one chapter (`chapter.py`), the whole book only at the end of a round and only when asked. Do not rebuild "to be sure"; do not re-read a file you just edited.
 - Report briefly: what changed, what is left, at most one question.
+
+## Sessions, models, agents
+- One session = one task (physics of one chapter, or layout, or build). End: update `STATUS.md`, then the author runs `/clear`.
+- Models are switched only by the author (`/model`); rules cannot do it. Recommendation: physics/logic review on the strongest
+  model; layout, `chapter.py`, lint, simple edits from a ready list, commits on Haiku/Sonnet. At the start of a task, if the model
+  looks too heavy for a mechanical task (or too weak for the physics review), say so in one line.
+- Subagents: do not use `fork` to save tokens (it copies the whole context). For builds and checks use a plain background
+  agent with a short prompt and `model: "haiku"` or `"sonnet"`, ask it to return only the verdict (Overfull/Error lines, page numbers).
+- Parallel agents only on different chapters; never two `latexmk` runs in one folder; commits only by the main session at the end, when the author asks.
+- Mechanical things go to scripts (`python elmag.py ...`), not to the model.
