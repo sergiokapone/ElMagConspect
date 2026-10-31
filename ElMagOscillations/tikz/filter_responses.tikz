@@ -1,4 +1,4 @@
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.8]
     \begin{axis}[
             declare function={
                     RC = 1.0;

@@ -1,4 +1,4 @@
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.8]
     \begin{axis}[
             declare function={
                     RC = 1.0;
@@ -20,7 +20,7 @@
             yticklabels={$-90^\circ$,$-45^\circ$,$45^\circ$,$90^\circ$},
             ytick style={anchor=east},
             width=10cm,
-            height=6.5cm,
+            height=6cm,
             samples=400,
             clip=false,
         ]
