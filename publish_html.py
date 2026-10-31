@@ -27,6 +27,7 @@ ASSET_DIR = 'assets'
 ap = argparse.ArgumentParser()
 ap.add_argument('--out', default='docs')
 ap.add_argument('--extra', nargs='*', default=[])
+ap.add_argument('--patch-only', action='store_true', help='only apply IMG_STYLE to the already published pages in --out and exit (nothing is moved or deleted)')
 ap.add_argument('--keep-leftovers', action='store_true', help='do not delete what remains in lateximages/ and <main>-images/')
 args = ap.parse_args()
 
@@ -100,6 +101,42 @@ for name in ASSET_FILES:
         shutil.copy2(best, dst); moved_assets.append(name)
     for p in cands:
         if p != dst: os.remove(p)                                  # the old copies are gone: one file, one place
+
+from html_patches import IMG_STYLE, FIG_CLASS      # spot fixes of single figures: edit html_patches.py
+IMG_TAG = re.compile(r'<img\b[^>]*>', re.S)
+
+def patch_images(text):
+    def fix(m):
+        tag = m.group(0)
+        for key, css in IMG_STYLE.items():
+            if key not in tag: continue
+            css = css.rstrip('; ') + ';'
+            if css in tag: return tag                      # already patched
+            if re.search(r'style="', tag): return re.sub(r'style="([^"]*)"', lambda k: 'style="%s %s"' % (k.group(1).rstrip(), css), tag, count=1)
+            return tag.replace('<img', '<img style="%s"' % css, 1)
+        return tag
+    text = IMG_TAG.sub(fix, text)
+    def fig(m):
+        f = m.group(0)
+        for label, cls in FIG_CLASS.items():
+            if 'id="%s"' % label not in f: continue
+            if cls in re.search(r'<div class="center[^"]*"', f).group(0).split(): return f
+            return f.replace('<div class="center"', '<div class="center %s"' % cls, 1)
+        return f
+    return re.sub(r'<figure\b.*?</figure>', fig, text, flags=re.S)
+
+
+if args.patch_only:
+    n = 0
+    for name in sorted(os.listdir(OUT)):
+        if not name.endswith('.html') or is_site_own(name): continue
+        path = os.path.join(OUT, name)
+        text = open(path, 'rb').read().decode('utf-8')
+        new = patch_images(text)
+        if new != text:
+            open(path, 'wb').write(new.encode('utf-8')); n += 1; print('  patched', name)
+    print('patch-only: %d page(s) changed' % n)
+    sys.exit(0)
 
 # --- 1. empty the output folder (site files stay) -------------------------------------------------
 if not any(os.path.isfile(p) and is_lwarp(p) and not p.endswith('_html.html') for p in glob.glob(os.path.join(ROOT, '*.html'))):
@@ -252,6 +289,7 @@ for name in pages:
     new = add_site_links(name, new)
     new = wrap_toc_titles(new)
     new = mark_sections(new)
+    new = patch_images(new)
     if 'book.js' not in new and '</body>' in new:
         new = new.replace('</body>', '<script src="%s/book.js" defer></script>\n</body>' % ASSET_DIR, 1); n_script += 1
     if new != text:
