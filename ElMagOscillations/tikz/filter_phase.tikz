@@ -1,0 +1,41 @@
+\begin{tikzpicture}
+    \begin{axis}[
+            declare function={
+                    RC = 1.0;
+                    Q = 5.0;
+                    PLP(\w) = -atan(\w*RC);
+                    PHP(\w) = 90 - atan(\w*RC);
+                    PBP(\w) = -atan(Q*(\w - 1/\w));
+                },
+            axis lines=center,
+            xlabel={$\omega$},
+            ylabel={$\phi$},
+            x label style={anchor=north west, at={(axis description cs:0.98,0.02)}},
+            y label style={anchor=south east, at={(axis description cs:0.02,0.98)}},
+            xmin=0, xmax=3,
+            ymin=-100, ymax=100,
+            xtick={1},
+            xticklabels={$\omega_c{=}\omega_0$},
+            ytick={-90,-45,45,90},
+            yticklabels={$-90^\circ$,$-45^\circ$,$45^\circ$,$90^\circ$},
+            ytick style={anchor=east},
+            width=10cm,
+            height=6.5cm,
+            samples=400,
+            clip=false,
+        ]
+
+        \draw[dashed, gray] (axis cs:0, 90) -- (axis cs:3, 90);
+        \draw[dashed, gray] (axis cs:0, -90) -- (axis cs:3, -90);
+
+        \addplot [blue, thick, domain=0:3] {PLP(x)};
+        \node[blue] at (axis cs:2.3, -52) {ФНЧ};
+
+        \addplot [red, thick, domain=0:3] {PHP(x)};
+        \node[red] at (axis cs:2.3, 52) {ФВЧ};
+
+        \addplot [green!60!black, thick, domain=0.05:3] {PBP(x)};
+        \node[green!60!black] at (axis cs:0.4, 28) {смуговий};
+
+    \end{axis}
+\end{tikzpicture}
