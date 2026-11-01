@@ -1022,6 +1022,7 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 %   Theory    — блок теоретичних відомостей з автонумерацією;
 %   pict      — рамка навколо окремого рисунка;
 %   Attention — жовтий блок-попередження зі знаком оклику;
+%   Simulation — фіолетова врізка з іконкою Play для абзаців із \simlink (інтерактивні симуляції);
 %   Questions — бірюзовий блок «Контрольні питання» (самоперевірка);
 %   tornpage  — декоративний "пергаментний" фон (сторінка "під старовину").
 
@@ -1157,6 +1158,44 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 		% 2. Коричнева смуга з іконкою історії ліворуч
 		\path[fill=tcbcolframe,draw=none] (interior.south west) rectangle ([xshift=6mm]interior.north west);
 		\node[text=white] at ([xshift=3mm]interior.west) {\large\faHistory}; % Потребує \usepackage{fontawesome5}
+	},
+	drop fuzzy shadow,
+	#1
+}
+
+% Simulation — врізка для абзаців із посиланнями на інтерактивні симуляції (\simlink).
+% Дизайн: та сама мова, що й у Historical/Example (смуга з іконкою ліворуч, загнутий куток),
+% але власний фіолетовий колір simmain, іконка «Play» і заголовок «Інтерактивна симуляція».
+% Усередині врізки текст посилання друкується жирним фіолетовим із піктограмою «відкрити»,
+% щоб було видно, куди клікати. Використання:
+%   \begin{Simulation}
+%     Як цей злам біжить від заряду, видно в~\simlink[Назва][опис]{файл.html}{моделі Томсона}.
+%   \end{Simulation}
+\definecolor{simmain}{RGB}{106,27,154}
+\newcommand{\SimLinkMark}{\,{\footnotesize\faExternalLink*}}
+% всередині врізки \href друкує текст посилання жирним фіолетовим + піктограма (\SimBoxHref = оригінальний \href)
+\newcommand{\SimBoxHrefStyle}[2]{\SimBoxHref{#1}{\textcolor{simmain}{\bfseries #2}\SimLinkMark}}
+\newtcolorbox{Simulation}[1][]{
+	enhanced,
+	breakable,
+	title={Інтерактивна симуляція},
+	attach title to upper={.\ },
+	fonttitle=\sffamily\bfseries,
+	coltitle=simmain,
+	before skip=3mm, after skip=3mm,
+	before upper app={\parindent0pt\let\SimBoxHref\href\let\href\SimBoxHrefStyle},   % app: не затирати заголовок, доданий attach title to upper
+	boxrule=0.5pt,
+	left=8mm, right=2mm, top=1.5mm, bottom=1.5mm,
+	colback=simmain!6!white,
+	colframe=simmain,
+	fontupper=\small,
+	parbox=false,
+	sharp corners, rounded corners=southeast, arc is angular, arc=3mm,
+	underlay={%
+		\path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+		\path[draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+		\path[fill=tcbcolframe,draw=none] (interior.south west) rectangle ([xshift=6mm]interior.north west);
+		\node[text=white] at ([xshift=3mm]interior.west) {\large\faPlayCircle};
 	},
 	drop fuzzy shadow,
 	#1
