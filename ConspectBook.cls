@@ -1412,6 +1412,11 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 \RequirePackage{bookmark}
 \RequirePackage[all]{hypcap}   % посилання на рисунок/таблицю ведуть на верх об'єкта, а не на підпис
 
+% --------------- Інтерактивні симуляції (Scripts/*.html) ----------- %
+% Базова адреса: хостинг може змінитися, тож її змінюють лише тут.
+\newcommand{\SimBaseURL}{https://sergiokapone.github.io/ElMagConspect/Scripts}
+\newcommand{\simlink}[2]{\begingroup\edef\x{\endgroup\noexpand\href{\SimBaseURL/#1}}\x{#2}}
+
 % --------------- Патч для україомовної назви розділу для nameref ----------- %
 \addto\extrasukrainian{%
 	\renewcommand{\chapterautorefname}{}%
