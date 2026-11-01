@@ -299,6 +299,15 @@ for rel in ASSET_FILES:
     if not os.path.isfile(os.path.join(OUT, ASSET_DIR, rel)):
         print('  WARNING: %s/%s not found: the pages link to it' % (ASSET_DIR, rel))
 
+# --- 5b. interactive simulations: Scripts/*.html -> <out>/Scripts/ (the book links to them via \SimBaseURL) ---
+SIM_SRC = os.path.join(ROOT, 'Scripts')
+if os.path.isdir(SIM_SRC):
+    sims = sorted(glob.glob(os.path.join(SIM_SRC, '*.html')))
+    if sims:
+        os.makedirs(os.path.join(OUT, 'Scripts'), exist_ok=True)
+        for f in sims: shutil.copy2(f, os.path.join(OUT, 'Scripts', os.path.basename(f)))
+        print('  simulations copied to %s/Scripts: %d' % (os.path.relpath(OUT, ROOT), len(sims)))
+
 # --- 6. the project root: no empty folders left behind ---------------------------------------------
 removed_dirs, leftovers = [], 0
 if not args.keep_leftovers:                                      # generated image folders: all that is needed is already moved

@@ -102,6 +102,10 @@
 % lwarp opens a new HTML page for a starred \chapter* only after \ForceHTMLPage (otherwise the text goes
 % to the end of the previous chapter's page): \schapterpage = \schapter on a page of its own
 \newcommand{\schapterpage}[1]{\ForceHTMLPage\schapter{#1}}
+
+% ---- interactive simulations (Scripts/*.html): change the base address here only ----
+\newcommand{\SimBaseURL}{https://sergiokapone.github.io/ElMagConspect/Scripts}
+\newcommand{\simlink}[2]{\begingroup\edef\x{\endgroup\noexpand\href{\SimBaseURL/#1}}\x{#2}}
 % the print heading is a \part* (\addcontentsline{toc}{part}); in HTML the bibliography is a page of its own
 \defbibheading{bibintoc}{\schapterpage{Література}}
 
