@@ -123,6 +123,18 @@ def cmd_commit(args):
     return py('commit.py', *args)
 
 
+def cmd_release(args):
+    """Everything in one go: pdf, html, commit all + push, purge old builds from the history (no questions).
+    release "message" (default: docs: перебудова PDF та HTML). Stops at the first failed step."""
+    msg = ' '.join(args) or 'docs: перебудова PDF та HTML'
+    # run.ps1 / qpdf may return 1 for a harmless warning: the PDF is judged by the file, not by the code
+    code = cmd_pdf([])
+    if code and not os.path.isfile(os.path.join(ROOT, 'docs', 'ElMagConspect.pdf')): return code
+    if cmd_html([]): return 1
+    if cmd_push([msg]): return 1
+    return py('clean_repo.py', '--yes')
+
+
 COMMANDS = {
     'pdf': (cmd_pdf, ['--no-publish', '--full', '--publish-only']),
     'chapter': (cmd_chapter, ['--png', '--tikz', '--full']),
@@ -135,6 +147,7 @@ COMMANDS = {
     'size': (cmd_size, []),
     'status': (cmd_status, []),
     'push': (cmd_push, []),
+    'release': (cmd_release, []),
     'commit': (cmd_commit, ['--no-push']),
 }
 

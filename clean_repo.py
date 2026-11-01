@@ -11,6 +11,7 @@ Before rewriting: a full backup (git bundle) next to the project. After: origin 
 are force-pushed. Needs git filter-repo (pip install git-filter-repo).
 
 Usage: python clean_repo.py            report, ask for YES, clean and push
+       python clean_repo.py --yes      same, without the YES question
        python clean_repo.py --dry-run  only the report: what would be removed and how much it takes"""
 import argparse, datetime, os, re, shutil, subprocess, sys, tempfile
 
@@ -80,6 +81,7 @@ def mb(n): return '%.1f MB' % (n / 1048576)
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--dry-run', action='store_true', help='only report, change nothing')
+    ap.add_argument('--yes', action='store_true', help='do not ask for YES')
     args = ap.parse_args()
 
     # --- 0. checks ---------------------------------------------------------------------------------
@@ -124,7 +126,7 @@ def main():
 
     print('\nThe history of %s and all tags will be rewritten and FORCE-PUSHED to %s.' % (branch, remote))
     print('Everyone who has cloned the repository gets a different history.')
-    if input('Continue? Type YES in capitals: ').strip() != 'YES':
+    if not args.yes and input('Continue? Type YES in capitals: ').strip() != 'YES':
         print('Cancelled.')
         return
 
