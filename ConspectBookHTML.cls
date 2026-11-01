@@ -135,6 +135,8 @@
 \newenvironment{Attention}[1][]{\begin{BlockClass}{cb-attention}}{\end{BlockClass}}
 \newenvironment{Example}[2][]{\begin{BlockClass}{cb-example}\textbf{#2.}\ }{\end{BlockClass}}
 \newenvironment{Historical}[1][]{\begin{BlockClass}{cb-historical}\textbf{Історична довідка.}\ }{\end{BlockClass}}
+% абзац із посиланням на інтерактивну симуляцію (\simlink); стиль cb-simulation: conspect-sim.css
+\newenvironment{Simulation}[1][]{\begin{BlockClass}{cb-simulation}\textbf{Інтерактивна симуляція.}\ }{\end{BlockClass}}
 \newenvironment{tornpage}[1][]{\begin{BlockClass}{cb-quote}}{\end{BlockClass}}
 \newenvironment{pict}{\begin{BlockClass}{cb-pict}}{\end{BlockClass}}
 \newenvironment{Questions}[1][Контрольні питання]{\begin{BlockClass}{cb-questions}\textbf{#1}\par}{\end{BlockClass}}

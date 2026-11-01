@@ -40,10 +40,12 @@
 \newcommand{\labelnamepunct}{\ifnum\spacefactor=999 \else\addperiod\fi\space}
 \newcommand{\printbibliographies}{\printbibheading[heading=bibintoc] \printbibliography[check=textbooks, heading=bibsub, title={Підручники та посібники}] \begin{refcontext}[sorting=none] \printbibliography[check=facts, heading=bibsub, title={Джерела фактів і результатів}] \end{refcontext}}
 \newcommand{\bibname}{Література}
+\newcommand{\SimLinkMark}{\,{\footnotesize\faExternalLink*}}
+\newcommand{\SimBoxHrefStyle}[2]{\SimBoxHref{#1}{\textcolor{simmain}{\bfseries #2}\SimLinkMark}}
 \newcommand{\quizbadge}[2][]{\tikz[baseline=(qb.base)]\node[circle,fill=quizmain,text=white,inner sep=0pt,minimum size=1.5em,font=\sffamily\bfseries\small,#1](qb){#2};}
 \newcommand{\chapterautorefname}{}
 \newcommand{\SimBaseURL}{https://sergiokapone.github.io/ElMagConspect/Scripts}
-\newcommand{\simdoc}[3]{\@bsphack \protected@write\@auxout{}{\string\simentry{\thechapter}{\@currentHref}{#1}{#2}{#3}} \@esphack}
+\newcommand{\simdoc}[3]{\@bsphack \protected@write\@auxout{}{\string\simentry{\thechapter}{\currfilebase}{#1}{#2}{#3}} \@esphack}
 \newcommand{\simentry}[5]{\g@addto@macro\sim@data{\sim@item{#1}{#2}{#3}{#4}{#5}}}
 \newcommand{\simused}[1]{\g@addto@macro\sim@usedlist{\sim@check{#1}}}
 \newcommand{\IPTNo}{13}
