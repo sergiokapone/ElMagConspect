@@ -123,8 +123,30 @@ def cmd_commit(args):
     return py('commit.py', *args)
 
 
+def wait_pages(timeout=900, appear=90, step=15):
+    """Waits until GitHub Pages has finished deploying HEAD (the 'pages build and deployment' run). A force-push while
+    a deployment is in progress hangs it, and every next deployment is then refused. Returns True when it is safe."""
+    import json, time, urllib.request
+    sha = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    url = 'https://api.github.com/repos/sergiokapone/ElMagConspect/actions/runs?head_sha=' + sha
+    print('Waiting for GitHub Pages to deploy %s ...' % sha[:7])
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        try:
+            runs = json.load(urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'elmag'}), timeout=30))['workflow_runs']
+        except Exception as e:
+            print('  (GitHub API: %s)' % e); runs = None
+        if runs:
+            if all(r['status'] == 'completed' for r in runs):
+                print('  Pages: %s' % ', '.join(r['conclusion'] for r in runs)); return True
+        elif runs is not None and time.time() - t0 > appear:
+            print('  No Pages run for this commit: nothing to wait for.'); return True
+        time.sleep(step)
+    print('  Timeout: Pages is still deploying.'); return False
+
+
 def cmd_release(args):
-    """Everything in one go: pdf, html, commit all + push, purge old builds from the history (no questions).
+    """Everything in one go: pdf, html, commit all + push, wait for Pages, purge old builds from the history (no questions).
     release "message" (default: docs: перебудова PDF та HTML). Stops at the first failed step."""
     msg = ' '.join(args) or 'docs: перебудова PDF та HTML'
     # run.ps1 / qpdf may return 1 for a harmless warning: the PDF is judged by the file, not by the code
@@ -132,6 +154,8 @@ def cmd_release(args):
     if code and not os.path.isfile(os.path.join(ROOT, 'docs', 'ElMagConspect.pdf')): return code
     if cmd_html([]): return 1
     if cmd_push([msg]): return 1
+    if not wait_pages():
+        print('Purge skipped (Pages is busy): run  purge --yes  later.'); return 1
     return py('clean_repo.py', '--yes')
 
 
@@ -143,7 +167,7 @@ COMMANDS = {
     'html': (cmd_html, HTML_FLAGS),
     'serve': (cmd_serve, ['8000', '--no-browser']),
     'clean': (cmd_clean, ['aux', 'bak', 'html', 'all']),
-    'purge': (cmd_purge, ['--dry-run']),
+    'purge': (cmd_purge, ['--dry-run', '--yes']),
     'size': (cmd_size, []),
     'status': (cmd_status, []),
     'push': (cmd_push, []),
