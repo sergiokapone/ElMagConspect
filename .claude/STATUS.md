@@ -40,6 +40,7 @@
 2. `python elmag.py pdf` → перевірити попередження зі списку вище → `python elmag.py html` → коміт `docs/` → push (лише на прохання).
 3. Рішення автора по `Plasma` і нерозривних задачах.
 4. Нові розділи/правки --- через `/review-chapter <Папка>`.
+5. TODO: папка `Scripts/` --- симуляції до розділів книги (автор складатиме туди; уже є `betatron_sim.py` до ЕМ-індукції). Скрипти не входять у збірку книги.
 
 ## Література: два списки (2026-10-29, не закомічено)
 - `ConspectBook.cls` (блок biblio): biber-sourcemap ставить `userf=facts` усім записам з `Bibliography/Articles.bib`; `\printbibliographies` друкує «Підручники та посібники» (решта) і «Джерела фактів і результатів» (Articles.bib), підрозділи пишуться в зміст як section. Шлях у `\perdatasource` має збігатися з `\addbibresource`.
