@@ -41,6 +41,7 @@
 3. Рішення автора по `Plasma` і нерозривних задачах.
 4. Нові розділи/правки --- через `/review-chapter <Папка>`.
 5. TODO: папка `Scripts/` --- симуляції до розділів книги (автор складатиме туди; уже є `betatron_sim.py` до ЕМ-індукції). Скрипти не входять у збірку книги.
+6. TODO: перелік симуляцій у книзі. Посилання з тексту є лише для бетатрона (`\simlink{betatron.html}{...}` в ElMagInduction, абзац у Preface; `\SimBaseURL` у обох `.cls`; `publish_html.py` копіює `Scripts/*.html` у `docs/Scripts/`). Запропоновано: додаток `Additions/Simulations.tex` (таблиця «симуляція | розділ | `\simlink`»; у `main.tex` після `Vanaliz`, у Preface посилатися на нього) плюс `\simlink` у тексті кожного розділу біля відповідного матеріалу. Файли в `Scripts/`: Polar_dielectric, Synchrotron_radiation(_v2), betatron, cherenkov_radiation, faraday_magnet_coil, faraday_switch_coils, ferromagnetics, field_lines_equipotentials, hertz_dipole_radiation, thompson_radiation_model_(ac|dec)celeration, transmission_line; сім з них ще не в git. Для HTML-версії таблиця має бути й у lwarp-класі.
 
 ## Література: два списки (2026-10-29, не закомічено)
 - `ConspectBook.cls` (блок biblio): biber-sourcemap ставить `userf=facts` усім записам з `Bibliography/Articles.bib`; `\printbibliographies` друкує «Підручники та посібники» (решта) і «Джерела фактів і результатів» (Articles.bib), підрозділи пишуться в зміст як section. Шлях у `\perdatasource` має збігатися з `\addbibresource`.
