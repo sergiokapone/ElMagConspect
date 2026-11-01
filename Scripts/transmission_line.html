@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Телеграфна лінія: падаюча й відбита хвилі</title>
+<style>
+  :root { --bg:#fbfbf8; --fg:#222; --panel:rgba(255,255,255,.9); }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14161b; --fg:#e6e6e6; --panel:rgba(35,38,44,.9); }
+  }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--fg);
+               font-family: system-ui, "Segoe UI", sans-serif; overflow:hidden; }
+  canvas { display:block; width:100%; height:100%; }
+  #panel { position:absolute; top:10px; left:10px; background:var(--panel); padding:10px 12px;
+           border-radius:10px; font-size:14px; line-height:1.45; width:300px; backdrop-filter:blur(4px); }
+  #panel button { margin:2px 4px 2px 0; padding:4px 10px; border-radius:6px; border:1px solid #888;
+                  background:transparent; color:inherit; cursor:pointer; font-size:13px; }
+  #panel button.sel { background:#888; color:#fff; }
+  #panel label { display:block; margin-top:5px; }
+  #panel input[type=range] { width:100%; }
+  #panel .chk { display:block; margin-top:4px; font-size:13px; }
+  #legend { margin-top:8px; border-top:1px solid #8884; padding-top:6px; font-size:13px; line-height:1.5; }
+  #readout { margin-top:6px; font-size:13px; line-height:1.5; }
+  .sw { display:inline-block; width:22px; height:3px; vertical-align:middle; margin-right:6px; border-radius:2px; }
+  #hint { position:absolute; bottom:6px; left:12px; right:12px; font-size:12px; opacity:.7; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="panel">
+  <div>
+    <button id="modeHarm" class="sel">Гармонічна хвиля</button>
+    <button id="modePulse">Імпульс</button>
+  </div>
+  <div style="margin-top:6px">
+    <button id="play">Пауза</button>
+    <button id="reset">Скинути</button>
+  </div>
+
+  <label>Навантаження Z_L / Z₀: <span id="zlVal"></span>
+    <input type="range" id="zl" min="0.05" max="10" step="0.05" value="2"></label>
+  <label id="lamRow">Довжина хвилі λ: <span id="lamVal"></span>
+    <input type="range" id="lam" min="120" max="400" step="5" value="240"></label>
+  <label id="sigRow" style="display:none">Ширина імпульсу σ: <span id="sigVal"></span>
+    <input type="range" id="sig" min="10" max="60" step="1" value="30"></label>
+  <label>Швидкість часу: <span id="tVal"></span>
+    <input type="range" id="ts" min="0.25" max="2" step="0.05" value="0.8"></label>
+
+  <label class="chk"><input type="checkbox" id="decomp"> розкласти на падаючу (синя) і відбиту (помаранчева)</label>
+  <label class="chk"><input type="checkbox" id="env" checked> показати огинаючу (стояча хвиля)</label>
+
+  <div id="legend">
+    <div><span class="sw" style="background:#1f6fb5"></span>V(x,t): напруга, верхній графік</div>
+    <div><span class="sw" style="background:#c2561c"></span>I(x,t): струм, нижній графік</div>
+    <div><span class="sw" style="background:#888"></span>пунктир: огинаюча, max і min</div>
+  </div>
+  <div id="readout"></div>
+</div>
+
+<div id="hint">
+  Хвиля напруги й струму біжить по лінії. На навантаженні частина її відбивається: Γ = (Z_L − Z₀)/(Z_L + Z₀).
+  Якщо Z_L = Z₀, відбиття немає. Коротке замикання (Z_L → 0) дає Γ = −1: напруга на кінці дорівнює нулю, струм максимальний.
+  Розімкнене коло (Z_L → ∞) дає Γ = +1. Падаюча й відбита хвилі разом утворюють стоячу хвилю.
+</div>
+
+<script>
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+
+const COL = {
+  v:    dark ? '#7fd3ff' : '#1f6fb5',
+  i:    dark ? '#ffb070' : '#c2561c',
+  inc:  dark ? '#6ec6ff' : '#1f6fb5',
+  ref:  dark ? '#ffb070' : '#d9531e',
+  env:  dark ? '#999' : '#888',
+  axis: dark ? '#aaa' : '#555',
+  cond: dark ? '#ccc' : '#444'
+};
+
+const F = 0.6;           // частота, цикли/с (для гармонічної хвилі)
+const V_PULSE = 260;     // швидкість імпульсу, px/s
+
+let W = 0, H = 0, xa = 0, xb = 0, yV = 0, yL = 0, yI = 0, U = 60;
+let mode = 'harm';
+let running = true;
+let t = 0;
+
+const el = id => document.getElementById(id);
+const zlR = () => Number(el('zl').value);
+const gamma = () => (zlR() - 1) / (zlR() + 1);          // коефіцієнт відбиття за напругою
+const lam = () => Number(el('lam').value);
+const beta = () => 2 * Math.PI / lam();                 // хвильове число, 1/px
+const omega = () => 2 * Math.PI * F;
+const sigP = () => Number(el('sig').value);
+
+function resize() {
+  const d = window.devicePixelRatio || 1;
+  W = cv.clientWidth;
+  H = cv.clientHeight;
+  cv.width = Math.round(W * d);
+  cv.height = Math.round(H * d);
+  ctx.setTransform(d, 0, 0, d, 0, 0);
+  xa = Math.max(330, W * 0.1);
+  xb = W - 100;
+  yV = H * 0.27;
+  yL = H * 0.5;
+  yI = H * 0.76;
+  U = Math.min(H * 0.065, 80);
+}
+
+/* ---------- гармонічна хвиля (y — відстань від навантаження) ---------- */
+
+// Падаюча і відбита складові напруги (у одиницях амплітуди падаючої)
+const harmVi = (y, tt) => Math.cos(beta() * y + omega() * tt);
+const harmVr = (y, tt) => gamma() * Math.cos(omega() * tt - beta() * y);
+const harmV  = (y, tt) => harmVi(y, tt) + harmVr(y, tt);
+// Струм: I = (Vi − Vr)/Z₀, з Z₀ = 1
+const harmIi = (y, tt) => Math.cos(beta() * y + omega() * tt);
+const harmIr = (y, tt) => -gamma() * Math.cos(omega() * tt - beta() * y);
+const harmI  = (y, tt) => harmIi(y, tt) + harmIr(y, tt);
+const envV = y => {
+  const g = gamma(), b = beta() * y;
+  return Math.sqrt((1 + g) ** 2 * Math.cos(b) ** 2 + (1 - g) ** 2 * Math.sin(b) ** 2);
+};
+
+/* ---------- імпульс ---------- */
+
+const gauss = (x, c) => Math.exp(-Math.pow((x - c) / sigP(), 2));
+const xi = tt => xa - 160 + V_PULSE * tt;     // центр падаючого імпульсу
+const xr = tt => 2 * xb - xi(tt);             // центр відбитого імпульсу
+
+const pulseVi = (x, tt) => gauss(x, xi(tt));
+const pulseVr = (x, tt) => gamma() * gauss(x, xr(tt));
+const pulseV  = (x, tt) => pulseVi(x, tt) + pulseVr(x, tt);
+const pulseIi = (x, tt) => gauss(x, xi(tt));
+const pulseIr = (x, tt) => -gamma() * gauss(x, xr(tt));
+const pulseI  = (x, tt) => pulseIi(x, tt) + pulseIr(x, tt);
+
+/* ---------- крок часу ---------- */
+
+function step(dt) {
+  t += dt;
+  if (mode === 'pulse' && xr(t) < xa - 4 * sigP()) t = 0;   // імпульс повністю пішов
+}
+
+/* ---------- малювання ---------- */
+
+function plotCurve(fn, yc, color, lw, dashed) {
+  ctx.save();
+  ctx.strokeStyle = color; ctx.lineWidth = lw;
+  ctx.setLineDash(dashed ? [5, 4] : []);
+  ctx.beginPath();
+  for (let x = xa; x <= xb; x += 2) {
+    const y = yc - U * fn(x);
+    if (x === xa) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawAxes() {
+  ctx.strokeStyle = COL.axis; ctx.lineWidth = 1;
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.moveTo(xa, yV); ctx.lineTo(xb, yV);
+  ctx.moveTo(xa, yI); ctx.lineTo(xb, yI);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = COL.axis; ctx.font = '13px system-ui, sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('V(x,t)', xa, yV - 2.1 * U);
+  ctx.fillText('I(x,t)', xa, yI - 2.1 * U);
+}
+
+function drawSchematic() {
+  // дві провідні лінії
+  ctx.strokeStyle = COL.cond; ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(xa, yL - 5); ctx.lineTo(xb, yL - 5);
+  ctx.moveTo(xa, yL + 5); ctx.lineTo(xb, yL + 5);
+  ctx.stroke();
+
+  // генератор
+  ctx.beginPath(); ctx.arc(xa - 28, yL, 16, 0, 2 * Math.PI);
+  ctx.strokeStyle = COL.cond; ctx.stroke();
+  ctx.fillStyle = COL.axis; ctx.font = '14px system-ui, sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('~', xa - 28, yL + 5);
+  ctx.beginPath();
+  ctx.moveTo(xa - 12, yL - 5); ctx.lineTo(xa, yL - 5);
+  ctx.moveTo(xa - 12, yL + 5); ctx.lineTo(xa, yL + 5);
+  ctx.strokeStyle = COL.cond; ctx.stroke();
+
+  // навантаження Z_L
+  ctx.strokeStyle = COL.cond; ctx.lineWidth = 2;
+  ctx.strokeRect(xb + 6, yL - 16, 40, 32);
+  ctx.fillStyle = COL.axis; ctx.font = '12px system-ui, sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('Z_L', xb + 26, yL + 4);
+
+  // підпис лінії
+  ctx.textAlign = 'center';
+  ctx.fillText('лінія, Z₀', (xa + xb) / 2, yL - 14);
+}
+
+function drawHarm() {
+  const tt = t;
+  if (el('env').checked) {
+    plotCurve(x => envV(xb - x), yV, COL.env, 1, true);
+    plotCurve(x => -envV(xb - x), yV, COL.env, 1, true);
+  }
+  if (el('decomp').checked) {
+    plotCurve(x => harmVi(xb - x, tt), yV, COL.inc, 1.5, true);
+    plotCurve(x => harmVr(xb - x, tt), yV, COL.ref, 1.5, true);
+    plotCurve(x => harmIi(xb - x, tt), yI, COL.inc, 1.5, true);
+    plotCurve(x => harmIr(xb - x, tt), yI, COL.ref, 1.5, true);
+  }
+  plotCurve(x => harmV(xb - x, tt), yV, COL.v, 2.5, false);
+  plotCurve(x => harmI(xb - x, tt), yI, COL.i, 2.5, false);
+}
+
+function drawPulse() {
+  const tt = t;
+  if (el('decomp').checked) {
+    plotCurve(x => pulseVi(x, tt), yV, COL.inc, 1.5, true);
+    plotCurve(x => pulseVr(x, tt), yV, COL.ref, 1.5, true);
+    plotCurve(x => pulseIi(x, tt), yI, COL.inc, 1.5, true);
+    plotCurve(x => pulseIr(x, tt), yI, COL.ref, 1.5, true);
+  }
+  plotCurve(x => pulseV(x, tt), yV, COL.v, 2.5, false);
+  plotCurve(x => pulseI(x, tt), yI, COL.i, 2.5, false);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  drawAxes();
+  drawSchematic();
+  if (mode === 'harm') drawHarm(); else drawPulse();
+}
+
+/* ---------- текст ---------- */
+
+function updateReadout() {
+  const g = gamma(), ag = Math.abs(g);
+  const vswr = ag > 0.9999 ? '∞' : ((1 + ag) / (1 - ag)).toFixed(2);
+  let txt = `Γ = (Z_L − Z₀)/(Z_L + Z₀) = ${g.toFixed(3)}<br>` +
+            `КСХ = (1+|Γ|)/(1−|Γ|) = ${vswr}<br>` +
+            `частка відбитої потужності |Γ|² = ${(ag * ag * 100).toFixed(1)} %`;
+  if (mode === 'harm') {
+    txt += `<br>max|V| = ${(1 + ag).toFixed(2)},  min|V| = ${(1 - ag).toFixed(2)} (у одиницях падаючої)` +
+           `<br>довжина лінії = ${((xb - xa) / lam()).toFixed(2)} λ`;
+  } else {
+    txt += `<br>Імпульс біжить до навантаження, частина відбивається назад.`;
+  }
+  if (Math.abs(g) < 0.001) txt += '<br><b>Узгоджено:</b> відбиття немає, хвиля лише біжить.';
+  el('readout').innerHTML = txt;
+}
+
+/* ---------- цикл ---------- */
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000) * Number(el('ts').value);
+  last = now;
+  el('zlVal').textContent = zlR().toFixed(2);
+  el('lamVal').textContent = lam() + ' px';
+  el('sigVal').textContent = sigP() + ' px';
+  el('tVal').textContent = Number(el('ts').value).toFixed(2) + '×';
+  if (running) step(dt);
+  draw();
+  updateReadout();
+  requestAnimationFrame(frame);
+}
+
+/* ---------- керування ---------- */
+
+function setMode(m) {
+  mode = m;
+  el('modeHarm').classList.toggle('sel', m === 'harm');
+  el('modePulse').classList.toggle('sel', m === 'pulse');
+  el('lamRow').style.display = m === 'harm' ? 'block' : 'none';
+  el('sigRow').style.display = m === 'pulse' ? 'block' : 'none';
+  t = 0;
+}
+el('modeHarm').onclick = () => setMode('harm');
+el('modePulse').onclick = () => setMode('pulse');
+el('play').onclick = () => {
+  running = !running;
+  el('play').textContent = running ? 'Пауза' : 'Продовжити';
+};
+el('reset').onclick = () => { t = 0; };
+
+window.addEventListener('resize', resize);
+resize();
+setMode('harm');
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
