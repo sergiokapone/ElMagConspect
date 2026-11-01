@@ -1415,6 +1415,8 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 % --------------- Інтерактивні симуляції (Scripts/*.html) ----------- %
 % Базова адреса: хостинг може змінитися, тож її змінюють лише тут.
 \newcommand{\SimBaseURL}{https://sergiokapone.github.io/ElMagConspect/Scripts}
+% Окремий пункт змісту на рівні «Додатків» і «Літератури» (\part-рівень у змісті й закладках)
+\newcommand{\simheading}{\chapter*{Інтерактивні симуляції}\addcontentsline{toc}{part}{Інтерактивні симуляції}}
 \newcommand{\simlink}[2]{\begingroup\edef\x{\endgroup\noexpand\href{\SimBaseURL/#1}}\x{#2}}
 
 % --------------- Патч для україомовної назви розділу для nameref ----------- %

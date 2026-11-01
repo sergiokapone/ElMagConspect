@@ -105,6 +105,7 @@
 
 % ---- interactive simulations (Scripts/*.html): change the base address here only ----
 \newcommand{\SimBaseURL}{https://sergiokapone.github.io/ElMagConspect/Scripts}
+\newcommand{\simheading}{\schapterpage{Інтерактивні симуляції}}   % own page and contents entry, like the bibliography
 \newcommand{\simlink}[2]{\begingroup\edef\x{\endgroup\noexpand\href{\SimBaseURL/#1}}\x{#2}}
 % the print heading is a \part* (\addcontentsline{toc}{part}); in HTML the bibliography is a page of its own
 \defbibheading{bibintoc}{\schapterpage{Література}}
