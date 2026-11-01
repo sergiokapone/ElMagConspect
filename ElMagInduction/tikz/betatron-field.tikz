@@ -1,0 +1,93 @@
+% Бетатрон: переріз магніту, бочкоподібне поле між полюсами, орбіта в перспективі, вихрове поле E; графік B(r)
+\begin{tikzpicture}[>=latex, thick]
+	%%%%%%%%%%%%%%%% ПАРАМЕТРИ %%%%%%%%%%%%%%%%
+	% магніт
+	\def\gap{1.4}        % півзазор між полюсами на осі
+	\def\curv{0.07}      % наскільки зазор розширюється до країв (h = gap + curv*x^2)
+	\def\W{3}            % піврозмір полюсів по r
+	\def\yTop{2.7}       % зовнішня межа заливки полюсів
+	\def\axisY{2.9}      % півдовжина осі
+	% силові лінії
+	\def\fieldX{0.8,1.6,2.6}  % координати r, з яких виходять лінії
+	\def\bulge{1.12}     % випинання ліній назовні
+	\def\ctrl{0.5}       % висота контрольних точок кривої Безьє
+	% орбіта
+	\def\R{2}            % радіус орбіти (r_0)
+	\def\b{0.65}         % «нахил» орбіти: мала піввісь еліпса (< gap)
+	\def\phi{300}        % кут електрона на орбіті, градуси
+	\def\vlen{0.8}       % довжина вектора швидкості
+	% електрон, зміщений по z
+	\def\dz{0.7}         % зміщення вгору
+	\def\Flen{0.7}       % довжина стрілки F_z
+	% графік B(r) (за висотою співмірний з лівим малюнком)
+	\def\gx{7.2}  \def\gy{-2.0}   % положення графіка
+	\def\gR{2.6}                  % координата r_0 на графіку
+	\def\Bmax{3.6} \def\Borb{1.4} \def\Bavg{2.8}
+	%%%%%%%%%%%%%%%% ОБЧИСЛЕННЯ %%%%%%%%%%%%%%%%
+	\def\hh#1{\gap+\curv*(#1)*(#1)}
+	\pgfmathsetmacro{\ex}{\R*cos(\phi)}
+	\pgfmathsetmacro{\ey}{\b*sin(\phi)}
+	\pgfmathsetmacro{\tx}{-\R*sin(\phi)}
+	\pgfmathsetmacro{\ty}{\b*cos(\phi)}
+	\pgfmathsetmacro{\tl}{sqrt(\tx*\tx+\ty*\ty)}
+	\pgfmathsetmacro{\vx}{\vlen*\tx/\tl}
+	\pgfmathsetmacro{\vy}{\vlen*\ty/\tl}
+	\colorlet{forcecol}{green!45!black}
+	\colorlet{centcol}{orange!85!black}
+	\def\clen{0.9}       % довжина вектора доцентрової сили
+	%%%%%%%%%%%%%%%% МАЛЮНОК %%%%%%%%%%%%%%%%
+	% полюси: зазор розширюється до країв
+	\fill[red!70!black] plot[domain=-\W:\W, samples=30, smooth] (\x,{\hh{\x}}) -- (\W,\yTop) -- (-\W,\yTop) -- cycle;
+	\fill[blue!70!black] plot[domain=-\W:\W, samples=30, smooth] (\x,{-\hh{\x}}) -- (\W,-\yTop) -- (-\W,-\yTop) -- cycle;
+	\draw plot[domain=-\W:\W, samples=30, smooth] (\x,{\hh{\x}});
+	\draw plot[domain=-\W:\W, samples=30, smooth] (\x,{-\hh{\x}});
+	\node[white] at (0,{(\yTop+\gap)/2+0.2}) {N};
+	\node[white] at (0,{-(\yTop+\gap)/2-0.2}) {S};
+	% середня площина зазору в перспективі
+	\fill[gray!30, opacity=0.6] (0,0) ellipse [x radius=\W, y radius={\b*\W/\R}];
+	% \draw[thin, black!40] (0,0) ellipse [x radius=\W, y radius={\b*\W/\R}];
+	\node[font=\footnotesize, anchor=west, align=left] at (\W+0.15,-0.55) {середня\\площина};
+	% вісь
+	\draw[dash dot, thin] (0,-\axisY) -- (0,\axisY) node[above, font=\small] {вісь};
+	\draw[dashed, thin] (-\W-0.3,0) -- (\W+0.3,0) node[right, font=\small] {$r$};
+	% лінії поля: випинаються назовні (знизу вгору)
+	\foreach \x in \fieldX {
+		\foreach \s in {1,-1} {
+			\draw[bfield, ->, arrowpos={0.5}{2pt}{6pt}]
+				(\s*\x,{-\hh{\x}}) .. controls (\s*\x*\bulge,-\ctrl) and (\s*\x*\bulge,\ctrl) .. (\s*\x,{\hh{\x}});
+		}
+	}
+	\draw[bfield, ->] (0,-\gap) -- (0,\gap);
+	\node[font=\small, bfield, anchor=west] at (-3.5,1.5) {$\Bfield$};
+	% орбіта: еліпс (коло в перспективі); задня половина штрихова
+	\draw[thin] (\R,0) arc[start angle=0, end angle=180, x radius=\R, y radius=\b];
+	\draw[thin] (-\R,0) arc[start angle=180, end angle=360, x radius=\R, y radius=\b];
+	% вихрове поле E: за годинниковою стрілкою, якщо дивитися зверху, трохи ззовні орбіти
+	\draw[efield, thin, arrowpos={0.5}{2pt}{6pt}] (-\R-0.3,0) arc[start angle=180, end angle=0, x radius=\R+0.3, y radius=\b+0.1];
+	\draw[efield, thin, arrowpos={0.5}{2pt}{6pt}] (\R+0.3,0) arc[start angle=360, end angle=180, x radius=\R+0.3, y radius=\b+0.1];
+	\node[efield, font=\small, anchor=south west] at (65:{\R+0.3} and {\b+0.1}) {$\Efield$};
+	% електрон на орбіті: вузол; швидкість починається на його краю
+	\node[circle, ball color=red, inner sep=2.2pt] (e1) at (\ex,\ey) {};
+	\draw[->, very thick] (e1) -- ++(\vx,\vy) node[right, font=\small] {$\vect v$};
+	% доцентрова сила: від електрона до центра орбіти
+	\pgfmathsetmacro{\cx}{-\clen*\ex/sqrt(\ex*\ex+\ey*\ey)}
+	\pgfmathsetmacro{\cy}{-\clen*\ey/sqrt(\ex*\ex+\ey*\ey)}
+	\draw[->, very thick, centcol] (e1) -- ++(\cx,\cy) node[above, font=\small, centcol] {$\vect{F}_\text{с}$};
+	% \node[font=\scriptsize, anchor=north, inner sep=1pt] at (e1.south) {$e^-$};
+	% електрон, зміщений вгору, і повертальна сила
+	\node[] (e2) at (-\R,\dz) {};
+	\draw[->, very thick, forcecol] (e2) -- ++(0,-\Flen);
+	\node[font=\small, forcecol, left] at (-\R-0.12,{\dz/2}) {$F_z$};
+	% графік B(r)
+	\begin{scope}[xshift=\gx cm, yshift=\gy cm]
+		\draw[->] (0,0) -- (\gR*1.6,0) node[right, font=\small] {$r$};
+		\draw[->] (0,0) -- (0,\Bmax+0.3) node[above, font=\small] {$B$};
+		\draw[bfield, thick] (0,\Bmax) .. controls ({0.55*\gR},\Bmax) and ({0.65*\gR},{1.45*\Borb}) .. (\gR,\Borb)
+			.. controls ({1.25*\gR},{0.72*\Borb}) .. ({1.5*\gR},{0.55*\Borb});
+		\draw[dashed, thin] (\gR,0) -- (\gR,\Borb) -- (0,\Borb);
+		\draw[dashed, thin] (0,\Bavg) -- (\gR,\Bavg);
+		\node[font=\small, below] at (\gR,0) {$r_0$};
+		\node[font=\small, left] at (0,\Borb) {$B_\text{орб}$};
+		\node[font=\small, left] at (0,\Bavg) {$\bar B$};
+	\end{scope}
+\end{tikzpicture}
