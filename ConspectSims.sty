@@ -1,0 +1,71 @@
+% ConspectSims.sty -- інтерактивні симуляції (Scripts/*.html): посилання в тексті + автоматичний перелік.
+% Підключається і з ConspectBook.cls, і з ConspectBookHTML.cls (\RequirePackage{ConspectSims}).
+% \simheading лишається в класах: у друку й у HTML він різний.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ConspectSims}[2026/11/01 interactive simulations: links and an automatic list]
+\RequirePackage{currfile}   % \currfilebase = ім'я файлу розділу (збігається з \hypertarget і \label розділу)
+\makeatletter
+
+% Базова адреса: хостинг може змінитися, тож її змінюють лише тут.
+\newcommand{\SimBaseURL}{https://sergiokapone.github.io/ElMagConspect/Scripts}
+
+% \simlink[Назва в переліку][Короткий опис]{файл.html}{текст у реченні}
+%   Друкує в тексті клікабельну фразу <текст у реченні>. Якщо задано [Назва] (і, за бажання, [опис]),
+%   симуляція потрапляє в перелік \simlist: запис іде в .aux разом з номером і якорем поточного розділу.
+%   Без квадратних дужок команда працює як раніше: \simlink{файл.html}{текст}.
+%   Назву й опис досить дати один раз (при першій згадці); у наступних викликах того самого файлу їх можна не писати.
+\NewDocumentCommand{\simlink}{o o m m}{%
+	\protected@write\@auxout{}{\string\simused{#3}}%
+	\IfNoValueF{#1}{%
+		\def\sim@desc{}\IfNoValueF{#2}{\def\sim@desc{#2}}%
+		\protected@write\@auxout{}{\string\simentry{\thechapter}{\currfilebase}{#3}{#1}{\sim@desc}}}%
+	\begingroup\edef\x{\endgroup\noexpand\href{\SimBaseURL/#3}}\x{#4}}
+
+% \simdoc{файл.html}{Назва}{Опис}: те саме без фрази в тексті (для симуляції, яку в розділі не згадано).
+\newcommand{\simdoc}[3]{%
+	\@bsphack
+	\protected@write\@auxout{}{\string\simentry{\thechapter}{\currfilebase}{#1}{#2}{#3}}%
+	\@esphack}
+
+% --- читання .aux (виконується в \begin{document}) ---
+\gdef\sim@data{}
+\gdef\sim@usedlist{}
+\gdef\sim@lastch{}
+\providecommand\simentry[5]{}
+\providecommand\simused[1]{}
+\renewcommand\simentry[5]{\g@addto@macro\sim@data{\sim@item{#1}{#2}{#3}{#4}{#5}}}
+\renewcommand\simused[1]{\g@addto@macro\sim@usedlist{\sim@check{#1}}}
+
+\newif\ifsim@open
+\def\sim@item#1#2#3#4#5{%
+	\ifcsname sim@seen@#3\endcsname\else      % повторний запис того самого файлу ігнорується
+		\global\@namedef{sim@seen@#3}{}%
+		\def\sim@tmp{#2}%
+		\ifx\sim@tmp\sim@lastch\else           % новий розділ -> новий пункт description
+			\ifsim@open\end{itemize}\fi
+			\gdef\sim@lastch{#2}%
+			\item[\hyperlink{#2}{Розділ~#1.}]\leavevmode\par\vspace{-\parskip}%
+			\begin{itemize}\global\sim@opentrue
+		\fi
+		\def\sim@tmp{#5}%
+		\item \href{\SimBaseURL/#3}{#4}\ifx\sim@tmp\@empty\else~--- #5\fi\par
+	\fi}
+
+\def\sim@check#1{%
+	\ifcsname sim@seen@#1\endcsname\else
+		\PackageWarning{ConspectSims}{\string\simlink{#1}: no title given anywhere (add [Назва][опис] at the first mention), so it is missing from the list}%
+	\fi}
+
+% \simlist: перелік усіх симуляцій у порядку розділів (потрібні два проходи).
+\newcommand{\simlist}{%
+	\ifx\sim@data\@empty
+		\PackageWarning{ConspectSims}{No \string\simdoc entries yet (rerun)}%
+	\else
+		\begin{description}%
+			\sim@data
+			\ifsim@open\end{itemize}\global\sim@openfalse\fi
+		\end{description}%
+	\fi
+	\sim@usedlist}
+\makeatother
+\endinput

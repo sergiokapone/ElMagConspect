@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Перехідні процеси: конденсатор і лампа розжарювання</title>
+<style>
+:root{--bg:#fbfbf8;--fg:#222;--panel:#fff;}
+@media(prefers-color-scheme:dark){:root{--bg:#14161b;--fg:#e6e6e6;--panel:#1f2228;}}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:14px system-ui,"Segoe UI",sans-serif}
+#app{display:flex;height:100%}
+#panel{width:290px;flex:none;box-sizing:border-box;padding:10px 12px;overflow:auto;background:var(--panel);line-height:1.4}
+#stage{flex:1;position:relative;min-width:0}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+button,select{margin:3px 4px 2px 0;padding:4px 8px;border-radius:6px;border:1px solid #888;background:transparent;color:inherit;font-size:13px;cursor:pointer}
+select{width:100%;margin:3px 0}
+option{color:#222}
+label{display:block;margin-top:6px}
+input[type=range]{width:100%}
+#ro{border-top:1px solid #8884;margin-top:8px;padding-top:6px;font-size:13px}
+.note{font-size:12px;opacity:.7;margin-top:8px}
+@media(max-width:800px){#app{flex-direction:column-reverse}#panel{width:auto;max-height:45%}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="panel">
+  <b>Перехідні процеси: конденсатор + лампа розжарювання</b>
+  <select id="mode">
+    <option value="0">1. Послідовно: зарядка і розрядка (RC)</option>
+    <option value="1">2. Лампа паралельно конденсатору</option>
+    <option value="2">3. Змінний струм: конденсатор + лампа</option>
+  </select>
+  <div><button id="tg"></button><button id="rs">Скинути / нова лампа</button><button id="pl">Пауза</button></div>
+  <label><span id="lE"></span><input type="range" id="E" min="1" max="15" step="0.5"></label>
+  <label><span id="lC"></span><input type="range" id="C" min="-0.7" max="1.7" step="0.01"></label>
+  <label><span id="lRs"></span><input type="range" id="Rs" min="0.1" max="10" step="0.1"></label>
+  <label id="rowf"><span id="lf"></span><input type="range" id="f" min="1" max="100" step="1"></label>
+  <label><span id="lM"></span><input type="range" id="M" min="0.3" max="5" step="0.1" value="1"></label>
+  <label><span id="lS"></span><input type="range" id="SP" min="0" max="2.3" step="0.05"></label>
+  <label><input type="checkbox" id="au"> автоперемикання, півперіод <span id="lh"></span>
+    <input type="range" id="ah" min="20" max="1000" step="10" value="400"></label>
+  <div id="ro"></div>
+  <div class="note">Модель: C·dU/dt = I, I = (ε − U)/(R<sub>s</sub>+R<sub>л</sub>); R<sub>л</sub>(T)=R₀(T/T₀)<sup>1,2</sup> (вольфрам);
+  C<sub>т</sub>·dT/dt = I²R<sub>л</sub> − випромінювання − провідність. Лампа 12 В / 24 Вт, T<sub>ном</sub>≈2700 К.
+  Холодна нитка має опір у ~15 разів менший, тому струм зарядки в перший момент великий.
+  Клацніть на важіль ключа, щоб перемкнути.</div>
+</div>
+<div id="stage"><canvas id="c"></canvas></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id),cv=$('c'),g=cv.getContext('2d');
+const dark=matchMedia('(prefers-color-scheme: dark)').matches;
+const cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+const AX=dark?'#aaa':'#555',GR=dark?'#ffffff22':'#00000018';
+const CI=dark?'#ffb070':'#d4620f',CB=dark?'#6cb8ff':'#1f6fb5',CT=dark?'#ff7766':'#c0392b';
+
+/* ---------- лампа: вольфрамова нитка 12 В / 24 Вт ---------- */
+const T0=293,TN=2700,R0=6/Math.pow(TN/T0,1.2),Rl=T=>R0*Math.pow(T/T0,1.2);
+const gC=2.4/(TN-T0),kR=21.6/(TN**4-T0**4),Pl=T=>kR*(T**4-T0**4)+gC*(T-T0);
+const LP=[];{const V=l=>Math.exp(-285.4*(l-.559)**2),F=T=>{let s=0;for(let n=380;n<=780;n+=10){const l=n*1e-9;s+=V(n/1e3)*l**-5/(Math.exp(1.4388e-2/(l*T))-1)}return s},f0=F(TN);for(let T=300;T<=4300;T+=20)LP.push(Math.log10(F(T)/f0))}
+const lphi=T=>{const x=cl((T-300)/20,0,LP.length-1.001),k=x|0;return LP[k]*(1-x+k)+LP[k+1]*(x-k)};
+const phi=T=>Math.pow(10,lphi(T));
+const glow=T=>Math.pow(cl(1+lphi(T)/7,0,1.4),2.2);
+const bb=T=>{const t=cl(T,900,3600)/100;return[255,cl(99.47*Math.log(t)-161.12,0,255),t<=19?0:cl(138.5*Math.log(t-10)-305.04,0,255)]};
+
+/* ---------- стан і параметри ---------- */
+const MODES=[{E:12,C:1,Rs:1,f:5,M:1,SP:1.2},{E:12,C:1,Rs:2,f:5,M:1,SP:1.2},{E:12,C:1,Rs:1,f:5,M:1,SP:1}];
+let mode=0,S,hist,evts,lastS,lastSw,running=true,lev=0,Q={a:0,b:0},ph={a:0,b:0},s1,s2,s3;
+const KQ=2500;
+function reset(){S={t:0,v:0,T:T0,on:false,dead:0,fl:0,A:0,Q:0};hist=[];evts=[];lastS=-1;lastSw=0;lev=0;ph={a:0,b:0};s1={lo:0,hi:1};s2={lo:0,hi:1};s3={lo:0,hi:120}}
+function par(){const f=+$('f').value;return{E:+$('E').value,C:Math.pow(10,+$('C').value)*1e-3,Rs:+$('Rs').value,f,w:2*Math.PI*f,M:+$('M').value*1e-3}}
+const slow=()=>Math.pow(10,+$('SP').value);
+const src=(t,p)=>S.on?(mode==2?p.E*1.4142*Math.sin(p.w*t):p.E):0;
+function setMode(m){mode=m;const d=MODES[m];for(const k in d)$(k).value=d[k];$('rowf').style.display=m==2?'':'none';$('au').checked=false;reset();lab()}
+function lab(){const p=par(),c=p.C*1000;
+  $('lE').textContent=(mode==2?'Діюча напруга U = ':'ЕРС E = ')+p.E.toFixed(1)+' В';
+  $('lC').textContent='Ємність C = '+c.toFixed(c<10?1:0)+' мФ';
+  $('lRs').textContent='Опір резистора R_s = '+p.Rs.toFixed(1)+' Ом';
+  $('lf').textContent='Частота f = '+p.f+' Гц';
+  $('lM').textContent='Теплова інерція нитки = '+(p.M*1000).toFixed(1)+' мДж/К';
+  $('lS').textContent='Уповільнення часу ×'+slow().toFixed(0);
+  $('lh').textContent=$('ah').value+' мс';
+  $('tg').textContent=mode==1?(S.on?'Розімкнути ключ':'Замкнути ключ'):mode==0?(S.on?'Розрядити (ключ у B)':'Зарядити (ключ у A)'):(S.on?'Закоротити коло (B)':'Увімкнути джерело')}
+function toggle(){S.on=!S.on;evts.push({t:S.t,on:S.on});lastSw=S.t;S.A=0;S.Q=0;lab()}
+
+/* ---------- фізика ---------- */
+function F(v,T,t,p){const R=Rl(T),e=src(t,p);let dv,il,is,P;
+  if(mode==1){is=S.on?(p.E-v)/p.Rs:0;il=S.dead?0:v/R;dv=(is-il)/p.C;P=v*il}
+  else{is=S.dead?0:(e-v)/(p.Rs+R);il=is;dv=is/p.C;P=is*is*R}
+  return[dv,(P-Pl(T))/p.M,il,is]}
+function step(h,p){const{v,T,t}=S,a=F(v,T,t,p),b=F(v+h/2*a[0],T+h/2*a[1],t+h/2,p),c=F(v+h/2*b[0],T+h/2*b[1],t+h/2,p),d=F(v+h*c[0],T+h*c[1],t+h,p);
+  S.v+=h/6*(a[0]+2*b[0]+2*c[0]+d[0]);S.T=Math.max(T0,S.T+h/6*(a[1]+2*b[1]+2*c[1]+d[1]));S.t+=h;
+  if(S.T>3600&&!S.dead){S.dead=1;S.fl=1}
+  const x=F(S.v,S.T,S.t,p),e=src(S.t,p);Q.a+=x[3]*h;Q.b+=x[2]*h;
+  S.A+=e*x[3]*h;S.Q+=(mode==1?x[3]*x[3]*p.Rs+S.v*x[2]:x[3]*x[3]*(p.Rs+Rl(S.T)))*h;
+  if(S.t-lastS>=win(p)/700){lastS=S.t;hist.push({t:S.t,i:x[2],is:x[3],v:S.v,e,T:S.T,f:phi(S.T)*100});if(hist.length>1500)hist.shift()}}
+function win(p){if(mode==2)return cl(6/p.f,.2,3);return cl(6*Math.max((p.Rs+6)*p.C,p.M/(4*kR*TN**3+gC)),.15,5)}
+function adv(tm,p){const n=Math.max(1,Math.ceil(tm/2e-5)),h=tm/n,hs=$('ah').value/1000;
+  for(let k=0;k<n;k++){if($('au').checked&&S.t-lastSw>=hs)toggle();step(h,p)}}
+function ssolve(p){const X=mode==2?1/(p.w*p.C):0,f=mode==0?()=>0:R=>p.E*p.E*R/((p.Rs+R)**2+X*X);
+  let T=T0;for(;T<5000;T+=5)if(f(Rl(T))-Pl(T)<=0)break;
+  let lo=T-5,hi=T;for(let k=0;k<25;k++){const m=(lo+hi)/2;f(Rl(m))-Pl(m)>0?lo=m:hi=m}
+  T=Math.max(T0,lo);const R=Rl(T),Z=Math.hypot(p.Rs+R,X);return{T,R,Z,X,I:p.E/Z,ph:Math.atan2(X,p.Rs+R)}}
+
+/* ---------- геометрія лампи (локальні одиниці, центр кулі в 0,0) ---------- */
+const GP=new Path2D;GP.moveTo(-36,150);GP.lineTo(-36,128);GP.bezierCurveTo(-38,83,-100,62,-100,0);GP.arc(0,0,100,Math.PI,0);GP.bezierCurveTo(100,62,38,83,36,128);GP.lineTo(36,150);GP.closePath();
+const FIL=(()=>{const A=[[-34,-20],[0,-60],[34,-20]],Ls=Math.hypot(34,40),N=130,TU=34,r1=3.4,pt=[];
+  for(let k=0;k<=N;k++){const d=k/N*2*Ls,sg=d<Ls?0:1,u=(d-sg*Ls)/Ls,a=A[sg],b=A[sg+1],tx=(b[0]-a[0])/Ls,ty=(b[1]-a[1])/Ls,x=a[0]+(b[0]-a[0])*u,y=a[1]+(b[1]-a[1])*u,th=2*Math.PI*TU*k/N;
+    pt.push([x-ty*r1*Math.sin(th)+tx*r1*.6*Math.cos(th),y+tx*r1*Math.sin(th)+ty*r1*.6*Math.cos(th),Math.cos(th)>0,x,y,k/N])}
+  const o={f:new Path2D,b:new Path2D,fx:new Path2D,bx:new Path2D,c:new Path2D};
+  o.c.moveTo(pt[0][3],pt[0][4]);
+  for(let k=0;k<N;k++){const a=pt[k],b=pt[k+1],P=a[2]?'f':'b',gap=a[5]>.46&&a[5]<.54;
+    o[P].moveTo(a[0],a[1]);o[P].lineTo(b[0],b[1]);if(!gap){o[P+'x'].moveTo(a[0],a[1]);o[P+'x'].lineTo(b[0],b[1])}o.c.lineTo(b[3],b[4])}
+  return o})();
+const lg=(x0,st)=>{const q=g.createLinearGradient(x0,0,-x0,0);st.forEach(([o,c])=>q.addColorStop(o,c));return q};
+
+function bulb(cx,cy,s,b,col,dead){
+  const rg=a=>`rgba(${col[0]},${col[1]},${col[2]},${a})`;
+  g.save();
+  if(b>.01){g.globalCompositeOperation='lighter';const R=340*s,y=cy-35*s,q=g.createRadialGradient(cx,y,0,cx,y,R);
+    q.addColorStop(0,rg(.32*b));q.addColorStop(.3,rg(.1*b));q.addColorStop(1,rg(0));g.fillStyle=q;g.fillRect(cx-R,y-R,2*R,2*R);g.globalCompositeOperation='source-over'}
+  g.translate(cx,cy);g.scale(s,s);
+  g.save();g.clip(GP);
+  let q=g.createRadialGradient(-30,-40,8,0,0,110);q.addColorStop(0,'rgba(255,255,255,.07)');q.addColorStop(1,'rgba(170,200,235,.16)');g.fillStyle=q;g.fillRect(-100,-100,200,260);
+  if(b>.01){g.globalCompositeOperation='lighter';q=g.createRadialGradient(0,-40,0,0,-40,125);q.addColorStop(0,rg(.45*b));q.addColorStop(1,rg(0));g.fillStyle=q;g.fillRect(-100,-110,200,270);g.globalCompositeOperation='source-over'}
+  if(dead){q=g.createRadialGradient(0,-45,0,0,-45,75);q.addColorStop(0,'rgba(70,55,40,.45)');q.addColorStop(1,'rgba(70,55,40,0)');g.fillStyle=q;g.fillRect(-100,-110,200,200)}
+  // ніжка (скляний штабик) і струмовводи
+  g.beginPath();g.moveTo(-32,148);g.bezierCurveTo(-32,128,-12,128,-12,104);g.lineTo(-12,42);g.quadraticCurveTo(-12,26,-6,24);g.lineTo(6,24);g.quadraticCurveTo(12,26,12,42);g.lineTo(12,104);g.bezierCurveTo(12,128,32,128,32,148);g.closePath();
+  g.fillStyle=lg(-14,[[0,'rgba(190,215,235,.38)'],[.5,'rgba(255,255,255,.12)'],[1,'rgba(190,215,235,.38)']]);g.fill();g.strokeStyle='rgba(255,255,255,.3)';g.lineWidth=1.2;g.stroke();
+  g.lineCap='round';g.lineJoin='round';
+  for(const sx of[-1,1]){g.beginPath();g.moveTo(sx*5,150);g.lineTo(sx*5,12);g.lineTo(sx*30,-14);g.lineTo(sx*34,-20);g.strokeStyle='#b8733a';g.lineWidth=2.2;g.stroke();g.strokeStyle='#e3a572';g.lineWidth=.7;g.stroke()}
+  g.beginPath();g.moveTo(0,26);g.lineTo(0,-58);g.strokeStyle='#8d9098';g.lineWidth=1.1;g.stroke();
+  // нитка: подвійна спіраль
+  const hot=Math.min(1,b*1.5);
+  g.globalAlpha=1-.85*hot;g.lineWidth=1.8;
+  g.strokeStyle='#5f6068';g.stroke(dead?FIL.bx:FIL.b);g.strokeStyle='#a9abb5';g.stroke(dead?FIL.fx:FIL.f);g.strokeStyle='#e9eaf0';g.lineWidth=.6;g.stroke(dead?FIL.fx:FIL.f);
+  g.globalAlpha=1;
+  if(b>.01&&!dead){g.globalCompositeOperation='lighter';
+    for(const[w,a]of[[26,.04],[14,.08],[7,.16]]){g.strokeStyle=rg(a*b);g.lineWidth=w;g.stroke(FIL.c)}
+    g.strokeStyle=rg(.55*Math.min(1,b*1.2));g.lineWidth=2.6;g.stroke(FIL.b);
+    g.strokeStyle=rg(Math.min(1,b*1.3));g.lineWidth=2.2;g.stroke(FIL.f);
+    const w=cl((b-.55)/.6,0,1);if(w>0){g.strokeStyle=`rgba(255,248,235,${.9*w})`;g.lineWidth=1;g.stroke(FIL.f)}
+    g.globalCompositeOperation='source-over'}
+  g.restore();
+  // поверхня скла: контур і відблиски
+  g.strokeStyle='rgba(200,225,255,.38)';g.lineWidth=2;g.stroke(GP);
+  g.save();g.scale(.965,.965);g.strokeStyle='rgba(255,255,255,.1)';g.lineWidth=1.2;g.stroke(GP);g.restore();
+  g.lineCap='round';
+  g.beginPath();g.arc(0,0,84,Math.PI*1.08,Math.PI*1.42);g.strokeStyle='rgba(255,255,255,.22)';g.lineWidth=8;g.stroke();g.strokeStyle='rgba(255,255,255,.7)';g.lineWidth=2.5;g.stroke();
+  g.beginPath();g.arc(0,0,90,-.35*Math.PI,.1*Math.PI);g.strokeStyle='rgba(255,255,255,.18)';g.lineWidth=3;g.stroke();
+  g.beginPath();g.moveTo(-31,92);g.lineTo(-28,138);g.strokeStyle='rgba(255,255,255,.3)';g.lineWidth=3;g.stroke();
+  g.beginPath();g.ellipse(-58,-62,7,4,-.7,0,6.3);g.fillStyle='rgba(255,255,255,.85)';g.fill();
+  // цоколь Едісона
+  const bg=lg(-40,[[0,'#4b4f55'],[.2,'#b9bdc4'],[.38,'#f2f4f7'],[.62,'#aeb2b9'],[.86,'#6c7077'],[1,'#43474d']]);
+  g.fillStyle=bg;g.fillRect(-37,146,74,70);g.fillRect(-39,143,78,9);g.fillStyle='rgba(0,0,0,.25)';g.fillRect(-39,150,78,2);
+  for(let k=0;k<3;k++){const y=162+k*13;g.strokeStyle='rgba(15,17,20,.7)';g.lineWidth=3;g.beginPath();g.ellipse(0,y,36,6,0,0,Math.PI);g.stroke();
+    g.strokeStyle='rgba(255,255,255,.45)';g.lineWidth=1.3;g.beginPath();g.ellipse(0,y+3.3,36,6,0,0,Math.PI);g.stroke()}
+  // патрон
+  g.fillStyle=lg(-46,[[0,'#0b0b0d'],[.25,'#3a3d44'],[.5,'#1d1f23'],[1,'#08080a']]);
+  g.beginPath();g.moveTo(-46,196);g.lineTo(-46,254);g.quadraticCurveTo(-46,262,-38,262);g.lineTo(38,262);g.quadraticCurveTo(46,262,46,254);g.lineTo(46,196);g.ellipse(0,196,46,7,0,0,Math.PI);g.closePath();g.fill();
+  g.strokeStyle='rgba(255,255,255,.22)';g.lineWidth=1.2;g.beginPath();g.ellipse(0,196,46,7,0,0,Math.PI);g.stroke();
+  for(const y of[222,240]){g.strokeStyle='rgba(255,255,255,.09)';g.lineWidth=2;g.beginPath();g.ellipse(0,y,46,6,0,0,Math.PI);g.stroke()}
+  g.fillStyle='#c19a52';g.fillRect(-52,229,8,12);g.fillRect(-9,262,18,4);
+  g.restore()}
+
+/* ---------- схема ---------- */
+let W=0,H=0,Ht=0,s=1,bcx=0,bcy=0,xs=0,xa=0,yT=0,yB=0,shx=0,shy=0,tpx=0,tpy=0;
+function resize(){const d=devicePixelRatio||1;W=cv.clientWidth;H=cv.clientHeight;cv.width=Math.round(W*d);cv.height=Math.round(H*d);g.setTransform(d,0,0,d,0,0);
+  Ht=Math.round(cl(H*.54,300,480));s=(Ht-56)/362;bcy=22+100*s;bcx=W-20-110*s;
+  shx=bcx-52*s;shy=bcy+235*s;tpx=bcx;tpy=bcy+266*s;xs=50;xa=bcx-125*s;yT=Math.max(64,Ht*.22);yB=Ht-16}
+const wire=pts=>{g.beginPath();pts.forEach((q,i)=>i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));g.stroke()};
+function dots(pts,phase,cur){if(Math.abs(cur)<2e-3)return;g.save();g.setLineDash([2,14]);g.lineDashOffset=-phase;g.lineWidth=4;g.lineCap='round';g.strokeStyle='#ffc35a';wire(pts);g.restore()}
+const txt=(t,x,y,c)=>{g.fillStyle=c||'#b9bec8';g.font='12px system-ui,sans-serif';g.textAlign='center';g.fillText(t,x,y)};
+const ns=v=>{const e=Math.pow(10,Math.floor(Math.log10(v))),m=v/e;return(m<=1?1:m<=2?2:m<=2.5?2.5:m<=5?5:10)*e};
+function adj(o,lo,hi){const H2=ns(Math.max(hi*1.08,1e-3)),L2=lo<0?-ns(-lo*1.08):0;if(H2>o.hi||H2<o.hi*.5)o.hi=H2;if(L2<o.lo||L2>o.lo*.5)o.lo=L2}
+/* ---------- схема ---------- */
+function res(x,y,l){g.fillStyle='#0e1115';g.fillRect(x-28,y-8,56,16);g.lineWidth=2.5;g.strokeStyle='#e0b060';g.strokeRect(x-28,y-8,56,16);txt(l,x,y-14)}
+function cap(x,y,vert,vn,pf){const a=Math.abs(vn);g.save();g.translate(x,y);if(vert)g.rotate(Math.PI/2);
+  if(a>.02){g.fillStyle=`rgba(90,170,255,${.6*a})`;g.fillRect(-6,-20,12,40)}
+  g.lineWidth=4;g.strokeStyle='#d5d9e0';wire([[-6,-20],[-6,20]]);wire([[6,-20],[6,20]]);g.restore();
+  if(a>.05){const px=(vn>0)==pf?-16:16,q=(lx,ly)=>vert?[x-ly,y+lx]:[x+lx,y+ly];g.fillStyle=`rgba(255,200,90,${Math.min(1,a+.2)})`;g.font='bold 16px system-ui';g.textAlign='center';
+    let c=q(px,-24);g.fillText('+',c[0],c[1]+5);c=q(-px,-24);g.fillText('−',c[0],c[1]+5)}}
+function scene(p,ss,b,col){
+  g.save();g.beginPath();g.rect(0,0,W,Ht);g.clip();
+  const bg=g.createLinearGradient(0,0,0,Ht);bg.addColorStop(0,'#0e1115');bg.addColorStop(1,'#07080a');g.fillStyle=bg;g.fillRect(0,0,W,Ht);
+  bulb(bcx,bcy,s,b,col,S.dead);
+  if(S.fl>0){g.globalCompositeOperation='lighter';const R=260*s,q=g.createRadialGradient(bcx,bcy-40*s,0,bcx,bcy-40*s,R);q.addColorStop(0,`rgba(255,255,255,${.85*S.fl})`);q.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=q;g.fillRect(bcx-R,bcy-40*s-R,2*R,2*R);g.globalCompositeOperation='source-over'}
+  g.lineWidth=2.5;g.strokeStyle='#8c929c';g.lineJoin='round';
+  const L=hist.length?hist[hist.length-1]:{i:0,is:0},vn=cl(S.v/Math.max(1,p.E*(mode==2?1.4142:1)),-1,1),ym=(yT+yB)/2,lampTop=[[xa,yT],[xa,shy],[shx,shy]];
+  g.fillStyle='#8c929c';
+  if(mode!=1){
+    const D=xa-xs,xK=xs+D*.2,xr=xs+D*.45,xr0=xr-28,xr1=xr+28,xc=xK+(tpx-xK)*.55,ang=Math.PI/2+lev*Math.PI/2,a=ph.a;
+    wire([[xs,yT],[xK-44,yT]]);wire([[xK,yT],[xr0,yT]]);wire([[xr1,yT],...lampTop]);wire([[tpx,tpy],[tpx,yB],[xc+14,yB]]);wire([[xc-14,yB],[xs,yB]]);wire([[xs,yT],[xs,ym-9]]);wire([[xs,ym+10],[xs,yB]]);wire([[xK,yB],[xK,yT+44]]);
+    dots([[xK,yT],[xr0,yT]],a,L.is);dots([[xr1,yT],...lampTop],a,L.is);dots([[tpx,tpy],[tpx,yB],[xc+14,yB]],a,L.is);
+    if(S.on){dots([[xs,ym-9],[xs,yT],[xK-44,yT]],a,L.is);dots([[xc-14,yB],[xs,yB],[xs,ym+10]],a,L.is)}else dots([[xc-14,yB],[xK,yB],[xK,yT+44]],a,L.is);
+    g.lineWidth=3;
+    if(mode==2){g.beginPath();g.arc(xs,ym,17,0,6.3);g.fillStyle='#0b0d11';g.fill();g.stroke();g.beginPath();for(let k=-10;k<=10;k++)g.lineTo(xs+k*.8,ym-7*Math.sin(k*.31*Math.PI));g.stroke();txt('~ U',xs-30,ym+4)}
+    else{wire([[xs-15,ym-6],[xs+15,ym-6]]);g.lineWidth=5;wire([[xs-8,ym+8],[xs+8,ym+8]]);txt('E',xs-26,ym+4)}
+    g.lineWidth=2.5;g.fillStyle='#8c929c';
+    g.beginPath();g.arc(xK-44,yT,3.5,0,6.3);g.fill();g.beginPath();g.arc(xK,yT+44,3.5,0,6.3);g.fill();g.beginPath();g.arc(xK,yT,4.5,0,6.3);g.fill();
+    g.strokeStyle=S.on?'#ffc35a':'#c7ccd4';g.lineWidth=3.5;wire([[xK,yT],[xK+44*Math.cos(ang),yT+44*Math.sin(ang)]]);
+    txt('K',xK-18,yT-14);res(xr,yT,'R_s');cap(xc,yB,false,vn,false);txt('C',xc,yB-30);
+    cv._sw=[xK,yT]}
+  else{
+    const xm=(xs+xa)/2,xr=(xs+xm)/2,yK=yT+34,yP=yT+88,yb1=yB-67,yb2=yB-53,ang=-Math.PI/2+(1-lev)*.6,cy1=ym-6,cy2=ym+6,ic=L.is-L.i,pc=ph.a-ph.b;
+    wire([[xs,yT],[xs,yK]]);wire([[xs,yP],[xs,yb1]]);wire([[xs,yb2],[xs,yB]]);wire([[xs,yT],[xr-28,yT]]);wire([[xr+28,yT],[xa,yT],[xa,shy],[shx,shy]]);wire([[tpx,tpy],[tpx,yB],[xs,yB]]);wire([[xm,yT],[xm,cy1]]);wire([[xm,cy2],[xm,yB]]);
+    dots([[xm,yB],[xs,yB],[xs,yb2]],ph.a,L.is);dots([[xs,yb1],[xs,yP]],ph.a,L.is);dots([[xs,yK],[xs,yT],[xr-28,yT]],ph.a,L.is);dots([[xr+28,yT],[xm,yT]],ph.a,L.is);
+    dots([[xm,yT],[xa,yT],[xa,shy],[shx,shy]],ph.b,L.i);dots([[tpx,tpy],[tpx,yB],[xm,yB]],ph.b,L.i);dots([[xm,yT],[xm,cy1]],pc,ic);dots([[xm,cy2],[xm,yB]],pc,ic);
+    g.lineWidth=3;wire([[xs-15,yb1],[xs+15,yb1]]);g.lineWidth=5;wire([[xs-8,yb2],[xs+8,yb2]]);txt('E',xs-26,yB-56);
+    g.fillStyle='#8c929c';g.beginPath();g.arc(xs,yK,3.5,0,6.3);g.fill();g.beginPath();g.arc(xs,yP,4.5,0,6.3);g.fill();
+    g.strokeStyle=S.on?'#ffc35a':'#c7ccd4';g.lineWidth=3.5;wire([[xs,yP],[xs+54*Math.cos(ang),yP+54*Math.sin(ang)]]);
+    txt('K',xs-18,yP-20);res(xr,yT,'R_s');cap(xm,(cy1+cy2)/2,true,vn,true);txt('C',xm+30,(cy1+cy2)/2+4);
+    cv._sw=[xs,yP]}
+  txt('лампа',bcx,Ht-4);
+  g.restore()}
+
+/* ---------- графіки ---------- */
+function plots(p,ss){
+  const x0=58,x1=W-62,top=Ht+12,gap=12,h=Math.max(30,(H-top-30-2*gap)/3),w=win(p),t0=S.t-w,X=t=>x0+(t-t0)/w*(x1-x0),vis=hist.filter(q=>q.t>t0),y0=[top,top+h+gap,top+2*(h+gap)],yb=y0[2]+h;
+  let a=0,b=0,c=0,d=0,fm=100;for(const q of vis){a=Math.max(a,q.i,q.is);b=Math.min(b,q.i,q.is);c=Math.max(c,q.v,q.e);d=Math.min(d,q.v,q.e);fm=Math.max(fm,q.f)}
+  adj(s1,b,a);adj(s2,d,c);adj(s3,0,fm);
+  const O=[s1,s2,s3],yv=(o,y,v)=>y+h-(v-o.lo)/(o.hi-o.lo)*h;
+  const TT=[mode==1?'струм джерела (синя) і лампи (помаранчева), А':'струм у колі I, А','напруга на конденсаторі U_C (синя) і ЕРС джерела (пунктир), В','світність Φ/Φном (заливка, %) і температура нитки T (червона, К)'];
+  g.font='12px system-ui,sans-serif';
+  O.forEach((o,n)=>{const y=y0[n];g.strokeStyle=AX;g.lineWidth=1;g.strokeRect(x0,y,x1-x0,h);g.fillStyle=AX;g.textAlign='left';g.fillText(TT[n],x0+6,y+14);g.textAlign='right';
+    [o.lo,(o.lo+o.hi)/2,o.hi].forEach(v=>{g.fillStyle=AX;g.fillText(v.toFixed(Math.abs(v)>=10?0:1),x0-4,yv(o,y,v)+4);g.strokeStyle=GR;wire([[x0,yv(o,y,v)],[x1,yv(o,y,v)]])})});
+  const st=ns(w/6);g.textAlign='center';
+  for(let t=Math.ceil(t0/st)*st;t<=S.t;t+=st){const x=X(t);g.strokeStyle=GR;wire([[x,top],[x,yb]]);g.fillStyle=AX;g.fillText(st<1?(t*1000).toFixed(0)+' мс':t.toFixed(st<10?1:0)+' с',x,yb+14)}
+  const ln=(n,k,col,lw,dash)=>{const y=y0[n],o=O[n];g.save();g.beginPath();g.rect(x0,y,x1-x0,h);g.clip();g.strokeStyle=col;g.lineWidth=lw;g.setLineDash(dash||[]);g.beginPath();vis.forEach((q,j)=>{const px=X(q.t),py=yv(o,y,q[k]);j?g.lineTo(px,py):g.moveTo(px,py)});g.stroke();g.restore()};
+  if(mode==1){ln(0,'is',CB,2);ln(0,'i',CI,2)}else ln(0,'is',CI,2);
+  ln(1,'e',AX,1.5,[5,4]);ln(1,'v',CB,2);
+  const y2=y0[2];g.save();g.beginPath();g.rect(x0,y2,x1-x0,h);g.clip();
+  const q=g.createLinearGradient(0,y2,0,y2+h);q.addColorStop(0,dark?'#ffb45a88':'#ff9a2a88');q.addColorStop(1,'#ffb45a08');g.fillStyle=q;
+  g.beginPath();g.moveTo(X(vis.length?vis[0].t:t0),y2+h);vis.forEach(v=>g.lineTo(X(v.t),yv(s3,y2,v.f)));g.lineTo(X(S.t),y2+h);g.fill();
+  g.setLineDash([5,4]);g.strokeStyle=AX;wire([[x0,yv(s3,y2,100)],[x1,yv(s3,y2,100)]]);g.setLineDash([]);
+  g.strokeStyle=CT;g.lineWidth=2;g.beginPath();vis.forEach((v,j)=>{const px=X(v.t),py=y2+h-v.T/3600*h;j?g.lineTo(px,py):g.moveTo(px,py)});g.stroke();g.restore();
+  g.textAlign='left';g.fillStyle=CT;[0,1000,2000,3000].forEach(T=>g.fillText(T+' К',x1+4,y2+h-T/3600*h+4));
+  evts.forEach(e=>{if(e.t>t0){g.setLineDash([3,4]);g.strokeStyle=AX;wire([[X(e.t),top],[X(e.t),yb]]);g.setLineDash([]);g.fillStyle=AX;g.textAlign='left';g.fillText(e.on?'вкл.':'викл.',X(e.t)+3,top+h-4)}})}
+
+/* ---------- текст ---------- */
+function readout(p,ss){
+  const L=hist.length?hist[hist.length-1]:{i:0,is:0},f=(x,d=2)=>x.toFixed(d).replace('.',','),R=Rl(S.T),T=S.T;
+  let h=`t = ${f(S.t*1000,0)} мс<br>`;
+  h+=mode==1?`струм джерела = ${f(L.is)} А; струм лампи = ${f(L.i)} А<br>`:`I = ${f(L.is)} А<br>`;
+  h+=`U<sub>C</sub> = ${f(S.v)} В; q = CU = ${f(p.C*S.v*1000)} мКл<br>R<sub>лампи</sub> = ${f(R)} Ом (холодна ${f(R0)} Ом)<br>T = ${f(T,0)} К; Φ = ${f(phi(T)*100,1)} % від номіналу<br>W<sub>C</sub> = ½CU² = ${f(.5*p.C*S.v*S.v,3)} Дж<br>`;
+  if(mode<2&&(S.A>1e-6||S.Q>1e-6))h+=`Робота джерела A = ${f(S.A,3)} Дж; тепло Q = ${f(S.Q,3)} Дж`+(S.A>1e-4?` (${f(S.Q/S.A*100,0)} % від A)`:'')+'<br>';
+  h+=`τ = (R<sub>s</sub>+R)·C ≈ ${f((p.Rs+R)*p.C*1000,0)} мс<br>`;
+  if(mode==2){const t1=S.t-1/p.f;let mx=0,mn=1e9;for(const q of hist)if(q.t>t1){mx=Math.max(mx,q.f);mn=Math.min(mn,q.f)}
+    h+=`X<sub>C</sub> = 1/ωC = ${f(ss.X)} Ом; Z = ${f(ss.Z)} Ом; φ = ${f(ss.ph*180/Math.PI,0)}° (струм випереджає)<br>пульсації світла: ${f(mx>0?(mx-mn)/(mx+mn)*100:0,0)} %<br>`}
+  let m;
+  if(S.dead)m='<b style="color:#d33">Нитка перегоріла (T > 3600 К).</b> Натисніть «Скинути / нова лампа».';
+  else if(mode==2)m='Змінний струм: конденсатор має ємнісний опір 1/ωC, струм випереджає напругу. Чим більші f і C, тим яскравіше лампа (у котушки навпаки); на постійному струмі лампа не світила б.';
+  else if(mode==1)m=S.on?'Ключ замкнено: C заряджається через R_s до E·R/(R_s+R), лампа світиться від напруги на конденсаторі.':(Math.abs(S.v)>.05?'Ключ розімкнено: конденсатор розряджається через лампу, яскравість плавно спадає. Спалаху вище сталого немає, на відміну від котушки.':'Конденсатор розряджений.');
+  else m=S.on?(Math.abs(L.is)>.03*p.E/(p.Rs+R)||S.t-lastSw<.01?'Зарядка: у перший момент струм максимальний (нитка холодна, опір малий), лампа спалахує й гасне, коли C заряджається. Рівно половина роботи джерела йде в тепло.':'Усталений режим: конденсатор заряджено, постійний струм не тече, лампа не світить.'):(Math.abs(S.v)>.05?'Розрядка: заряд, напруга і струм спадають (майже експоненційно, але τ=RC змінюється, бо нитка остигає); вся енергія ½CU² іде в тепло.':'Конденсатор розряджений.');
+  $('ro').innerHTML=h+'<br>'+m}
+
+/* ---------- цикл ---------- */
+let last=performance.now(),ro=0;
+function frame(now){const rdt=Math.min(.05,(now-last)/1000);last=now;const p=par(),ss=ssolve(p);
+  if(running){Q={a:0,b:0};adv(rdt/slow(),p);ph.a+=cl(Q.a*KQ,-7,7);ph.b+=cl(Q.b*KQ,-7,7)}
+  lev+=((S.on?1:0)-lev)*Math.min(1,rdt*12);S.fl=Math.max(0,S.fl-rdt*2);
+  lab();g.clearRect(0,0,W,H);
+  scene(p,ss,S.dead?0:glow(S.T),bb(S.T));plots(p,ss);
+  if(now-ro>120){ro=now;readout(p,ss)}
+  requestAnimationFrame(frame)}
+
+$('mode').onchange=e=>{setMode(+e.target.value);toggle()};
+$('tg').onclick=toggle;$('rs').onclick=()=>{reset();lab()};
+$('pl').onclick=()=>{running=!running;$('pl').textContent=running?'Пауза':'Продовжити'};
+cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,q=cv._sw;if(q&&Math.hypot(x-q[0],y-q[1])<50)toggle()});
+addEventListener('resize',resize);
+resize();setMode(0);requestAnimationFrame(frame);
+setTimeout(()=>{if(!S.on&&!evts.length)toggle()},500);
+</script>
+</body>
+</html>
