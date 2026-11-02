@@ -99,7 +99,7 @@ const onScreen=r=>r.da>=.2&&r.db>=.2&&r.da<=4&&r.db<=4;
 /* Апроксимація X = K·ν^s зі фіксованим нахилом s = ∓1 (ємність/індуктивність) і вільним нахилом для перевірки */
 function fit(p){
   const n=p.length;if(n<2)return null;
-  const s=-sgn(),lx=p.map(q=>Math.log(q.nu)),ly=p.map(q=>Math.log(q.X)),av=a=>a.reduce((x,y)=>x+y)/a.length;
+  const s=sgn(),lx=p.map(q=>Math.log(q.nu)),ly=p.map(q=>Math.log(q.X)),av=a=>a.reduce((x,y)=>x+y)/a.length;
   const k=lx.map((x,i)=>ly[i]-s*x),K=av(k);
   const rel=n>2?Math.sqrt(k.reduce((x,y)=>x+(y-K)**2,0)/(n-1)/n):null;
   const val=S.kind==='rc'?Math.exp(-K)/(2*Math.PI)*1e6:Math.exp(K)/(2*Math.PI)*1e3;
@@ -156,7 +156,7 @@ function drawScope(b){
 }
 
 function frame(b,o){
-  const L=b.x+52,R=b.x+b.w-12,Bt=b.y+b.h-28,Tp=b.y+34,t=(v,l)=>l?Math.log10(v):v;
+  const L=b.x+52,R=b.x+b.w-12,Bt=b.y+b.h-28,Tp=b.y+42,t=(v,l)=>l?Math.log10(v):v;
   const X=v=>L+(t(v,o.lx)-t(o.xmin,o.lx))/(t(o.xmax,o.lx)-t(o.xmin,o.lx))*(R-L);
   const Y=v=>Bt-(t(v,o.ly)-t(o.ymin,o.ly))/(t(o.ymax,o.ly)-t(o.ymin,o.ly))*(Bt-Tp);
   const lab=o.fl||(v=>String(+v.toPrecision(3)).replace('.',','));
@@ -177,7 +177,7 @@ function curve(F,fn,x0,x1,log,col,dash){
 }
 
 function drawX(b){
-  const rc=S.kind==='rc',s=-sgn(),sym=rc?'X_C':'X_L',list=CF[S.kind].list;
+  const rc=S.kind==='rc',s=sgn(),sym=rc?'X_C':'X_L',list=CF[S.kind].list;
   const F=frame(b,{xmin:100,xmax:1e5,ymin:5,ymax:500,lx:1,ly:1,xt:[100,200,500,1e3,2e3,5e3,1e4,2e4,5e4,1e5],yt:[5,10,20,50,100,200,500],fl:hz,
     xlab:'ν, Гц',ylab:sym+', Ом',title:'Імпеданс '+sym+'(ν) у логарифмічних координатах (лінії — апроксимація)'});
   const nuS=100*Math.pow(10,$('sl').value/1000);
