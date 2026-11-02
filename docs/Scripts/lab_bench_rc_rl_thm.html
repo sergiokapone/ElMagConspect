@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лабораторна: конденсатор і котушка в колі змінного струму</title>
+<link rel="stylesheet" href="assets/lab.css">
+</head>
+<body>
+<div id="app">
+<div id="panel">
+  <b>Лабораторна: RC- і RL-кола змінного струму</b>
+  <button id="theme" style="float:right;margin:0" title="Тема оформлення"></button>
+  <label>Схема:
+    <select id="kind"><option value="rc">RC — конденсатор (Робота 1)</option><option value="rl">RL — котушка індуктивності (Робота 2)</option></select></label>
+  <label>Частина:
+    <select id="part"><option value="1">1. Імпеданс X(ν) з умови X = R</option><option value="2">2. Фазовий зсув φ(ν)</option></select></label>
+  <div class="note" id="task"></div>
+  <label id="cfgrow">Елемент:<select id="cfg"></select></label>
+  <label>Резистор R (канал A):<select id="rr"></select></label>
+  <label>Амплітуда генератора E₀: <span id="lamp"></span>
+    <input type="range" id="amp" min="1" max="10" step="0.5" value="5"></label>
+  <label>V/под. (однакове на обох каналах):<select id="vdiv"></select></label>
+  <label>Осцилограф:
+    <select id="sc"><option value="t">Розгортка: канали A і B</option><option value="x">Фігура Ліссажу: A→Y, B→X</option></select></label>
+  <label>Частота генератора, груба:<input type="range" id="fc" min="0" max="3000" step="1" value="1000"></label>
+  <label>Частота генератора, точно:<input type="range" id="ff" min="-100" max="100" step="1" value="0"></label>
+  <div id="cur"></div>
+  <div>
+    <button id="take">Зняти точку</button>
+    <button id="undo">Видалити останню</button>
+    <button id="clear">Очистити</button>
+  </div>
+  <label id="slrow">Частота зрізу для X(C): <span id="lsl"></span>
+    <input type="range" id="sl" min="480" max="2480" step="1" value="1200"></label>
+  <table id="tbl"><thead></thead><tbody></tbody></table>
+  <div id="fr"></div>
+  <div><button id="exp">Таблиця для LaTeX</button></div>
+  <textarea id="latex" rows="5" readonly></textarea>
+  <div id="teach"></div>
+  <div class="note" id="devnote"></div>
+</div>
+<div id="stage"><canvas id="c"></canvas></div>
+</div>
+<script>
+const $=id=>document.getElementById(id),cv=$('c'),g=cv.getContext('2d');
+let BG,INK,AX,GR;
+const TH=['auto','light','dark'],TN={auto:'Тема: авто',light:'Тема: світла',dark:'Тема: темна'};
+let thm='auto';try{thm=localStorage.getItem('labTheme')||'auto'}catch(e){}
+function readTheme(){
+  const r=document.documentElement;thm==='auto'?r.removeAttribute('data-theme'):r.dataset.theme=thm;
+  const v=getComputedStyle(r).getPropertyValue.bind(getComputedStyle(r));
+  BG=v('--bg').trim();INK=v('--ink').trim();AX=v('--ax').trim();GR=v('--gr').trim();
+  $('theme').textContent=TN[thm];
+}
+readTheme();
+$('theme').onclick=()=>{thm=TH[(TH.indexOf(thm)+1)%3];try{localStorage.setItem('labTheme',thm)}catch(e){}readTheme();draw()};
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{readTheme();draw()});
+const C_A='#2e8b57',C_B='#1f6fb5',CFGC=['#1f6fb5','#c0392b','#2e8b57','#d4620f'],C_TRUE='#888';
+const FONT='13px system-ui,"Segoe UI",sans-serif';
+const P=new URLSearchParams(location.search),teacher=P.has('teacher');
+const f2=(v,d=2)=>v.toFixed(d).replace('.',',');
+const gauss=()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+const rnd=a=>(Math.random()*2-1)*a;
+function niceCeil(x){const p=Math.pow(10,Math.floor(Math.log10(x)));for(const m of [1,1.5,2,2.5,3,4,5,6,8,10])if(m*p>=x)return m*p;return 10*p}
+function ticksFor(max){const raw=max/5,p=Math.pow(10,Math.floor(Math.log10(raw)));const st=[1,2,2.5,5,10].map(m=>m*p).find(v=>v>=raw);const t=[];for(let v=0;v<=max+1e-9;v+=st)t.push(+v.toFixed(6));return t}
+
+/* Параметри стенда. Реальні номінали мають розкид (прихований), генератор має R_i,
+   котушки мають власний активний опір r. */
+const Ri=5,Rs=[10,15,25,50,75,100,150,200],Ract={};Rs.forEach(r=>Ract[r]=r*(1+rnd(.01)));
+const CF={};
+(function(){
+  const mk=(id,name,nom,act,r)=>({id,name,nom,act,r});
+  const a1=1+rnd(.05),a2=2*(1+rnd(.05)),b1=1+rnd(.05),b2=2*(1+rnd(.05));
+  CF.rc={sym:'C',u:'мкФ',list:[mk('1','1 мкФ',1,a1),mk('2','2 мкФ',2,a2),mk('s','послідовно',2/3,a1*a2/(a1+a2)),mk('p','паралельно',3,a1+a2)]};
+  CF.rc.ph=CF.rc.list[1];
+  CF.rl={sym:'L',u:'мГн',list:[mk('1','1 мГн',1,b1,.6),mk('2','2 мГн',2,b2,1),mk('s','послідовно',3,b1+b2,1.6),mk('p','паралельно',2/3,b1*b2/(b1+b2),.38)],
+         ph:mk('ph','9 мГн',9,9*(1+rnd(.04)),3.8)};
+})();
+const S={kind:'rc',part:1,ci:0,R:10},D={};
+const cfg=()=>S.part==1?CF[S.kind].list[S.ci]:CF[S.kind].ph;
+const key=()=>S.kind+(S.part==1?cfg().id:'ph');
+const pts=()=>D[key()]||(D[key()]=[]);
+const nuTrue=()=>100*Math.pow(10,$('fc').value/1000)*Math.pow(10,$('ff').value/3000);
+const sgn=()=>S.kind==='rc'?-1:1;
+
+/* Показання приладів: амплітуди знімаються зі шкали (крок 0,1 под.), частота — зі шкали генератора (~0,5 %) */
+let last;
+function reading(){
+  const c=cfg(),R=Ract[S.R],nu=nuTrue(),w=2*Math.PI*nu,rc=S.kind==='rc';
+  const X=rc?1/(w*c.act*1e-6):w*c.act*1e-3,rs=rc?0:c.r;
+  const E=+$('amp').value,I=E/Math.hypot(R+Ri+rs,X),vd=+$('vdiv').value;
+  const a=I*R,b=I*(rc?X:Math.hypot(rs,X)),psi=rc?-Math.PI/2:Math.atan2(X,rs);
+  const rd=v=>Math.round((v/vd+gauss()*.04)*10)/10;
+  return{nu,dial:+(nu*(1+.005*gauss())).toPrecision(3),a,b,psi,X,vd,da:rd(a),db:rd(b)};
+}
+const onScreen=r=>r.da>=.2&&r.db>=.2&&r.da<=4&&r.db<=4;
+
+/* Апроксимація X = K·ν^s зі фіксованим нахилом s = ∓1 (ємність/індуктивність) і вільним нахилом для перевірки */
+function fit(p){
+  const n=p.length;if(n<2)return null;
+  const s=-sgn(),lx=p.map(q=>Math.log(q.nu)),ly=p.map(q=>Math.log(q.X)),av=a=>a.reduce((x,y)=>x+y)/a.length;
+  const k=lx.map((x,i)=>ly[i]-s*x),K=av(k);
+  const rel=n>2?Math.sqrt(k.reduce((x,y)=>x+(y-K)**2,0)/(n-1)/n):null;
+  const val=S.kind==='rc'?Math.exp(-K)/(2*Math.PI)*1e6:Math.exp(K)/(2*Math.PI)*1e3;
+  const mx=av(lx),my=av(ly);let sxx=0,sxy=0;lx.forEach((x,i)=>{sxx+=(x-mx)**2;sxy+=(x-mx)*(ly[i]-my)});
+  const b=sxx>1e-9?sxy/sxx:s;
+  return{K,s,val,rel,b,a:my-b*mx,n};
+}
+
+/* ---- малювання ---- */
+function wire(x1,y1,x2,y2){g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke()}
+function probe(x,y,l,col){
+  g.fillStyle=BG;g.beginPath();g.arc(x,y,13,0,7);g.fill();g.strokeStyle=col;g.lineWidth=2;g.beginPath();g.arc(x,y,13,0,7);g.stroke();
+  g.fillStyle=col;g.font='bold 14px system-ui';g.textAlign='center';g.textBaseline='middle';g.fillText(l,x,y+1);g.textBaseline='alphabetic';
+}
+function txt(s,x,y,al,col,font){g.fillStyle=col||INK;g.font=font||FONT;g.textAlign=al||'center';g.fillText(s,x,y)}
+
+function drawCircuit(b){
+  const rc=S.kind==='rc',c=cfg();
+  const xg=b.x+b.w*.12,xr0=b.x+b.w*.30,xr1=b.x+b.w*.48,xe0=b.x+b.w*.64,xe1=b.x+b.w*.82,xz=xe1+14;
+  const T=b.y+b.h*.46,B=b.y+b.h*.86,pv=b.y+b.h*.14,yc=(T+B)/2;
+  g.strokeStyle=INK;g.lineWidth=2;
+  wire(xg,T,xr0,T);wire(xr1,T,xe0,T);wire(xe1,T,xz,T);wire(xz,T,xz,B);wire(xg,B,xz,B);wire(xg,T,xg,yc-15);wire(xg,yc+15,xg,B);
+  g.fillStyle=BG;g.beginPath();g.arc(xg,yc,15,0,7);g.fill();g.beginPath();g.arc(xg,yc,15,0,7);g.stroke();
+  g.beginPath();g.moveTo(xg-8,yc);g.bezierCurveTo(xg-4,yc-9,xg,yc-9,xg,yc);g.bezierCurveTo(xg,yc+9,xg+4,yc+9,xg+8,yc);g.stroke();
+  g.fillStyle=BG;g.fillRect(xr0,T-9,xr1-xr0,18);g.strokeRect(xr0,T-9,xr1-xr0,18);
+  const xm=(xe0+xe1)/2;
+  if(rc){wire(xe0,T,xm-5,T);wire(xm+5,T,xe1,T);wire(xm-5,T-12,xm-5,T+12);wire(xm+5,T-12,xm+5,T+12)}
+  else{const w=(xe1-xe0)/4;g.beginPath();for(let k=0;k<4;k++){g.moveTo(xe0+k*w,T);g.arc(xe0+(k+.5)*w,T,w/2,Math.PI,0)}g.stroke()}
+  g.lineWidth=2;
+  [[xr0,xr1,'A',C_A],[xe0,xe1,'B',C_B]].forEach(([x0,x1,l,col])=>{
+    g.strokeStyle=col;const m=(x0+x1)/2;wire(x0,T,x0,pv);wire(x1,T,x1,pv);wire(x0,pv,m-13,pv);wire(m+13,pv,x1,pv);probe(m,pv,l,col)});
+  txt('R = '+S.R+' Ом',(xr0+xr1)/2,T+28);
+  txt((rc?'C':'L')+' = '+c.name+(rc?'':' (r ≈ '+f2(c.r,1)+' Ом)'),xm,T+28);
+  txt('E₀ = '+f2(+$('amp').value,1)+' В',xg,B+18);txt('R_i = '+Ri+' Ом',xg,B+33);
+  txt('ν = '+last.dial+' Гц',(xr0+xr1)/2+30,B+18,'center',INK,'bold 14px system-ui');
+  txt('A — напруга на R (∝ I), B — напруга на '+(rc?'конденсаторі':'котушці'),(xr0+xe1)/2,b.y+b.h-2,'center',AX,'12px system-ui');
+}
+
+function drawScope(b){
+  const d=Math.min((b.w-16)/10,(b.h-38)/8),cx=b.x+b.w/2,cy=b.y+6+d*4,xy=$('sc').value==='x',N=400;
+  g.fillStyle='#0d1512';g.fillRect(cx-5*d,cy-4*d,10*d,8*d);
+  g.strokeStyle='#ffffff26';g.lineWidth=1;
+  for(let i=-5;i<=5;i++)wire(cx+i*d,cy-4*d,cx+i*d,cy+4*d);
+  for(let j=-4;j<=4;j++)wire(cx-5*d,cy+j*d,cx+5*d,cy+j*d);
+  g.save();g.beginPath();g.rect(cx-5*d,cy-4*d,10*d,8*d);g.clip();
+  const A=last.a/last.vd,Bb=last.b/last.vd;
+  const tr=(fx,fy,col)=>{g.strokeStyle=col;g.lineWidth=2;g.beginPath();for(let i=0;i<=N;i++){const u=i/N,x=cx+fx(u)*d,y=cy-fy(u)*d;i?g.lineTo(x,y):g.moveTo(x,y)}g.stroke()};
+  if(xy)tr(u=>Bb*Math.sin(2*Math.PI*u+last.psi),u=>A*Math.sin(2*Math.PI*u),'#7CFC7C');
+  else{tr(u=>10*u-5,u=>A*Math.sin(4*Math.PI*u),'#e8c547');tr(u=>10*u-5,u=>Bb*Math.sin(4*Math.PI*u+last.psi),'#4cc9f0')}
+  g.restore();
+  const s=(dv)=>dv>4?'за екраном':f2(dv,1)+' под.';
+  txt('A: '+s(last.da)+' = '+f2(last.da*last.vd,2)+' В   B: '+s(last.db)+' = '+f2(last.db*last.vd,2)+' В',cx,cy+4*d+16,'center',INK,'12px system-ui');
+  txt(xy?'режим XY (зелений)':'A — жовтий, B — блакитний',cx,cy+4*d+31,'center',AX,'12px system-ui');
+}
+
+function frame(b,o){
+  const L=b.x+52,R=b.x+b.w-12,Bt=b.y+b.h-28,Tp=b.y+34,t=(v,l)=>l?Math.log10(v):v;
+  const X=v=>L+(t(v,o.lx)-t(o.xmin,o.lx))/(t(o.xmax,o.lx)-t(o.xmin,o.lx))*(R-L);
+  const Y=v=>Bt-(t(v,o.ly)-t(o.ymin,o.ly))/(t(o.ymax,o.ly)-t(o.ymin,o.ly))*(Bt-Tp);
+  const lab=o.fl||(v=>String(+v.toPrecision(3)).replace('.',','));
+  g.font=FONT;g.textBaseline='alphabetic';txt(o.title,b.x+6,b.y+15,'left');
+  g.strokeStyle=GR;g.lineWidth=1;
+  o.xt.forEach(v=>{wire(X(v),Tp,X(v),Bt);txt(lab(v),X(v),Bt+15,'center',AX)});
+  o.yt.forEach(v=>{wire(L,Y(v),R,Y(v));txt(String(v).replace('.',','),L-6,Y(v)+4,'right',AX)});
+  g.strokeStyle=AX;g.lineWidth=1.2;g.beginPath();g.moveTo(L,Tp);g.lineTo(L,Bt);g.lineTo(R,Bt);g.stroke();
+  txt(o.xlab,R,Bt+27,'right');txt(o.ylab,L+4,Tp-8,'left');
+  return{X,Y,L,R,Tp,Bt};
+}
+const hz=v=>v>=1000?(+(v/1000).toPrecision(2)+'к').replace('.',','):String(v);
+function clip(F,fn){g.save();g.beginPath();g.rect(F.L,F.Tp,F.R-F.L,F.Bt-F.Tp);g.clip();fn();g.restore()}
+function curve(F,fn,x0,x1,log,col,dash){
+  g.strokeStyle=col;g.lineWidth=2;g.setLineDash(dash||[]);g.beginPath();
+  for(let k=0;k<=200;k++){const u=k/200,x=log?x0*Math.pow(x1/x0,u):x0+(x1-x0)*u;k?g.lineTo(F.X(x),F.Y(fn(x))):g.moveTo(F.X(x),F.Y(fn(x)))}
+  g.stroke();g.setLineDash([]);
+}
+
+function drawX(b){
+  const rc=S.kind==='rc',s=-sgn(),sym=rc?'X_C':'X_L',list=CF[S.kind].list;
+  const F=frame(b,{xmin:100,xmax:1e5,ymin:5,ymax:500,lx:1,ly:1,xt:[100,200,500,1e3,2e3,5e3,1e4,2e4,5e4,1e5],yt:[5,10,20,50,100,200,500],fl:hz,
+    xlab:'ν, Гц',ylab:sym+', Ом',title:'Імпеданс '+sym+'(ν) у логарифмічних координатах (лінії — апроксимація)'});
+  const nuS=100*Math.pow(10,$('sl').value/1000);
+  clip(F,()=>{
+    list.forEach((c,i)=>{
+      const p=D[S.kind+c.id]||[],f=fit(p),col=CFGC[i];
+      if(teacher)curve(F,v=>rc?1/(2*Math.PI*v*c.act*1e-6):2*Math.PI*v*c.act*1e-3,100,1e5,1,C_TRUE,[5,4]);
+      if(f)curve(F,v=>Math.exp(f.K)*Math.pow(v,s),100,1e5,1,col);
+      g.fillStyle=col;p.forEach(q=>{g.beginPath();g.arc(F.X(q.nu),F.Y(q.X),4,0,7);g.fill()});
+    });
+    g.strokeStyle=AX;g.setLineDash([4,3]);wire(F.X(nuS),F.Tp,F.X(nuS),F.Bt);g.setLineDash([]);
+  });
+  list.forEach((c,i)=>{g.fillStyle=CFGC[i];g.beginPath();g.arc(F.R-128,F.Tp+10+i*15,4,0,7);g.fill();txt(c.name,F.R-120,F.Tp+14+i*15,'left')});
+}
+
+function drawC(b){
+  const rc=S.kind==='rc',sym=rc?'C':'L',list=CF[S.kind].list,nuS=100*Math.pow(10,$('sl').value/1000),w=2*Math.PI*nuS;
+  const th=v=>rc?1/(w*v*1e-6):w*v*1e-3,ymax=niceCeil(th(rc?.5:3.5)*1.05);
+  const F=frame(b,{xmin:0,xmax:3.5,ymin:0,ymax,lx:0,ly:0,xt:[0,.5,1,1.5,2,2.5,3,3.5],yt:ticksFor(ymax),
+    xlab:sym+', '+CF[S.kind].u,ylab:(rc?'X_C':'X_L')+', Ом',title:'Зріз при ν = '+Math.round(nuS)+' Гц: '+(rc?'X_C(C)':'X_L(L)')});
+  clip(F,()=>{
+    curve(F,th,rc?.4:0,3.5,0,AX,[5,4]);
+    list.forEach((c,i)=>{const f=fit(D[S.kind+c.id]||[]);if(!f||f.n<3)return;
+      const y=Math.exp(f.a+f.b*Math.log(nuS));g.fillStyle=CFGC[i];g.beginPath();g.arc(F.X(c.nom),F.Y(y),5,0,7);g.fill()});
+  });
+}
+
+function drawPhi(b){
+  const rc=S.kind==='rc',c=cfg(),ymin=rc?-90:0,ymax=rc?0:90;
+  const F=frame(b,{xmin:0,xmax:16000,ymin,ymax,lx:0,ly:0,xt:[0,2000,4000,6000,8000,10000,12000,14000,16000],yt:[0,15,30,45,60,75,90].map(v=>rc?-v:v),
+    fl:v=>String(v/1000),xlab:'ν, кГц',ylab:'φ, °',title:'Зсув фаз φ(ν), tg φ = U₀'+(rc?'C':'L')+' / U₀R (штрих — ідеальна теорія за номіналами)'});
+  clip(F,()=>{
+    curve(F,v=>sgn()*Math.atan(rc?1/(2*Math.PI*v*c.nom*1e-6*S.R):2*Math.PI*v*c.nom*1e-3/S.R)*180/Math.PI,100,16000,0,AX,[5,4]);
+    if(teacher)curve(F,v=>sgn()*Math.atan(rc?1/(2*Math.PI*v*c.act*1e-6*Ract[S.R]):2*Math.PI*v*c.act*1e-3/Ract[S.R])*180/Math.PI,100,16000,0,C_TRUE);
+    g.fillStyle=C_B;(D[S.kind+'ph']||[]).forEach(q=>{g.beginPath();g.arc(F.X(q.nu),F.Y(q.phi),4,0,7);g.fill()});
+  });
+}
+
+function draw(){
+  const W=cv.clientWidth,H=cv.clientHeight,ht=Math.round(H*.36);
+  g.fillStyle=BG;g.fillRect(0,0,W,H);
+  drawCircuit({x:8,y:4,w:W*.5-12,h:ht-8});drawScope({x:W*.5,y:4,w:W*.5-8,h:ht-8});
+  const hb=H-ht-8;
+  if(S.part==1){drawX({x:8,y:ht+4,w:W*.58-12,h:hb});drawC({x:W*.58,y:ht+4,w:W*.42-8,h:hb})}
+  else drawPhi({x:8,y:ht+4,w:W-16,h:hb});
+}
+
+/* ---- таблиця, підсумки, експорт ---- */
+function refresh(){
+  const rc=S.kind==='rc',sym=rc?'C':'L',p=pts(),r=last,q=r.db/r.da;
+  $('lamp').textContent=f2(+$('amp').value,1)+' В';
+  $('lsl').textContent=Math.round(100*Math.pow(10,$('sl').value/1000))+' Гц';
+  $('cfgrow').style.display=S.part==1?'':'none';$('slrow').style.display=S.part==1?'':'none';
+  $('task').innerHTML=S.part==1
+    ?'Для кожного R підберіть частоту, на якій амплітуди A і B однакові (на екрані XY — коло). Тоді X<sub>'+(rc?'C':'L')+'</sub> = R. Зніміть точки для всіх 8 опорів і для кожного з 4 варіантів елемента — з апроксимації знайдуться '+sym+'.'
+    :'Елемент '+cfg().name+', R підібрано за методичкою. Змінюючи частоту, вимірюйте відношення амплітуд U₀'+(rc?'C':'L')+'/U₀R = tg φ і будуйте φ(ν).';
+  $('cur').innerHTML='ν (шкала) = '+r.dial+' Гц<br>'+(onScreen(r)?'U<sub>B</sub>/U<sub>A</sub> = '+f2(q,2)+(S.part==1&&Math.abs(q-1)<.03?' — амплітуди майже рівні':''):'<span style="color:#c0392b">сигнал за межами екрана — змініть V/под., E₀ або частоту</span>');
+  $('tbl').tHead.innerHTML=S.part==1?'<tr><th>№</th><th>R, Ом</th><th>ν, Гц</th><th>X, Ом</th></tr>':'<tr><th>№</th><th>ν, Гц</th><th>U<sub>B</sub>/U<sub>A</sub></th><th>φ, °</th></tr>';
+  $('tbl').tBodies[0].innerHTML=p.map((q,k)=>'<tr><td>'+(k+1)+'</td>'+(S.part==1?'<td>'+q.R+'</td><td>'+q.nu+'</td><td>'+q.X+'</td>':'<td>'+q.nu+'</td><td>'+f2(q.ratio,2)+'</td><td>'+f2(q.phi,1)+'</td>')+'</tr>').join('');
+  let h='';
+  if(S.part==1){
+    CF[S.kind].list.forEach(c=>{const pp=D[S.kind+c.id]||[],f=fit(pp);if(!f)return;
+      h+='<b style="color:'+CFGC[CF[S.kind].list.indexOf(c)]+'">'+c.name+'</b>: '+sym+' = '+f2(f.val,3)+(f.rel?' ± '+f2(f.val*f.rel,3):'')+' '+CF[S.kind].u+
+         ' (номінал '+f2(c.nom,2)+'; відхилення '+f2((f.val/c.nom-1)*100,1)+' %), нахил log-log '+f2(f.b,2)+', n = '+f.n+'<br>'});
+    if(!h)h='Зніміть щонайменше дві точки для одного елемента.';
+  }else h=p.length?'Точок: '+p.length:'Зніміть кілька точок на різних частотах.';
+  $('fr').innerHTML=h;
+  if(teacher)$('teach').innerHTML='Еталон: '+sym+' = '+f2(cfg().act,3)+' '+CF[S.kind].u+(rc?'':', r = '+f2(cfg().r,2)+' Ом')+'; R = '+f2(Ract[S.R],2)+' Ом; ν₀ точне = '+Math.round(r.nu)+' Гц.';
+  $('devnote').textContent='Генератор має внутрішній опір R_i = '+Ri+' Ом (на X = R не впливає, бо A і B — напруги на самих елементах). Номінали елементів і резисторів мають розкид. Частоту з шкали генератора і амплітуди зі шкали осцилографа знято з похибкою.'+(rc?'':' Котушка має власний опір r, тому її напруга — це |r + iωL|.');
+  draw();
+}
+
+function newReading(){last=reading();refresh()}
+function fillCfg(){$('cfg').innerHTML=CF[S.kind].list.map((c,i)=>'<option value="'+i+'">'+c.name+'</option>').join('');$('cfg').value=S.ci}
+function setPart(p){S.part=+p;$('part').value=p;if(S.part==2)S.R=S.kind==='rc'?100:50;$('rr').value=S.R;newReading()}
+function setKind(k){S.kind=k;$('kind').value=k;S.ci=0;fillCfg();
+  $('sl').value=1000*Math.log10((k==='rc'?1590:8000)/100);$('fc').value=1000;$('ff').value=0;
+  $('lsl').textContent='';setPart(S.part)}
+
+$('rr').innerHTML=Rs.map(r=>'<option value="'+r+'">'+r+' Ом</option>').join('');
+$('vdiv').innerHTML=[.05,.1,.2,.5,1,2,5].map(v=>'<option value="'+v+'">'+String(v).replace('.',',')+' В/под.</option>').join('');$('vdiv').value=1;
+$('kind').onchange=()=>setKind($('kind').value);
+$('part').onchange=()=>setPart($('part').value);
+$('cfg').onchange=()=>{S.ci=+$('cfg').value;newReading()};
+$('rr').onchange=()=>{S.R=+$('rr').value;newReading()};
+['amp','vdiv','fc','ff'].forEach(id=>$(id).addEventListener('input',newReading));
+$('sc').onchange=draw;$('sl').addEventListener('input',refresh);
+$('take').onclick=()=>{
+  if(!onScreen(last)){refresh();return}
+  const q=last.db/last.da;
+  pts().push(S.part==1?{R:S.R,nu:last.dial,X:S.R}:{nu:last.dial,ratio:q,phi:sgn()*Math.atan(q)*180/Math.PI});
+  refresh();
+};
+$('undo').onclick=()=>{pts().pop();refresh()};
+$('clear').onclick=()=>{D[key()]=[];refresh()};
+$('exp').onclick=()=>{$('latex').value=pts().map(q=>S.part==1?q.R+' & '+q.nu+' & '+q.X+' \\\\':q.nu+' & '+f2(q.ratio,2)+' & '+f2(q.phi,1)+' \\\\').join('\n')};
+
+function resize(){const d=devicePixelRatio||1;cv.width=cv.clientWidth*d;cv.height=cv.clientHeight*d;g.setTransform(d,0,0,d,0,0);if(last)draw()}
+window.addEventListener('resize',resize);
+last=reading();resize();
+setKind(P.get('kind')==='rl'?'rl':'rc');
+</script>
+</body>
+</html>
