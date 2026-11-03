@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Пондеромоторні сили в конденсаторі</title>
+<style>
+:root{--ink:#1d2327;--muted:#5b6670;--line:#c9d0d6;--bg:#f5f6f7;--panel:#fff;--pos:#1f5fd6;--neg:#d62728;
+  --diel:#1f7fb0;--dielf:rgba(31,127,176,.20);--force:#c2189a;--field:#1b8a3c;--metal:#8c929c;--gold:#9a6b00;--liq:rgba(31,127,176,.32);
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;--diel:#69c7e8;--dielf:rgba(105,199,232,.22);--force:#ff6ad5;--field:#4fd17a;--metal:#9aa0a8;--gold:#ffd35a;--liq:rgba(105,199,232,.34);color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;--diel:#69c7e8;--dielf:rgba(105,199,232,.22);--force:#ff6ad5;--field:#4fd17a;--metal:#9aa0a8;--gold:#ffd35a;--liq:rgba(105,199,232,.34);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;padding:10px 14px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+h1{font-size:19px;margin:0 40px 6px 0;font-weight:600;line-height:1.25}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+button{font:inherit;font-size:14px;padding:5px 11px;border:1px solid #8b97a1;background:var(--panel);border-radius:4px;cursor:pointer;color:var(--ink)}
+button:hover{filter:brightness(.96)}button:focus-visible{outline:2px solid #1f6feb;outline-offset:2px}
+button.sel{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+details{max-width:110ch;margin:0 0 6px}
+summary{cursor:pointer;color:var(--muted);font-size:13.5px;padding:2px 0}
+details p{margin:6px 0;font-size:13.5px;line-height:1.45;color:var(--muted)}
+.main{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:12px;align-items:start;max-width:1300px}
+.ct{font-size:13.5px;font-weight:600;margin:0 0 3px}
+.cap{font-size:12px;color:var(--muted);line-height:1.35;margin-top:3px}
+canvas{display:block;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+#scene{height:clamp(250px,46vh,440px);touch-action:none}
+#plot{height:clamp(130px,24vh,220px)}
+.controls{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;align-items:center}
+.hint{font-size:13px;color:var(--muted)}
+.hidden{display:none!important}
+input[type=range]{width:min(150px,38vw);vertical-align:middle}
+.readout{font-size:13px;line-height:1.5;padding:7px 10px;background:var(--panel);border:1px solid var(--line);border-radius:4px;margin-bottom:8px}
+.bar{display:flex;height:22px;border-radius:3px;overflow:hidden;border:1px solid var(--line);margin:4px 0 2px;font-size:11.5px;line-height:22px;color:#fff}
+.bar span{white-space:nowrap;overflow:hidden;text-align:center}
+#info{margin:8px 0 0;font-size:13px;line-height:1.45;max-width:120ch;color:var(--ink)}
+@media (max-width:860px){.main{grid-template-columns:1fr}#scene{height:300px}#plot{height:190px}h1{font-size:17px}}
+</style>
+<script src="assets/theme.js"></script>
+</head>
+<body>
+<h1>Пондеромоторні сили в конденсаторі</h1>
+<div class="tabs">
+<button class="tab sel" data-t="plates">Притягування обкладок</button>
+<button class="tab" data-t="slab">Втягування пластини</button>
+<button class="tab" data-t="liquid">Рідина між обкладками · вольтметр</button>
+</div>
+<details id="desc"><summary>Про що модель</summary>
+<p>Сили, з якими поле діє на заряджені провідники й діелектрики, обчислюють методом віртуальних переміщень: при зсуві тіла на dx робота сили F·dx дорівнює зміні енергії поля. Якщо заряд сталий (джерело від'єднано), F<sub>x</sub> = −(dW/dx)<sub>q</sub>. Якщо сталою тримається напруга (джерело приєднано), F<sub>x</sub> = +(dW/dx)<sub>V</sub>. Знаки різні, бо в другому випадку джерело виконує роботу (2 dW), проте сила та сама.</p>
+<p><b>Три сцени:</b> (1) притягування обкладок, F = ε₀E²S/2 (у СГС E²S/8π); (2) втягування діелектричної пластини, F = (ε − 1)ε₀E²·wd/2 (у СГС (ε − 1)E²·hd/8π), причому насправді сила діє на краю, де поле неоднорідне; (3) підйом рідкого діелектрика між вертикальними обкладками: на цьому принципі працюють електростатичні вольтметри, бо F ∝ U², а шкала нерівномірна. Формули книги записано в СГС, у моделі числа в СІ (F₀ = ε₀E²/2 ↔ E²/8π).</p>
+</details>
+<div class="main">
+<div class="left">
+<div class="ct" id="sceneTitle"></div>
+<canvas id="scene"></canvas>
+<div class="cap" id="sceneCap"></div>
+<div class="controls">
+<label class="hint" data-tabs="plates slab"><input id="cmode" type="checkbox"> сталий заряд Q (джерело від'єднано)</label>
+<label class="hint" data-tabs="plates slab" id="rowV">V <input id="sV" type="range" min="100" max="1000" step="10" value="500"> <span id="vV"></span></label>
+<label class="hint hidden" data-tabs="plates slab" id="rowQ">Q <input id="sQ" type="range" min="5" max="100" step="0.5" value="40"> <span id="vQ"></span></label>
+<label class="hint" data-tabs="plates">відстань x <input id="sGap" type="range" min="0.5" max="4" step="0.05" value="1.5"> <span id="vGap"></span></label>
+<label class="hint" data-tabs="plates">віртуальне зміщення dx <input id="sDx" type="range" min="0.02" max="0.3" step="0.01" value="0.05"> <span id="vDx"></span></label>
+<label class="hint" data-tabs="slab">ε <input id="sEps" type="range" min="1.5" max="50" step="0.1" value="4"> <span id="vEps"></span></label>
+<label class="hint" data-tabs="slab">глибина x <input id="sX" type="range" min="0" max="10" step="0.01" value="0"> <span id="vX"></span></label>
+<label class="hint" data-tabs="slab">сила <select id="fpic"><option value="kelvin">(p·∇)E на диполі</option><option value="face">тиск на торець</option></select></label>
+<label class="hint" data-tabs="liquid">U <input id="sU" type="range" min="0" max="3000" step="25" value="1500"> <span id="vU"></span></label>
+<label class="hint" data-tabs="liquid">ε рідини <input id="sEpsL" type="range" min="1.5" max="40" step="0.1" value="6"> <span id="vEpsL"></span></label>
+<label class="hint" data-tabs="liquid">ρ <input id="sRho" type="range" min="600" max="1600" step="10" value="1000"> <span id="vRho"></span></label>
+<label class="hint" data-tabs="liquid">d <input id="sD" type="range" min="0.3" max="2" step="0.05" value="0.5"> <span id="vD"></span></label>
+<span data-tabs="slab"><button id="bGo">Пуск</button> <button id="bPause">Пауза</button></span>
+<button id="bReset">Скинути</button>
+</div>
+</div>
+<div class="right">
+<div class="readout" id="ro"></div>
+<div id="bars" class="hidden"></div>
+<div class="ct" id="plotTitle"></div>
+<canvas id="plot"></canvas>
+<div class="cap" id="plotCap"></div>
+</div>
+</div>
+<p id="info"></p>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id),cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+const cv=$('scene'),g=cv.getContext('2d'),pv=$('plot'),pq=pv.getContext('2d'),ro=$('ro'),info=$('info');
+const EPS0=8.8541878128e-12,GR=9.81;
+let dpr=1,W=600,H=300,PW=300,PH=150,col={};
+let tab='plates',modeV=true,paused=false,draggingX=false;
+let fpic='kelvin';
+/* --- параметри --- */
+const S_A=0.01;                                        // площа обкладок у сцені 1, м² (10×10 см)
+const Lp=0.1,wp=0.1,dp=1e-3;                           // сцена 2: довжина, ширина, зазор
+const C0=EPS0*wp*Lp/dp;                                // 88.5 пФ
+const lL=0.1,h0L=0.1;                                  // сцена 3: ширина обкладок і їхня висота
+const P={V:500,Q:40e-9,gap:1.5e-3,dx:0.05e-3,eps:4,x:0,vel:0,U:1500,epsL:6,rho:1000,dL:0.5e-3,h:0,hv:0};
+
+/* ---------- фізика ---------- */
+// сцена 1: плоский конденсатор, відстань x
+const FA=(x)=>modeV?EPS0*S_A*P.V*P.V/(2*x*x):P.Q*P.Q/(2*EPS0*S_A);      // сила притягування, Н
+const WA=(x,V,Q)=>modeV?0.5*EPS0*S_A/x*V*V:Q*Q*x/(2*EPS0*S_A);
+// сцена 2: пластина ε на глибину x
+const Cx=x=>C0*(1+(P.eps-1)*x/Lp);
+const dCdx=()=>EPS0*wp*(P.eps-1)/dp;
+const FB=x=>modeV?0.5*P.V*P.V*dCdx():P.Q*P.Q/(2*Cx(x)*Cx(x))*dCdx();
+const M=1e-3,BETA=2e-3;
+// сцена 3: рідина
+const hEq=()=>cl(EPS0*(P.epsL-1)*P.U*P.U/(2*P.rho*GR*P.dL*P.dL),0,1e3);   // м, без обмеження висотою
+const hCap=h0L*0.97;
+
+/* ---------- кольори й допоміжне ---------- */
+function readCols(){const s=getComputedStyle(document.documentElement);
+  for(const n of['ink','muted','line','panel','pos','neg','diel','dielf','force','field','metal','gold','liq'])col[n]=s.getPropertyValue('--'+n).trim()}
+function arrow(c,x0,y0,x1,y1,color,w){const Ln=Math.hypot(x1-x0,y1-y0);if(Ln<2)return;
+  c.strokeStyle=color;c.fillStyle=color;c.lineWidth=w;c.beginPath();c.moveTo(x0,y0);c.lineTo(x1,y1);c.stroke();
+  const a=Math.atan2(y1-y0,x1-x0),h=Math.min(Ln*.8,6+w*1.6);c.beginPath();c.moveTo(x1,y1);
+  c.lineTo(x1-h*Math.cos(a-.4),y1-h*Math.sin(a-.4));c.lineTo(x1-h*Math.cos(a+.4),y1-h*Math.sin(a+.4));c.closePath();c.fill()}
+function txt(c,t,x,y,color,al,fs,bl){c.fillStyle=color;c.font=(fs||12.5)+'px system-ui,sans-serif';c.textAlign=al||'center';c.textBaseline=bl||'alphabetic';c.fillText(t,x,y)}
+function txtBg(c,t,x,y,color,al,fs){fs=fs||12.5;c.font=fs+'px system-ui,sans-serif';const w=c.measureText(t).width;al=al||'center';
+  const x0=al==='left'?x:al==='right'?x-w:x-w/2;c.fillStyle=col.panel;c.fillRect(x0-3,y-fs+1,w+6,fs+4);txt(c,t,x,y,color,al,fs);return w}
+const fmt=(v,n)=>v.toFixed(n);
+const nice=v=>v>=100?v.toFixed(0):v>=10?v.toFixed(1):v.toPrecision(2);
+function chargesRow(c,x0,x1,y,sym,color){c.fillStyle=color;c.font='bold 13px system-ui,sans-serif';c.textAlign='center';c.textBaseline='middle';
+  const n=Math.max(4,Math.floor((x1-x0)/30));for(let i=0;i<n;i++)c.fillText(sym,x0+(i+.5)*(x1-x0)/n,y)}
+function fieldRow(c,x0,x1,y0,y1,color,alpha){c.globalAlpha=alpha;const n=Math.max(4,Math.floor((x1-x0)/46));
+  for(let i=0;i<n;i++){const xx=x0+(i+.5)*(x1-x0)/n;arrow(c,xx,y0,xx,y1,color,1.4)}c.globalAlpha=1}
+function battery(c,x,yTop,yBot,label,closed,xPlate){ // xPlate — правий край обкладок; провід від них до джерела
+  c.strokeStyle=col.ink;c.lineWidth=1.6;const ym=(yTop+yBot)/2;
+  c.beginPath();c.moveTo(xPlate,yTop);c.lineTo(x,yTop);c.moveTo(xPlate,yBot);c.lineTo(x,yBot);
+  c.moveTo(x,yTop);c.lineTo(x,ym-(closed?7:26));c.moveTo(x,yBot);c.lineTo(x,ym+(closed?7:26));c.stroke();
+  if(closed){c.beginPath();c.moveTo(x-12,ym-7);c.lineTo(x+12,ym-7);c.stroke();c.lineWidth=3.4;c.beginPath();c.moveTo(x-6,ym+7);c.lineTo(x+6,ym+7);c.stroke();
+    txt(c,'+',x-16,ym-10,col.neg,'right',13);batLabel(c,label,x,yBot)}
+  else{c.beginPath();c.moveTo(x,ym-26);c.lineTo(x+14,ym-4);c.stroke();batLabel(c,label,x,yBot)}}
+function batLabel(c,label,x,yBot){c.font='12.5px system-ui,sans-serif';const w=c.measureText(label).width,cw=W;
+  txtBg(c,label,Math.min(x,cw-w/2-6),yBot+24,col.ink,'center',12.5)}
+
+/* ============ СЦЕНА 1: притягування обкладок ============ */
+function sceneA(){
+  const x=P.gap,xmin=0.5e-3,xmax=4e-3,gmax=H*0.52;
+  const mL=40,mR=Math.min(150,W*0.24),pL=mL,pR=W-mR,yB=H-48,th=12;
+  const xpx=xv=>22+(xv-xmin)/(xmax-xmin)*(gmax-22);
+  const yT=yB-xpx(x);                                  // нижня поверхня верхньої обкладки
+  g.fillStyle=col.metal;g.fillRect(pL,yB,pR-pL,th);g.fillRect(pL,yT-th,pR-pL,th);
+  g.strokeStyle=col.ink;g.lineWidth=1;g.strokeRect(pL,yB,pR-pL,th);g.strokeRect(pL,yT-th,pR-pL,th);
+  chargesRow(g,pL+10,pR-10,yT+10,'+',col.neg);chargesRow(g,pL+10,pR-10,yB-10,'−',col.pos);
+  fieldRow(g,pL+20,pR-20,yT+22,yB-22,col.field,Math.min(.9,.25+.5*(modeV?P.V/1000:P.Q/1e-7)));
+  txt(g,'нерухома обкладка',pL,yB+th+15,col.muted,'left',11.5);txt(g,'рухома обкладка',pL,yT-th-30,col.muted,'left',11.5);
+  battery(g,pR+Math.min(60,mR*0.5),yT-th/2,yB+th/2,modeV?'V = '+P.V+' В':'Q = '+fmt(P.Q*1e9,0)+' нКл',modeV,pR);
+  // розмір x
+  const ax=pR+10;arrow(g,ax,yB,ax,yT,col.muted,1.2);arrow(g,ax,yT,ax,yB,col.muted,1.2);
+  txt(g,'x',ax-5,(yB+yT)/2,col.muted,'right',12.5,'middle');
+  // віртуальне зміщення: пунктирна обкладка на x+dx
+  const yG=yB-xpx(x+P.dx);
+  g.setLineDash([5,4]);g.strokeStyle=col.gold;g.lineWidth=1.6;g.strokeRect(pL,yG-th,pR-pL,th);g.setLineDash([]);
+  arrow(g,pL+60,yT-th,pL+60,yG-th,col.gold,1.6);txt(g,'dx',pL+68,(yT+yG)/2-th,col.gold,'left',12.5,'middle');
+  // сила: стрілки на верхній обкладці вниз
+  const Fm=FA(x)*1e3,Fmax=(modeV?EPS0*S_A*P.V*P.V/(2*xmin*xmin):P.Q*P.Q/(2*EPS0*S_A))*1e3;
+  const len=cl(12+Fm/Math.max(Fmax,1e-9)*60,12,72);
+  for(const fx of[pL+(pR-pL)*.35,pL+(pR-pL)*.65])arrow(g,fx,yT-th-len-4,fx,yT-th-2,col.force,3.2);
+  txt(g,'F = '+fmt(Fm,Fm<10?2:1)+' мН',pL+(pR-pL)/2,yT-th-len-10,col.force,'center',13);
+  txt(g,'x = '+fmt(x*1e3,2)+' мм',pR-8,yB+th+15,col.muted,'right',12);
+}
+function plotA(){
+  const q=pq,mx=46,mr=12,mt=10,mb=28,w=PW,h=PH;
+  q.setTransform(dpr,0,0,dpr,0,0);q.clearRect(0,0,w,h);q.fillStyle=col.panel;q.fillRect(0,0,w,h);
+  const x0=0.5e-3,x1=4e-3,X=xv=>mx+(xv-x0)/(x1-x0)*(w-mx-mr);
+  const FV=xv=>EPS0*S_A*P.V*P.V/(2*xv*xv)*1e3,FQ=P.Q*P.Q/(2*EPS0*S_A)*1e3;
+  const ymax=Math.max(FV(x0),FQ,1e-3)*1.08,Y=v=>h-mb-cl(v,0,ymax)/ymax*(h-mt-mb);
+  q.strokeStyle=col.line;q.lineWidth=1;q.strokeRect(mx,mt,w-mx-mr,h-mt-mb);
+  const draw=(f,color,dash)=>{q.setLineDash(dash?[5,4]:[]);q.strokeStyle=color;q.lineWidth=dash?1.4:2.2;q.beginPath();
+    for(let i=0;i<=100;i++){const xv=x0+(x1-x0)*i/100;i?q.lineTo(X(xv),Y(f(xv))):q.moveTo(X(xv),Y(f(xv)))}q.stroke();q.setLineDash([])};
+  draw(FV,col.neg,!modeV);draw(()=>FQ,col.pos,modeV);
+  const xm=X(P.gap);q.strokeStyle=col.muted;q.setLineDash([3,3]);q.beginPath();q.moveTo(xm,mt);q.lineTo(xm,h-mb);q.stroke();q.setLineDash([]);
+  q.fillStyle=modeV?col.neg:col.pos;q.beginPath();q.arc(xm,Y(FA(P.gap)*1e3),4.5,0,6.283);q.fill();
+  txt(q,'V = const: F ∝ 1/x²',mx+6,mt+14,col.neg,'left',11.5);txt(q,'Q = const: F не залежить від x',mx+6,mt+28,col.pos,'left',11.5);
+  q.fillStyle=col.muted;q.font='11.5px system-ui,sans-serif';q.textAlign='right';q.textBaseline='middle';
+  q.fillText(nice(ymax),mx-4,mt);q.fillText('0',mx-4,h-mb);
+  q.textAlign='center';q.textBaseline='top';for(const xv of[0.5,1,2,3,4])q.fillText(String(xv),X(xv*1e-3),h-mb+4);
+  q.fillText('x, мм',mx+(w-mx-mr)/2,h-mb+15);
+}
+function roA(){
+  const x=P.gap,dx=P.dx,F=FA(x),V=modeV?P.V:P.Q*x/(EPS0*S_A),Q=modeV?EPS0*S_A*P.V/x:P.Q,E=V/x;
+  const W0=WA(x,V,Q),dWq=P.Q*P.Q*dx/(2*EPS0*S_A),dWv=0.5*EPS0*S_A*P.V*P.V*(1/(x+dx)-1/x);
+  let h='<b>E = V/x</b> = '+fmt(E/1e6,2)+' МВ/м · V = '+fmt(V,0)+' В · Q = '+fmt(Q*1e9,1)+' нКл<br><b>W</b> = '+fmt(W0*1e6,1)+' мкДж · <b>F = ε₀E²S/2</b> = '+fmt(F*1e3,2)+' мН (притягання)';
+  if(modeV){const dW=dWv,A=2*dW;h+='<br>Віртуальне зміщення dx = '+fmt(dx*1e3,2)+' мм при V = const:<br>dW = '+fmt(dW*1e9,1)+' нДж (енергія <b>зменшується</b>); робота джерела A<sub>дж</sub> = V²·dC = 2dW = '+fmt(A*1e9,1)+' нДж (&lt; 0: джерело поглинає енергію)<br>F<sub>x</sub> = +dW/dx = '+fmt(dW/dx*1e3,2)+' мН (знак «−»: сила до зменшення x; чим менше dx, тим ближче до '+fmt(-F*1e3,2)+')'}
+  else{const dW=dWq;h+='<br>Віртуальне зміщення dx = '+fmt(dx*1e3,2)+' мм при Q = const:<br>dW = '+fmt(dW*1e9,1)+' нДж (енергія <b>зростає</b>: поле розтягується), джерела нема<br>F<sub>x</sub> = −dW/dx = '+fmt(-dW/dx*1e3,2)+' мН (знак «−»: до зменшення x)'}
+  ro.innerHTML=h;
+  info.innerHTML=modeV?'<b>V = const.</b> Сила F = ε₀V²S/(2x²) швидко зростає при зближенні обкладок. Джерело виконує роботу 2dW (удвічі більшу за зміну енергії поля), і F<sub>x</sub> = +dW/dx.':'<b>Q = const.</b> Поле між обкладками E = Q/(ε₀S) не залежить від x, тому й F = Q²/(2ε₀S) не залежить від відстані: «подвоєна» напруга при розведенні (V = Qx/ε₀S) лише збільшує енергію W на F·dx.'
+}
+
+/* ============ СЦЕНА 2: втягування пластини ============ */
+function dipole(c,x,y,len,ang,alpha){ // p від «−» до «+»; ang — кут від напрямку «вниз» у бік +x
+  const ux=Math.sin(ang),uy=Math.cos(ang),hx=ux*len/2,hy=uy*len/2;
+  c.globalAlpha=alpha;c.strokeStyle=col.muted;c.lineWidth=1.2;c.beginPath();c.moveTo(x-hx,y-hy);c.lineTo(x+hx,y+hy);c.stroke();
+  c.fillStyle=col.pos;c.beginPath();c.arc(x-hx,y-hy,2.6,0,6.283);c.fill();           // «−»
+  c.fillStyle=col.neg;c.beginPath();c.arc(x+hx,y+hy,2.6,0,6.283);c.fill();c.globalAlpha=1}   // «+»
+// чисельне поле: ∇·(ε∇φ)=0 на сітці (SOR), обкладки φ=±1, межа полотна φ=0
+const SB={key:'',h:4,nx:0,ny:0,phi:null,ea:null,fix:null,Ex:null,Ey:null,settle:0,sR:-1,eps:-1,lines:null,E0:1};
+function geomB(){
+  const mL=12,mR=Math.min(130,W*0.2),PWd=(W-mR-mL-8)/2,Ls=PWd,PL=mL+Ls+8,PR=PL+PWd;
+  const gap=Math.min(130,H*0.34),gT=H*0.44-gap/2,gB=gT+gap,th=14;
+  const slabR=PL+P.x/Lp*PWd,slabL=slabR-Ls;
+  return{mL,mR,PWd,Ls,PL,PR,gap,gT,gB,th,slabR,slabL}}
+function solveB(G){
+  const h=Math.max(3,Math.round(Math.sqrt(W*H/16000))),key=W+'|'+H+'|'+h;
+  if(SB.key!==key){
+    const nx=Math.ceil(W/h)+2,ny=Math.ceil(H/h)+2,n=nx*ny;
+    Object.assign(SB,{key,h,nx,ny,phi:new Float32Array(n),ea:new Float32Array(n),fix:new Uint8Array(n),Ex:new Float32Array(n),Ey:new Float32Array(n),settle:900,lines:null});
+    for(let jj=0;jj<ny;jj++)for(let ii=0;ii<nx;ii++){const id=jj*nx+ii,x=ii*h,y=jj*h;let f=0,v=0;
+      if(ii===0||jj===0||ii===nx-1||jj===ny-1)f=1;
+      else if(x>=G.PL&&x<=G.PR&&y>=G.gT-G.th&&y<=G.gT){f=1;v=1}
+      else if(x>=G.PL&&x<=G.PR&&y>=G.gB&&y<=G.gB+G.th){f=1;v=-1}
+      else if(x>=G.PL&&x<=G.PR&&y>G.gT&&y<G.gB)v=1-2*(y-G.gT)/(G.gB-G.gT);
+      SB.fix[id]=f;SB.phi[id]=v}
+    const jT=Math.floor(G.gT/h),jB=Math.ceil(G.gB/h);SB.E0=2/((jB-jT)*h)}
+  const {nx,ny,phi,ea,fix}=SB;
+  if(P.eps!==SB.eps||Math.abs(G.slabR-SB.sR)>3*h)SB.settle=900;else if(G.slabR!==SB.sR)SB.settle=Math.max(SB.settle,80);
+  SB.eps=P.eps;SB.sR=G.slabR;
+  for(let jj=0;jj<ny;jj++){const y=jj*h,inY=y>G.gT&&y<G.gB;
+    for(let ii=0;ii<nx;ii++){const x=ii*h;ea[jj*nx+ii]=inY&&x>=G.slabL&&x<=G.slabR?P.eps:1}}
+  const n=Math.min(SB.settle,150);SB.settle-=n;
+  if(n>0){const w=1.92;
+    for(let it=0;it<n;it++)for(let jj=1;jj<ny-1;jj++){let id=jj*nx;
+      for(let ii=1;ii<nx-1;ii++){id++;if(fix[id])continue;const e=ea[id];
+        const iE=id+1,iW=id-1,iN=id-nx,iS=id+nx;
+        const a=fix[iE]?e:2*e*ea[iE]/(e+ea[iE]),b=fix[iW]?e:2*e*ea[iW]/(e+ea[iW]),c=fix[iN]?e:2*e*ea[iN]/(e+ea[iN]),d=fix[iS]?e:2*e*ea[iS]/(e+ea[iS]);
+        phi[id]+=w*((a*phi[iE]+b*phi[iW]+c*phi[iN]+d*phi[iS])/(a+b+c+d)-phi[id])}}
+    const {Ex,Ey}=SB;
+    for(let jj=1;jj<ny-1;jj++)for(let ii=1;ii<nx-1;ii++){const id=jj*nx+ii;
+      if(fix[id]){Ex[id]=0;Ey[id]=0;continue}
+      Ex[id]=-(phi[id+1]-phi[id-1])/(2*h);Ey[id]=-(phi[id+nx]-phi[id-nx])/(2*h)}
+    SB.lines=null}
+}
+function EB(x,y){const {h,nx,ny,Ex,Ey}=SB;let fx=x/h,fy=y/h,i=Math.floor(fx),j=Math.floor(fy);
+  i=Math.max(0,Math.min(nx-2,i));j=Math.max(0,Math.min(ny-2,j));const t=fx-i,u=fy-j,id=j*nx+i;
+  const ex=(1-t)*(1-u)*Ex[id]+t*(1-u)*Ex[id+1]+(1-t)*u*Ex[id+nx]+t*u*Ex[id+nx+1];
+  const ey=(1-t)*(1-u)*Ey[id]+t*(1-u)*Ey[id+1]+(1-t)*u*Ey[id+nx]+t*u*Ey[id+nx+1];
+  return[ex,ey]}
+function inPlateB(G,x,y){const m=0.6*SB.h;
+  if(x<G.PL-m||x>G.PR+m)return 0;
+  if(y>=G.gT-G.th-m&&y<=G.gT+m)return'T';
+  if(y>=G.gB-m&&y<=G.gB+G.th+m)return'B';return 0}
+function traceB(G,x,y,dir){const pts=[[x,y]],ds=1.5,E0=SB.E0;let end='X';
+  for(let k=0;k<1500;k++){
+    let [ex,ey]=EB(x,y),m=Math.hypot(ex,ey);if(m<1e-3*E0){end='0';break}
+    const xm=x+dir*ex/m*ds/2,ym=y+dir*ey/m*ds/2;[ex,ey]=EB(xm,ym);m=Math.hypot(ex,ey);if(m<1e-3*E0){end='0';break}
+    x+=dir*ex/m*ds;y+=dir*ey/m*ds;pts.push([x,y]);
+    if(x<1||y<1||x>W-1||y>H-1){end='X';break}
+    const pl=inPlateB(G,x,y);if(pl){end=pl;break}}
+  return{pts,end}}
+function seedsB(G){
+  const o=1.5*SB.h,E0=SB.E0,dF=E0*cl(G.PWd/24,9,18),lines=[];
+  // обхід периметра: нижня грань, правий торець, верхня грань, лівий торець
+  const per=(x0,y0,x1,y1)=>[[x0,y1,x1,y1,0,1],[x1,y1,x1,y0,1,0],[x1,y0,x0,y0,0,-1],[x0,y0,x0,y1,-1,0]];
+  const walk=(segs,skip,cb)=>{let acc=dF/2;
+    segs.forEach((sg,si)=>{const[xa,ya,xb,yb,nxv,nyv]=sg,L=Math.hypot(xb-xa,yb-ya);
+      for(let t=0;t<L;t+=1){const x=xa+(xb-xa)*t/L+nxv*o,y=ya+(yb-ya)*t/L+nyv*o;
+        if(si===skip)continue;
+        const[ex,ey]=EB(x,y);acc+=Math.abs(ex*nxv+ey*nyv);if(acc>=dF){acc-=dF;cb(x,y)}}})};
+  walk(per(G.PL,G.gT-G.th,G.PR,G.gT),-1,(x,y)=>lines.push(traceB(G,x,y,1).pts));
+  walk(per(G.PL,G.gB,G.PR,G.gB+G.th),2,(x,y)=>{const r=traceB(G,x,y,-1);if(r.end!=='T')lines.push(r.pts.reverse())});
+  SB.lines=lines}
+function sceneB(){
+  const G=geomB(),{mR,PWd,Ls,PL,PR,gap,gT,gB,th,slabR,slabL}=G,eps=P.eps;
+  solveB(G);if(!SB.lines)seedsB(G);const E0=SB.E0;
+  // режим
+  const lab=modeV?'V = const · батарея приєднана':'Q = const · джерело від\'єднано';
+  g.font='bold 12.5px system-ui,sans-serif';const bw=g.measureText(lab).width+18;
+  g.fillStyle=col.ink;g.globalAlpha=.9;g.fillRect(10,8,bw,24);g.globalAlpha=1;txt(g,lab,19,25,col.panel,'left',12.5);
+  // жорстка діелектрична пластина
+  g.fillStyle=col.dielf;g.fillRect(slabL,gT,Ls,gap);g.strokeStyle=col.diel;g.lineWidth=2;g.strokeRect(slabL,gT,Ls,gap);
+  // силові лінії E (густина ∝ |E|)
+  g.strokeStyle=col.field;g.fillStyle=col.field;g.lineWidth=1.1;g.globalAlpha=.7;
+  for(const L of SB.lines){if(L.length<2)continue;g.beginPath();g.moveTo(L[0][0],L[0][1]);for(let k=1;k<L.length;k++)g.lineTo(L[k][0],L[k][1]);g.stroke();
+    if(L.length>10){const m=L.length>>1,a=L[m-2],b=L[Math.min(L.length-1,m+2)],an=Math.atan2(b[1]-a[1],b[0]-a[0]),q=4.5,[cx,cy]=L[m];
+      g.beginPath();g.moveTo(cx+q*Math.cos(an),cy+q*Math.sin(an));g.lineTo(cx-q*Math.cos(an-0.5),cy-q*Math.sin(an-0.5));g.lineTo(cx-q*Math.cos(an+0.5),cy-q*Math.sin(an+0.5));g.fill()}}
+  g.globalAlpha=1;
+  // диполі пластини вздовж локального E (біля краю нахилені протилежно над і під середньою площиною)
+  const Vn=modeV?P.V:P.Q/Cx(P.x),es=cl(Vn/500,0.35,1.4);
+  const sp=cl(Ls/14,16,22),nr=Math.max(3,Math.round(gap/24)),dyr=gap/nr,l0=Math.min(0.62*dyr,0.8*sp)*(0.45+0.55*(1-1/eps));
+  for(let x=slabL+sp/2;x<slabR;x+=sp){if(x<4)continue;
+    for(let r=0;r<nr;r++){const y=gT+(r+.5)*dyr,[ex,ey]=EB(x,y),m=Math.hypot(ex,ey)/E0;if(m<0.06)continue;
+      dipole(g,x,y,l0*es*Math.pow(Math.min(1,m),0.7),Math.atan2(ex,ey),Math.min(1,0.35+m))}}
+  // картина сили
+  if(fpic==='kelvin'){
+    const smp=[];let gm=0;const hh=SB.h,E2=(x,y)=>{const[a,b]=EB(x,y);return a*a+b*b};
+    const yk=gT+gap/2;
+    for(let x=slabL+sp*0.75;x<=slabR;x+=sp*1.5){if(x<Math.max(slabL,0)+hh+1||x>slabR-hh-1)continue;
+      const gx=(E2(x+hh,yk)-E2(x-hh,yk))/(2*hh),gy=(E2(x,yk+hh)-E2(x,yk-hh))/(2*hh),m=Math.hypot(gx,gy);smp.push([x,yk,gx,gy,m]);gm=Math.max(gm,m)}
+    smp.sort((a,b)=>b[4]-a[4]);
+    for(const[x,y,gx,gy,m]of smp.slice(0,5)){if(m<0.08*gm)continue;const l=cl(30*Math.sqrt(m/gm),8,30);
+      arrow(g,x-gx/m*l/2,y-gy/m*l/2,x+gx/m*l/2,y+gy/m*l/2,col.force,2)}
+    // E та його дотична складова на нижній поверхні пластини біля краю обкладок
+    const ex0=PL-0.35*gap,ey0=gB-6;
+    if(ex0>slabL+4&&ex0<slabR){const[ax,ay]=EB(ex0,ey0),m=Math.hypot(ax,ay);if(m>0.05*E0){const k=40/m;
+      arrow(g,ex0,ey0,ex0+ax*k,ey0+ay*k,col.neg,2.2);arrow(g,ex0,ey0,ex0+ax*k,ey0,col.pos,2.2);
+      txtBg(g,'E',ex0+ax*k+4,ey0+ay*k+4,col.neg,'left',13);txtBg(g,'Eτ',ex0+ax*k+4,ey0-6,col.pos,'left',13)}}
+    {const t=W<600?'(p·∇)E → до сильнішого поля':'сила на диполі (p·∇)E → до сильнішого поля';g.font='11.5px system-ui,sans-serif';const w=g.measureText(t).width;
+      txtBg(g,t,cl(PL-w/2,8,PR-w-4),gB+th+34,col.force,'left',11.5)}
+  }else if(slabR>PL+3*SB.h){
+    for(let r=0;r<nr;r++){const y=gT+(r+.5)*dyr,[ex,ey]=EB(slabR-2*SB.h,y),e2=(ex*ex+ey*ey)/(E0*E0);
+      arrow(g,slabR,y,slabR+cl(8+24*Math.min(1,(eps-1)/9)*Math.min(e2,1.5),6,34),y,col.force,2)}
+    {const t='тиск (ε−1)E²/8π на торець';g.font='11.5px system-ui,sans-serif';const w=g.measureText(t).width;
+      txtBg(g,t,cl(slabR-w/2,8,PR-w-4),gB+th+34,col.force,'left',11.5)}
+  }
+  // обкладки та вільні заряди (σ під пластиною в ε разів більша)
+  g.fillStyle=col.metal;g.fillRect(PL,gT-th,PWd,th);g.fillRect(PL,gB,PWd,th);
+  g.strokeStyle=col.ink;g.lineWidth=1;g.strokeRect(PL,gT-th,PWd,th);g.strokeRect(PL,gB,PWd,th);
+  const Qn=modeV?Cx(P.x)*P.V:P.Q,qun=C0*500/12,N=cl(Math.round(Qn/qun),4,36),inS=Math.max(0,slabR-PL),Wt=eps*inS+(PR-slabR),fq=cl(1.6*Wt/N/(inS>2?eps:1),8,14);
+  for(let k=0;k<N;k++){const cc=(k+.5)/N*Wt,xx=cc<eps*inS?PL+cc/eps:slabR+(cc-eps*inS);
+    txt(g,'+',xx,gT-th/2+fq*0.36,col.neg,'center',fq);txt(g,'−',xx,gB+th/2+fq*0.36,col.pos,'center',fq)}
+  if(W>=700)txtBg(g,'вільні заряди',PR-4,gT-th-6,col.neg,'right',11.5);
+  battery(g,PR+Math.min(52,mR*0.45),gT-th/2,gB+th/2,modeV?'V = '+P.V+' В':'Q = '+fmt(P.Q*1e9,1)+' нКл',modeV,PR);
+  // сумарна сила на пластину
+  const F=FB(P.x),Fm=F*1e3,Fmax=Math.max(FB(0),FB(Lp))*1e3,len=cl(14+Fm/Math.max(Fmax,1e-9)*70,14,90);
+  if(Fm>1e-4){const ya=gT-th-12,x0=Math.max(slabL+6,8),x1=Math.min(x0+len,PL-6);if(x1>x0+10){arrow(g,x0,ya,x1,ya,col.force,3.6);txtBg(g,'F = '+fmt(Fm,3)+' мН',x0,ya-9,col.force,'left',13)}
+    else{arrow(g,PL-len-6,ya,PL-6,ya,col.force,3.6);txtBg(g,'F = '+fmt(Fm,3)+' мН',Math.max(8,PL-len-6),ya-9,col.force,'left',13)}}
+  // розмір x: перекриття пластини з обкладками
+  const yd=Math.min(H-14,gB+th+82);
+  if(P.x>0.004){arrow(g,PL,yd,slabR,yd,col.gold,1.6);txtBg(g,'x = '+fmt(P.x*100,2)+' см',(PL+slabR)/2,yd-6,col.gold,'center',12.5)}
+  if(W>=700)txtBg(g,'L = '+fmt(Lp*100,0)+' см',PR,yd-6,col.muted,'right',12);
+}
+function plotB(){
+  const q=pq,mx=46,mr=44,mt=10,mb=28,w=PW,h=PH;
+  q.setTransform(dpr,0,0,dpr,0,0);q.clearRect(0,0,w,h);q.fillStyle=col.panel;q.fillRect(0,0,w,h);
+  const X=xv=>mx+xv/Lp*(w-mx-mr);
+  const C=xv=>(C0*(1+(P.eps-1)*xv/Lp))*1e12,Fv=xv=>FB(xv)*1e3;
+  const Cm=C0*1e12*P.eps*1.08,Fm=Math.max(FB(0)*1e3,FB(Lp)*1e3,1e-3)*1.12;
+  const Yc=v=>h-mb-v/Cm*(h-mt-mb),Yf=v=>h-mb-cl(v,0,Fm)/Fm*(h-mt-mb);
+  q.strokeStyle=col.line;q.lineWidth=1;q.strokeRect(mx,mt,w-mx-mr,h-mt-mb);
+  q.lineWidth=2.2;q.strokeStyle=col.pos;q.beginPath();for(let i=0;i<=100;i++){const xv=i/100*Lp;i?q.lineTo(X(xv),Yc(C(xv))):q.moveTo(X(xv),Yc(C(xv)))}q.stroke();
+  q.strokeStyle=col.force;q.beginPath();for(let i=0;i<=100;i++){const xv=i/100*Lp;i?q.lineTo(X(xv),Yf(Fv(xv))):q.moveTo(X(xv),Yf(Fv(xv)))}q.stroke();
+  const xm=X(P.x);q.strokeStyle=col.muted;q.setLineDash([3,3]);q.beginPath();q.moveTo(xm,mt);q.lineTo(xm,h-mb);q.stroke();q.setLineDash([]);
+  q.fillStyle=col.pos;q.beginPath();q.arc(xm,Yc(C(P.x)),4.5,0,6.283);q.fill();q.fillStyle=col.force;q.beginPath();q.arc(xm,Yf(Fv(P.x)),4.5,0,6.283);q.fill();
+  txt(q,'C(x), пФ (ліва вісь)',mx+6,mt+14,col.pos,'left',11.5);txt(q,'F(x), мН (права вісь)',mx+6,mt+28,col.force,'left',11.5);
+  q.fillStyle=col.muted;q.font='11.5px system-ui,sans-serif';q.textAlign='right';q.textBaseline='middle';q.fillText(nice(Cm),mx-4,mt);q.fillText('0',mx-4,h-mb);
+  q.textAlign='left';q.fillText(nice(Fm),w-mr+4,mt);q.fillText('0',w-mr+4,h-mb);
+  q.textAlign='center';q.textBaseline='top';for(const f of[0,.5,1])q.fillText(fmt(f*Lp*100,0),X(f*Lp),h-mb+4);q.fillText('x, см',mx+(w-mx-mr)/2,h-mb+15);
+}
+function roB(){
+  const C=Cx(P.x),F=FB(P.x),Vn=modeV?P.V:P.Q/C,Qn=modeV?C*P.V:P.Q,U=modeV?0.5*C*P.V*P.V:P.Q*P.Q/(2*C),E=Vn/dp;
+  ro.innerHTML='<b>ε</b> = '+fmt(P.eps,1)+' · глибина x = '+fmt(P.x*100,2)+' см ('+fmt(100*P.x/Lp,0)+' % від L)<br>'+
+   (modeV?'V = '+P.V+' В · Q = CV = '+fmt(Qn*1e9,2)+' нКл':'Q = '+fmt(P.Q*1e9,1)+' нКл · V = Q/C = '+fmt(Vn,1)+' В')+
+   '<br>C(x) = <b>'+fmt(C*1e12,1)+' пФ</b> (C₀ = '+fmt(C0*1e12,1)+' пФ) · E = '+fmt(E/1e3,0)+' кВ/м<br>W = <b>'+fmt(U*1e6,2)+' мкДж</b> · F = (ε−1)ε₀E²·wd/2 = <b>'+fmt(F*1e3,3)+' мН</b> (втягує)';
+  info.innerHTML=(modeV?'<b>V = const</b> (батарея приєднана): F = ½V²·dC/dx не залежить від x. Ємність зростає, батарея дозаряджає обкладки (число вільних зарядів росте: Q = CV), W росте, F<sub>x</sub> = +dW/dx.':'<b>Q = const</b> (джерело від\'єднано): число вільних зарядів незмінне, вони лише перерозподіляються (під пластиною густіше). C росте, V = Q/C і W = Q²/2C <b>спадають</b>, F = Q²/(2C²)·dC/dx слабшає, F<sub>x</sub> = −dW/dx.')+'<br><i>Дві картини однієї сили.</i> (1) <b>(p·∇)E на диполі:</b> у краєвому полі диполі пластини нахилені вздовж E, над і під середньою площиною протилежно; сила (P·∇)E = (ε−1)/8π·∇E² тягне їх до сильнішого поля, всередину конденсатора, вертикальні складові взаємно компенсуються. (2) <b>Тиск на торець:</b> те саме можна описати як тиск (ε−1)E²/8π на торець пластини всередині, де поле однорідне. Обидві дають F = (ε−1)E²/8π·S<sub>торця</sub> (у СІ (ε−1)ε₀E²/2·S) = ½V²·dC/dx.'
+}
+function stepB(dt){const sub=24,h=dt/sub;for(let s=0;s<sub;s++){const a=(FB(P.x)-BETA*P.vel)/M;P.vel+=a*h;P.x+=P.vel*h;
+  if(P.x>=Lp){P.x=Lp;if(P.vel>0)P.vel=0}if(P.x<=0){P.x=0;if(P.vel<0)P.vel=0}}}
+
+/* ============ СЦЕНА 3: рідина, вольтметр ============ */
+function sceneC(){
+  const cx=W*0.40,y0=H*0.70,yTop=24,kpx=(y0-yTop-6)/h0L,dpx=cl(P.dL*1e3*34,18,64),dip=34,pw=7;
+  const hq=Math.min(P.h,hCap),hp=hq*kpx;
+  // посудина та рідина
+  const vx0=cx-Math.min(W*0.33,170),vx1=cx+Math.min(W*0.33,170),vb=H-14;
+  g.fillStyle=col.liq;g.fillRect(vx0,y0,vx1-vx0,vb-y0);
+  g.strokeStyle=col.diel;g.lineWidth=1.6;g.beginPath();g.moveTo(vx0,y0-8);g.lineTo(vx0,vb);g.lineTo(vx1,vb);g.lineTo(vx1,y0-8);g.stroke();
+  g.setLineDash([4,4]);g.strokeStyle=col.diel;g.lineWidth=1;g.beginPath();g.moveTo(vx0,y0);g.lineTo(vx1,y0);g.stroke();g.setLineDash([]);
+  // підняття між обкладками
+  const xl=cx-dpx/2,xr=cx+dpx/2;
+  g.fillStyle=col.liq;g.fillRect(xl,y0-hp,dpx,hp+dip);
+  g.strokeStyle=col.diel;g.lineWidth=1.8;g.beginPath();g.moveTo(xl,y0-hp);g.lineTo(xr,y0-hp);g.stroke();
+  // поле E у зазорі (над рідиною — у повітрі, в рідині — та сама E)
+  g.globalAlpha=Math.min(.9,.15+P.U/3500);
+  for(let yy=yTop+16;yy<y0+dip-8;yy+=26)arrow(g,xl+3,yy,xr-3,yy,col.field,1.3);g.globalAlpha=1;
+  // обкладки
+  g.fillStyle=col.metal;g.fillRect(xl-pw,yTop,pw,y0+dip-yTop);g.fillRect(xr,yTop,pw,y0+dip-yTop);
+  g.strokeStyle=col.ink;g.lineWidth=1;g.strokeRect(xl-pw,yTop,pw,y0+dip-yTop);g.strokeRect(xr,yTop,pw,y0+dip-yTop);
+  txt(g,'+',xl-pw-6,yTop+12,col.neg,'right',15);txt(g,'−',xr+pw+6,yTop+12,col.pos,'left',15);
+  txt(g,'U = '+(P.U/1000).toFixed(2)+' кВ',cx,yTop-6+0,col.ink,'center',12.5);
+  // сила на меніск (вгору) і вага стовпа
+  if(hp>3){arrow(g,cx,y0-hp+hp*.5,cx,y0-hp-Math.min(34,10+hp*.2),col.force,3);txt(g,'F',cx+8,y0-hp-14,col.force,'left',13)}
+  if(hp>6){txt(g,'h = '+fmt(hq*100,2)+' см',xl-pw-10,y0-hp/2,col.gold,'right',12.5,'middle');
+    arrow(g,xl-pw-4,y0,xl-pw-4,y0-hp,col.gold,1.4);arrow(g,xl-pw-4,y0-hp,xl-pw-4,y0,col.gold,1.4)}
+  txt(g,'ε = '+fmt(P.epsL,1)+', ρ = '+P.rho,vx0+8,vb-8,col.diel,'left',12);
+  // шкала вольтметра
+  const sx=Math.min(W-70,vx1+Math.max(50,(W-vx1)*0.5)),kq=EPS0*(P.epsL-1)/(2*P.rho*GR*P.dL*P.dL);
+  g.strokeStyle=col.ink;g.lineWidth=1.4;g.beginPath();g.moveTo(sx,y0);g.lineTo(sx,y0-hCap*kpx);g.stroke();
+  g.fillStyle=col.ink;g.font='11.5px system-ui,sans-serif';g.textAlign='left';g.textBaseline='middle';
+  let lastY=1e9;
+  for(let U=0;U<=3000;U+=100){const hh=kq*U*U;if(hh>hCap)break;const yy=y0-hh*kpx;g.beginPath();g.moveTo(sx,yy);g.lineTo(sx+(U%500?5:10),yy);g.stroke();
+    if(!(U%500)&&lastY-yy>=13){g.fillText((U/1000)+'',sx+14,yy);lastY=yy}}
+  g.beginPath();g.moveTo(sx-2,y0-hp);g.lineTo(sx-14,y0-hp-6);g.lineTo(sx-14,y0-hp+6);g.closePath();g.fillStyle=col.force;g.fill();
+  g.setLineDash([2,3]);g.strokeStyle=col.force;g.lineWidth=1;g.beginPath();g.moveTo(xr+pw+2,y0-hp);g.lineTo(sx-14,y0-hp);g.stroke();g.setLineDash([]);
+  txt(g,'кВ',sx+13,y0+16,col.muted,'left',11.5);
+}
+function plotC(){
+  const q=pq,mx=46,mr=14,mt=10,mb=28,w=PW,h=PH;
+  q.setTransform(dpr,0,0,dpr,0,0);q.clearRect(0,0,w,h);q.fillStyle=col.panel;q.fillRect(0,0,w,h);
+  const Um=3000,X=u=>mx+u/Um*(w-mx-mr),kq=EPS0*(P.epsL-1)/(2*P.rho*GR*P.dL*P.dL),ym=h0L*100;
+  const Y=v=>h-mb-cl(v,0,ym)/ym*(h-mt-mb);
+  q.strokeStyle=col.line;q.lineWidth=1;q.strokeRect(mx,mt,w-mx-mr,h-mt-mb);
+  q.strokeStyle=col.force;q.lineWidth=2.2;q.beginPath();let st=false;
+  for(let i=0;i<=120;i++){const u=Um*i/120,v=kq*u*u*100;if(v>ym*1.02){break}st?q.lineTo(X(u),Y(v)):q.moveTo(X(u),Y(v));st=true}q.stroke();
+  const hc=Math.min(P.h,hCap)*100,xm=X(P.U);
+  if(P.U>0&&kq*P.U*P.U*100<=ym){q.setLineDash([4,4]);q.strokeStyle=col.muted;q.lineWidth=1.2;q.beginPath();q.moveTo(X(0),Y(0));q.lineTo(xm,Y(kq*P.U*P.U*100));q.stroke();q.setLineDash([])}
+  q.fillStyle=col.force;q.beginPath();q.arc(xm,Y(hc),4.5,0,6.283);q.fill();
+  txt(q,'h(U) = kU² — парабола (рівновага)',mx+6,mt+14,col.force,'left',11.5);txt(q,'пунктир: лінійна шкала для порівняння',mx+6,mt+28,col.muted,'left',11.5);
+  q.fillStyle=col.muted;q.font='11.5px system-ui,sans-serif';q.textAlign='right';q.textBaseline='middle';q.fillText(ym.toFixed(0),mx-4,mt);q.fillText('0',mx-4,h-mb);
+  q.textAlign='center';q.textBaseline='top';for(const u of[0,1000,2000,3000])q.fillText((u/1000)+'',X(u),h-mb+4);q.fillText('U, кВ    (h, см — вертикаль)',mx+(w-mx-mr)/2,h-mb+15);
+}
+function roC(){
+  const he=hEq(),h=Math.min(he,hCap),E=P.U/P.dL,dC=EPS0*(P.epsL-1)*lL*h/P.dL,dW=0.5*dC*P.U*P.U,A=2*dW,m=P.rho*lL*P.dL*h,pe=0.5*m*GR*h,Qh=A-dW-pe;
+  const Fe=EPS0*(P.epsL-1)*lL*P.U*P.U/(2*P.dL);
+  let w=E>3e6?'<br><b style="color:var(--neg)">E перевищує ≈3 МВ/м: у реальності пробій повітря. Модель ідеалізована; зменште U або збільште d.</b>':'';
+  ro.innerHTML='<b>Рівновага:</b> h = ε₀(ε−1)U²/(2ρg d²) = <b>'+fmt(he*100,2)+' см</b>'+(he>hCap?' (вище обкладок!)':'')+'<br>E = U/d = '+fmt(E/1e6,2)+' МВ/м · сила втягування F = ε₀(ε−1)lU²/(2d) = '+fmt(Fe*1e3,2)+' мН (стала, не залежить від h)<br>Поточне h = '+fmt(Math.min(P.h,hCap)*100,2)+' см'+w;
+  const tot=A||1,pct=v=>cl(v/tot*100,0,100);
+  $('bars').classList.remove('hidden');
+  $('bars').innerHTML='<div class="hint">Баланс енергії при рівновазі (A<sub>дж</sub> = ΔW + ½mgh + Q):</div><div class="bar"><span style="width:'+pct(dW)+'%;background:var(--pos)">ΔW</span><span style="width:'+pct(pe)+'%;background:var(--gold)">½mgh</span><span style="width:'+pct(Qh)+'%;background:var(--neg)">Q</span></div><div class="hint">A<sub>дж</sub> = 2ΔW = '+fmt(A*1e6,2)+' мкДж · ΔW = '+fmt(dW*1e6,2)+' · ½mgh = '+fmt(pe*1e6,2)+' · Q = '+fmt(Qh*1e6,2)+' мкДж (Q = ½mgh, як у задачі)</div>';
+  info.innerHTML='<b>Електростатичний вольтметр.</b> Сила втягування пропорційна U², а вага стовпа рідини — висоті, тому h = kU². Шкала <b>нерівномірна</b> (щільна внизу, розріджена вгорі), показ не залежить від полярності, а на змінній напрузі прилад показує діюче значення. Формула для U за рівнем: U = d·√(2ρg·h/(ε₀(ε−1))). Рідина не проводить струм; крайовими ефектами й капілярністю знехтувано.'
+}
+function stepC(dt){const he=Math.min(hEq(),hCap),w0=7,z=0.55,sub=20,h=dt/sub;
+  for(let s=0;s<sub;s++){const a=w0*w0*(he-P.h)-2*z*w0*P.hv;P.hv+=a*h;P.h+=P.hv*h;if(P.h<0){P.h=0;P.hv=0}}}
+
+/* ============ каркас ============ */
+const TITLES={plates:['Притягування обкладок плоского конденсатора','Нижня обкладка нерухома. Пунктир — віртуальне зміщення верхньої на dx; стрілки F — сила притягування.','F(x) для обох режимів'],
+ slab:['Втягування діелектричної пластини в конденсатор','Пластина жорстка й лише зсувається. Лінії E розраховано чисельно з ∇·(ε∇φ) = 0; диполі (− до +) орієнтовані за локальним полем. Перемикач «сила» показує дві картини: (p·∇)E на диполі в краєвому полі або тиск на торець. Вільні заряди під пластиною густіші (σ у ε разів більша).','C(x) і F(x)'],
+ liquid:['Підйом рідкого діелектрика між обкладками · електростатичний вольтметр','Рідина (ε, ρ) піднімається між вертикальними обкладками, поки F = вага стовпа. Справа — шкала вольтметра: вона нерівномірна, бо h ∝ U².','h(U): калібрування шкали']};
+function setTab(t){tab=t;paused=false;$('bPause').textContent='Пауза';
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('sel',b.dataset.t===t));
+  document.querySelectorAll('[data-tabs]').forEach(el=>{if(el.id!=='rowV'&&el.id!=='rowQ')el.classList.toggle('hidden',!el.dataset.tabs.split(' ').includes(t))});
+  applyMode();
+  const T=TITLES[t];$('sceneTitle').textContent=T[0];$('sceneCap').textContent=T[1];$('plotTitle').textContent=T[2];
+  if(t!=='liquid')$('bars').classList.add('hidden');
+  P.x=0;P.vel=0;P.h=0;P.hv=0;resize()}
+function applyMode(){modeV=!$('cmode').checked;const on=tab==='plates'||tab==='slab';
+  $('rowV').classList.toggle('hidden',!on||!modeV);$('rowQ').classList.toggle('hidden',!on||modeV)}
+function resize(){dpr=window.devicePixelRatio||1;
+  const a=cv.getBoundingClientRect();W=a.width;H=a.height;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+  const b=pv.getBoundingClientRect();PW=b.width;PH=b.height;pv.width=Math.round(PW*dpr);pv.height=Math.round(PH*dpr);readCols()}
+let last=performance.now()/1000;
+function frame(){const now=performance.now()/1000,dt=Math.min(now-last,.05);last=now;
+  if(tab==='slab'&&!paused&&!draggingX){stepB(dt);const s=$('sX');s.value=(P.x*100).toFixed(2);$('vX').textContent=fmt(P.x*100,2)+' см'}
+  if(tab==='liquid'&&!paused)stepC(dt);
+  g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);g.fillStyle=col.panel;g.fillRect(0,0,W,H);
+  if(tab==='plates'){sceneA();plotA();roA()}else if(tab==='slab'){sceneB();plotB();roB()}else{sceneC();plotC();roC()}
+  requestAnimationFrame(frame)}
+function bind(id,out,f,set){const el=$(id),o=$(out),ap=()=>{set(+el.value);o.textContent=f(+el.value)};el.addEventListener('input',ap);ap()}
+bind('sV','vV',v=>v+' В',v=>P.V=v);bind('sQ','vQ',v=>fmt(v,1)+' нКл',v=>P.Q=v*1e-9);
+bind('sGap','vGap',v=>fmt(v,2)+' мм',v=>P.gap=v*1e-3);bind('sDx','vDx',v=>fmt(v,2)+' мм',v=>P.dx=v*1e-3);
+bind('sEps','vEps',v=>fmt(v,1),v=>P.eps=v);bind('sX','vX',v=>fmt(v,2)+' см',v=>{P.x=cl(v/100,0,Lp);P.vel=0});
+bind('sU','vU',v=>fmt(v/1000,2)+' кВ',v=>P.U=v);bind('sEpsL','vEpsL',v=>fmt(v,1),v=>P.epsL=v);
+bind('sRho','vRho',v=>v+' кг/м³',v=>P.rho=v);bind('sD','vD',v=>fmt(v,2)+' мм',v=>P.dL=v*1e-3);
+$('sX').addEventListener('pointerdown',()=>draggingX=true);addEventListener('pointerup',()=>draggingX=false);addEventListener('pointercancel',()=>draggingX=false);
+$('cmode').addEventListener('change',applyMode);
+$('fpic').addEventListener('change',e=>fpic=e.target.value);
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
+const bP=$('bPause');bP.onclick=()=>{paused=!paused;bP.textContent=paused?'Продовжити':'Пауза'};
+$('bGo').onclick=()=>{P.x=0;P.vel=0;paused=false;bP.textContent='Пауза'};
+$('bReset').onclick=()=>{P.x=0;P.vel=0;P.h=0;P.hv=0};
+document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();bP.click()}});
+addEventListener('resize',resize);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',readCols);
+new MutationObserver(readCols).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+if(innerWidth<=700)$('desc').removeAttribute('open');
+setTab('plates');requestAnimationFrame(frame);
+</script>
+</body>
+</html>

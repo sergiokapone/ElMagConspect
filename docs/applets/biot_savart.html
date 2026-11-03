@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Магнітне поле струмів: закон Біо–Савара</title>
+<style>
+:root{--ink:#1d2327;--muted:#5b6670;--line:#c9d0d6;--bg:#f5f6f7;--panel:#fff;--pos:#1f5fd6;--neg:#d62728;--field:#1b8a3c;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;--field:#4fd17a;color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;--field:#4fd17a;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+#wrap{position:relative;width:100%;height:100%}
+canvas#c{display:block;width:100%;height:100%;cursor:crosshair;touch-action:none}
+#panel{position:absolute;top:10px;left:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;max-width:340px;max-height:calc(100% - 20px);overflow:auto;
+  backdrop-filter:blur(4px);box-shadow:0 4px 18px rgba(0,0,0,.12);z-index:3}
+h1{font-size:18px;margin:0 0 4px;font-weight:600;line-height:1.25}
+p.lead{margin:0 0 10px;color:var(--muted);font-size:12.5px;line-height:1.45}
+button{font:inherit;font-size:13px;padding:4px 9px;border:1px solid #8b97a1;background:transparent;border-radius:5px;
+  cursor:pointer;color:var(--ink);margin:2px 3px 2px 0}
+button:hover{filter:brightness(.96)}
+button:focus-visible{outline:2px solid #1f6feb;outline-offset:2px}
+button.sel{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+label.hint{font-size:12.5px;color:var(--muted);display:inline-flex;align-items:center;gap:3px}
+input[type=range]{width:108px;vertical-align:middle}
+input[type=checkbox]{vertical-align:middle}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;margin:5px 0}
+.row .lbl{font-size:12.5px;color:var(--muted)}
+#info{margin-top:8px;font-size:12.5px;line-height:1.5;color:var(--muted)}
+#graph{position:absolute;bottom:12px;left:12px;width:300px;height:180px;border:1px solid var(--line);
+  border-radius:6px;background:var(--panel);z-index:2}
+#hint{position:absolute;bottom:12px;right:12px;font-size:12px;opacity:.72;color:var(--muted);
+  text-align:right;max-width:360px;z-index:1;pointer-events:none}
+details summary{cursor:pointer;color:var(--muted);font-size:12.5px;margin-bottom:4px}
+@media (max-width:700px){
+  html,body{overflow:auto;height:auto}
+  #wrap{display:flex;flex-direction:column;height:auto;min-height:100%}
+  #panel{position:static;max-width:none;max-height:none;margin:8px;box-shadow:none;order:1}
+  canvas#c{height:62vh;min-height:300px;order:2}
+  #graph{position:static;width:300px;height:180px;margin:8px auto;order:3}
+  #hint{position:static;max-width:none;text-align:left;margin:0 12px 12px;order:4;opacity:.85}
+}
+</style>
+<script src="assets/theme.js"></script>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c"></canvas>
+
+  <div id="panel">
+    <h1>Магнітне поле струмів: закон Біо–Савара</h1>
+    <details id="desc" open><summary>Опис моделі</summary><p class="lead">Закон Біо–Савара: d<b>B</b> = (μ₀/4π)·I·(dℓ × r̂)/r², μ₀ = 4π·10⁻⁷ Тл·м/А.
+    Поле струму обчислюється чисельно як сума полів малих відрізків dℓ провідника.
+    Довгий прямий провід: B = μ₀I/(2πr), концентричні кола (правило свердлика).
+    Виток на осі: B(z) = μ₀I·R²/(2(R²+z²)<sup>3/2</sup>). Соленоїд: усередині B ≈ μ₀·n·I.
+    Два проводи: поле — векторна сума B₁ + B₂. Проводи перпендикулярні до площини рисунка: ⊙ — струм до глядача, ⊗ — від глядача.</p></details></p>
+
+    <div class="controls">
+      <div class="row">
+        <span class="lbl">Геометрія:</span>
+        <button class="gb sel" data-g="a">a) провід</button>
+        <button class="gb" data-g="b">b) виток</button>
+        <button class="gb" data-g="c">c) соленоїд</button>
+        <button class="gb" data-g="d">d) два проводи</button>
+      </div>
+
+      <label class="hint">Струм I
+        <input type="range" id="sI" min="0.2" max="20" step="0.1" value="5"> <span id="vI"></span>
+      </label>
+
+      <div class="row">
+        <button id="dir1"></button>
+        <button id="dir2" style="display:none"></button>
+      </div>
+
+      <div class="row">
+        <label class="hint"><input type="checkbox" id="cbLines" checked> силові лінії</label>
+        <label class="hint"><input type="checkbox" id="cbGraph" checked> графік |B|</label>
+        <label class="hint"><input type="checkbox" id="cbCompass" checked> компас</label>
+      </div>
+
+      <div class="row"><button id="reset">Скинути</button></div>
+    </div>
+    <p id="info"></p>
+  </div>
+
+  <canvas id="graph" aria-label="Графік |B| вздовж обраної лінії"></canvas>
+  <div id="hint">Рух миші — зонд: стрілка показує вектор <b>B</b>, поруч — компас і |B|.
+  Напрям силових ліній — за стрілками (правило свердлика). Графік |B| — внизу зліва.</div>
+</div>
+
+<script>
+"use strict";
+const MU0_4PI = 1e-7, MU0 = 4 * Math.PI * 1e-7;
+
+/* --- фізичні розміри (СІ, метри) --- */
+const LOOP_R = 0.045;      // радіус витка
+const SOL_A  = 0.085;      // півдовжина соленоїда
+const SOL_R  = 0.032;      // радіус соленоїда
+const SOL_N  = 20;         // кількість витків
+const D12    = 0.07;       // відстань між двома проводами
+
+/* --- параметри інтегрування --- */
+const STEP = 2.5;          // крок інтегрування лінії, px
+const MAXSTEPS = 2600;
+const MINCLOSE = 30;
+const SOFT2 = 2.5e-7;      // (0.5 мм)^2 — пом'якшення сингулярності
+const WR = 7;              // візуальний радіус провідника, px
+
+/* --- стан --- */
+let geom = 'a';
+let cur = 5.0;             // струм, А
+let dirs = { a:1, b:1, c:1, d1:1, d2:1 };
+let showLines = true, showGraph = true, showCompass = true;
+
+let segs = [];             // плоский масив: [px,py,pz, dx,dy,dz, I], ...
+let lines = [];            // силові лінії (полілінії в px)
+let graphPts = [], graphMeta = {};
+
+let W = 0, H = 0, SCALE = 1, dpr = 1;
+let mouse = { x:-1, y:-1, inside:false };
+let dirty = true, lastKey = '';
+
+/* --- DOM --- */
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+const graphBox = document.getElementById('graph');
+const gc = graphBox.getContext('2d');
+const G_W = 300, G_H = 180;
+
+const sI = document.getElementById('sI');
+const vI = document.getElementById('vI');
+const dir1 = document.getElementById('dir1');
+const dir2 = document.getElementById('dir2');
+const cbLines = document.getElementById('cbLines');
+const cbGraph = document.getElementById('cbGraph');
+const cbCompass = document.getElementById('cbCompass');
+const info = document.getElementById('info');
+
+/* --- кольори з CSS-змінних --- */
+const col = {};
+function readCols() {
+  const s = getComputedStyle(document.documentElement);
+  for (const n of ['ink','muted','line','panel','pos','neg','field','bg']) col[n] = s.getPropertyValue('--' + n).trim();
+}
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readCols);
+new MutationObserver(readCols).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+
+/* ---------- побудова відрізків dℓ (числовий Біо–Савара) ---------- */
+function wireZ(cx, cy, I) {
+  // довгий прямий провід уздовж z; геометричне (нерівномірне) розбиття, густе біля z=0
+  const L = 0.6, h0 = 0.0003, q = 1.16;
+  for (let s = -1; s <= 1; s += 2) {
+    let z = 0, h = h0;
+    for (let k = 0; k < 140; k++) {
+      const zc = s * (z + h / 2);
+      segs.push(cx, cy, zc, 0, 0, h, I);   // dℓ завжди +z, напрям задає знак I
+      z += h; h *= q;
+      if (z > L) break;
+    }
+  }
+}
+
+function loopSeg(cx, cy, cz, R, I) {
+  // круговий виток у площині yz (вісь = x)
+  const N = 72, dth = 2 * Math.PI / N;
+  for (let i = 0; i < N; i++) {
+    const th = (i + 0.5) * dth;
+    const c = Math.cos(th), s = Math.sin(th);
+    segs.push(cx, cy + R * c, cz + R * s, 0, -R * s * dth, R * c * dth, I);
+  }
+}
+
+function buildSegments() {
+  segs = [];
+  const I = cur;
+  if (geom === 'a') {
+    wireZ(0, 0, dirs.a * I);
+  } else if (geom === 'b') {
+    loopSeg(0, 0, 0, LOOP_R, dirs.b * I);
+  } else if (geom === 'c') {
+    for (let i = 0; i < SOL_N; i++) {
+      const xi = -SOL_A + (i + 0.5) * (2 * SOL_A / SOL_N);
+      loopSeg(xi, 0, 0, SOL_R, dirs.c * I);
+    }
+  } else if (geom === 'd') {
+    wireZ(-D12 / 2, 0, dirs.d1 * I);
+    wireZ( D12 / 2, 0, dirs.d2 * I);
+  }
+}
+
+/* --- поле в точці (px, py у метрах фізичних координат екрана; спостереження на z=0) --- */
+function fieldAt(px, py) {
+  let bx = 0, by = 0, bz = 0;
+  for (let i = 0; i < segs.length; i += 7) {
+    const sx = segs[i], sy = segs[i+1], sz = segs[i+2];
+    const dx = segs[i+3], dy = segs[i+4], dz = segs[i+5];
+    const I  = segs[i+6];
+    const rx = px - sx, ry = py - sy, rz = -sz;
+    const r2 = rx*rx + ry*ry + rz*rz + SOFT2;
+    const r3 = r2 * Math.sqrt(r2);
+    const f = MU0_4PI * I / r3;
+    bx += f * (dy*rz - dz*ry);
+    by += f * (dz*rx - dx*rz);
+    bz += f * (dx*ry - dy*rx);
+  }
+  return [bx, by, bz];
+}
+
+/* ---------- координати ---------- */
+const sx2m = x => (x - W/2) / SCALE;
+const sy2m = y => (H/2 - y) / SCALE;   // фізичне y вгору: система (x,y,z) права, z — до глядача
+const mx2s = x => x * SCALE + W/2;
+const my2s = y => H/2 - y * SCALE;
+
+/* точки провідників (у метрах фізичних координат екрана) */
+function conductorPts() {
+  if (geom === 'a') return [[0, 0]];
+  if (geom === 'b') return [[0, -LOOP_R], [0, LOOP_R]];
+  if (geom === 'c') {
+    const p = [];
+    for (let i = 0; i < SOL_N; i++) {
+      const xi = -SOL_A + (i + 0.5) * (2 * SOL_A / SOL_N);
+      p.push([xi, -SOL_R], [xi, SOL_R]);
+    }
+    return p;
+  }
+  if (geom === 'd') return [[-D12/2, 0], [D12/2, 0]];
+  return [];
+}
+
+/* +1 — струм до глядача (⊙), −1 — від глядача (⊗) */
+function wireOut(i) {
+  if (geom === 'a') return dirs.a;
+  if (geom === 'b') return i === 1 ? dirs.b : -dirs.b;      // 1 = верхній
+  if (geom === 'c') return (i % 2 === 1) ? dirs.c : -dirs.c; // непарний = верхній
+  if (geom === 'd') return i === 0 ? dirs.d1 : dirs.d2;
+  return 1;
+}
+
+/* ---------- інтегрування силових ліній ---------- */
+function dirAt(x, y) {                          // одиничний вектор B в екранних координатах (y вниз)
+  const [bx, by] = fieldAt(sx2m(x), sy2m(y));
+  const m = Math.hypot(bx, by);
+  return m < 1e-8 ? null : [bx / m, -by / m];
+}
+
+function trace(x, y, s) {                         // RK4: Ейлер розкручує кола в спіралі
+  const pts = [[x, y]];
+  const x0 = x, y0 = y, h = s * STEP;
+  for (let i = 0; i < MAXSTEPS; i++) {
+    const k1 = dirAt(x, y); if (!k1) break;
+    const k2 = dirAt(x + h/2 * k1[0], y + h/2 * k1[1]); if (!k2) break;
+    const k3 = dirAt(x + h/2 * k2[0], y + h/2 * k2[1]); if (!k3) break;
+    const k4 = dirAt(x + h * k3[0], y + h * k3[1]); if (!k4) break;
+    x += h / 6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+    y += h / 6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+    pts.push([x, y]);
+    if (i > MINCLOSE && Math.hypot(x - x0, y - y0) < STEP * 1.5) {
+      pts.push([x0, y0]);
+      return { pts, closed:true };
+    }
+    if (x < -0.6*W || x > 1.6*W || y < -0.6*H || y > 1.6*H) return { pts, closed:false };
+  }
+  return { pts, closed:false };
+}
+
+function seedPoints() {
+  const seeds = [];
+  if (geom === 'a') {
+    const cx = W/2, cy = H/2;
+    let r = WR + 7;
+    for (let k = 0; k < 8; k++) {
+      seeds.push([cx + r, cy]);
+      r *= 1.55;
+      if (r > 0.75 * Math.min(W, H)) break;
+    }
+  } else if (geom === 'd') {
+    const x1 = mx2s(-D12/2), x2 = mx2s(D12/2), y = H/2;
+    for (const [wx, wy] of [[x1, y], [x2, y]]) {
+      for (const r of [WR + 6, WR + 16]) seeds.push([wx + r, wy]);
+    }
+    const cxm = (x1 + x2) / 2, R = Math.abs(x2 - x1) / 2 + (WR + 5) * 2.4;
+    for (let k = 0; k < 8; k++) {
+      const a = 2 * Math.PI * k / 8 + 0.27;
+      seeds.push([cxm + R * Math.cos(a), y + R * Math.sin(a)]);
+    }
+  } else if (geom === 'b') {
+    const cx = W/2, yTop = my2s(-LOOP_R), yBot = my2s(LOOP_R);
+    for (const [wx, wy] of [[cx, yTop], [cx, yBot]]) {
+      for (const r of [WR + 6, WR + 18]) seeds.push([wx + r, wy]);
+    }
+    for (const yy of [-0.55, -0.3, 0, 0.3, 0.55]) seeds.push([cx, my2s(yy * LOOP_R)]);
+  } else if (geom === 'c') {
+    const cx = W/2;
+    for (const yy of [-0.85, -0.6, -0.3, 0, 0.3, 0.6, 0.85]) seeds.push([cx, my2s(yy * SOL_R)]);
+  }
+  return seeds;
+}
+
+function computeLines() {
+  lines = [];
+  for (const [sx, sy] of seedPoints()) {
+    const f = trace(sx, sy, +1);
+    let pts;
+    if (f.closed) {
+      pts = f.pts;
+    } else {
+      const b = trace(sx, sy, -1);
+      pts = b.pts.slice().reverse().concat(f.pts.slice(1));
+    }
+    if (pts.length >= 2) lines.push(pts);
+  }
+}
+
+/* ---------- графік |B| ---------- */
+function niceCeil(v) {
+  if (v <= 0) return 1;
+  const e = Math.floor(Math.log10(v));
+  const m = v / Math.pow(10, e);
+  const nm = m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10;
+  return nm * Math.pow(10, e);
+}
+
+function computeGraph() {
+  graphPts = [];
+  const N = 140, I = cur;
+  let x0, x1, fx, fy, fanal = null;
+  if (geom === 'a') {
+    x0 = 0.005; x1 = Math.max(0.06, 0.45 * Math.min(W, H) / SCALE);
+    fx = r => r; fy = () => 0;
+    fanal = r => MU0 * I / (2 * Math.PI * r);
+    graphMeta = { xl:'r, см', title:'B(r) — довгий провід', showAnal:true };
+  } else if (geom === 'b') {
+    x0 = -0.16; x1 = 0.16; fx = x => x; fy = () => 0;
+    fanal = x => MU0 * I * LOOP_R * LOOP_R / (2 * Math.pow(LOOP_R*LOOP_R + x*x, 1.5));
+    graphMeta = { xl:'z, см', title:'B(z) на осі витка', showAnal:true };
+  } else if (geom === 'c') {
+    x0 = -(SOL_A + 0.09); x1 = SOL_A + 0.09; fx = x => x; fy = () => 0;
+    const n = SOL_N / (2 * SOL_A);
+    fanal = x => MU0 * n * I / 2 * ((x + SOL_A)/Math.hypot(x + SOL_A, SOL_R) - (x - SOL_A)/Math.hypot(x - SOL_A, SOL_R));
+    graphMeta = { xl:'z, см', title:'B(z) вздовж осі соленоїда', showAnal:true };
+  } else {
+    x0 = -(D12/2 + 0.08); x1 = D12/2 + 0.08; fx = x => x; fy = () => 0;
+    graphMeta = { xl:'x, см', title:'|B(x)| на лінії проводів (без 6 мм біля них)', showAnal:false };
+  }
+  for (let i = 0; i < N; i++) {
+    const t = i / (N - 1), xm = x0 + (x1 - x0) * t;
+    const [bx, by] = fieldAt(fx(xm), fy(xm));
+    let B = Math.hypot(bx, by) * 1e6;             // мкТл
+    if (geom === 'd' && Math.min(Math.abs(xm - D12/2), Math.abs(xm + D12/2)) < 0.006) B = NaN;  // біля проводу B→∞
+    graphPts.push({ x: xm * 100, B, Banal: fanal ? fanal(xm) * 1e6 : null });
+  }
+  graphMeta.x0 = x0 * 100;
+  graphMeta.x1 = x1 * 100;
+}
+
+/* ---------- малювання ---------- */
+function drawArrow(x1, y1, x2, y2, color, w) {
+  const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy);
+  if (L < 2) return;
+  const ux = dx / L, uy = dy / L, hs = Math.max(6, w * 3);
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w;
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2 - ux*hs*0.6, y2 - uy*hs*0.6); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - ux*hs - uy*hs*0.5, y2 - uy*hs + ux*hs*0.5);
+  ctx.lineTo(x2 - ux*hs + uy*hs*0.5, y2 - uy*hs - ux*hs*0.5);
+  ctx.closePath(); ctx.fill();
+}
+
+function strokeWithArrows(pts) {
+  if (pts.length < 2) return;
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+  ctx.stroke();
+  // стрілки напряму вздовж лінії (кожні ~60 px)
+  let acc = 0;
+  for (let i = 1; i < pts.length - 1; i++) {
+    acc += Math.hypot(pts[i][0] - pts[i-1][0], pts[i][1] - pts[i-1][1]);
+    if (acc >= 60) {
+      const p = pts[i], q = pts[i-1];
+      const dx = p[0] - q[0], dy = p[1] - q[1], L = Math.hypot(dx, dy);
+      if (L > 0.5) {
+        const ux = dx/L, uy = dy/L;
+        const tipX = p[0] + 3*ux, tipY = p[1] + 3*uy;
+        const bx = p[0] - 4*ux, by = p[1] - 4*uy;
+        ctx.beginPath();
+        ctx.moveTo(tipX, tipY);
+        ctx.lineTo(bx - 4*uy, by + 4*ux);
+        ctx.lineTo(bx + 4*uy, by - 4*ux);
+        ctx.closePath();
+        ctx.fill();
+      }
+      acc = 0;
+    }
+  }
+}
+
+function drawFieldLines() {
+  ctx.strokeStyle = col.field; ctx.fillStyle = col.field;
+  ctx.lineWidth = 1.3; ctx.setLineDash([]);
+  for (const pts of lines) strokeWithArrows(pts);
+}
+
+function drawConductors() {
+  const pts = conductorPts();
+  ctx.lineWidth = 1.5;
+  if (geom === 'c') {                       // контур котушки
+    const xa = mx2s(-SOL_A), xb = mx2s(SOL_A), ya = my2s(-SOL_R), yb = my2s(SOL_R);
+    ctx.strokeStyle = col.muted; ctx.setLineDash([5, 4]);
+    ctx.strokeRect(xa, ya, xb - xa, yb - ya);
+    ctx.setLineDash([]);
+  }
+  if (geom === 'b') {                       // виток "з ребра" — штрихова вісь
+    const xc = W/2;
+    ctx.strokeStyle = col.muted; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(xc, my2s(-LOOP_R)); ctx.lineTo(xc, my2s(LOOP_R)); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  for (let i = 0; i < pts.length; i++) {
+    const cx = mx2s(pts[i][0]), cy = my2s(pts[i][1]);
+    const out = wireOut(i);
+    ctx.beginPath(); ctx.arc(cx, cy, WR, 0, 6.2832);
+    ctx.fillStyle = col.ink; ctx.fill();
+    ctx.strokeStyle = col.bg; ctx.fillStyle = col.bg; ctx.lineWidth = 1.8;
+    if (out > 0) {
+      ctx.beginPath(); ctx.arc(cx, cy, WR * 0.36, 0, 6.2832); ctx.fill();
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(cx - WR*0.5, cy - WR*0.5); ctx.lineTo(cx + WR*0.5, cy + WR*0.5);
+      ctx.moveTo(cx + WR*0.5, cy - WR*0.5); ctx.lineTo(cx - WR*0.5, cy + WR*0.5);
+      ctx.stroke();
+    }
+  }
+  if (geom === 'd') {
+    ctx.fillStyle = col.muted; ctx.font = '11px system-ui,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('1', mx2s(-D12/2), my2s(0) + WR + 3);
+    ctx.fillText('2', mx2s( D12/2), my2s(0) + WR + 3);
+  }
+}
+
+function fmtB(B) {
+  const uT = B * 1e6;
+  if (Math.abs(uT) >= 1000) return (B * 1e3).toFixed(2) + ' мТл';
+  if (Math.abs(uT) >= 1) return uT.toFixed(1) + ' мкТл';
+  return (uT * 1000).toFixed(1) + ' нТл';
+}
+
+function drawCompass(cx, cy, bx, by) {
+  const R = 13, m = Math.hypot(bx, by);
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832);
+  ctx.fillStyle = col.panel; ctx.fill();
+  ctx.lineWidth = 1.2; ctx.strokeStyle = col.muted; ctx.stroke();
+  ctx.strokeStyle = col.muted; ctx.lineWidth = 1;
+  for (let k = 0; k < 4; k++) {
+    const a = k * Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(cx + (R-4)*Math.cos(a), cy + (R-4)*Math.sin(a));
+    ctx.lineTo(cx + (R-1)*Math.cos(a), cy + (R-1)*Math.sin(a));
+    ctx.stroke();
+  }
+  if (m > 1e-15) {
+    const ux = bx/m, uy = by/m, nx = -uy, ny = ux;
+    ctx.beginPath(); ctx.moveTo(cx + ux*R*0.85, cy + uy*R*0.85);
+    ctx.lineTo(cx + nx*2.6, cy + ny*2.6); ctx.lineTo(cx - nx*2.6, cy - ny*2.6);
+    ctx.closePath(); ctx.fillStyle = col.neg; ctx.fill();       // "N" — вздовж +B
+    ctx.beginPath(); ctx.moveTo(cx - ux*R*0.85, cy - uy*R*0.85);
+    ctx.lineTo(cx + nx*2.6, cy + ny*2.6); ctx.lineTo(cx - nx*2.6, cy - ny*2.6);
+    ctx.closePath(); ctx.fillStyle = col.muted; ctx.fill();     // "S"
+  }
+}
+
+function drawProbe() {
+  if (!mouse.inside) return;
+  const [bx, by, bz] = fieldAt(sx2m(mouse.x), sy2m(mouse.y));
+  const Bmag = Math.hypot(bx, by, bz);
+  const m2 = Math.hypot(bx, by);
+  if (m2 > 1e-15) {
+    const L = Math.min(100, 6 + 18 * Math.log10(1 + Bmag * 1e6));
+    drawArrow(mouse.x, mouse.y, mouse.x + bx/m2 * L, mouse.y - by/m2 * L, col.field, 2);
+  }
+  if (showCompass) {
+    const ccx = Math.min(W - 30, Math.max(30, mouse.x + 34));
+    const ccy = Math.min(H - 30, Math.max(30, mouse.y - 34));
+    drawCompass(ccx, ccy, bx, -by);
+  }
+  ctx.fillStyle = col.ink; ctx.font = '12.5px system-ui,sans-serif';
+  ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  const tx = Math.min(W - 130, mouse.x + 12), ty = mouse.y + 12;
+  ctx.fillText('|B| = ' + fmtB(Bmag), tx, ty);
+  if (m2 > 1e-15) {
+    const ang = Math.atan2(by, bx) * 180 / Math.PI;
+    ctx.fillText('θ = ' + ang.toFixed(0) + '°', tx, ty + 16);
+  }
+}
+
+function fmtTick(v) {
+  if (v >= 100) return v.toFixed(0);
+  if (v >= 10) return v.toFixed(1);
+  if (v >= 1) return v.toFixed(1);
+  return v.toFixed(2);
+}
+
+function drawGraph() {
+  const g = gc, w = G_W, h = G_H;
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, w, h);
+  g.fillStyle = col.panel; g.fillRect(0, 0, w, h);
+  g.strokeStyle = col.line; g.lineWidth = 1; g.strokeRect(0.5, 0.5, w - 1, h - 1);
+  if (!graphPts.length) return;
+
+  const ml = 44, mr = 8, mt = 22, mb = 24;
+  const pw = w - ml - mr, ph = h - mt - mb;
+  let bmax = 0;
+  for (const p of graphPts) if (p.B === p.B) bmax = Math.max(bmax, p.B, p.Banal || 0);
+  bmax = niceCeil(bmax);
+  const bu = bmax >= 1000 ? 1000 : 1;
+  const ylab = bmax >= 1000 ? 'B, мТл' : 'B, мкТл';
+  const X = x => ml + (x - graphMeta.x0) / (graphMeta.x1 - graphMeta.x0) * pw;
+  const Y = b => h - mb - (b / bmax) * ph;
+
+  g.strokeStyle = col.line; g.fillStyle = col.muted; g.lineWidth = 1;
+  g.font = '10.5px system-ui,sans-serif';
+  const nY = 4;
+  g.textAlign = 'right'; g.textBaseline = 'middle';
+  for (let i = 0; i <= nY; i++) {
+    const val = bmax * i / nY, y = Y(val);
+    g.beginPath(); g.moveTo(ml, y); g.lineTo(w - mr, y); g.stroke();
+    g.fillText(fmtTick(val / bu), ml - 5, y);
+  }
+  const nX = 5;
+  g.textAlign = 'center'; g.textBaseline = 'top';
+  for (let i = 0; i <= nX; i++) {
+    const xc = graphMeta.x0 + (graphMeta.x1 - graphMeta.x0) * i / nX;
+    const x = X(xc);
+    g.beginPath(); g.moveTo(x, h - mb); g.lineTo(x, h - mb + 4); g.stroke();
+    g.fillText(xc.toFixed(1), x, h - mb + 6);
+  }
+  g.fillText(graphMeta.xl, ml + pw/2, h - 16);
+  g.save(); g.translate(12, mt + ph/2); g.rotate(-Math.PI/2);
+  g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(ylab, 0, 0); g.restore();
+
+  g.fillStyle = col.ink; g.font = '600 11.5px system-ui,sans-serif';
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText(graphMeta.title, ml + pw/2, 10);
+
+  if (graphMeta.showAnal) {
+    g.strokeStyle = col.muted; g.lineWidth = 1.3; g.setLineDash([4, 3]);
+    g.beginPath(); let started = false;
+    for (const p of graphPts) {
+      if (p.Banal == null) continue;
+      const x = X(p.x), y = Y(p.Banal);
+      started ? g.lineTo(x, y) : (g.moveTo(x, y), started = true);
+    }
+    g.stroke(); g.setLineDash([]);
+  }
+  g.strokeStyle = col.field; g.lineWidth = 2;
+  g.beginPath();
+  let pen = false;
+  for (let i = 0; i < graphPts.length; i++) {
+    if (graphPts[i].B !== graphPts[i].B) { pen = false; continue; }
+    const x = X(graphPts[i].x), y = Y(graphPts[i].B);
+    pen ? g.lineTo(x, y) : g.moveTo(x, y); pen = true;
+  }
+  g.stroke();
+
+  g.font = '10.5px system-ui,sans-serif'; g.textAlign = 'left'; g.textBaseline = 'top';
+  g.strokeStyle = col.field; g.lineWidth = 2;
+  g.beginPath(); g.moveTo(ml + 6, mt + 4); g.lineTo(ml + 22, mt + 4); g.stroke();
+  g.fillStyle = col.muted; g.fillText('чисельно (Біо–Савара)', ml + 26, mt + 1);
+  if (graphMeta.showAnal) {
+    g.strokeStyle = col.muted; g.lineWidth = 1.2; g.setLineDash([3, 2]);
+    g.beginPath(); g.moveTo(ml + 6, mt + 16); g.lineTo(ml + 22, mt + 16); g.stroke();
+    g.setLineDash([]);
+    g.fillText('аналітична формула', ml + 26, mt + 13);
+  }
+}
+
+/* ---------- інформація ---------- */
+function updateInfo() {
+  const gname = { a:'(a) довгий прямий провід', b:'(b) круговий виток', c:'(c) соленоїд', d:'(d) два паралельні проводи' }[geom];
+  const formula = {
+    a:'B = μ₀I/(2πr)',
+    b:'B(z) = μ₀I·R² / (2(R²+z²)<sup>3/2</sup>)',
+    c:'B ≈ μ₀·n·I (всередині)',
+    d:'B = B₁ + B₂ (суперпозиція)'
+  }[geom];
+  let probe = '';
+  if (mouse.inside) {
+    const [bx, by] = fieldAt(sx2m(mouse.x), sy2m(mouse.y));
+    probe = ' · зонд: <b>|B| = ' + fmtB(Math.hypot(bx, by)) + '</b>';
+  }
+  info.innerHTML = 'I = ' + cur.toFixed(1) + ' А · ' + gname + ' · ' + formula + probe;
+}
+
+/* ---------- головний цикл ---------- */
+function linesKey() {
+  return geom + '|' + dirs.a + '|' + dirs.b + '|' + dirs.c + '|' + dirs.d1 + '|' + dirs.d2 + '|' + Math.round(W) + '|' + Math.round(H);
+}
+
+function render() {
+  if (dirty) {
+    dirty = false;
+    buildSegments();
+    const k = linesKey();
+    if (k !== lastKey) { lastKey = k; computeLines(); }
+    computeGraph();
+  }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  if (showLines) drawFieldLines();
+  drawConductors();
+  drawProbe();
+  if (showGraph) drawGraph();
+  updateInfo();
+  requestAnimationFrame(render);
+}
+
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  W = cv.clientWidth; H = cv.clientHeight;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  SCALE = Math.min(W, H) / 0.34;               // ~34 см на меншу сторону екрана
+  graphBox.width = Math.round(G_W * dpr); graphBox.height = Math.round(G_H * dpr);
+  readCols();
+  dirty = true;
+}
+window.addEventListener('resize', resize);
+
+/* ---------- керування ---------- */
+function dirLabel() {
+  if (geom === 'a') return 'Струм: ' + (dirs.a > 0 ? '⊙ (до глядача)' : '⊗ (від глядача)');
+  if (geom === 'b') return 'Виток: поле ' + (dirs.b > 0 ? '→ (вправо)' : '← (вліво)');
+  if (geom === 'c') return 'Котушка: поле ' + (dirs.c > 0 ? '→ (вправо)' : '← (вліво)');
+  return 'Струм 1: ' + (dirs.d1 > 0 ? '⊙ (до глядача)' : '⊗ (від глядача)');
+}
+function syncUI() {
+  document.querySelectorAll('.gb').forEach(b => b.classList.toggle('sel', b.dataset.g === geom));
+  dir1.textContent = dirLabel();
+  dir2.style.display = geom === 'd' ? '' : 'none';
+  dir2.textContent = 'Струм 2: ' + (dirs.d2 > 0 ? '⊙ (до глядача)' : '⊗ (від глядача)');
+  graphBox.style.display = showGraph ? '' : 'none';
+}
+
+document.querySelectorAll('.gb').forEach(b => {
+  b.addEventListener('click', () => { geom = b.dataset.g; syncUI(); dirty = true; });
+});
+
+sI.addEventListener('input', () => { cur = +sI.value; vI.textContent = cur.toFixed(1) + ' А'; dirty = true; });
+
+dir1.addEventListener('click', () => {
+  if (geom === 'a') dirs.a = -dirs.a;
+  else if (geom === 'b') dirs.b = -dirs.b;
+  else if (geom === 'c') dirs.c = -dirs.c;
+  else dirs.d1 = -dirs.d1;
+  syncUI(); dirty = true;
+});
+dir2.addEventListener('click', () => { dirs.d2 = -dirs.d2; syncUI(); dirty = true; });
+
+cbLines.addEventListener('change', () => { showLines = cbLines.checked; });
+cbGraph.addEventListener('change', () => { showGraph = cbGraph.checked; syncUI(); });
+cbCompass.addEventListener('change', () => { showCompass = cbCompass.checked; });
+
+document.getElementById('reset').addEventListener('click', () => {
+  geom = 'a'; cur = 5; dirs = { a:1, b:1, c:1, d1:1, d2:1 };
+  sI.value = '5'; vI.textContent = '5.0 А';
+  showLines = showGraph = showCompass = true;
+  cbLines.checked = cbGraph.checked = cbCompass.checked = true;
+  syncUI(); dirty = true;
+});
+
+cv.addEventListener('pointermove', e => {
+  const r = cv.getBoundingClientRect();
+  mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; mouse.inside = true;
+});
+cv.addEventListener('pointerleave', () => { mouse.inside = false; });
+
+/* ---------- старт ---------- */
+if (innerWidth <= 700) document.getElementById('desc').removeAttribute('open');
+resize();
+vI.textContent = cur.toFixed(1) + ' А';
+syncUI();
+requestAnimationFrame(render);
+</script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Черенковське випромінювання</title>
+<style>
+  :root { --bg:#f6fbff; --fg:#222; --panel:rgba(255,255,255,.9); }
+  @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1520; --fg:#e6e6e6; --panel:rgba(30,36,46,.9);}}
+:root[data-theme="dark"]{--bg:#0f1520; --fg:#e6e6e6; --panel:rgba(30,36,46,.9);}
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--fg);
+               font-family: system-ui, "Segoe UI", sans-serif; overflow:hidden; }
+  canvas { display:block; width:100%; height:100%; }
+  #panel { position:absolute; top:10px; left:10px; background:var(--panel); padding:10px 12px;
+           border-radius:10px; font-size:14px; line-height:1.45; width:300px; backdrop-filter:blur(4px); }
+  #panel button { margin:2px 4px 2px 0; padding:4px 10px; border-radius:6px; border:1px solid #888;
+                  background:transparent; color:inherit; cursor:pointer; font-size:13px; }
+  #panel label { display:block; margin-top:5px; }
+  #panel input[type=range] { width:100%; }
+  #legend { margin-top:8px; border-top:1px solid #8884; padding-top:6px; font-size:13px; line-height:1.5; }
+  #readout { margin-top:6px; font-size:13px; }
+  .sw { display:inline-block; width:22px; height:4px; vertical-align:middle; margin-right:6px; border-radius:2px; }
+  #hint { position:absolute; bottom:6px; left:12px; right:12px; font-size:12px; opacity:.7; }
+</style>
+<script src="assets/theme.js"></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="panel">
+  <div><button id="play">Пауза</button> <button id="reset">Скинути</button></div>
+  <label>Показник заломлення n: <span id="nVal"></span>
+    <input type="range" id="n" min="1.00" max="2.00" step="0.01" value="1.33"></label>
+  <label>Швидкість частинки β = v/c: <span id="bVal"></span>
+    <input type="range" id="beta" min="0.30" max="1.00" step="0.01" value="0.95"></label>
+  <label>Швидкість часу: <span id="tVal"></span>
+    <input type="range" id="ts" min="0.25" max="2" step="0.05" value="0.8"></label>
+
+  <div id="legend">
+    <div><span class="sw" id="swRing"></span>тьмяні кола: елементарні хвильки, швидкість c/n</div>
+    <div><span class="sw" id="swArc"></span>яскраві дуги: хвильки складаються лише тут</div>
+    <div><span class="sw" id="swEnv"></span>огинаюча: конус Черенкова</div>
+  </div>
+  <div id="readout"></div>
+</div>
+
+<div id="hint">
+  Частинка рухається середовищем. У кожній точці траєкторії вона породжує хвильку, що розходиться зі швидкістю c/n.
+  Хвильки складаються когерентно лише тоді, коли частинка рухається швидше за світло в середовищі (βn &gt; 1).
+  Тоді їхні фронти утворюють конус із кутом θ, cos θ = 1/(nβ). Якщо βn &lt; 1, конуса немає.
+</div>
+
+<script>
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>location.reload());
+
+const WAVE = dark ? '120,200,255' : '40,130,230';
+const PART = dark ? '#ffb070' : '#d9531e';
+const AXIS = dark ? '#aab' : '#445';
+
+const C = 300;            // швидкість світла у вакуумі, px/s (масштаб)
+const EMIT = 0.12;        // інтервал між хвильками, с
+const LIFE = 1200;        // радіус, після якого хвильку не малюємо, px
+const ARC_HALF = 0.05;    // півширина яскравої дуги, рад
+
+let W = 0, H = 0, cy = 0;
+let n = 1.33, beta = 0.95, t = 0, emitTimer = 0, rings = [];
+let running = true;
+
+const el = id => document.getElementById(id);
+const u = () => C / n;                    // швидкість хвильки в середовищі
+const vPart = () => beta * C;             // швидкість частинки
+const partX = () => -60 + vPart() * t;
+const thresholdOK = () => beta * n > 1;
+const cosTh = () => 1 / (n * beta);
+
+function resize() {
+  const d = window.devicePixelRatio || 1;
+  W = cv.clientWidth;
+  H = cv.clientHeight;
+  cv.width = Math.round(W * d);
+  cv.height = Math.round(H * d);
+  ctx.setTransform(d, 0, 0, d, 0, 0);
+  cy = H * 0.5;
+}
+
+function resetSim() {
+  n = Number(el('n').value);
+  beta = Number(el('beta').value);
+  t = 0;
+  emitTimer = 0;
+  rings = [];
+}
+
+function step(dt) {
+  t += dt;
+  if (partX() > W + 60) { t = 0; rings = []; emitTimer = 0; return; }
+  emitTimer += dt;
+  if (emitTimer >= EMIT) {
+    emitTimer = 0;
+    rings.push({ x: partX(), y: cy, te: t });
+  }
+  rings = rings.filter(rg => (t - rg.te) * u() < LIFE);
+}
+
+/* ---------- малювання ---------- */
+
+function drawWavelets() {
+  const th = thresholdOK() ? Math.acos(cosTh()) : 0;
+  for (const rg of rings) {
+    const R = (t - rg.te) * u();
+    const fade = Math.max(0, 1 - R / LIFE);
+    if (fade <= 0.01) continue;
+
+    // тьмяне коло: елементарна хвилька
+    ctx.strokeStyle = `rgba(${WAVE},${(0.18 * fade).toFixed(3)})`;
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(rg.x, rg.y, R, 0, 2 * Math.PI); ctx.stroke();
+
+    // яскраві дуги під кутами ±θ: тут хвильки складаються
+    if (thresholdOK()) {
+      ctx.strokeStyle = `rgba(${WAVE},${Math.min(1, fade * 1.2).toFixed(3)})`;
+      ctx.lineWidth = 3.5;
+      ctx.beginPath(); ctx.arc(rg.x, rg.y, R, th - ARC_HALF, th + ARC_HALF); ctx.stroke();
+      ctx.beginPath(); ctx.arc(rg.x, rg.y, R, -th - ARC_HALF, -th + ARC_HALF); ctx.stroke();
+    }
+  }
+}
+
+function drawCone(px, py) {
+  const th = Math.acos(cosTh());
+  const al = Math.PI / 2 - th;          // кут огинаючої від осі назад
+  const L = 700;
+  const a1 = Math.PI - al, a2 = Math.PI + al;
+
+  // заливка конуса
+  ctx.beginPath();
+  ctx.moveTo(px, py);
+  ctx.lineTo(px + L * Math.cos(a1), py + L * Math.sin(a1));
+  ctx.lineTo(px + L * Math.cos(a2), py + L * Math.sin(a2));
+  ctx.closePath();
+  ctx.fillStyle = `rgba(${WAVE},0.07)`;
+  ctx.fill();
+
+  // лінії огинаючої
+  ctx.strokeStyle = `rgba(${WAVE},0.9)`;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(px, py); ctx.lineTo(px + L * Math.cos(a1), py + L * Math.sin(a1));
+  ctx.moveTo(px, py); ctx.lineTo(px + L * Math.cos(a2), py + L * Math.sin(a2));
+  ctx.stroke();
+
+  ctx.fillStyle = `rgba(${WAVE},1)`;
+  ctx.font = '13px system-ui, sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('огинаюча (конус Черенкова)', px + L * 0.35 * Math.cos(a1) + 8, py + L * 0.35 * Math.sin(a1) - 8);
+}
+
+function drawAngleLabel() {
+  // позначити θ на одній хвильці, що близька до R = 280
+  const th = Math.acos(cosTh());
+  let best = null, bestScore = Infinity;
+  for (const rg of rings) {
+    const R = (t - rg.te) * u();
+    const sc = Math.abs(R - 280);
+    if (R > 140 && R < 500 && sc < bestScore) { bestScore = sc; best = rg; }
+  }
+  if (!best) return;
+  const R = (t - best.te) * u();
+  ctx.strokeStyle = AXIS; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(best.x, best.y); ctx.lineTo(best.x + R * Math.cos(th), best.y + R * Math.sin(th)); ctx.stroke();
+  ctx.beginPath(); ctx.arc(best.x, best.y, 42, 0, th); ctx.stroke();
+  ctx.fillStyle = AXIS; ctx.font = '13px system-ui, sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('θ', best.x + 48, best.y - 6 + 0 * th);
+}
+
+function drawParticle(px, py) {
+  // траєкторія
+  ctx.strokeStyle = AXIS; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+  ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(px, py); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // сама частинка
+  ctx.beginPath(); ctx.arc(px, py, 8, 0, 2 * Math.PI);
+  ctx.fillStyle = PART; ctx.fill();
+  ctx.fillStyle = AXIS; ctx.font = '13px system-ui, sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('частинка, v = βc', px, py + 24);
+
+  // точки емісії
+  for (const rg of rings) {
+    const age = t - rg.te;
+    if (age > 0.6) continue;
+    ctx.beginPath(); ctx.arc(rg.x, rg.y, 2.5, 0, 2 * Math.PI);
+    ctx.fillStyle = `rgba(${WAVE},${(1 - age / 0.6).toFixed(3)})`; ctx.fill();
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  const px = partX(), py = cy;
+  drawWavelets();
+  if (thresholdOK()) drawCone(px, py);
+  else {
+    ctx.fillStyle = AXIS; ctx.font = '14px system-ui, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('βn < 1: конуса немає, хвильки не складаються', W / 2, cy - 140);
+  }
+  if (thresholdOK()) drawAngleLabel();
+  drawParticle(px, py);
+}
+
+/* ---------- текст ---------- */
+
+function updateLegend() {
+  el('swRing').style.background = `rgba(${WAVE},0.4)`;
+  el('swArc').style.background = `rgba(${WAVE},1)`;
+  el('swEnv').style.background = `rgba(${WAVE},0.9)`;
+}
+
+function updateReadout() {
+  const bn = beta * n;
+  let txt = `βn = ${bn.toFixed(3)}  (поріг: βn = 1)<br>` +
+            `швидкість світла в середовищі c/n = ${(1 / n).toFixed(2)} c`;
+  if (thresholdOK()) {
+    const th = Math.acos(cosTh());
+    txt += `<br>cos θ = 1/(nβ) = ${cosTh().toFixed(3)}<br>θ = ${(th * 180 / Math.PI).toFixed(1)}°`;
+  } else {
+    txt += '<br><b>Нижче порога:</b> частинка повільніша за світло в середовищі, конуса немає.';
+  }
+  el('readout').innerHTML = txt;
+}
+
+/* ---------- цикл ---------- */
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000) * Number(el('ts').value);
+  last = now;
+  el('nVal').textContent = Number(el('n').value).toFixed(2);
+  el('bVal').textContent = Number(el('beta').value).toFixed(2);
+  el('tVal').textContent = Number(el('ts').value).toFixed(2) + '×';
+  if (running) step(dt);
+  draw();
+  updateReadout();
+  requestAnimationFrame(frame);
+}
+
+el('play').onclick = () => {
+  running = !running;
+  el('play').textContent = running ? 'Пауза' : 'Продовжити';
+};
+el('reset').onclick = () => resetSim();
+el('n').oninput = () => resetSim();
+el('beta').oninput = () => resetSim();
+
+window.addEventListener('resize', resize);
+resize();
+resetSim();
+updateLegend();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

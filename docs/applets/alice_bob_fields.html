@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Аліса і Боб: магнітна сила як релятивістська електрична</title>
+<style>
+:root{--ink:#1d2327;--muted:#5b6670;--line:#c9d0d6;--bg:#f5f6f7;--panel:#fff;--pos:#1f5fd6;--neg:#d62728;--mag:#7a2bd6;--elec:#0b8a5a;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;--mag:#c792ff;--elec:#45d48a;color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;--mag:#c792ff;--elec:#45d48a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;padding:10px 14px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+h1{font-size:19px;margin:0 40px 6px 0;font-weight:600;line-height:1.25}
+details{max-width:95ch;margin:0 0 8px}
+summary{cursor:pointer;color:var(--muted);font-size:13.5px;padding:2px 0}
+details p{margin:6px 0;font-size:13.5px;line-height:1.45;color:var(--muted)}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;max-width:1250px}
+.pane .ct{font-size:13.5px;font-weight:600;margin:0 0 3px}
+.pane .cap{font-size:12px;color:var(--muted);line-height:1.35;margin-top:3px}
+canvas{display:block;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+#lab,#chg{height:clamp(190px,30vh,330px)}
+#graph{height:clamp(110px,18vh,210px)}
+.controls{display:flex;flex-wrap:wrap;gap:6px 14px;margin:4px 0 6px;align-items:center}
+button{font:inherit;font-size:14px;padding:5px 11px;border:1px solid #8b97a1;background:var(--panel);border-radius:4px;cursor:pointer;color:var(--ink)}
+button:hover{filter:brightness(.95)}button:focus-visible{outline:2px solid #1f6feb;outline-offset:2px}
+input[type=range]{width:min(220px,48vw);vertical-align:middle}
+.hint{font-size:13px;color:var(--muted)}
+#info{margin:6px 0 0;font-size:13px;line-height:1.4;max-width:110ch}
+@media (max-width:860px){.layout{grid-template-columns:1fr}#lab,#chg{height:230px}#graph{height:190px}h1{font-size:17px}}
+</style>
+<script src="assets/theme.js"></script>
+</head>
+<body>
+<h1>Аліса і Боб: магнітна сила як релятивістська електрична</h1>
+<details><summary>Про що модель і як її читати</summary>
+<p >Довгий прямий провід уздовж осі x: іони ґратки «+» нерухомі (λ₊ = λ₀), електрони «−» дрейфують вліво зі швидкістю u (λ₋ = −λ₀), тож провід нейтральний, а струм I = λ₀u тече праворуч. Поруч на відстані r летить пробний заряд +q зі швидкістю v = u у напрямку електронів. Те саме явище описують двоє спостерігачів, як у розділі про відносність полів. <b>Боб</b> пов'язаний із проводом: електричного поля нема, є магнітне B = μ₀I/(2πr), і заряд відчуває силу Лоренца F = qv×B. <b>Аліса</b> пов'язана із зарядом: для неї заряд спочиває, магнітної сили нема, зате провід заряджений: іони рухаються вправо й відстані між ними скорочені в γ разів (λ₊′ = γλ₀), електрони спочивають і відстані між ними збільшені в γ разів (λ₋′ = −λ₀/γ). Разом λ′ = λ₀γβ² &gt; 0, поле E′ = λ′/(2πε₀r), сила F′ = qE′. Обидві сили напрямлені <b>від проводу</b> (заряд летить проти струму), а F′ = γF.</p>
+<p >Масштаб сил F₀ = qλ₀/(2πε₀r) (у СГС, як у книзі, F₀ = 2qλ₀/r; співвідношення від одиниць не залежить). У Боба F = β²F₀, в Аліси F′ = γβ²F₀, тому F′/F = γ. Чому саме γ: поперечна компонента 4-сили інваріантна, а 3-сила F = dp/dt = f/γ<sub>част</sub>. У Боба частинка рухається (γ<sub>част</sub> = γ), тож F = f/γ; в Аліси спочиває (γ<sub>част</sub> = 1), тож F′ = f. Стрілку F′ намальовано фіксованої довжини, а F — у тому самому масштабі, тому F = F′/γ видно прямо (штрих у панелі Аліси — кінець стрілки F); абсолютні значення сил дано числами внизу. Значення педагогічні: λ₀ = 1 Кл/м, q = 1 Кл, r = 1 м (реальний дрейф u ~ 10⁻⁴ м/с дає β ~ 3·10⁻¹³). Пробіл — пауза.</p>
+</details>
+<div class="controls">
+<label class="hint">β = v/c <input id="sBeta" type="range" min="0.1" max="0.9" step="0.01" value="0.5"> <span id="vBeta"></span></label>
+<button id="bReset">Скинути</button><button id="bPause">Пауза</button>
+</div>
+<div class="layout">
+<div class="pane"><div class="ct">Система Аліси (заряд спочиває): електрична сила</div>
+<canvas id="chg" aria-label="Система Аліси: заряд спочиває, провід заряджений, електричне поле E і сила на заряд"></canvas>
+<div class="cap">«+» іони стиснуті в γ разів і рухаються вправо (стрілка u) · «−» електрони розріджені в γ разів, спочивають · λ′ = λ₀γβ² &gt; 0</div></div>
+<div class="pane"><div class="ct">Система Боба (провід спочиває): магнітна сила Лоренца</div>
+<canvas id="lab" aria-label="Система Боба: нейтральний провід, магнітне поле B і сила Лоренца на заряд"></canvas>
+<div class="cap">«+» іони нерухомі · «−» електрони дрейфують вліво · провід нейтральний (E = 0) · B: ⊙ над проводом, ⊗ під ним</div></div>
+</div>
+<div class="pane" style="margin-top:10px;max-width:1250px"><div class="ct">Сила в обох системах відліку</div>
+<canvas id="graph" aria-label="Графік сили в обох системах відліку як функції β"></canvas>
+<div class="cap">фіолетова — F = β²F₀ (Боб), зелена — F′ = γβ²F₀ (Аліса); точки — поточне β</div></div>
+<p id="info"></p>
+
+<script>
+"use strict";
+const C=2.99792458e8, MU0=4*Math.PI*1e-7, EPS0=8.8541878128e-12;
+const LAM0=1, Q=1, R=1;                          // λ₀ = 1 Кл/м, q = 1 Кл, r = 1 м (педагогічні)
+const F0=Q*LAM0/(2*Math.PI*EPS0*R);             // масштаб сили, Н
+const BETA0=0.5;
+let beta=BETA0, tm=0, paused=false, last=performance.now()/1000;
+
+const gamma=()=>1/Math.sqrt(1-beta*beta);
+const gammaAt=b=>1/Math.sqrt(1-b*b);
+function phys(){
+  const b=beta, g=gamma(), u=b*C;
+  const I=LAM0*u;
+  const B=MU0*I/(2*Math.PI*R);                   // B = μ₀I/(2πr)
+  const F=Q*u*B;                                 // F = qvB  = β²F₀
+  const lamP=LAM0*g*b*b;                         // λ′ = λ₀γβ²  (надлишок +)
+  const Ep=lamP/(2*Math.PI*EPS0*R);              // E′ = λ′/(2πε₀r)
+  const Fp=Q*Ep;                                 // F′ = qE′  = γβ²F₀
+  return {b,g,u,I,B,F,lamP,Ep,Fp};
+}
+
+// ---- форматування чисел ----
+const SUP={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+const sup=s=>String(s).split('').map(c=>SUP[c]||c).join('');
+function fmtSci(x,dig){if(x===0)return "0";const p=x.toExponential(dig).split('e');return parseFloat(p[0]).toFixed(dig)+"×10"+sup(parseInt(p[1],10));}
+
+// ---- полотна ----
+const cL=document.getElementById("lab"), gL=cL.getContext("2d");
+const cC=document.getElementById("chg"),   gC=cC.getContext("2d");
+const cG=document.getElementById("graph"), gG=cG.getContext("2d");
+let dpr=1, col={};
+const COL=['ink','muted','line','panel','pos','neg','mag','elec'];
+function readCols(){const s=getComputedStyle(document.documentElement);for(const n of COL)col[n]=s.getPropertyValue("--"+n).trim();}
+function fit(c){const r=c.getBoundingClientRect();c.width=Math.max(10,Math.round(r.width*dpr));c.height=Math.max(10,Math.round(r.height*dpr));}
+function resize(){dpr=window.devicePixelRatio||1;[cC,cL,cG].forEach(fit);readCols();}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",readCols);
+
+function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function arrow(g,x1,y1,x2,y2,hs){const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy);if(L<2)return;const ux=dx/L,uy=dy/L;
+  g.beginPath();g.moveTo(x1,y1);g.lineTo(x2-ux*hs*0.6,y2-uy*hs*0.6);g.stroke();
+  g.beginPath();g.moveTo(x2,y2);g.lineTo(x2-ux*hs-uy*hs*0.5,y2-uy*hs+ux*hs*0.5);g.lineTo(x2-ux*hs+uy*hs*0.5,y2-uy*hs-ux*hs*0.5);g.closePath();g.fill();}
+function row(g,x0,x1,y,d,sym,color,slide,fs){
+  g.fillStyle=color;g.font="bold "+(fs||15)+"px system-ui,sans-serif";g.textAlign="center";g.textBaseline="middle";
+  const off=((slide%d)+d)%d, n=Math.ceil((x1-x0)/d)+2;
+  for(let i=0;i<=n;i++){const x=x0-off+i*d;if(x>=x0-0.5&&x<=x1+0.5)g.fillText(sym,x,y);}
+}
+function circleSym(g,x,y,into){g.strokeStyle=col.mag;g.fillStyle=col.mag;g.lineWidth=1.6;
+  g.beginPath();g.arc(x,y,7,0,6.2832);g.stroke();
+  if(into){g.beginPath();g.moveTo(x-4,y-4);g.lineTo(x+4,y+4);g.moveTo(x+4,y-4);g.lineTo(x-4,y+4);g.stroke();}
+  else{g.beginPath();g.arc(x,y,2.5,0,6.2832);g.fill();}}
+function charge(g,x,y,r){
+  g.fillStyle=col.pos;g.beginPath();g.arc(x,y,r,0,6.2832);g.fill();
+  g.fillStyle="#fff";g.font="bold "+Math.round(r*1.1)+"px system-ui,sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText("+",x,y+0.5);
+  g.fillStyle=col.pos;g.font="13px system-ui,sans-serif";g.textAlign="left";g.fillText("q",x+r+2,y-3);}
+function forceArrow(g,x,y,len,color,label){
+  const hs=Math.min(9,Math.max(3,len*0.42));
+  g.strokeStyle=color;g.fillStyle=color;g.lineWidth=2.5;arrow(g,x,y,x,y+len,hs);
+  const right=x>g.canvas.width/dpr-120;g.fillStyle=color;g.font="600 13px system-ui,sans-serif";g.textAlign=right?"right":"left";g.textBaseline="top";g.fillText(label,right?x-7:x+7,y+len*0.42);}
+
+let AK=60;                               // px на F₀ (лінійно); підбирається під висоту полотна
+const alen=f=>AK*f/F0;                   // (див. frame: F′ нормовано, F = F′/γ)
+//                   // лінійно: F′/F = γ видно прямо
+
+function drawLab(p,slide){
+  const w=cL.width/dpr,h=cL.height/dpr,ctx=gL;
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+  const x0=46,x1=w-14,yW=h*0.34,wh=20,rpx=46,d0=(x1-x0)/11;
+  // провід
+  ctx.fillStyle=col.line;ctx.globalAlpha=0.5;rr(ctx,x0,yW-wh,x1-x0,2*wh,6);ctx.fill();ctx.globalAlpha=1;
+  ctx.strokeStyle=col.ink;ctx.lineWidth=1.4;rr(ctx,x0,yW-wh,x1-x0,2*wh,6);ctx.stroke();
+  // заряди проводу: іони нерухомі, електрони вліво
+  row(ctx,x0,x1,yW-11,d0,"+",col.pos,0,15);
+  row(ctx,x0,x1,yW+11,d0,"−",col.neg,slide,15);
+  // струм I праворуч
+  ctx.strokeStyle=col.ink;ctx.fillStyle=col.ink;ctx.lineWidth=2;arrow(ctx,x0-26,yW-wh-11,x0-5,yW-wh-11,7);
+  ctx.font="13px system-ui,sans-serif";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText("I",x0-34,yW-wh-11);
+  // поле B: ⊙ над проводом, ⊗ під ним (силові лінії — кола навколо проводу, перпендикулярні до рисунка)
+  ctx.globalAlpha=Math.min(1,0.2+0.8*p.b);
+  for(let k=0;k<6;k++){const bx=x0+(k+0.5)*(x1-x0)/6;circleSym(ctx,bx,yW-wh-36,false);circleSym(ctx,bx,yW+wh+22,true);}
+  ctx.globalAlpha=1;
+  // заряд q летить вліво (як електрони)
+  const cy=yW+wh+rpx, qx=x1-(slide%(x1-x0));
+  charge(ctx,qx,cy,7);
+  ctx.strokeStyle=col.ink;ctx.fillStyle=col.ink;ctx.lineWidth=1.8;arrow(ctx,qx+12,cy,qx+38,cy,6);
+  ctx.font="12px system-ui,sans-serif";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText("v",qx+25,cy-8);
+  forceArrow(ctx,qx,cy+11,alen(p.F),col.mag,"F = qv×B");
+  ctx.fillStyle=col.mag;ctx.font="600 12px system-ui,sans-serif";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText("B",x0-14,yW+wh+22);
+}
+function drawChg(p,slide){
+  const w=cC.width/dpr,h=cC.height/dpr,ctx=gC;
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+  const x0=46,x1=w-14,yW=h*0.34,wh=20,rpx=46,d0=(x1-x0)/11;
+  // провід з надлишком позитивного заряду
+  ctx.fillStyle=col.line;ctx.globalAlpha=0.5;rr(ctx,x0,yW-wh,x1-x0,2*wh,6);ctx.fill();ctx.globalAlpha=1;
+  ctx.fillStyle=col.pos;ctx.globalAlpha=0.16;rr(ctx,x0,yW-wh,x1-x0,2*wh,6);ctx.fill();ctx.globalAlpha=1;
+  ctx.strokeStyle=col.ink;ctx.lineWidth=1.4;rr(ctx,x0,yW-wh,x1-x0,2*wh,6);ctx.stroke();
+  // іони щільніші (d0/γ) і рухаються вліво; електрони рідші (d0·γ) і нерухомі
+  row(ctx,x0,x1,yW-11,d0/p.g,"+",col.pos,-slide,15);
+  row(ctx,x0,x1,yW+11,d0*p.g,"−",col.neg,0,15);
+  // рух іонів вліво
+  ctx.strokeStyle=col.ink;ctx.fillStyle=col.ink;ctx.lineWidth=2;arrow(ctx,x0+4,yW-wh-50,x0+38,yW-wh-50,7);
+  ctx.font="13px system-ui,sans-serif";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText("u",x0+46,yW-wh-50);
+  // поле E: перпендикулярне до проводу, від нього (довжина ∝ λ′)
+  const val=p.lamP/LAM0, L=6+val*18, alpha=Math.min(1,0.25+val*0.6);
+  ctx.strokeStyle=col.elec;ctx.fillStyle=col.elec;ctx.lineWidth=1.8;ctx.globalAlpha=alpha;
+  for(let k=0;k<6;k++){const ex=x0+(k+0.5)*(x1-x0)/6;
+    arrow(ctx,ex,yW-wh-2,ex,yW-wh-2-L,6);arrow(ctx,ex,yW+wh+2,ex,yW+wh+2+L,6);}
+  ctx.globalAlpha=1;
+  ctx.fillStyle=col.elec;ctx.font="600 12px system-ui,sans-serif";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText("E′",x0+4,yW+wh+14);
+  // заряд q нерухомий
+  const cy=yW+wh+rpx, qx=(x0+x1)/2;
+  charge(ctx,qx,cy,7);
+  ctx.fillStyle=col.muted;ctx.font="12px system-ui,sans-serif";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText("v = 0",qx+13,cy+9);
+  ctx.setLineDash([4,3]);ctx.globalAlpha=0.7;ctx.strokeStyle=col.mag;ctx.lineWidth=1.6;
+  ctx.beginPath();ctx.moveTo(qx-9,cy+11+alen(p.F));ctx.lineTo(qx+9,cy+11+alen(p.F));ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
+  forceArrow(ctx,qx,cy+11,alen(p.Fp),col.elec,"F′ = qE′");
+  ctx.fillStyle=col.mag;ctx.font="11px system-ui,sans-serif";ctx.textAlign="right";ctx.textBaseline="middle";ctx.fillText("F у Боба",qx-13,cy+11+alen(p.F));
+}
+function drawGraph(p){
+  const w=cG.width/dpr,h=cG.height/dpr,ctx=gG;
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+  const ml=44,mr=12,mt=8,mb=30,pw=w-ml-mr,ph=h-mt-mb;
+  const X=b=>ml+b/0.9*pw, Y=f=>h-mb-f/2*ph;
+  // рамка і осі
+  ctx.strokeStyle=col.ink;ctx.fillStyle=col.ink;ctx.lineWidth=1;ctx.strokeRect(ml,mt,pw,ph);
+  ctx.strokeStyle=col.line;
+  for(const f of [0,0.5,1,1.5,2]){ctx.beginPath();ctx.moveTo(ml,Y(f));ctx.lineTo(w-mr,Y(f));ctx.stroke();}
+  for(const b of [0,0.3,0.6,0.9]){ctx.beginPath();ctx.moveTo(X(b),mt);ctx.lineTo(X(b),h-mb);ctx.stroke();}
+  ctx.font="11px system-ui,sans-serif";ctx.textAlign="center";ctx.textBaseline="top";
+  for(const b of [0,0.3,0.6,0.9])ctx.fillText(b.toFixed(1),X(b),h-mb+4);
+  ctx.textAlign="right";ctx.textBaseline="middle";
+  for(const f of [0,0.5,1,1.5,2])ctx.fillText(f.toFixed(1),ml-5,Y(f));
+  ctx.textAlign="center";ctx.fillText("β = v/c",ml+pw/2,h-12);
+  ctx.save();ctx.translate(13,mt+ph/2);ctx.rotate(-Math.PI/2);ctx.textBaseline="middle";ctx.fillText("F / F₀",0,0);ctx.restore();
+  // криві
+  const N=130;
+  ctx.lineWidth=2.2;ctx.strokeStyle=col.mag;ctx.beginPath();
+  for(let i=0;i<=N;i++){const b=0.9*i/N,x=X(b),y=Y(b*b);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();
+  ctx.strokeStyle=col.elec;ctx.beginPath();
+  for(let i=0;i<=N;i++){const b=0.9*i/N,g=gammaAt(b),x=X(b),y=Y(g*b*b);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();
+  // маркер поточного β і точки
+  ctx.strokeStyle=col.muted;ctx.lineWidth=1.2;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(X(beta),mt);ctx.lineTo(X(beta),h-mb);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=col.mag;ctx.beginPath();ctx.arc(X(beta),Y(beta*beta),4.5,0,6.2832);ctx.fill();
+  ctx.fillStyle=col.elec;ctx.beginPath();ctx.arc(X(beta),Y(p.g*beta*beta),4.5,0,6.2832);ctx.fill();
+}
+
+// ---- керування ----
+const bPause=document.getElementById("bPause"),bReset=document.getElementById("bReset"),sBeta=document.getElementById("sBeta"),vBeta=document.getElementById("vBeta"),info=document.getElementById("info");
+function readBeta(){beta=+sBeta.value;vBeta.textContent=beta.toFixed(2);}
+sBeta.addEventListener("input",readBeta);
+bReset.onclick=()=>{sBeta.value=BETA0;readBeta();tm=0;last=performance.now()/1000;};
+bPause.onclick=()=>{paused=!paused;bPause.textContent=paused?"Продовжити":"Пауза";last=performance.now()/1000;};
+document.addEventListener("keydown",e=>{if(e.code==="Space"){e.preventDefault();bPause.click();}});
+
+function buildInfo(p){
+  return "<b>β = "+p.b.toFixed(2)+",  γ = "+p.g.toFixed(3)+"</b>  (u = βc = "+fmtSci(p.u)+" м/с)."+
+    "<br><b>Боб</b> (провід спочиває, нейтральний): B = μ₀I/(2πr) = "+fmtSci(p.B)+" Тл;  F = qvB = "+fmtSci(p.F)+" Н  (= β²F₀, магнітна, від проводу)."+
+    "<br><b>Аліса</b> (заряд спочиває): λ₊′ = γλ₀ = "+fmtSci(LAM0*p.g)+",  λ₋′ = −λ₀/γ = "+fmtSci(-LAM0/p.g)+" Кл/м;  λ′ = λ₀γβ² = "+fmtSci(p.lamP)+" Кл/м."+
+    "<br>E′ = λ′/(2πε₀r) = "+fmtSci(p.Ep)+" В/м;  F′ = qE′ = "+fmtSci(p.Fp)+" Н  (= γβ²F₀, електрична, від проводу)."+
+    "<br><b>F′/F = γ = "+p.g.toFixed(3)+"</b>: напрями збігаються, |F′| = γ|F|."+
+    "";
+}
+function frame(){
+  const now=performance.now()/1000, dt=Math.min(now-last,0.1); last=now;
+  if(!paused) tm+=dt;
+  const slide=tm*46*beta;                 // швидкість руху символів ∝ β
+  const p=phys();
+  { const hh=cL.height/dpr, Lfix=Math.max(24,Math.min(90,hh-(0.34*hh+77)-14)); AK=Lfix/(p.Fp/F0); }   // F′ — фіксованої довжини, F у тому ж масштабі
+  drawLab(p,slide);drawChg(p,slide);drawGraph(p);
+  info.innerHTML=buildInfo(p);
+  requestAnimationFrame(frame);
+}
+window.addEventListener("resize",resize);
+resize();readBeta();requestAnimationFrame(frame);
+</script>
+</body>
+</html>

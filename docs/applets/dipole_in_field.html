@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Диполь в електричному полі: момент сил і енергія</title>
+<style>
+:root{--ink:#1d2327;--muted:#5b6670;--line:#c9d0d6;--bg:#f5f6f7;--panel:#fff;--pos:#d62728;--neg:#1f5fd6;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#ff7b72;--neg:#6aa3ff;color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#ff7b72;--neg:#6aa3ff;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;padding:14px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+h1{font-size:20px;margin:0 0 4px;font-weight:600}
+p.lead{margin:0 0 10px;color:var(--muted);font-size:14px;line-height:1.45;max-width:95ch}
+.layout{display:grid;grid-template-columns:1.3fr 1fr;gap:12px;align-items:start;max-width:1250px}
+.left,.right{display:grid;gap:12px}
+canvas{display:block;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+#main{aspect-ratio:1.5/1}#graph{aspect-ratio:1.35/1}
+.controls{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:10px;align-items:center}
+button{font:inherit;font-size:14px;padding:6px 12px;border:1px solid #8b97a1;background:var(--panel);border-radius:4px;cursor:pointer;color:var(--ink)}
+button:hover{filter:brightness(.95)}button:focus-visible{outline:2px solid #1f6feb;outline-offset:2px}
+button.sel{background:#8b97a1;color:#fff;border-color:#8b97a1}
+label.hint,.hint{font-size:13px;color:var(--muted)}
+input[type=range]{width:130px;vertical-align:middle}
+.grp{display:inline-flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+#info{margin:10px 0 0;font-size:14px;line-height:1.55;max-width:95ch;min-height:6em}
+@media (max-width:860px){.layout{grid-template-columns:1fr}}
+</style>
+<script src="assets/theme.js"></script>
+</head>
+<body>
+<h1>Диполь в електричному полі: момент сил і енергія</h1>
+<p class="lead">Електричний диполь — два заряди +q і −q на відстані ℓ; його дипольний момент <b>p = qℓ</b> напрямлений від −q до +q. У зовнішньому полі <i>E</i> на нього діє обертальний момент <b>τ = p × E</b>, |τ| = pE·sinθ, де θ — кут між p і E, а потенціальна енергія <b>U = −p·E = −pE·cosθ</b>. Диполь прагне вирівнятись по полю: U мінімальна при θ = 0 (p∥E), момент максимальний при p⊥E. У неоднорідному полі виникає ще й сила <b>F = (p·∇)E</b>, яка втягує вирівняний диполь у сильніше поле. Обертання: I·θ̈ = −pE·sinθ − γ·θ̇ (γ — в'язке тертя).</p>
+
+<div class="layout">
+  <div class="left">
+    <canvas id="main" aria-label="Диполь у зовнішньому електричному полі"></canvas>
+  </div>
+  <div class="right">
+    <canvas id="graph" aria-label="Графіки потенціальної енергії та моменту сил від кута"></canvas>
+  </div>
+</div>
+
+<div class="controls">
+  <button id="bPause">Пауза</button>
+  <button id="bReset">Скинути</button>
+  <span class="grp">
+    <button id="bUni" class="sel">Однорідне поле</button>
+    <button id="bPoint">Поле точкового заряду</button>
+  </span>
+  <label class="hint">q <input id="sQ" type="range" min="0.5" max="3" step="0.1" value="1"> <span id="vQ"></span></label>
+  <label class="hint">ℓ <input id="sL" type="range" min="0.5" max="1.5" step="0.05" value="1"> <span id="vL"></span></label>
+  <label class="hint">γ <input id="sG" type="range" min="0" max="0.8" step="0.01" value="0.25"> <span id="vG"></span></label>
+  <label class="hint">θ₀ <input id="sT0" type="range" min="-180" max="180" step="1" value="60"> <span id="vT0"></span></label>
+  <span class="grp" id="uniGrp">
+    <label class="hint">E <input id="sE" type="range" min="0.2" max="4" step="0.1" value="1.5"> <span id="vE"></span></label>
+    <label class="hint">α <input id="sA" type="range" min="0" max="360" step="1" value="0"> <span id="vA"></span></label>
+  </span>
+  <span class="grp" id="pointGrp" style="display:none">
+    <label class="hint">|Q| <input id="sQC" type="range" min="0.5" max="4" step="0.1" value="2"> <span id="vQC"></span></label>
+    <button id="bQSign">Q: +</button>
+  </span>
+</div>
+<p id="info"></p>
+<p class="hint">Одиниці умовні (p — «ум. од.»). Пробіл — пауза. Повзунки діють наживо; θ₀ задає початковий кут, «Скинути» повертає θ до θ₀ (а в неоднорідному полі — і центр мас на місце). У неоднорідному режимі Q нерухомий, диполь може рухатись і обертатись.</p>
+
+<script>
+"use strict";
+const PI=Math.PI, TAU=2*PI, S=55, R0=3.0, I=1, DRAG=0.7, FCAP=15;
+function norm(a){ a=(a+PI)%TAU; if(a<0)a+=TAU; return a-PI; }
+function deg(a){ return a*180/PI; }
+function rad(a){ return a*PI/180; }
+const f2=x=>Math.abs(x)<0.005?"0.00":x.toFixed(2);
+const fS=x=>(x>0?"+":"")+f2(x);
+
+const cv=document.getElementById("main"), g0=cv.getContext("2d");
+const cg=document.getElementById("graph"), gg=cg.getContext("2d");
+const info=document.getElementById("info");
+
+let dpr=1, col={};
+function readCols(){ const s=getComputedStyle(document.documentElement); for(const n of ["ink","muted","line","pos","neg","panel","bg"]) col[n]=s.getPropertyValue("--"+n).trim(); }
+function fit(c){ const r=c.getBoundingClientRect(); c.width=Math.max(10,Math.round(r.width*dpr)); c.height=Math.max(10,Math.round(r.height*dpr)); }
+
+const P={q:1,l:1,g:0.25,t0:60,a:0,E:1.5,Q:2,qs:1,mode:"uni"};
+let phi=0, om=0, rx=0, ry=0, vx=0, vy=0, Qx=0, Qy=0;
+let paused=false, last=performance.now()/1000;
+let cur={p:1,E:1.5,pE:1.5,th:rad(60),psi:0,F:0,r:R0,tau:-1.5*Math.sin(rad(60))};
+
+function psiAt(){
+  if(P.mode==="uni") return rad(P.a);
+  return Math.atan2(ry-Qy, rx-Qx) + (P.qs>0?0:PI);
+}
+function compute(){
+  const p=P.q*P.l;
+  let E, psi, F=0, r=0;
+  if(P.mode==="uni"){ psi=rad(P.a); E=P.E; }
+  else{
+    const dx=rx-Qx, dy=ry-Qy, rpx=Math.hypot(dx,dy); r=rpx/S;
+    const rr=Math.max(r,0.5);
+    psi=Math.atan2(dy,dx)+(P.qs>0?0:PI);
+    E=P.Q/(rr*rr);
+    F=2*P.Q*p*Math.cos(norm(phi-psi))/(rr*rr*rr);
+  }
+  const th=norm(phi-psi), pE=p*E, tau=-pE*Math.sin(th);
+  cur={p,E,pE,th,psi,F,r,tau};
+}
+function step(dt){
+  if(P.mode==="point"){
+    const dx=rx-Qx, dy=ry-Qy, rpx=Math.hypot(dx,dy)||1e-6;
+    const r=rpx/S, rr=Math.max(r,0.5);
+    const psi=Math.atan2(dy,dx)+(P.qs>0?0:PI);
+    const th=norm(phi-psi), cosTh=Math.cos(th), p=P.q*P.l;
+    let F=2*P.Q*p*cosTh/(rr*rr*rr);
+    F=Math.max(-FCAP,Math.min(FCAP,F));
+    const ax=-F*S*dx/rpx, ay=-F*S*dy/rpx;
+    vx+=ax*dt; vy+=ay*dt;
+    const dr=Math.exp(-DRAG*dt); vx*=dr; vy*=dr;
+    rx+=vx*dt; ry+=vy*dt;
+    const w=cv.width/dpr, h=cv.height/dpr;
+    rx=Math.max(40,Math.min(w-40,rx)); ry=Math.max(40,Math.min(h-40,ry));
+    const qx=rx-Qx, qy=ry-Qy, qr=Math.hypot(qx,qy);
+    if(qr<36){ const ux=qr>1e-6?qx/qr:1, uy=qr>1e-6?qy/qr:0; rx=Qx+ux*36; ry=Qy+uy*36; const vn=vx*ux+vy*uy; if(vn<0){vx-=vn*ux; vy-=vn*uy;} }
+  }
+  const psi=psiAt(), th=norm(phi-psi), p=P.q*P.l;
+  const E=P.mode==="uni"?P.E:P.Q/Math.pow(Math.max(Math.hypot(rx-Qx,ry-Qy)/S,0.5),2);
+  const pE=p*E, acc=(-pE*Math.sin(th)-P.g*om)/I;
+  om+=acc*dt; phi=norm(phi+om*dt);
+  compute();
+}
+function reset(){
+  const w=cv.width/dpr||800, h=cv.height/dpr||500;
+  if(P.mode==="uni"){ phi=norm(rad(P.a)+rad(P.t0)); om=0; }
+  else{
+    Qx=w*0.16; Qy=h/2; rx=Qx+R0*S; ry=Qy; vx=0; vy=0;
+    phi=norm(psiAt()+rad(P.t0)); om=0;
+  }
+  compute();
+}
+
+function arrow(g,x1,y1,x2,y2,hs){
+  const dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy); if(L<2)return;
+  const ux=dx/L, uy=dy/L;
+  g.beginPath(); g.moveTo(x1,y1); g.lineTo(x2-ux*hs*0.6, y2-uy*hs*0.6); g.stroke();
+  g.beginPath(); g.moveTo(x2,y2); g.lineTo(x2-ux*hs-uy*hs*0.5, y2-uy*hs+ux*hs*0.5); g.lineTo(x2-ux*hs+uy*hs*0.5, y2-uy*hs-ux*hs*0.5); g.closePath(); g.fill();
+}
+function drawUniformField(g,w,h){
+  const sp=46, len=Math.min(34,14+P.E*5), ux=Math.cos(rad(P.a)), uy=Math.sin(rad(P.a));
+  g.strokeStyle=col.muted; g.fillStyle=col.muted; g.lineWidth=1.1; g.globalAlpha=0.35;
+  for(let y=sp/2;y<h;y+=sp)for(let x=sp/2;x<w;x+=sp){
+    if(Math.hypot(x-w/2,y-h/2)<80)continue;
+    arrow(g,x-ux*len/2,y-uy*len/2,x+ux*len/2,y+uy*len/2,6);
+  }
+  g.globalAlpha=1;
+}
+function drawPointField(g,w,h){
+  const sp=46;
+  g.strokeStyle=col.muted; g.fillStyle=col.muted; g.lineWidth=1.1; g.globalAlpha=0.35;
+  for(let y=sp/2;y<h;y+=sp)for(let x=sp/2;x<w;x+=sp){
+    const dx=x-Qx, dy=y-Qy, r=Math.hypot(dx,dy); if(r<40)continue;
+    if(Math.hypot(x-rx,y-ry)<46)continue;
+    const len=Math.max(5,Math.min(26,60000*P.Q/(r*r)));
+    const d=P.qs>0?1:-1, ux=d*dx/r, uy=d*dy/r;
+    arrow(g,x-ux*len/2,y-uy*len/2,x+ux*len/2,y+uy*len/2,6);
+  }
+  g.globalAlpha=1;
+}
+function ball(g,x,y,color,label){
+  g.beginPath(); g.arc(x,y,12,0,TAU); g.fillStyle=color; g.fill();
+  g.lineWidth=2; g.strokeStyle="rgba(255,255,255,.9)"; g.stroke();
+  g.fillStyle="#fff"; g.font="bold 13px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="middle";
+  g.fillText(label,x,y+0.5);
+}
+function drawQ(g){
+  g.strokeStyle=col.ink; g.fillStyle=col.ink; g.lineWidth=1.5;
+  ball(g,Qx,Qy,P.qs>0?col.pos:col.neg, P.qs>0?"+":"−");
+  g.font="bold 14px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="bottom";
+  g.fillStyle=col.ink; g.fillText((P.qs>0?"+Q":"−Q"), Qx, Qy-16);
+  g.font="11px system-ui,sans-serif"; g.fillStyle=col.muted; g.textBaseline="top";
+  g.fillText("нерухомий", Qx, Qy+16);
+}
+function drawDipole(g,cx,cy){
+  const half=P.l*S/2, ux=Math.cos(phi), uy=Math.sin(phi);
+  const xp=cx+half*ux, yp=cy+half*uy, xm=cx-half*ux, ym=cy-half*uy;
+  g.strokeStyle=col.ink; g.lineWidth=3; g.beginPath(); g.moveTo(xm,ym); g.lineTo(xp,yp); g.stroke();
+  ball(g,xp,yp,col.pos,"+");
+  ball(g,xm,ym,col.neg,"−");
+  g.fillStyle=col.ink; g.font="12px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="middle";
+  g.fillText("+q", xp+16*ux, yp+16*uy);
+  g.fillText("−q", xm-16*ux, ym-16*uy);
+  g.strokeStyle=col.ink; g.fillStyle=col.ink; g.lineWidth=2;
+  arrow(g,cx,cy,cx+44*ux,cy+44*uy,8);
+  g.font="italic 14px system-ui,sans-serif"; g.textAlign="left"; g.textBaseline="middle";
+  g.fillText("p", cx+52*ux, cy+52*uy);
+}
+function drawEArrow(g,cx,cy){
+  const psi=cur.psi, ux=Math.cos(psi), uy=Math.sin(psi);
+  g.strokeStyle=col.muted; g.fillStyle=col.muted; g.lineWidth=2.5;
+  arrow(g,cx,cy,cx+28*ux,cy+28*uy,7);
+  g.font="italic 13px system-ui,sans-serif"; g.textAlign="left"; g.textBaseline="middle";
+  g.fillText("E", cx+36*ux, cy+36*uy);
+}
+function drawTorqueArc(g,cx,cy){
+  const short=norm(cur.psi-phi);
+  if(Math.abs(short)<0.08||Math.abs(short)>PI-0.08)return;
+  const R=P.l*S/2+20, N=Math.max(6,Math.round(Math.abs(short)*R/6));
+  g.strokeStyle=col.neg; g.fillStyle=col.neg; g.lineWidth=2.5; g.lineCap="round";
+  g.beginPath();
+  for(let i=0;i<=N;i++){ const a=phi+short*i/N, x=cx+R*Math.cos(a), y=cy+R*Math.sin(a); i?g.lineTo(x,y):g.moveTo(x,y); }
+  g.stroke();
+  const ae=phi+short, s=short>=0?1:-1;
+  const ex=cx+R*Math.cos(ae), ey=cy+R*Math.sin(ae), tx=-s*Math.sin(ae), ty=s*Math.cos(ae);
+  g.beginPath(); g.moveTo(ex+tx*8,ey+ty*8); g.lineTo(ex-tx*4-ty*4,ey-ty*4+tx*4); g.lineTo(ex-tx*4+ty*4,ey-ty*4-tx*4); g.closePath(); g.fill();
+  const am=phi+short/2;
+  g.font="italic 13px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="middle";
+  g.fillText("τ", cx+(R+14)*Math.cos(am), cy+(R+14)*Math.sin(am));
+}
+function drawForce(g,cx,cy){
+  if(P.mode!=="point")return;
+  const dx=Qx-cx, dy=Qy-cy, r=Math.hypot(dx,dy); if(r<1)return;
+  const s=cur.F>0?1:-1, len=Math.min(70,Math.abs(cur.F)*80); if(len<2)return;
+  const ux=dx/r, uy=dy/r, x2=cx+s*ux*len, y2=cy+s*uy*len;
+  g.strokeStyle=col.pos; g.fillStyle=col.pos; g.lineWidth=3;
+  arrow(g,cx,cy,x2,y2,9);
+  g.font="italic 13px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="middle";
+  g.fillText("F", x2+s*ux*13, y2+s*uy*13);
+}
+function drawMain(){
+  const g=g0, w=cv.width/dpr, h=cv.height/dpr;
+  g.setTransform(dpr,0,0,dpr,0,0);
+  g.clearRect(0,0,w,h); g.fillStyle=col.panel; g.fillRect(0,0,w,h);
+  const cx=P.mode==="uni"?w/2:rx, cy=P.mode==="uni"?h/2:ry;
+  if(P.mode==="uni")drawUniformField(g,w,h); else { drawPointField(g,w,h); drawQ(g); }
+  drawTorqueArc(g,cx,cy);
+  drawDipole(g,cx,cy);
+  drawEArrow(g,cx,cy);
+  drawForce(g,cx,cy);
+}
+
+function dot(g,x,y,color){ g.beginPath(); g.arc(x,y,4.5,0,TAU); g.fillStyle=color; g.fill(); }
+function drawGraph(){
+  const g=gg, w=cg.width/dpr, h=cg.height/dpr;
+  g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,w,h);
+  const ml=50, mr=14, mt=28, mb=36, pE=cur.pE;
+  const X=a=>ml+(a+PI)/(2*PI)*(w-ml-mr);
+  const ymax=Math.max(pE*1.25,0.5);
+  const Y=v=>h-mb-(v+ymax)/(2*ymax)*(h-mt-mb);
+  g.strokeStyle=col.line; g.lineWidth=1; g.strokeRect(ml,mt,w-ml-mr,h-mt-mb);
+  g.beginPath(); g.moveTo(ml,Y(0)); g.lineTo(w-mr,Y(0)); g.moveTo(X(0),mt); g.lineTo(X(0),h-mb); g.stroke();
+  g.fillStyle=col.muted; g.font="11px system-ui,sans-serif"; g.textAlign="right"; g.textBaseline="middle";
+  for(const v of [-pE,0,pE]){ const y=Y(v); g.fillText(v===0?"0":(v>0?"+pE":"−pE"), ml-5, y); g.strokeStyle=col.line; g.beginPath(); g.moveTo(ml-3,y); g.lineTo(ml,y); g.stroke(); }
+  g.textAlign="center"; g.textBaseline="top";
+  for(const a of [-PI,-PI/2,0,PI/2,PI]) g.fillText((a===0?"0°":(a<0?"−":"")+Math.round(Math.abs(a)*180/PI)+"°"), X(a), h-mb+4);
+  g.lineWidth=2;
+  g.strokeStyle=col.pos; g.beginPath();
+  for(let i=0;i<=200;i++){ const a=-PI+2*PI*i/200, v=-pE*Math.cos(a), x=X(a), y=Y(v); i?g.lineTo(x,y):g.moveTo(x,y); }
+  g.stroke();
+  g.strokeStyle=col.neg; g.beginPath();
+  for(let i=0;i<=200;i++){ const a=-PI+2*PI*i/200, v=pE*Math.sin(a), x=X(a), y=Y(v); i?g.lineTo(x,y):g.moveTo(x,y); }
+  g.stroke();
+  g.strokeStyle=col.ink; g.setLineDash([4,3]); g.lineWidth=1.2;
+  g.beginPath(); g.moveTo(X(cur.th),mt); g.lineTo(X(cur.th),h-mb); g.stroke(); g.setLineDash([]);
+  dot(g,X(cur.th),Y(-pE*Math.cos(cur.th)),col.pos);
+  dot(g,X(cur.th),Y(pE*Math.sin(cur.th)),col.neg);
+  g.font="12px system-ui,sans-serif"; g.textAlign="left"; g.textBaseline="top";
+  g.fillStyle=col.pos; g.fillText("U(θ) = −pE·cosθ", ml+6, mt+6);
+  g.fillStyle=col.neg; g.fillText("τ(θ) = pE·sinθ", ml+6, mt+20);
+  g.fillStyle=col.ink; g.font="600 13px system-ui,sans-serif"; g.textAlign="center"; g.textBaseline="middle";
+  g.fillText("U(θ) та τ(θ), pE = "+f2(pE), ml+(w-ml-mr)/2, 13);
+  g.font="11px system-ui,sans-serif"; g.fillStyle=col.muted; g.textBaseline="top";
+  g.fillText("θ", ml+(w-ml-mr)/2, h-16);
+  g.save(); g.translate(14,mt+(h-mt-mb)/2); g.rotate(-PI/2); g.textAlign="center"; g.textBaseline="middle"; g.fillText("енергія / момент, ум. од.",0,0); g.restore();
+}
+
+function updateInfo(){
+  const c=cur, aTh=Math.abs(c.th);
+  let status;
+  if(aTh<0.10)status="<b>p∥E</b>: момент ≈ 0, U = −pE (мінімум енергії — стійка рівновага).";
+  else if(Math.abs(aTh-PI/2)<0.15)status="<b>p⊥E</b>: |τ| = pE (максимальний момент), U ≈ 0.";
+  else if(aTh>PI-0.15)status="<b>p антипаралельний E</b>: момент ≈ 0, U = +pE (максимум — нестійка рівновага).";
+  else status="Диполь розвертається до положення p∥E (мінімум U при θ=0).";
+  let s="θ = <b>"+deg(c.th).toFixed(1)+"°</b> (кут між p і E);  p = q·ℓ = <b>"+f2(c.p)+"</b> ум. од.;  E = "+f2(c.E)+" ум. од.;  pE = "+f2(c.pE)+" ум. од.";
+  s+="<br>U = −pE·cosθ = <b>"+fS(-c.pE*Math.cos(c.th))+"</b> ум. од.;  |τ| = pE·|sinθ| = <b>"+f2(c.pE*Math.abs(Math.sin(c.th)))+"</b> ум. од."+(Math.abs(c.tau)>1e-6?" (напрям — дугова стрілка τ)":"");
+  if(P.mode==="point"){
+    const dEdr=2*P.Q/Math.pow(Math.max(c.r,0.5),3);
+    s+="<br>r = "+f2(c.r)+" ум. од.;  dE/dr = "+f2(dEdr)+" ум. од.;  F = p·dE/dr·cosθ = <b>"+fS(c.F)+"</b> ум. од. "+(Math.abs(c.F)<0.02?"(≈0)":(c.F>0?"(до Q — втягування у сильніше поле)":"(від Q — виштовхування)"));
+  }
+  s+="<br>"+status;
+  info.innerHTML=s;
+}
+
+const bPause=document.getElementById("bPause"), bReset=document.getElementById("bReset");
+const bUni=document.getElementById("bUni"), bPoint=document.getElementById("bPoint");
+const bQSign=document.getElementById("bQSign");
+const uniGrp=document.getElementById("uniGrp"), pointGrp=document.getElementById("pointGrp");
+const els={sQ:["vQ",v=>v.toFixed(1)+" ум. од."],sL:["vL",v=>v.toFixed(2)+" ум. од."],sG:["vG",v=>v.toFixed(2)],
+  sT0:["vT0",v=>v.toFixed(0)+"°"],sE:["vE",v=>v.toFixed(1)+" ум. од."],sA:["vA",v=>v.toFixed(0)+"°"],sQC:["vQC",v=>v.toFixed(1)+" ум. од."]};
+function readSl(){
+  P.q=+document.getElementById("sQ").value; P.l=+document.getElementById("sL").value;
+  P.g=+document.getElementById("sG").value; P.t0=+document.getElementById("sT0").value;
+  P.a=+document.getElementById("sA").value; P.E=+document.getElementById("sE").value;
+  P.Q=+document.getElementById("sQC").value;
+  for(const id in els){ const el=document.getElementById(id); document.getElementById(els[id][0]).textContent=els[id][1](+el.value); }
+  document.getElementById("bQSign").textContent="Q: "+(P.qs>0?"+":"−");
+}
+for(const id in els) document.getElementById(id).addEventListener("input",()=>{
+  readSl(); if(id==="sT0"){ setAngle(); } else { compute(); }
+});
+function setAngle(){ phi=norm(psiAt()+rad(P.t0)); om=0; compute(); }
+function setMode(m){
+  P.mode=m; bUni.classList.toggle("sel",m==="uni"); bPoint.classList.toggle("sel",m==="point");
+  uniGrp.style.display=m==="uni"?"":"none"; pointGrp.style.display=m==="point"?"":"none";
+  reset();
+}
+bUni.onclick=()=>setMode("uni");
+bPoint.onclick=()=>setMode("point");
+bQSign.onclick=()=>{ P.qs=-P.qs; readSl(); compute(); };
+bReset.onclick=reset;
+bPause.onclick=()=>{ paused=!paused; bPause.textContent=paused?"Продовжити":"Пауза"; last=performance.now()/1000; };
+document.addEventListener("keydown",e=>{ if(e.code==="Space"){ e.preventDefault(); bPause.click(); } });
+
+function resize(){
+  dpr=window.devicePixelRatio||1;
+  fit(cv); fit(cg); readCols();
+  const w=cv.width/dpr, h=cv.height/dpr;
+  Qx=w*0.16; Qy=h/2;
+  rx=Math.max(40,Math.min(w-40,rx)); ry=Math.max(40,Math.min(h-40,ry));
+}
+window.addEventListener("resize",resize);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",readCols);
+
+function frame(){
+  const now=performance.now()/1000; let dt=now-last; last=now;
+  if(dt<0)dt=0; if(dt>0.025)dt=0.025;
+  if(!paused)step(dt);
+  drawMain(); drawGraph(); updateInfo();
+  requestAnimationFrame(frame);
+}
+
+resize(); readSl(); reset(); requestAnimationFrame(frame);
+</script>
+</body>
+</html>

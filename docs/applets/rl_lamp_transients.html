@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Перехідні процеси: котушка і лампа розжарювання</title>
+<style>
+:root{--bg:#fbfbf8;--fg:#222;--panel:#fff;}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161b;--fg:#e6e6e6;--panel:#1f2228;}}
+:root[data-theme="dark"]{--bg:#14161b;--fg:#e6e6e6;--panel:#1f2228;}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:14px system-ui,"Segoe UI",sans-serif}
+#app{display:flex;height:100%}
+#panel{width:290px;flex:none;box-sizing:border-box;padding:10px 12px;overflow:auto;background:var(--panel);line-height:1.4}
+#stage{flex:1;position:relative;min-width:0}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+button,select{margin:3px 4px 2px 0;padding:4px 8px;border-radius:6px;border:1px solid #888;background:transparent;color:inherit;font-size:13px;cursor:pointer}
+select{width:100%;margin:3px 0}
+option{color:#222}
+label{display:block;margin-top:6px}
+input[type=range]{width:100%}
+#ro{border-top:1px solid #8884;margin-top:8px;padding-top:6px;font-size:13px}
+.note{font-size:12px;opacity:.7;margin-top:8px}
+@media(max-width:800px){#app{flex-direction:column-reverse}#panel{width:auto;max-height:45%}}
+</style>
+<script src="assets/theme.js"></script>
+</head>
+<body>
+<div id="app">
+<div id="panel">
+  <b>Перехідні процеси: котушка + лампа розжарювання</b>
+  <select id="mode">
+    <option value="0">1. Послідовно: вмикання і вимикання струму</option>
+    <option value="1">2. Лампа паралельно котушці: екстраструм</option>
+    <option value="2">3. Змінний струм: котушка + лампа</option>
+  </select>
+  <div><button id="tg"></button><button id="rs">Скинути / нова лампа</button><button id="pl">Пауза</button></div>
+  <label><span id="lE"></span><input type="range" id="E" min="1" max="15" step="0.5"></label>
+  <label><span id="lL"></span><input type="range" id="L" min="-2.3" max="0.3" step="0.01"></label>
+  <label><span id="lr"></span><input type="range" id="r" min="0.1" max="3" step="0.1"></label>
+  <label id="rowf"><span id="lf"></span><input type="range" id="f" min="1" max="100" step="1"></label>
+  <label><span id="lC"></span><input type="range" id="C" min="0.3" max="5" step="0.1" value="1"></label>
+  <label><span id="lS"></span><input type="range" id="S" min="0" max="2.3" step="0.05"></label>
+  <label><input type="checkbox" id="au"> автоперемикання, півперіод <span id="lh"></span>
+    <input type="range" id="ah" min="20" max="1000" step="10" value="400"></label>
+  <div id="ro"></div>
+  <div class="note">Модель: L·dI/dt = ε − I(r+R<sub>л</sub>); R<sub>л</sub>(T)=R₀(T/T₀)<sup>1,2</sup> (вольфрам);
+  C·dT/dt = I²R<sub>л</sub> − σ-випромінювання − провідність. Лампа 12 В / 24 Вт, T<sub>ном</sub>≈2700 К.
+  Світність — інтеграл закону Планка з кривою чутливості ока; колір — випромінювання абсолютно чорного тіла.
+  Клацніть на важіль ключа, щоб перемкнути.</div>
+</div>
+<div id="stage"><canvas id="c"></canvas></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id),cv=$('c'),g=cv.getContext('2d');
+const dark=matchMedia('(prefers-color-scheme: dark)').matches;
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>location.reload());
+const cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+const AX=dark?'#aaa':'#555',GR=dark?'#ffffff22':'#00000018';
+const CI=dark?'#ffb070':'#d4620f',CB=dark?'#6cb8ff':'#1f6fb5',CT=dark?'#ff7766':'#c0392b';
+
+/* ---------- лампа: вольфрамова нитка 12 В / 24 Вт ---------- */
+const T0=293,TN=2700,R0=6/Math.pow(TN/T0,1.2),Rl=T=>R0*Math.pow(T/T0,1.2);
+const gC=2.4/(TN-T0),kR=21.6/(TN**4-T0**4),Pl=T=>kR*(T**4-T0**4)+gC*(T-T0);
+const LP=[];{const V=l=>Math.exp(-285.4*(l-.559)**2),F=T=>{let s=0;for(let n=380;n<=780;n+=10){const l=n*1e-9;s+=V(n/1e3)*l**-5/(Math.exp(1.4388e-2/(l*T))-1)}return s},f0=F(TN);for(let T=300;T<=4300;T+=20)LP.push(Math.log10(F(T)/f0))}
+const lphi=T=>{const x=cl((T-300)/20,0,LP.length-1.001),k=x|0;return LP[k]*(1-x+k)+LP[k+1]*(x-k)};
+const phi=T=>Math.pow(10,lphi(T));
+const glow=T=>Math.pow(cl(1+lphi(T)/7,0,1.4),2.2);
+const bb=T=>{const t=cl(T,900,3600)/100;return[255,cl(99.47*Math.log(t)-161.12,0,255),t<=19?0:cl(138.5*Math.log(t-10)-305.04,0,255)]};
+
+/* ---------- стан і параметри ---------- */
+const MODES=[{E:12,L:-.3,r:.3,f:5,S:1.2},{E:6,L:-1,r:1.2,f:5,S:1.2},{E:12,L:-1,r:.3,f:5,S:1}];
+let mode=0,S,hist,evts,lastS,lastSw,running=true,lev=0,Q={a:0,b:0},ph={a:0,b:0};
+const KQ=2500;
+function reset(){S={t:0,i:0,T:T0,on:false,dead:0,fl:0};hist=[];evts=[];lastS=-1;lastSw=0;lev=0;ph={a:0,b:0};s1={lo:0,hi:1};s2={lo:0,hi:120}}
+let s1,s2;
+function par(){const f=+$('f').value;return{E:+$('E').value,L:Math.pow(10,+$('L').value),r:+$('r').value,f,w:2*Math.PI*f,C:+$('C').value*1e-3}}
+function setMode(m){mode=m;const d=MODES[m];for(const k in d)$(k).value=d[k];$('rowf').style.display=m==2?'':'none';$('au').checked=false;reset();lab()}
+function lab(){const p=par();
+  $('lE').textContent=(mode==2?'Діюча напруга U = ':'ЕРС E = ')+p.E.toFixed(1)+' В';
+  $('lL').textContent='Індуктивність L = '+(p.L<1?(p.L*1000).toFixed(0)+' мГн':p.L.toFixed(2)+' Гн');
+  $('lr').textContent='Опір обмотки r = '+p.r.toFixed(1)+' Ом';
+  $('lf').textContent='Частота f = '+p.f+' Гц';
+  $('lC').textContent='Теплова інерція нитки = '+(p.C*1000).toFixed(1)+' мДж/К';
+  $('lS').textContent='Уповільнення часу ×'+slow().toFixed(0);
+  $('lh').textContent=$('ah').value+' мс';
+  $('tg').textContent=mode==1?(S.on?'Розімкнути ключ':'Замкнути ключ'):(S.on?'Вимкнути джерело (накоротко)':'Увімкнути джерело')}
+const slow=()=>Math.pow(10,+$('S').value);
+function toggle(){S.on=!S.on;evts.push({t:S.t,on:S.on});lastSw=S.t;lab()}
+
+/* ---------- фізика ---------- */
+function F(i,T,t,p){let di,P,il;const R=Rl(T);
+  if(S.dead){return[mode==1&&S.on?(p.E-p.r*i)/p.L:0,-Pl(T)/p.C,0]}
+  if(mode==1){if(S.on){di=(p.E-p.r*i)/p.L;il=p.E/R;P=p.E*il}else{di=-i*(p.r+R)/p.L;il=-i;P=i*i*R}}
+  else{const e=S.on?(mode==2?p.E*1.4142*Math.sin(p.w*t):p.E):0;di=(e-i*(p.r+R))/p.L;il=i;P=i*i*R}
+  return[di,(P-Pl(T))/p.C,il]}
+function step(h,p){const{i,T,t}=S,a=F(i,T,t,p),b=F(i+h/2*a[0],T+h/2*a[1],t+h/2,p),c=F(i+h/2*b[0],T+h/2*b[1],t+h/2,p),d=F(i+h*c[0],T+h*c[1],t+h,p);
+  S.i+=h/6*(a[0]+2*b[0]+2*c[0]+d[0]);S.T=Math.max(T0,S.T+h/6*(a[1]+2*b[1]+2*c[1]+d[1]));S.t+=h;
+  if(S.T>3600&&!S.dead){S.dead=1;S.fl=1}
+  if(S.dead&&!(mode==1&&S.on))S.i=0;
+  const x=F(S.i,S.T,S.t,p);Q.a+=S.i*h;Q.b+=x[2]*h;
+  if(S.t-lastS>=win(p)/700){lastS=S.t;hist.push({t:S.t,i:S.i,il:x[2],T:S.T,f:phi(S.T)*100});if(hist.length>1500)hist.shift()}}
+function win(p){if(mode==2)return cl(6/p.f,.2,3);const te=mode==1?p.L/p.r:p.L/(p.r+6),tt=p.C/(4*kR*TN**3+gC);return cl(6*Math.max(te,tt),.15,5)}
+function adv(tm,p){const n=Math.max(1,Math.ceil(tm/2e-5)),h=tm/n,hs=$('ah').value/1000;
+  for(let k=0;k<n;k++){if($('au').checked&&S.t-lastSw>=hs)toggle();step(h,p)}}
+function ssolve(p){const f=mode==1?R=>p.E*p.E/R:mode==2?R=>p.E*p.E*R/((p.r+R)**2+(p.w*p.L)**2):R=>p.E*p.E*R/(p.r+R)**2;
+  let T=T0;for(;T<5000;T+=5)if(f(Rl(T))-Pl(T)<=0)break;
+  let lo=T-5,hi=T;for(let k=0;k<25;k++){const m=(lo+hi)/2;f(Rl(m))-Pl(m)>0?lo=m:hi=m}
+  T=lo;const R=Rl(T),X=mode==2?p.w*p.L:0,Z=Math.hypot(p.r+R,X);
+  return{T,R,Z,I:mode==1?p.E/p.r:p.E/Z,ph:Math.atan2(X,p.r+R)}}
+
+/* ---------- геометрія лампи (локальні одиниці, центр кулі в 0,0) ---------- */
+const GP=new Path2D;GP.moveTo(-36,150);GP.lineTo(-36,128);GP.bezierCurveTo(-38,83,-100,62,-100,0);GP.arc(0,0,100,Math.PI,0);GP.bezierCurveTo(100,62,38,83,36,128);GP.lineTo(36,150);GP.closePath();
+const FIL=(()=>{const A=[[-34,-20],[0,-60],[34,-20]],Ls=Math.hypot(34,40),N=130,TU=34,r1=3.4,pt=[];
+  for(let k=0;k<=N;k++){const d=k/N*2*Ls,sg=d<Ls?0:1,u=(d-sg*Ls)/Ls,a=A[sg],b=A[sg+1],tx=(b[0]-a[0])/Ls,ty=(b[1]-a[1])/Ls,x=a[0]+(b[0]-a[0])*u,y=a[1]+(b[1]-a[1])*u,th=2*Math.PI*TU*k/N;
+    pt.push([x-ty*r1*Math.sin(th)+tx*r1*.6*Math.cos(th),y+tx*r1*Math.sin(th)+ty*r1*.6*Math.cos(th),Math.cos(th)>0,x,y,k/N])}
+  const o={f:new Path2D,b:new Path2D,fx:new Path2D,bx:new Path2D,c:new Path2D};
+  o.c.moveTo(pt[0][3],pt[0][4]);
+  for(let k=0;k<N;k++){const a=pt[k],b=pt[k+1],P=a[2]?'f':'b',gap=a[5]>.46&&a[5]<.54;
+    o[P].moveTo(a[0],a[1]);o[P].lineTo(b[0],b[1]);if(!gap){o[P+'x'].moveTo(a[0],a[1]);o[P+'x'].lineTo(b[0],b[1])}o.c.lineTo(b[3],b[4])}
+  return o})();
+const lg=(x0,st)=>{const q=g.createLinearGradient(x0,0,-x0,0);st.forEach(([o,c])=>q.addColorStop(o,c));return q};
+
+function bulb(cx,cy,s,b,col,dead){
+  const rg=a=>`rgba(${col[0]},${col[1]},${col[2]},${a})`;
+  g.save();
+  if(b>.01){g.globalCompositeOperation='lighter';const R=340*s,y=cy-35*s,q=g.createRadialGradient(cx,y,0,cx,y,R);
+    q.addColorStop(0,rg(.32*b));q.addColorStop(.3,rg(.1*b));q.addColorStop(1,rg(0));g.fillStyle=q;g.fillRect(cx-R,y-R,2*R,2*R);g.globalCompositeOperation='source-over'}
+  g.translate(cx,cy);g.scale(s,s);
+  g.save();g.clip(GP);
+  let q=g.createRadialGradient(-30,-40,8,0,0,110);q.addColorStop(0,'rgba(255,255,255,.07)');q.addColorStop(1,'rgba(170,200,235,.16)');g.fillStyle=q;g.fillRect(-100,-100,200,260);
+  if(b>.01){g.globalCompositeOperation='lighter';q=g.createRadialGradient(0,-40,0,0,-40,125);q.addColorStop(0,rg(.45*b));q.addColorStop(1,rg(0));g.fillStyle=q;g.fillRect(-100,-110,200,270);g.globalCompositeOperation='source-over'}
+  if(dead){q=g.createRadialGradient(0,-45,0,0,-45,75);q.addColorStop(0,'rgba(70,55,40,.45)');q.addColorStop(1,'rgba(70,55,40,0)');g.fillStyle=q;g.fillRect(-100,-110,200,200)}
+  // ніжка (скляний штабик) і струмовводи
+  g.beginPath();g.moveTo(-32,148);g.bezierCurveTo(-32,128,-12,128,-12,104);g.lineTo(-12,42);g.quadraticCurveTo(-12,26,-6,24);g.lineTo(6,24);g.quadraticCurveTo(12,26,12,42);g.lineTo(12,104);g.bezierCurveTo(12,128,32,128,32,148);g.closePath();
+  g.fillStyle=lg(-14,[[0,'rgba(190,215,235,.38)'],[.5,'rgba(255,255,255,.12)'],[1,'rgba(190,215,235,.38)']]);g.fill();g.strokeStyle='rgba(255,255,255,.3)';g.lineWidth=1.2;g.stroke();
+  g.lineCap='round';g.lineJoin='round';
+  for(const sx of[-1,1]){g.beginPath();g.moveTo(sx*5,150);g.lineTo(sx*5,12);g.lineTo(sx*30,-14);g.lineTo(sx*34,-20);g.strokeStyle='#b8733a';g.lineWidth=2.2;g.stroke();g.strokeStyle='#e3a572';g.lineWidth=.7;g.stroke()}
+  g.beginPath();g.moveTo(0,26);g.lineTo(0,-58);g.strokeStyle='#8d9098';g.lineWidth=1.1;g.stroke();
+  // нитка: подвійна спіраль
+  const hot=Math.min(1,b*1.5);
+  g.globalAlpha=1-.85*hot;g.lineWidth=1.8;
+  g.strokeStyle='#5f6068';g.stroke(dead?FIL.bx:FIL.b);g.strokeStyle='#a9abb5';g.stroke(dead?FIL.fx:FIL.f);g.strokeStyle='#e9eaf0';g.lineWidth=.6;g.stroke(dead?FIL.fx:FIL.f);
+  g.globalAlpha=1;
+  if(b>.01&&!dead){g.globalCompositeOperation='lighter';
+    for(const[w,a]of[[26,.04],[14,.08],[7,.16]]){g.strokeStyle=rg(a*b);g.lineWidth=w;g.stroke(FIL.c)}
+    g.strokeStyle=rg(.55*Math.min(1,b*1.2));g.lineWidth=2.6;g.stroke(FIL.b);
+    g.strokeStyle=rg(Math.min(1,b*1.3));g.lineWidth=2.2;g.stroke(FIL.f);
+    const w=cl((b-.55)/.6,0,1);if(w>0){g.strokeStyle=`rgba(255,248,235,${.9*w})`;g.lineWidth=1;g.stroke(FIL.f)}
+    g.globalCompositeOperation='source-over'}
+  g.restore();
+  // поверхня скла: контур і відблиски
+  g.strokeStyle='rgba(200,225,255,.38)';g.lineWidth=2;g.stroke(GP);
+  g.save();g.scale(.965,.965);g.strokeStyle='rgba(255,255,255,.1)';g.lineWidth=1.2;g.stroke(GP);g.restore();
+  g.lineCap='round';
+  g.beginPath();g.arc(0,0,84,Math.PI*1.08,Math.PI*1.42);g.strokeStyle='rgba(255,255,255,.22)';g.lineWidth=8;g.stroke();g.strokeStyle='rgba(255,255,255,.7)';g.lineWidth=2.5;g.stroke();
+  g.beginPath();g.arc(0,0,90,-.35*Math.PI,.1*Math.PI);g.strokeStyle='rgba(255,255,255,.18)';g.lineWidth=3;g.stroke();
+  g.beginPath();g.moveTo(-31,92);g.lineTo(-28,138);g.strokeStyle='rgba(255,255,255,.3)';g.lineWidth=3;g.stroke();
+  g.beginPath();g.ellipse(-58,-62,7,4,-.7,0,6.3);g.fillStyle='rgba(255,255,255,.85)';g.fill();
+  // цоколь Едісона
+  const bg=lg(-40,[[0,'#4b4f55'],[.2,'#b9bdc4'],[.38,'#f2f4f7'],[.62,'#aeb2b9'],[.86,'#6c7077'],[1,'#43474d']]);
+  g.fillStyle=bg;g.fillRect(-37,146,74,70);g.fillRect(-39,143,78,9);g.fillStyle='rgba(0,0,0,.25)';g.fillRect(-39,150,78,2);
+  for(let k=0;k<3;k++){const y=162+k*13;g.strokeStyle='rgba(15,17,20,.7)';g.lineWidth=3;g.beginPath();g.ellipse(0,y,36,6,0,0,Math.PI);g.stroke();
+    g.strokeStyle='rgba(255,255,255,.45)';g.lineWidth=1.3;g.beginPath();g.ellipse(0,y+3.3,36,6,0,0,Math.PI);g.stroke()}
+  // патрон
+  g.fillStyle=lg(-46,[[0,'#0b0b0d'],[.25,'#3a3d44'],[.5,'#1d1f23'],[1,'#08080a']]);
+  g.beginPath();g.moveTo(-46,196);g.lineTo(-46,254);g.quadraticCurveTo(-46,262,-38,262);g.lineTo(38,262);g.quadraticCurveTo(46,262,46,254);g.lineTo(46,196);g.ellipse(0,196,46,7,0,0,Math.PI);g.closePath();g.fill();
+  g.strokeStyle='rgba(255,255,255,.22)';g.lineWidth=1.2;g.beginPath();g.ellipse(0,196,46,7,0,0,Math.PI);g.stroke();
+  for(const y of[222,240]){g.strokeStyle='rgba(255,255,255,.09)';g.lineWidth=2;g.beginPath();g.ellipse(0,y,46,6,0,0,Math.PI);g.stroke()}
+  g.fillStyle='#c19a52';g.fillRect(-52,229,8,12);g.fillRect(-9,262,18,4);
+  g.restore()}
+
+/* ---------- схема ---------- */
+let W=0,H=0,Ht=0,s=1,bcx=0,bcy=0,xs=0,xa=0,yT=0,yB=0,shx=0,shy=0,tpx=0,tpy=0;
+function resize(){const d=devicePixelRatio||1;W=cv.clientWidth;H=cv.clientHeight;cv.width=Math.round(W*d);cv.height=Math.round(H*d);g.setTransform(d,0,0,d,0,0);
+  Ht=Math.round(cl(H*.54,300,480));s=(Ht-56)/362;bcy=22+100*s;bcx=W-20-110*s;
+  shx=bcx-52*s;shy=bcy+235*s;tpx=bcx;tpy=bcy+266*s;xs=50;xa=bcx-125*s;yT=Math.max(64,Ht*.22);yB=Ht-16}
+const wire=pts=>{g.beginPath();pts.forEach((q,i)=>i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));g.stroke()};
+function dots(pts,phase,cur){if(Math.abs(cur)<2e-3)return;g.save();g.setLineDash([2,14]);g.lineDashOffset=-phase;g.lineWidth=4;g.lineCap='round';g.strokeStyle='#ffc35a';wire(pts);g.restore()}
+function coil(x,y,len,vert,gl){g.save();g.translate(x,y);if(vert)g.rotate(Math.PI/2);
+  if(gl>.02){const q=g.createRadialGradient(len/2,0,0,len/2,0,len*.85);q.addColorStop(0,`rgba(90,170,255,${.55*gl})`);q.addColorStop(1,'rgba(90,170,255,0)');g.fillStyle=q;g.fillRect(-len*.4,-len*.85,len*1.8,len*1.7)}
+  const n=9,d=len/n;g.lineWidth=3.2;
+  g.strokeStyle='#8a4d1e';g.beginPath();for(let k=0;k<n;k++){g.moveTo(d*(k+.5),-22);g.ellipse(d*(k+.5),0,4,22,0,-Math.PI/2,Math.PI/2,true)}g.stroke();
+  g.strokeStyle='#e08a3c';g.beginPath();for(let k=0;k<n;k++){g.moveTo(d*(k+.5),-22);g.ellipse(d*(k+.5),0,4,22,0,-Math.PI/2,Math.PI/2,false)}g.stroke();
+  g.strokeStyle='#9aa0aa';g.lineWidth=2;wire([[0,0],[d*.5,22]]);wire([[d*(n-.5),-22],[len,0]]);g.restore()}
+const txt=(t,x,y,c)=>{g.fillStyle=c||'#b9bec8';g.font='12px system-ui,sans-serif';g.textAlign='center';g.fillText(t,x,y)};
+
+function scene(p,ss,b,col){
+  g.save();g.beginPath();g.rect(0,0,W,Ht);g.clip();
+  const bg=g.createLinearGradient(0,0,0,Ht);bg.addColorStop(0,'#0e1115');bg.addColorStop(1,'#07080a');g.fillStyle=bg;g.fillRect(0,0,W,Ht);
+  bulb(bcx,bcy,s,b,col,S.dead);
+  if(S.fl>0){g.globalCompositeOperation='lighter';const R=260*s,q=g.createRadialGradient(bcx,bcy-40*s,0,bcx,bcy-40*s,R);q.addColorStop(0,`rgba(255,255,255,${.85*S.fl})`);q.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=q;g.fillRect(bcx-R,bcy-40*s-R,2*R,2*R);g.globalCompositeOperation='source-over'}
+  g.lineWidth=2.5;g.strokeStyle='#8c929c';g.lineJoin='round';
+  const il=hist.length?hist[hist.length-1].il:0,iRef=Math.max(.5,mode==1?p.E/p.r:ss.I*(mode==2?1.4:1)),gl=Math.min(1,Math.abs(S.i)/iRef);
+  const ym=(yT+yB)/2,lampTop=[[xa,yT],[xa,shy],[shx,shy]];
+  g.fillStyle='#8c929c';
+  if(mode!=1){
+    const D=xa-xs,xK=xs+D*.2,xc0=xs+D*.38,xc1=xc0+Math.min(130,D*.34),ang=Math.PI/2+lev*Math.PI/2;
+    wire([[xs,yT],[xK-44,yT]]);wire([[xK,yT],[xc0,yT]]);wire([[xc1,yT],...lampTop]);wire([[tpx,tpy],[tpx,yB],[xs,yB]]);wire([[xs,yT],[xs,ym-9]]);wire([[xs,ym+10],[xs,yB]]);wire([[xK,yB],[xK,yT+44]]);
+    const a=ph.a;
+    if(S.on){dots([[xs,ym-9],[xs,yT],[xK-44,yT]],a,S.i);dots([[xK,yT],[xc0,yT]],a,S.i);dots([[xc1,yT],...lampTop],a,S.i);dots([[tpx,tpy],[tpx,yB],[xs,yB],[xs,ym+10]],a,S.i)}
+    else{dots([[xK,yT],[xc0,yT]],a,S.i);dots([[xc1,yT],...lampTop],a,S.i);dots([[tpx,tpy],[tpx,yB],[xK,yB],[xK,yT+44]],a,S.i)}
+    // джерело
+    g.lineWidth=3;
+    if(mode==2){g.beginPath();g.arc(xs,ym,17,0,6.3);g.fillStyle='#0b0d11';g.fill();g.stroke();g.beginPath();for(let k=-10;k<=10;k++)g.lineTo(xs+k*.8,ym-7*Math.sin(k*.31*Math.PI));g.stroke();txt('~ U',xs-30,ym+4)}
+    else{wire([[xs-15,ym-6],[xs+15,ym-6]]);g.lineWidth=5;wire([[xs-8,ym+8],[xs+8,ym+8]]);txt('E',xs-26,ym+4)}
+    g.lineWidth=2.5;g.fillStyle='#8c929c';
+    g.beginPath();g.arc(xK-44,yT,3.5,0,6.3);g.fill();g.beginPath();g.arc(xK,yT+44,3.5,0,6.3);g.fill();g.beginPath();g.arc(xK,yT,4.5,0,6.3);g.fill();
+    g.strokeStyle=S.on?'#ffc35a':'#c7ccd4';g.lineWidth=3.5;wire([[xK,yT],[xK+44*Math.cos(ang),yT+44*Math.sin(ang)]]);
+    txt('K',xK-18,yT-14);txt('L, r',(xc0+xc1)/2,yT-34);coil(xc0,yT,xc1-xc0,false,gl);
+    cv._sw=[xK,yT]}
+  else{
+    const xm=(xs+xa)/2,yK=yT+34,yP=yT+88,yb1=yB-67,yb2=yB-53,ang=-Math.PI/2+(1-lev)*.6,cy1=yT+34,cy2=yB-34;
+    wire([[xs,yT],[xs,yK]]);wire([[xs,yP],[xs,yb1]]);wire([[xs,yb2],[xs,yB]]);wire([[xs,yT],[xa,yT],[xa,shy],[shx,shy]]);wire([[tpx,tpy],[tpx,yB],[xs,yB]]);wire([[xm,yT],[xm,cy1]]);wire([[xm,cy2],[xm,yB]]);
+    const qs=ph.a+ph.b,sc=S.on?1:0;
+    dots([[xm,yB],[xs,yB],[xs,yb2]],qs,sc*(S.i+il));dots([[xs,yb1],[xs,yP]],qs,sc*(S.i+il));dots([[xs,yK],[xs,yT],[xm,yT]],qs,sc*(S.i+il));
+    dots([[xm,yT],[xa,yT],[xa,shy],[shx,shy]],ph.b,il);dots([[xm,yT],[xm,cy1]],ph.a,S.i);dots([[xm,cy2],[xm,yB]],ph.a,S.i);dots([[tpx,tpy],[tpx,yB],[xm,yB]],ph.b,il);
+    g.lineWidth=3;wire([[xs-15,yb1],[xs+15,yb1]]);g.lineWidth=5;wire([[xs,yb2],[xs,yb2]]);wire([[xs-8,yb2],[xs+8,yb2]]);txt('E',xs-26,yB-56);
+    g.fillStyle='#8c929c';g.beginPath();g.arc(xs,yK,3.5,0,6.3);g.fill();g.beginPath();g.arc(xs,yP,4.5,0,6.3);g.fill();
+    g.strokeStyle=S.on?'#ffc35a':'#c7ccd4';g.lineWidth=3.5;wire([[xs,yP],[xs+54*Math.cos(ang),yP+54*Math.sin(ang)]]);
+    txt('K',xs-18,yP-20);txt('L, r',xm+36,(cy1+cy2)/2+4);coil(xm,cy1,cy2-cy1,true,gl);
+    cv._sw=[xs,yP]}
+  txt('лампа',bcx,Ht-4);
+  g.restore()}
+
+/* ---------- графіки ---------- */
+const ns=v=>{const e=Math.pow(10,Math.floor(Math.log10(v))),m=v/e;return(m<=1?1:m<=2?2:m<=2.5?2.5:m<=5?5:10)*e};
+function adj(o,lo,hi){const H2=ns(Math.max(hi*1.08,1e-3)),L2=lo<0?-ns(-lo*1.08):0;if(H2>o.hi||H2<o.hi*.5)o.hi=H2;if(L2<o.lo||L2>o.lo*.5)o.lo=L2}
+function plots(p,ss){
+  const x0=58,x1=W-62,top=Ht+12,h=(H-top-30)/2-6,w=win(p),t0=S.t-w,X=t=>x0+(t-t0)/w*(x1-x0);
+  const vis=hist.filter(q=>q.t>t0);
+  let hi=0,lo=0;for(const q of vis){hi=Math.max(hi,q.i,q.il);lo=Math.min(lo,q.i,q.il)}
+  if(mode==2)hi=Math.max(hi,ss.I*1.4142);adj(s1,lo,hi);
+  let fm=100;for(const q of vis)fm=Math.max(fm,q.f);adj(s2,0,fm);
+  const P=[[top,s1],[top+h+14,s2]];
+  const yv=(o,y,v)=>y+h-(v-o.lo)/(o.hi-o.lo)*h;
+  g.font='12px system-ui,sans-serif';
+  // сітка часу
+  const st=ns(w/6);
+  P.forEach(([y,o],n)=>{g.strokeStyle=AX;g.lineWidth=1;g.strokeRect(x0,y,x1-x0,h);
+    g.fillStyle=AX;g.textAlign='left';g.fillText(n?'світність Φ/Φном (заливка, %)  і  температура нитки T (червона, К)':(mode==1?'струм у котушці I_L (синя) і в лампі (помаранчева), А':'струм I у колі, А'),x0+6,y+14);
+    g.textAlign='right';[o.lo,(o.lo+o.hi)/2,o.hi].forEach(v=>{g.fillStyle=AX;g.fillText(v.toFixed(v>=10?0:1),x0-4,yv(o,y,v)+4);g.strokeStyle=GR;wire([[x0,yv(o,y,v)],[x1,yv(o,y,v)]])})});
+  g.textAlign='center';for(let t=Math.ceil(t0/st)*st;t<=S.t;t+=st){const x=X(t);g.strokeStyle=GR;wire([[x,top],[x,top+2*h+14]]);g.fillStyle=AX;g.fillText(st<1?(t*1000).toFixed(0)+' мс':t.toFixed(st<10?1:0)+' с',x,top+2*h+28)}
+  const ln=(y,o,k,c,lw,dash)=>{g.save();g.beginPath();g.rect(x0,y,x1-x0,h);g.clip();g.strokeStyle=c;g.lineWidth=lw;g.setLineDash(dash||[]);g.beginPath();vis.forEach((q,j)=>{const px=X(q.t),py=yv(o,y,q[k]);j?g.lineTo(px,py):g.moveTo(px,py)});g.stroke();g.restore()};
+  // панель 1
+  const[y1]=P[0];
+  g.setLineDash([5,4]);g.strokeStyle=AX;if(mode==0)wire([[x0,yv(s1,y1,ss.I)],[x1,yv(s1,y1,ss.I)]]);
+  if(mode==2){wire([[x0,yv(s1,y1,ss.I*1.4142)],[x1,yv(s1,y1,ss.I*1.4142)]]);wire([[x0,yv(s1,y1,-ss.I*1.4142)],[x1,yv(s1,y1,-ss.I*1.4142)]])}
+  g.setLineDash([]);
+  if(mode==1){ln(y1,s1,'i',CB,2);ln(y1,s1,'il',CI,2)}else ln(y1,s1,'i',CI,2);
+  // панель 2
+  const[y2]=P[1];
+  g.save();g.beginPath();g.rect(x0,y2,x1-x0,h);g.clip();
+  const q=g.createLinearGradient(0,y2,0,y2+h);q.addColorStop(0,dark?'#ffb45a88':'#ff9a2a88');q.addColorStop(1,'#ffb45a08');g.fillStyle=q;
+  g.beginPath();g.moveTo(X(vis.length?vis[0].t:t0),y2+h);vis.forEach(v=>g.lineTo(X(v.t),yv(s2,y2,v.f)));g.lineTo(X(S.t),y2+h);g.fill();
+  g.setLineDash([5,4]);g.strokeStyle=AX;wire([[x0,yv(s2,y2,100)],[x1,yv(s2,y2,100)]]);g.setLineDash([]);
+  g.strokeStyle=CT;g.lineWidth=2;g.beginPath();vis.forEach((v,j)=>{const px=X(v.t),py=y2+h-v.T/3600*h;j?g.lineTo(px,py):g.moveTo(px,py)});g.stroke();g.restore();
+  g.textAlign='left';g.fillStyle=CT;[0,1000,2000,3000].forEach(T=>g.fillText(T+' К',x1+4,y2+h-T/3600*h+4));
+  // події ключа
+  evts.forEach(e=>{if(e.t>t0){g.setLineDash([3,4]);g.strokeStyle=AX;wire([[X(e.t),top],[X(e.t),top+2*h+14]]);g.setLineDash([]);g.fillStyle=AX;g.textAlign='left';g.fillText(e.on?'вкл.':'викл.',X(e.t)+3,top+h-4)}})}
+
+/* ---------- текст ---------- */
+function readout(p,ss){
+  const il=hist.length?hist[hist.length-1].il:0,R=Rl(S.T),T=S.T,L=p.L,tt=p.C/(4*kR*Math.pow(ss.T,3)+gC)*1000,f=(x,d=2)=>x.toFixed(d).replace('.',',');
+  let h=`t = ${f(S.t*1000,0)} мс<br>`;
+  if(mode==1)h+=`I<sub>L</sub> = ${f(S.i)} А (стала E/r = ${f(ss.I)} А)<br>струм лампи = ${f(il)} А<br>`;
+  else h+=`I = ${f(S.i)} А`+(mode==0?` (стала ${f(ss.I)} А)`:` (I<sub>діюч</sub> ≈ ${f(ss.I)} А)`)+'<br>';
+  h+=`R<sub>лампи</sub> = ${f(R)} Ом (холодна ${f(R0)} Ом)<br>T = ${f(T,0)} К; Φ = ${f(phi(T)*100,1)} % від номіналу<br>W<sub>L</sub> = ½LI² = ${f(.5*L*S.i*S.i,3)} Дж<br>`;
+  if(mode==0)h+=`τ = L/(r+R) ≈ ${f(L/(p.r+ss.R)*1000,0)} мс; τ<sub>тепл</sub> ≈ ${f(tt,0)} мс<br>`;
+  if(mode==1)h+=`τ<sub>заряд</sub> = L/r = ${f(L/p.r*1000,0)} мс; τ<sub>розм</sub> = L/(r+R) ≈ ${f(L/(p.r+ss.R)*1000,0)} мс<br>`;
+  if(mode==2){const t1=S.t-1/p.f;let mx=0,mn=1e9;for(const q of hist)if(q.t>t1){mx=Math.max(mx,q.f);mn=Math.min(mn,q.f)}
+    h+=`Z = ${f(ss.Z)} Ом, φ = ${f(ss.ph*180/Math.PI,0)}° (струм відстає)<br>пульсації світла: ${f(mx>0?(mx-mn)/(mx+mn)*100:0,0)} %<br>`}
+  let m;const uL=hist.length>1?L*(S.i-hist[hist.length-2].i)/Math.max(1e-9,S.t-hist[hist.length-2].t):0;
+  if(S.dead)m='<b style="color:#d33">Нитка перегоріла (T > 3600 К).</b> Натисніть «Скинути / нова лампа».';
+  else if(mode==2)m='Змінний струм: котушка додає реактивний опір ωL, тож амплітуда струму менша, а струм відстає від напруги. Нитка інерційна, тому на високих частотах світло майже не мерехтить.';
+  else if(mode==1)m=S.on?'Ключ замкнено: струм котушки наростає до E/r, лампа світиться від напруги джерела.':(Math.abs(S.i)>.02?'Ключ розімкнено: котушка віддає запасену енергію лампі. Струм ≈ E/r ≫ звичайного, тож лампа спалахує яскравіше за сталий режим.':'Струм згас.');
+  else m=!S.on&&Math.abs(S.i)>.02?'Струм спадає: ЕРС самоіндукції підтримує струм, котушка віддає енергію теплу в нитці, нитка остигає.':(S.on&&Math.abs(uL)>.04*p.E?'Струм зростає: ЕРС самоіндукції гальмує його наростання; нитка розжарюється поступово, її опір росте.':'Усталений режим: dI/dt ≈ 0, ЕРС самоіндукції ≈ 0.');
+  $('ro').innerHTML=h+'<br>'+m}
+
+/* ---------- цикл ---------- */
+let last=performance.now(),ro=0;
+function frame(now){const rdt=Math.min(.05,(now-last)/1000);last=now;const p=par(),ss=ssolve(p);
+  if(running){Q={a:0,b:0};adv(rdt/slow(),p);ph.a+=cl(Q.a*KQ,-7,7);ph.b+=cl(Q.b*KQ,-7,7)}
+  lev+=((S.on?1:0)-lev)*Math.min(1,rdt*12);S.fl=Math.max(0,S.fl-rdt*2);
+  lab();g.clearRect(0,0,W,H);
+  scene(p,ss,S.dead?0:glow(S.T),bb(S.T));plots(p,ss);
+  if(now-ro>120){ro=now;readout(p,ss)}
+  requestAnimationFrame(frame)}
+
+$('mode').onchange=e=>{setMode(+e.target.value);toggle()};
+$('tg').onclick=toggle;$('rs').onclick=()=>{reset();lab()};
+$('pl').onclick=()=>{running=!running;$('pl').textContent=running?'Пауза':'Продовжити'};
+cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,q=cv._sw;if(q&&Math.hypot(x-q[0],y-q[1])<50)toggle()});
+addEventListener('resize',resize);
+resize();setMode(0);requestAnimationFrame(frame);
+setTimeout(()=>{if(!S.on&&!evts.length)toggle()},500);
+</script>
+</body>
+</html>

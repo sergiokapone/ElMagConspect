@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Провідник в однорідному полі: індуковані заряди й екранування</title>
+<style>
+:root{--ink:#1d2327;--muted:#5b6670;--line:#c9d0d6;--bg:#f5f6f7;--panel:#fff;--pos:#1f5fd6;--neg:#d62728;
+  --cpos:#1f9d55;--conductor:#dce1e5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;
+  --cpos:#52c977;--conductor:#272c31;color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;
+  --cpos:#52c977;--conductor:#272c31;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;padding:12px 14px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);
+  display:flex;flex-direction:column;gap:8px}
+h1{font-size:20px;margin:0;font-weight:600}
+p.lead{margin:0;color:var(--muted);font-size:14px;line-height:1.5;max-width:95ch}
+#stage{position:relative;flex:1 1 auto;min-height:340px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--bg)}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:crosshair;touch-action:none}
+#panel{position:absolute;top:10px;left:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+  font-size:13.5px;line-height:1.6;max-width:285px;backdrop-filter:blur(4px);z-index:2}
+#panel label.ctl{display:block;margin-top:4px}
+#panel label.chk{display:block;margin-top:2px}
+#panel input[type=range]{width:100%;vertical-align:middle}
+#panel button{font:inherit;font-size:13.5px;margin-top:8px;padding:5px 14px;border:1px solid #8b97a1;background:var(--panel);border-radius:4px;cursor:pointer;color:var(--ink)}
+#panel button:hover{filter:brightness(.95)}
+#info{position:absolute;left:10px;bottom:10px;max-width:min(680px,calc(100% - 20px));background:var(--panel);border:1px solid var(--line);
+  border-radius:8px;padding:8px 11px;margin:0;font-size:13px;line-height:1.55;backdrop-filter:blur(4px);z-index:2}
+p.hint{margin:0;font-size:13px;color:var(--muted);line-height:1.4;max-width:95ch}
+</style>
+<script src="assets/theme.js"></script>
+</head>
+<body>
+<h1>Провідник в однорідному полі: індуковані заряди й екранування</h1>
+<p class="lead">У провіднику вільні заряди майже миттєво перерозподіляються так, щоб створене ними поле скомпенсувало зовнішнє однорідне поле <i>E</i>₀ всередині: <i>E</i><sub>внутр</sub> = 0 — це і є екранування. Зовні кулі радіуса R потенціал дорівнює φ(<i>r</i>,θ) = −<i>E</i>₀<i>r</i>·cosθ + <i>E</i>₀(R³/<i>r</i>²)·cosθ, тобто поле кулі — це поле точкового диполя з моментом <i>p</i> = 4πε₀<i>E</i>₀R³, розміщеного в центрі. На поверхні виникає індукований заряд із густиною σ(θ) = 3ε₀<i>E</i>₀·cosθ: «+» на боці, куди напрямлене поле (θ = 0), «−» на протилежному (θ = π), нуль на «екваторі», а повний індукований заряд дорівнює нулю. Поле на поверхні дорівнює 3<i>E</i>₀·cosθ і скрізь перпендикулярне до поверхні.</p>
+<div id="stage">
+  <canvas id="c" aria-label="Провідна куля в однорідному полі: деформовані силові лінії, еквіпотенціалі, індуковані заряди"></canvas>
+  <div id="panel">
+    <label class="ctl">E₀: <span id="vE0"></span> кВ/м
+      <input id="sE0" type="range" min="0.1" max="5" step="0.1" value="2">
+    </label>
+    <label class="ctl">Радіус R: <span id="vR"></span> px
+      <input id="sR" type="range" min="30" max="150" step="1" value="70">
+    </label>
+    <label class="chk"><input type="checkbox" id="chLines" checked> силові лінії</label>
+    <label class="chk"><input type="checkbox" id="chEq" checked> еквіпотенціалі</label>
+    <label class="chk"><input type="checkbox" id="chCh" checked> індуковані заряди</label>
+    <label class="ctl">Крок еквіпотенціалей: <span id="vDv"></span>·E₀R
+      <input id="sDv" type="range" min="0.05" max="0.6" step="0.05" value="0.15">
+    </label>
+    <button id="reset">Скинути</button>
+  </div>
+  <p id="info"></p>
+</div>
+<p class="hint">Перетягуйте кулю мишею — картина перераховується. Наведіть курсор на будь-яку точку, щоб побачити вектор <i>E</i> та його модуль у частках E₀ (всередині кулі <i>E</i> = 0). Силові лінії деформуються навколо кулі, закінчуються на поверхні й не заходять усередину.</p>
+
+<script>
+"use strict";
+const EPS0 = 8.8541878128e-12;
+
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+const sE0 = document.getElementById('sE0');
+const vE0 = document.getElementById('vE0');
+const sR  = document.getElementById('sR');
+const vR  = document.getElementById('vR');
+const chLines = document.getElementById('chLines');
+const chEq    = document.getElementById('chEq');
+const chCh    = document.getElementById('chCh');
+const sDv = document.getElementById('sDv');
+const vDv = document.getElementById('vDv');
+const btnReset = document.getElementById('reset');
+const info = document.getElementById('info');
+
+const STEP = 2;      // крок інтегрування силових ліній, px
+const G = 6;         // крок сітки еквіпотенціалей, px
+const MAXSTEPS = 2600;
+
+let W = 0, H = 0;
+let cx = 0, cy = 0;  // центр кулі, px
+let R = 70;          // радіус, px
+let dirty = true;
+let drag = false;
+let mouseX = -1e9, mouseY = -1e9, mouseInside = false;
+
+const col = {};
+function readCols() {
+  const s = getComputedStyle(document.documentElement);
+  for (const n of ['ink', 'muted', 'line', 'panel', 'pos', 'neg', 'cpos', 'conductor'])
+    col[n] = s.getPropertyValue('--' + n).trim();
+}
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readCols(); dirty = true; });
+
+/* ---------- фізика ---------- */
+// E в частках E₀ (однорідне поле = (1,0) вздовж +x), φ в одиницях E₀·px.
+// Поза кулею: E = E₀ x̂ + поле диполя p = 4πε₀E₀R³ x̂ у центрі.
+function field(x, y) {
+  const dx = x - cx, dy = y - cy;
+  const r = Math.hypot(dx, dy);
+  if (r <= R) return [0, 0, 0];           // всередині провідника E = 0, φ = 0
+  const r2 = r * r, r3 = r2 * r;
+  const R3 = R * R * R;
+  const cos = dx / r;                      // cosθ, θ від осі +x
+  const k = R3 / r3;
+  const ex = 1 + k * (3 * cos * cos - 1);
+  const ey = k * (3 * cos * (dy / r));
+  const v = -dx + R3 * cos / r2;
+  return [ex, ey, v];
+}
+
+// Інтегрування силової лінії вздовж поля (s=+1)
+function trace(x, y) {
+  const pts = [[x, y]];
+  if (Math.hypot(x - cx, y - cy) <= R) return { pts, hit: true };
+  for (let i = 0; i < MAXSTEPS; i++) {
+    const [ex, ey] = field(x, y);
+    const m = Math.hypot(ex, ey);
+    if (m < 1e-6) break;                   // стагнаційна точка (екватор)
+    x += STEP * ex / m;
+    y += STEP * ey / m;
+    const rr = Math.hypot(x - cx, y - cy);
+    if (rr <= R) {                         // лінія впирається в поверхню
+      const s = R / rr;
+      pts.push([cx + (x - cx) * s, cy + (y - cy) * s]);
+      return { pts, hit: true };
+    }
+    pts.push([x, y]);
+    if (x < -30 || x > W + 30 || y < -30 || y > H + 30) break;
+  }
+  return { pts, hit: false };
+}
+
+function strokeLine(pts) {
+  if (pts.length < 2) return;
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+  ctx.stroke();
+  // стрілка напрямку E у середині лінії
+  const m = Math.floor(pts.length / 2);
+  if (m < 1 || m >= pts.length - 1) return;
+  const [px, py] = pts[m];
+  const [ex, ey] = field(px, py);
+  const L = Math.hypot(ex, ey);
+  if (L === 0) return;
+  const ux = ex / L, uy = ey / L;
+  const tipX = px + 5 * ux, tipY = py + 5 * uy;
+  const bx = px - 3 * ux, by = py - 3 * uy;
+  ctx.beginPath();
+  ctx.moveTo(tipX, tipY);
+  ctx.lineTo(bx - 3 * uy, by + 3 * ux);
+  ctx.lineTo(bx + 3 * uy, by - 3 * ux);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawFieldLines() {
+  ctx.strokeStyle = col.muted;
+  ctx.fillStyle = col.muted;
+  ctx.lineWidth = 1.3;
+  ctx.setLineDash([]);
+  // вхідні лінії однорідного поля з лівого краю (деформуються, частина закінчується на поверхні)
+  const spacing = Math.max(16, Math.min(30, R * 0.35));
+  const ys = [];
+  for (let y = 6; y < H; y += spacing) ys.push(y);
+  ys.push(cy);                              // осьова лінія, що впирається в лівий полюс
+  for (const y of ys) strokeLine(trace(4, y).pts);
+  // лінії, що виходять з «+» правої півкулі
+  const nEmit = Math.max(2, Math.round(R / 14));
+  const ths = [0];
+  for (let k = 1; k < nEmit; k++) ths.push((k / nEmit) * (Math.PI / 2) * 0.96);
+  for (const th of ths) {
+    for (const s of (th === 0 ? [1] : [1, -1])) {
+      const a = s * th;
+      strokeLine(trace(cx + (R + 4) * Math.cos(a), cy + (R + 4) * Math.sin(a)).pts);
+    }
+  }
+}
+
+/* ---------- еквіпотенціалі (marching squares) ---------- */
+const SEG = [
+  [], [['L','B']], [['B','R']], [['L','R']],
+  [['T','R']], [['T','L'],['B','R']], [['T','B']], [['T','L']],
+  [['T','L']], [['T','B']], [['T','R'],['L','B']], [['T','R']],
+  [['L','R']], [['B','R']], [['L','B']], []
+];
+function lerpT(a, b, L) { return b === a ? 0.5 : (L - a) / (b - a); }
+function edgePt(e, x, y, va, vb, vc, vd, L) {
+  switch (e) {
+    case 'T': return [x + G * lerpT(va, vb, L), y];
+    case 'R': return [x + G, y + G * lerpT(vb, vc, L)];
+    case 'B': return [x + G * lerpT(vd, vc, L), y + G];
+    default:  return [x, y + G * lerpT(va, vd, L)];
+  }
+}
+function drawEquipotentials() {
+  const nx = Math.ceil(W / G) + 1, ny = Math.ceil(H / G) + 1;
+  const V = new Float32Array(nx * ny);
+  let vmin = Infinity, vmax = -Infinity;
+  for (let j = 0; j < ny; j++) {
+    for (let i = 0; i < nx; i++) {
+      const v = field(i * G, j * G)[2];
+      V[j * nx + i] = v;
+      if (v < vmin) vmin = v;
+      if (v > vmax) vmax = v;
+    }
+  }
+  const base = Number(sDv.value) * R;
+  const step = Math.max(base, (vmax - vmin) / 60);
+  const n0 = Math.ceil(vmin / step), n1 = Math.floor(vmax / step);
+
+  ctx.strokeStyle = col.pos;
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 3]);
+  ctx.beginPath();
+  for (let n = n0; n <= n1; n++) {
+    const L = n * step;
+    for (let j = 0; j < ny - 1; j++) {
+      for (let i = 0; i < nx - 1; i++) {
+        const va = V[j * nx + i], vb = V[j * nx + i + 1];
+        const vc = V[(j + 1) * nx + i + 1], vd = V[(j + 1) * nx + i];
+        const cs = ((va > L) ? 8 : 0) | ((vb > L) ? 4 : 0) |
+                   ((vc > L) ? 2 : 0) | ((vd > L) ? 1 : 0);
+        if (cs === 0 || cs === 15) continue;
+        const x = i * G, y = j * G;
+        for (const [e1, e2] of SEG[cs]) {
+          const p = edgePt(e1, x, y, va, vb, vc, vd, L);
+          const q = edgePt(e2, x, y, va, vb, vc, vd, L);
+          ctx.moveTo(p[0], p[1]);
+          ctx.lineTo(q[0], q[1]);
+        }
+      }
+    }
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+/* ---------- куля (провідник) ---------- */
+function drawSphere() {
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, 2 * Math.PI);
+  ctx.fillStyle = col.conductor;
+  ctx.fill();
+  ctx.lineWidth = 1.5;
+  ctx.strokeStyle = col.ink;
+  ctx.stroke();
+  ctx.fillStyle = col.muted;
+  ctx.font = '600 14px system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('E = 0', cx, cy);
+}
+
+/* ---------- індуковані заряди: щільність ∝ cosθ ---------- */
+function drawCharges() {
+  const N = Math.max(2, Math.round(R / 4));
+  const dth = 0.02, stepAcc = 2 / N;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // права півкуля (cosθ > 0) — «+»
+  let acc = 0;
+  for (let th = -Math.PI / 2; th <= Math.PI / 2; th += dth) {
+    acc += Math.cos(th) * dth;
+    if (acc >= stepAcc) {
+      acc -= stepAcc;
+      const s = Math.abs(Math.cos(th));
+      ctx.fillStyle = col.cpos;
+      ctx.font = 'bold ' + Math.round(10 + 8 * s) + 'px system-ui, sans-serif';
+      ctx.fillText('+', cx + (R + 8) * Math.cos(th), cy + (R + 8) * Math.sin(th));
+    }
+  }
+  // ліва півкуля (cosθ < 0) — «−»
+  acc = 0;
+  for (let th = Math.PI / 2; th <= 3 * Math.PI / 2; th += dth) {
+    acc += Math.abs(Math.cos(th)) * dth;
+    if (acc >= stepAcc) {
+      acc -= stepAcc;
+      const s = Math.abs(Math.cos(th));
+      ctx.fillStyle = col.neg;
+      ctx.font = 'bold ' + Math.round(10 + 8 * s) + 'px system-ui, sans-serif';
+      ctx.fillText('−', cx + (R + 8) * Math.cos(th), cy + (R + 8) * Math.sin(th));
+    }
+  }
+}
+
+/* ---------- довідковий вектор E₀ та стрілка під курсором ---------- */
+function arrow(x1, y1, x2, y2, hs) {
+  const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy);
+  if (L < 2) return;
+  const ux = dx / L, uy = dy / L;
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2 - ux * hs * 0.6, y2 - uy * hs * 0.6); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - ux * hs - uy * hs * 0.5, y2 - uy * hs + ux * hs * 0.5);
+  ctx.lineTo(x2 - ux * hs + uy * hs * 0.5, y2 - uy * hs - ux * hs * 0.5);
+  ctx.closePath(); ctx.fill();
+}
+
+function drawE0Label() {
+  const x = W - 210, y = 28;
+  ctx.strokeStyle = col.muted; ctx.fillStyle = col.muted; ctx.lineWidth = 2;
+  arrow(x, y, x + 58, y, 9);
+  ctx.font = '13px system-ui, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('E₀ (однорідне, +x)', x + 66, y);
+}
+
+function drawProbe() {
+  if (!mouseInside) return;
+  const rr = Math.hypot(mouseX - cx, mouseY - cy);
+  ctx.font = '13px system-ui, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'bottom';
+  if (rr <= R) {
+    ctx.fillStyle = col.muted;
+    ctx.fillText('E = 0 (всередині провідника)', mouseX + 12, mouseY - 8);
+    return;
+  }
+  const [ex, ey, v] = field(mouseX, mouseY);
+  const m = Math.hypot(ex, ey);
+  const len = Math.min(12 + 22 * m, 80);
+  const ux = ex / m, uy = ey / m;
+  ctx.strokeStyle = col.pos; ctx.fillStyle = col.pos; ctx.lineWidth = 2.5;
+  arrow(mouseX, mouseY, mouseX + len * ux, mouseY + len * uy, 9);
+  ctx.fillStyle = col.ink;
+  ctx.fillText('E = ' + m.toFixed(2) + '·E₀,   φ = ' + (v / R).toFixed(2) + '·E₀R', mouseX + 12, mouseY - 8);
+}
+
+/* ---------- readout ---------- */
+function fmt(x) {
+  if (!isFinite(x)) return '∞';
+  if (x === 0) return '0';
+  const e = Math.floor(Math.log10(Math.abs(x)));
+  const m = x / Math.pow(10, e);
+  return m.toFixed(1) + '·10<sup>' + (e < 0 ? '−' : '') + Math.abs(e) + '</sup>';
+}
+let lastInfo = '';
+function updateInfo() {
+  const E0vm = Number(sE0.value) * 1000;         // В/м
+  const Rm = R * 0.01;                            // 1 px = 1 см
+  const sigmaMax = 3 * EPS0 * E0vm;               // Кл/м²
+  const Epole = 3 * E0vm;                         // В/м
+  const p = 4 * Math.PI * EPS0 * E0vm * Rm * Rm * Rm; // Кл·м
+  const s =
+    'R = ' + R.toFixed(0) + ' px ≈ ' + Rm.toFixed(2) + ' м · E₀ = ' + Number(sE0.value).toFixed(1) +
+    ' кВ/м = ' + E0vm.toFixed(0) + ' В/м' +
+    '<br>σ<sub>max</sub> = 3ε₀<i>E</i>₀ = ' + fmt(sigmaMax) + ' Кл/м² — на полюсах θ = 0 і θ = π; на «екваторі» σ = 0' +
+    '<br>Поле на полюсі <i>E</i> = 3<i>E</i>₀ = ' + (Epole / 1000).toFixed(1) + ' кВ/м; всередині кулі <i>E</i> = 0 (екранування)' +
+    '<br>Повний індукований заряд Q = 0 · дипольний момент <i>p</i> = 4πε₀<i>E</i>₀R³ = ' + fmt(p) + ' Кл·м';
+  if (s !== lastInfo) { lastInfo = s; info.innerHTML = s; }
+}
+
+function drawScene() {
+  ctx.clearRect(0, 0, W, H);
+  if (chEq.checked) drawEquipotentials();
+  if (chLines.checked) drawFieldLines();
+  drawSphere();
+  if (chCh.checked) drawCharges();
+  drawE0Label();
+  drawProbe();
+}
+
+function render() {
+  if (dirty) { dirty = false; drawScene(); }
+  updateInfo();
+  requestAnimationFrame(render);
+}
+
+/* ---------- взаємодія ---------- */
+function pos(e) {
+  const r = cv.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+function hitSphere(p) { return Math.hypot(p.x - cx, p.y - cy) < R + 8; }
+
+cv.addEventListener('pointerdown', e => {
+  const p = pos(e);
+  if (hitSphere(p)) { drag = true; cv.setPointerCapture(e.pointerId); }
+  dirty = true;
+});
+cv.addEventListener('pointermove', e => {
+  const p = pos(e);
+  mouseX = p.x; mouseY = p.y; mouseInside = true;
+  if (drag) {
+    cx = clamp(p.x, R + 12, W - R - 12);
+    cy = clamp(p.y, R + 12, H - R - 12);
+    cv.style.cursor = 'grabbing';
+  } else {
+    cv.style.cursor = hitSphere(p) ? 'grab' : 'crosshair';
+  }
+  dirty = true;
+});
+cv.addEventListener('pointerup', () => { drag = false; dirty = true; });
+cv.addEventListener('pointerleave', () => { mouseInside = false; dirty = true; });
+
+/* ---------- панель ---------- */
+function reset() {
+  sE0.value = 2; sR.value = 70; sDv.value = 0.15;
+  chLines.checked = chEq.checked = chCh.checked = true;
+  R = 70;
+  cx = W / 2; cy = H / 2;
+  syncLabels();
+  dirty = true;
+}
+function syncLabels() {
+  vE0.textContent = Number(sE0.value).toFixed(1);
+  vR.textContent = Number(sR.value);
+  vDv.textContent = Number(sDv.value).toFixed(2);
+}
+sE0.addEventListener('input', () => { syncLabels(); updateInfo(); });
+sR.addEventListener('input', () => { R = Number(sR.value); syncLabels(); dirty = true; });
+sDv.addEventListener('input', () => { syncLabels(); dirty = true; });
+chLines.addEventListener('change', () => { dirty = true; });
+chEq.addEventListener('change', () => { dirty = true; });
+chCh.addEventListener('change', () => { dirty = true; });
+btnReset.addEventListener('click', reset);
+
+/* ---------- старт ---------- */
+function resize() {
+  const d = window.devicePixelRatio || 1;
+  W = cv.clientWidth;
+  H = cv.clientHeight;
+  cv.width = Math.round(W * d);
+  cv.height = Math.round(H * d);
+  ctx.setTransform(d, 0, 0, d, 0, 0);
+  if (cx === 0 && cy === 0) { cx = W / 2; cy = H / 2; }   // перший запуск
+  else { cx = clamp(cx, R + 12, W - R - 12); cy = clamp(cy, R + 12, H - R - 12); }
+  dirty = true;
+}
+window.addEventListener('resize', resize);
+readCols();
+resize();
+reset();
+requestAnimationFrame(render);
+</script>
+</body>
+</html>
