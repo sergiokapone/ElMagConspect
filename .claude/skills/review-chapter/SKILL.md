@@ -41,5 +41,5 @@ Work in stages and stop at the marked points: the author decides what is changed
 
 ## 5. Close
 - Add or update the chapter's row in `REVIEW.md` (find the row with `grep -n`, never read the whole file) (the main changes, one line; the commit hash is added by the author after the commit).
-- Update `.claude/STATUS.md`: new open items, new disagreements, what remains to be done. Keep it within ~40 lines: drop finished items, do not keep a chronological log (history is in `REVIEW.md` and `git log`).
+- Update `.claude/STATUS.md`: new open items, new disagreements, what remains to be done. Keep it within ~40 lines: drop finished items, do not keep a chronological log (history is in `REVIEW.md` and `git log`). Per-chapter details (citations, sources, checks) go to `review/$ARGUMENTS.md`, not into `STATUS.md`: it is imported in every session.
 - Do not commit or push unless asked.

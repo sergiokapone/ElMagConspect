@@ -11,7 +11,10 @@
       "Bash(git diff:*)",
       "Bash(git log:*)",
       "Bash(grep:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Read(docs/applets/**)",
+      "Edit(docs/applets/**)",
+      "Write(docs/applets/**)"
     ],
     "ask": [
       "Bash(git commit:*)",
@@ -43,7 +46,7 @@
       "Read(./_lint/**)",
       "Read(./**/*-Answers.tex)",
       "Read(./**/*.pdf)",
-      "Read(./docs/**/*.html)",
+      "Read(./docs/*.html)",
       "Read(./review-remarks.md)"
     ]
   }
