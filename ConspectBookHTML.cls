@@ -103,7 +103,7 @@
 % to the end of the previous chapter's page): \schapterpage = \schapter on a page of its own
 \newcommand{\schapterpage}[1]{\ForceHTMLPage\schapter{#1}}
 
-% ---- interactive simulations (Scripts/*.html): change the base address here only ----
+% ---- interactive simulations (applets/*.html): change the base address here only ----
 \RequirePackage{ConspectSims}
 \newcommand{\simheading}{\schapterpage{Інтерактивні симуляції}}   % own page and contents entry, like the bibliography
 % the print heading is a \part* (\addcontentsline{toc}{part}); in HTML the bibliography is a page of its own

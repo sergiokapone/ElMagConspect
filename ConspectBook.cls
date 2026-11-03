@@ -1451,7 +1451,7 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 \RequirePackage{bookmark}
 \RequirePackage[all]{hypcap}   % посилання на рисунок/таблицю ведуть на верх об'єкта, а не на підпис
 
-% --------------- Інтерактивні симуляції (Scripts/*.html) ----------- %
+% --------------- Інтерактивні симуляції (applets/*.html) ----------- %
 \RequirePackage{ConspectSims}   % \SimBaseURL, \simlink, \simdoc, \simlist
 % Окремий пункт змісту на рівні «Додатків» і «Літератури» (\part-рівень у змісті й закладках)
 \newcommand{\simheading}{\chapter*{Інтерактивні симуляції}\addcontentsline{toc}{part}{Інтерактивні симуляції}}
