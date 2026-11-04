@@ -1,0 +1,3 @@
+% Магнітом'який матеріал: H_c = 1 Е, B_r = 0,8*10^4 Гс, B_s = 1,5*10^4 Гс
+\def\Hc{1}\def\Bs{1.5}\def\Hw{1.68}\def\Hmax{10}\def\Hstep{5}
+\input{\currfiledir hysteresis-bh.tikz}

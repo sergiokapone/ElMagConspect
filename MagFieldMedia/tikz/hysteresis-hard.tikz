@@ -1,0 +1,3 @@
+% Магнітотвердий матеріал: H_c = 500 Е, B_r = 1,0*10^4 Гс, B_s = 1,2*10^4 Гс
+\def\Hc{500}\def\Bs{1.2}\def\Hw{417}\def\Hmax{1500}\def\Hstep{1000}
+\input{\currfiledir hysteresis-bh.tikz}

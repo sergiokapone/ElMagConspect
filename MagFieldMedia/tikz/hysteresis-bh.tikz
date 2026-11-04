@@ -1,0 +1,43 @@
+% Спільний код петель B(H) для магнітом'якого та магнітотвердого матеріалів.
+% Параметри (задаються перед \input): \Hc, \Bs, \Br (в 10^4 Гс), \Hw (ширина переходу),
+% \Hmax (півширина шкали H, Е), \Hstep (крок поділок H, Е).
+% Шкала B однакова в обох рисунках; розмір рамки однаковий.
+\begin{tikzpicture}[>=latex, font=\small]
+	\pgfmathsetmacro{\sx}{2.6/\Hmax}   % см на Е
+	\pgfmathsetmacro{\sy}{1.45}        % см на 10^4 Гс
+	\useasboundingbox (-3.3,-3.1) rectangle (3.3,3.1);
+
+	% гілки петлі
+	\pgfmathsetmacro{\Hm}{\Hmax}
+	\fill[gray!25, samples=120, domain=-\Hm:\Hm]
+		plot ({\sx*\x}, {\sy*\Bs*tanh((\x-\Hc)/\Hw)})
+		-- plot[domain=\Hm:-\Hm] ({\sx*\x}, {\sy*\Bs*tanh((\x+\Hc)/\Hw)}) -- cycle;
+	\draw[midarrow, thick, red, samples=120, domain=-\Hm:\Hm]
+		plot ({\sx*\x}, {\sy*\Bs*tanh((\x-\Hc)/\Hw)});
+	\draw[midarrow, thick, red, samples=120, domain=\Hm:-\Hm]
+		plot ({\sx*\x}, {\sy*\Bs*tanh((\x+\Hc)/\Hw)});
+
+	% осі
+	\draw[-latex] (-2.9,0) -- (2.9,0) node[above left] {$H$, Е};
+	\draw[-latex] (0,-2.7) -- (0,2.7) node[above right] {$B$, $10^4$ Гс};
+
+	% поділки H
+	\pgfmathtruncatemacro{\nH}{\Hmax/\Hstep}
+	\foreach \k in {-\nH,...,-1,1,...,\nH} {
+		\pgfmathsetmacro{\hv}{\k*\Hstep}
+		\draw (\sx*\hv, 2pt) -- (\sx*\hv, -2pt) node[below, font=\footnotesize] {\pgfmathprintnumber[fixed,precision=0,1000 sep={\,}]{\hv}};
+	}
+	% поділки B
+	\foreach \b in {-1.5,-1,-0.5,0.5,1,1.5} {
+		\draw (2pt, \sy*\b) -- (-2pt, \sy*\b) node[left, font=\footnotesize] {\pgfmathprintnumber[fixed,dec sep={{,}}]{\b}};
+	}
+
+	% залишкова індукція та коерцитивна сила
+	\pgfmathsetmacro{\Brv}{\Bs*tanh(\Hc/\Hw)}
+	\fill[brown] (0,\sy*\Brv) circle (1.5pt);
+	\fill[brown] (-\sx*\Hc,0) circle (1.5pt);
+	\fill[brown] (\sx*\Hc,0) circle (1.5pt);
+	\node[brown, anchor=west, inner sep=3pt] at (0,\sy*\Brv) {$B_r$};
+	\node[brown, anchor=south east, inner sep=1pt] at (-\sx*\Hc,0) {$-H_c$};
+	\node[brown, anchor=south west, inner sep=1pt] at (\sx*\Hc,0) {$H_c$};
+\end{tikzpicture}
