@@ -1,0 +1,52 @@
+% Адаптовано з FieldInDielectrics/tikz/electret-fields.tikz: поля постійного магніту.
+% Дві підфігури: (а) індукція B (лінії замкнені), (б) напруженість H (лінії від N до S, усередині проти J).
+\tikzset{
+	magnetbody/.pic={
+			\fill[blue!30] (-0.75,0) -- (-0.75,-1) arc[start angle=180,end angle=360,x radius=0.75,y radius=0.19] -- (0.75,0) -- cycle;
+			\fill[red!30] (-0.75,0) -- (-0.75,1) -- (0.75,1) -- (0.75,0) -- cycle;
+			\fill[red!10] (0,1) ellipse [x radius=0.75,y radius=0.19];
+			\draw[thick] (-0.75,1) -- (-0.75,-1) arc[start angle=180,end angle=360,x radius=0.75,y radius=0.19] -- (0.75,1);
+			\draw[thick] (0,1) ellipse [x radius=0.75,y radius=0.19];
+			\draw[dashed] (-0.75,-1) arc[start angle=180,end angle=0,x radius=0.75,y radius=0.19];
+			\draw (-0.75,0) -- (0.75,0);
+		}
+}
+%---------------------------------------------------------
+\begin{subfigure}[t]{0.45\linewidth}\centering
+	\begin{tikzpicture}[>=latex]
+		\pic at (0,0) {magnetbody};
+		% кожна лінія B --- одна замкнена крива: всередині магніту вгору (від S до N),
+		% назовні з верхнього торця, повертається в нижній
+		\foreach \x/\X/\k/\c in {0.15/2.1/2.2/1.6, 0.45/1.55/1.5/1.2, 0.65/1.1/0.9/0.85} {
+				\foreach \m in {-1,1} {
+						\begin{scope}[xscale=\m]
+							\draw[midarrow, blue] (\x,-1) -- (\x,1);
+							\draw[midarrow, blue] (\x,1) .. controls (\x,{1+\k}) and (\X,\c) .. (\X,0)
+							.. controls (\X,-\c) and (\x,{-1-\k}) .. (\x,-1);
+						\end{scope}
+					}
+			}
+		\node[font=\small\bfseries, fill=red!30, inner sep=1pt] at (0,0.65) {N};
+		\node[font=\small\bfseries, fill=blue!30, inner sep=1pt] at (0,-0.65) {S};
+	\end{tikzpicture}
+	\caption{\centering Індукція $\Bfield$: лінії замкнені}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.45\linewidth}\centering
+	\begin{tikzpicture}[>=latex]
+		\pic at (0,0) {magnetbody};
+		% зовні лінії H збігаються з лініями B; всередині йдуть від + до − (вниз) і не замикаються
+		\foreach \x/\X/\k/\c in {0.15/2.1/2.2/1.6, 0.45/1.55/1.5/1.2, 0.65/1.1/0.9/0.85} {
+				\foreach \m in {-1,1} {
+						\begin{scope}[xscale=\m]
+							\draw[midarrow, red] (\x,1) -- (\x,-1);
+							\draw[midarrow, red] (\x,1) .. controls (\x,{1+\k}) and (\X,\c) .. (\X,0)
+							.. controls (\X,-\c) and (\x,{-1-\k}) .. (\x,-1);
+						\end{scope}
+					}
+			}
+		\node[text=red, font=\scriptsize, fill=white, inner sep=1pt] at (0,1.5) {$+\sigma_m$};
+		\node[text=blue, font=\scriptsize, fill=white, inner sep=1pt] at (0,-1.5) {$-\sigma_m$};
+	\end{tikzpicture}
+	\caption{\centering Напруженість $\Hfield$: усередині магніту проти $\vect J$}
+\end{subfigure}
