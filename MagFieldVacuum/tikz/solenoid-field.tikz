@@ -1,0 +1,56 @@
+\begin{tikzpicture}[
+		>=latex,
+		scale=1.1,
+		midarrow/.style={postaction={decorate},
+			decoration={markings, mark=at position 0.5 with {\arrow{stealth}}}}
+	]
+	% Осьовий переріз нескінченно довгого соленоїда; контур ABCD
+	\def\R{1.5}      % радіус соленоїда
+	\def\ry{0.25}    % мала піввісь еліпса (перспектива)
+	\def\dx{0.5}     % крок між витками
+	\def\N{12}       % витки 0..N
+	\def\xa{1.75}    % ліва сторона контуру (між витками)
+	\def\xb{4.25}    % права сторона контуру (між витками)
+	\def\yo{2.5}     % ордината зовнішньої сторони контуру
+	\def\yi{0.85}    % ордината внутрішньої сторони контуру
+
+	% вісь
+	\draw[gray, dash dot, thin] (-1.1,0) -- (7.1,0);
+
+	% поле всередині
+	\foreach \y in {-0.9,-0.4,0.4}{
+		\draw[->, thick, blue!70!black] (-0.6,\y) -- (6.6,\y);
+	}
+	\node[blue!70!black, right] at (6.6,0.4) {$\Bfield$};
+
+	% витки: задня дуга пунктиром, передня зі стрілкою струму
+	\foreach \i in {0,...,\N}{
+		\draw[dashed, red!70!black!45] (\i*\dx,\R) arc (90:270: \ry\space and \R);
+	}
+	\foreach \i in {0,...,\N}{
+		\draw[red!70!black, thick, midarrow] (\i*\dx,\R) arc (90:-90: \ry\space and \R);
+	}
+	% перерізи витків: зверху струм до нас, знизу від нас
+	\foreach \i in {0,...,\N}{
+		\draw[fill=white] (\i*\dx,\R) circle (0.11);
+		\fill (\i*\dx,\R) circle (0.03);
+		\draw[fill=white] (\i*\dx,-\R) circle (0.11);
+		\draw (\i*\dx-0.078,-\R-0.078) -- (\i*\dx+0.078,-\R+0.078);
+		\draw (\i*\dx-0.078,-\R+0.078) -- (\i*\dx+0.078,-\R-0.078);
+	}
+
+	% поле зовні дорівнює нулю
+	\node[right] at (\xb+0.2,\yo-0.5) {$\Bfield=0$};
+
+	% контур ABCD (обхід проти годинникової стрілки)
+	\draw[thick, green!40!black, arrowpos={0.75}{3pt}{4pt}]
+		(\xa,\yi) coordinate (A) -- (\xb,\yi) coordinate (B)
+		node[pos=0.45, below=1pt, black] {$\ell$};
+	\draw[thick, green!40!black, arrowpos={0.5}{3pt}{4pt}] (B) -- (\xb,\yo) coordinate (C);
+	\draw[thick, green!40!black, arrowpos={0.5}{3pt}{4pt}] (C) -- (\xa,\yo) coordinate (D);
+	\draw[thick, green!40!black, arrowpos={0.5}{3pt}{4pt}] (D) -- (A);
+	\node[green!40!black, below left] at (A) {$A$};
+	\node[green!40!black, below right] at (B) {$B$};
+	\node[green!40!black, above right] at (C) {$C$};
+	\node[green!40!black, above left] at (D) {$D$};
+\end{tikzpicture}
