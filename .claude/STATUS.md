@@ -10,6 +10,7 @@
 - **Автор: уточнити**, що робилося 25.10 (Charges, ChargeSystem, CurrentsInMedia, SteadyCurrent, Preface, `ConspectBook.cls`, `Additions/Vanaliz.tex`) і що з цього не закомічено/не опубліковано: ______
 
 - 04.11: `Extra` тепер tcolorbox (`ConspectBook.cls`: `\footnotesize`, заливка `black!4`, сіра лінія зліва, widow/club-штрафи всередині; CSS `.cb-extra` .85em; Preface оновлено). Без `\tcbhighmath` і рисунків усередині; перед `\section` з `Extra` одразу після нього --- `\Needspace` (Relativity). Додано: «Постійні магніти» і Extra «Фіктивні магнітні заряди*» (MagFieldMedia), Poisson1826 у bib (кінцеву с. 338 і рік 1826 звірити за сканом), P і J означено однаково (`ΔV`, `i∈ΔV`). Закомічено, повну збірку/`lint`/HTML після цього НЕ перевірено.
+- 04.11 (`df72b09`): рис. `pic:MagnetFields` (`MagFieldMedia/tikz/magnet-fields.tikz`: B замкнені, H від +σ_m до −σ_m) і розширений Extra про фіктивні заряди; `FieldInDielectrics/tikz/electret-fields.tikz` переписано аналогічно (D/E). Перевірено лише `chapter.py`; HTML (lwarp: `\foreach`/`\pic`/subfigure) і повний PDF не збирали. Закон Кулона для полюсів у Extra згадано без `\cite` (автор: потрібне посилання?).
 
 ## Відкриті пункти: збірка і верстка
 - Після зміни `Extra`: `python elmag.py pdf` + `lint`; дивитись ElEnergy, ElMagInduction, MagEnergy, ElMagOscillations (вдови, порожнечі); `python elmag.py html` (вигляд `.cb-extra`).
