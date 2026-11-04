@@ -9,7 +9,10 @@ paths:
 These are decisions already made. Follow them; if you think one is wrong, say so to the author instead of silently changing it.
 
 ## Audience and depth
-- 2nd-year applied physicists. Proofs are explained visually; stricter derivations go into `Extra` (small font, no box) under a starred `subsection*{...*}`, never into an `Example` box.
+- 2nd-year applied physicists. Proofs are explained visually; stricter derivations go into `Extra` under a starred `subsection*{...*}`, never into an `Example` box.
+  `Extra` (author, 04.11.2026) is a light-grey tcolorbox in `\footnotesize` with a thin grey line on the left (no frame): visibly "optional".
+  Inside it: no `\tcbhighmath`, no floats (end the box, put the figure, reopen it), `align*` instead of `multline*` for narrow lines.
+  A heading directly before an `Extra` needs `\Needspace{9\baselineskip}` (tcolorbox does not keep the heading with the box).
 - Units: Gaussian in parts I-VI; SI in part VII (ElMagOscillations, Telegraph, Waveguides), deliberately. The Preface explains it.
   The Preface treats the ampere (since 2019: fixed `e`) and `ε₀, μ₀` as conversion coefficients: keep that wording.
 

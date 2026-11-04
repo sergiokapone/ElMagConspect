@@ -9,7 +9,10 @@
 - Не закомічено за записами (звірити з `git status`): аплет `three_phase.html` + `simlink` у ElMagOscillations (04.11; 3 вкладки, лише node-стаб), аплет `magnetic_ponderomotive.html` + `simlink` у MagEnergy (04.11; 4 вкладки, перевірено лише node-стабом, у браузері не дивились), ElMagOscillations (4-й прохід, резонанс струмів), посилання 29.10 у Charges--MagFieldMedia, Література (два списки), аплети 03.11, перейменування `docs/Scripts` → `docs/applets` (staged, більшість аплетів ще й змінені).
 - **Автор: уточнити**, що робилося 25.10 (Charges, ChargeSystem, CurrentsInMedia, SteadyCurrent, Preface, `ConspectBook.cls`, `Additions/Vanaliz.tex`) і що з цього не закомічено/не опубліковано: ______
 
+- 04.11: `Extra` тепер tcolorbox (`ConspectBook.cls`: `\footnotesize`, заливка `black!4`, сіра лінія зліва, widow/club-штрафи всередині; CSS `.cb-extra` .85em; Preface оновлено). Без `\tcbhighmath` і рисунків усередині; перед `\section` з `Extra` одразу після нього --- `\Needspace` (Relativity). Додано: «Постійні магніти» і Extra «Фіктивні магнітні заряди*» (MagFieldMedia), Poisson1826 у bib (кінцеву с. 338 і рік 1826 звірити за сканом), P і J означено однаково (`ΔV`, `i∈ΔV`). Закомічено, повну збірку/`lint`/HTML після цього НЕ перевірено.
+
 ## Відкриті пункти: збірка і верстка
+- Після зміни `Extra`: `python elmag.py pdf` + `lint`; дивитись ElEnergy, ElMagInduction, MagEnergy, ElMagOscillations (вдови, порожнечі); `python elmag.py html` (вигляд `.cb-extra`).
 - Повна збірка: `Missing character ;` (U+003B) на с. 43, 44, 70; overfull ≈7 pt (рядки 103--223); дрібні: SteadyEfield 3,6 pt, FieldInMetalls 5,4 pt.
 - `lint` 28.10: 16 знахідок (9 вдів, 3 сироти, 3 смуги всередині ~с. 78, 205, 237, 1 порожнеча ~с. 315). `lua-widow-control` у `ConspectBook.cls`: стан суперечливий, перевірити файл. Після правок повторити `lint` і HTML.
 - Література (два списки, `ConspectBook.cls`): перевірено лише `chapter.py Charges`; не перевірено зміст повного PDF і HTML (при `tocdepth=1` підрозділи в змісті HTML не з'являться).

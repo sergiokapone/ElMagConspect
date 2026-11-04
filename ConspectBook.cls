@@ -1397,8 +1397,17 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 %									Генеррування відповідей до задач
 %
 %===============================================================================
-% Extra --- додатковий матеріал, позначений "*": набирається дрібнішим шрифтом (див. передмову).
-\newenvironment{Extra}{\par\small}{\par}
+% Extra --- додатковий матеріал, позначений "*" (див. передмову): найдрібніший шрифт (\footnotesize), дуже світло-сіра заливка
+% і тонка сіра лінія зліва, щоб було видно, що матеріал факультативний. Рамки немає; блок розривається між сторінками.
+\newtcolorbox{Extra}{
+	enhanced,breakable,
+	frame hidden,boxrule=0pt,sharp corners,
+	colback=black!4,
+	borderline west={0.6pt}{0pt}{black!35},
+	before skip=2mm,after skip=3mm,
+	before upper={\parindent15pt\clubpenalty=10000 \widowpenalty=10000 \displaywidowpenalty=10000 },  % усередині tcolorbox lua-widow-control не діє
+	left=3.5mm,right=2.5mm,top=1.5mm,bottom=1.5mm,
+	fontupper=\footnotesize}
 
 % answerbox — той самий візуальний стиль, але для тексту відповіді.
 % \Newassociation{solution}{Solution}{answer} (з пакета answers) прив'язує
