@@ -5,6 +5,6 @@
 	\draw[->, blue, thick] (0, {-(\h+0.3)}) -- (0, {\h+0.3}) node[above] {$\vect{p}_m$};
 	\fill[blue!50] (0, -\h) --  (-\t, 0) -- (\t, 0) -- cycle;
 	\fill[red!50] (-\t, 0) -- (0, \h) -- (\t, 0) -- cycle;
-	\node[text=blue] at (0, {-0.55*\h}) {$S$};
-	\node[text=red]  at (0, {0.55*\h})  {$N$};
+	\node[text=blue, right] at ({\t+0.08}, {-0.55*\h}) {$S$};
+	\node[text=red, right]  at ({\t+0.08}, {0.55*\h})  {$N$};
 \end{tikzpicture}
