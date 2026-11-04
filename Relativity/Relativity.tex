@@ -455,7 +455,6 @@ $(\phi,\ \vect A)$ утворюють \emphx{4-вектор}
 іншої відповідно до перетворень Лоренца:
 % ========================================================
 \begin{equation}\label{eq:PotentialTransform}
-	\tcbhighmath{
 		\begin{aligned}
 			\phi &= \frac{\phi' + (v/c)A'_x}{\sqrt{1-(v/c)^2}}, \qquad
 			A_x = \frac{A'_x + (v/c)\phi'}{\sqrt{1-(v/c)^2}}, \qquad A_y = A'_y, \qquad
@@ -464,7 +463,6 @@ $(\phi,\ \vect A)$ утворюють \emphx{4-вектор}
 			A'_x = \frac{A_x - (v/c)\phi}{\sqrt{1-(v/c)^2}}, \qquad A'_y = A_y, \qquad
 			A'_z = A_z.
 		\end{aligned}
-	}
 \end{equation}
 % ========================================================
 Передбачається, що вісь $x$ напрямлена вздовж вектора швидкості $\vect v$.
@@ -474,6 +472,7 @@ $(\phi,\ \vect A)$ утворюють \emphx{4-вектор}
 векторного потенціалу вздовж напрямку руху. Це ще один прояв єдності електричного й~магнітного полів.
 
 %% --------------------------------------------------------
+\Needspace{9\baselineskip}
 \section{Тензор електромагнітного поля*}\hypertarget{em-field-tensor}{}
 %% --------------------------------------------------------
 \begin{Extra}
@@ -512,7 +511,7 @@ $(+,-,-,-)$, тобто для 4-вектора $a^\mu = (a^0, \vect a)$ має�
 і~аналогічно $F_{13} = B_y$, $F_{23} = -B_x$. У~вигляді таблиці:
 % ========================================================
 \begin{equation}\label{eq:FieldTensorMatrix}
-	\tcbhighmath{ F_{\mu\nu} =
+	F_{\mu\nu} =
 		\begin{pmatrix}
 			0    & E_x  & E_y  & E_z  \\
 			-E_x & 0    & -B_z & B_y  \\
@@ -526,7 +525,6 @@ $(+,-,-,-)$, тобто для 4-вектора $a^\mu = (a^0, \vect a)$ має�
 			E_y & B_z  & 0    & -B_x \\
 			E_z & -B_y & B_x  & 0
 		\end{pmatrix}.
-	}
 \end{equation}
 % ========================================================
 Тензор антисиметричний, $F_{\nu\mu} = -F_{\mu\nu}$, тому має рівно шість незалежних
@@ -592,8 +590,8 @@ E_x$, $B'_x = B_x$, $E'_z = \gamma(E_z + \beta B_y)$, $B'_y = \gamma(B_y + \beta
 $F_{ij}F^{ij} = 2B^2$ (кожна компонента $B$ входить двічі). Тому
 % ========================================================
 \begin{equation}\label{eq:I1Tensor}
-	\tcbhighmath{ F_{\mu\nu}F^{\mu\nu} = 2\left(B^2 - E^2\right)
-	\quad\Longleftrightarrow\quad I_1 = E^2 - B^2 = -\frac12\,F_{\mu\nu}F^{\mu\nu}. }
+	F_{\mu\nu}F^{\mu\nu} = 2\left(B^2 - E^2\right)
+	\quad\Longleftrightarrow\quad I_1 = E^2 - B^2 = -\frac12\,F_{\mu\nu}F^{\mu\nu}.
 \end{equation}
 % ========================================================
 Це скаляр, бо $F'_{\mu\nu}F'^{\mu\nu} = F_{\mu\nu}F^{\mu\nu}$: при перетворенні кожен
@@ -618,8 +616,8 @@ $F^{\mu\nu}$ заміною $\Efield \to \Bfield$, $\Bfield \to -\Efield$. Зо�
 тому
 % ========================================================
 \begin{equation}\label{eq:I2Tensor}
-	\tcbhighmath{ I_2 = \Efield\cdot\Bfield = -\frac14\,\tilde F^{\mu\nu}F_{\mu\nu} =
-	-\frac18\,\epsilon^{\mu\nu\rho\sigma}F_{\mu\nu}F_{\rho\sigma}. }
+	I_2 = \Efield\cdot\Bfield = -\frac14\,\tilde F^{\mu\nu}F_{\mu\nu} =
+	-\frac18\,\epsilon^{\mu\nu\rho\sigma}F_{\mu\nu}F_{\rho\sigma}.
 \end{equation}
 % ========================================================
 Символ $\epsilon^{\mu\nu\rho\sigma}$ не змінює вигляду при власних перетвореннях Лоренца
