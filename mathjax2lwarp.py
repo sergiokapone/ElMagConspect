@@ -18,6 +18,8 @@ ALWAYS = {'emf': r'\newcommand{\emf}{\mathcal{E}}',
           'tikzmark': r'\newcommand{\tikzmark}[1]{}',
           'enquote': r'\newcommand{\enquote}[1]{«#1»}',   # csquotes, used inside \text{..} in a formula
           'allowbreak': r'\newcommand{\allowbreak}{}',   # line-break hint inside a print formula; MathJax has no such command
+          # unicode-math: \lambda written to the .aux (\simlink description, \simlist) comes back as \mitlambda
+          'mitlambda': r'\newcommand{\mitlambda}{\lambda}',
           # print: tcolorbox \tcbhighmath; the generator of mathjax-macros.tex drops it when ConspectBook.cls changes
           'tcbhighmath': r'\newcommand{\tcbhighmath}[1]{\boxed{#1}}'}
 
