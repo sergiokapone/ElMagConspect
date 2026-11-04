@@ -44,6 +44,7 @@
 		\ifx\sim@tmp\sim@lastch\else           % новий розділ -> новий пункт description
 			\ifsim@open\end{itemize}\fi
 			\gdef\sim@lastch{#2}%
+			\Needspace{4\baselineskip}%   заголовок розділу не лишається сам унизу сторінки
 			\item[\hyperlink{#2}{Розділ~#1.}]\leavevmode\par\vspace{-\parskip}%
 			\begin{itemize}\global\sim@opentrue
 		\fi
