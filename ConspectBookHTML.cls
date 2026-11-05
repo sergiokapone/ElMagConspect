@@ -157,7 +157,11 @@
 \renewenvironment{Solution}[1]{\begin{BlockClass}{cb-answer}%
   \hypertarget{solution:#1}{}\label{solution#1}\textbf{\hyperlink{problem:#1}{#1.}}\ }{\end{BlockClass}}
 \newenvironment{answerbox}{\begin{BlockClass}{cb-answer}}{\end{BlockClass}}
-% optional material marked "*": smaller font (class cb-extra in conspect.css)
+% optional-topic icon in headings (as in ConspectBook.cls)
+\RequirePackage{fontawesome5}
+\newcommand{\ExtraMark}{\texorpdfstring{\,\textsuperscript{\footnotesize\faMicroscope}}{}}
+\newcommand{\ExtraHeading}[2][9]{\subsection*{#2\ExtraMark}}
+% optional material: smaller font (class cb-extra in conspect.css)
 \newenvironment{Extra}{\begin{BlockClass}{cb-extra}}{\end{BlockClass}}
 \newcommand{\answers}{\schapterpage{Відповіді}}
 % lwarp's \nameref has no star form: \nameref*{Charges} (headings of the answers) gave "??Charges".

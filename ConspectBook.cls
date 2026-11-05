@@ -877,7 +877,6 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 {1em}
 {#1}
 [.]
-
 % Підзаголовок без номера (всередині підсекції): у підбір з текстом, напівжирний курсив
 % з маркером ▸; нумеровані \subsubsection (додатки) лишаються за стандартним оформленням
 \titleformat{name=\subsubsection,numberless}[runin]
@@ -1183,7 +1182,7 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 	fonttitle=\sffamily\bfseries,
 	coltitle=simmain,
 	before skip=3mm, after skip=3mm,
-	before upper app={\parindent0pt\let\SimBoxHref\href\let\href\SimBoxHrefStyle},   % app: не затирати заголовок, доданий attach title to upper
+	before upper app={\parindent0pt\clubpenalties=3 10000 10000 0\relax\widowpenalties=3 10000 10000 0\relax\let\SimBoxHref\href\let\href\SimBoxHrefStyle},   % app: не затирати заголовок, доданий attach title to upper
 	boxrule=0.5pt,
 	left=8mm, right=2mm, top=1.5mm, bottom=1.5mm,
 	colback=simmain!6!white,
@@ -1372,7 +1371,7 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 			breakable,
 			before skip=2mm,after skip=3mm,
 			% задачу можна розірвати між сторінками, але так, щоб з кожного боку лишалося не менше 3 рядків абзацу
-		before upper={\parindent15pt\clubpenalties=2 10000 10000\relax\widowpenalties=2 10000 10000\relax},
+		before upper={\parindent15pt\clubpenalties=3 10000 10000 0\relax\widowpenalties=3 10000 10000 0\relax},  % останнє значення списку повторюється на всі далі рядки: 0 => розрив дозволено від 3-го рядка
 			boxrule=0.4pt,left=5mm,right=2mm,top=1mm,bottom=1mm,
 			colback=gray!5,
 			colframe=yellow!50,
@@ -1397,7 +1396,13 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 %									Генеррування відповідей до задач
 %
 %===============================================================================
-% Extra --- додатковий матеріал, позначений "*" (див. передмову): найдрібніший шрифт (\footnotesize), дуже світло-сіра заливка
+% \ExtraMark --- значок факультативної теми в заголовку (замість "*"); змінювати значок лише тут (і в ConspectBookHTML.cls)
+\newcommand{\ExtraMark}{\texorpdfstring{\,\textsuperscript{\footnotesize\faMicroscope}}{}}
+% \ExtraHeading[n]{Назва} (n --- скільки \baselineskip мусить лишатися на сторінці, за замовчуванням 9; зменшувати лише якщо перший
+% абзац Extra короткий, а внизу сторінки без потреби лишається порожнє місце) --- заголовок факультативної теми перед \begin{Extra}. Звичайний \subsection* (runin) тут не годиться:
+% після нього йде бокс, а не абзац, і заголовок виходить у поле ліворуч. \Needspace --- щоб заголовок не лишався сам унизу сторінки.
+\newcommand{\ExtraHeading}[2][9]{\Needspace{#1\baselineskip}\par\vspace{1.5ex plus 0.5ex minus 0.2ex}\noindent{\normalsize\bfseries #2\ExtraMark.}\par\nopagebreak\vspace{0.3ex}}
+% Extra --- додатковий матеріал, позначений значком \faMicroscope (див. передмову): найдрібніший шрифт (\footnotesize), дуже світло-сіра заливка
 % і тонка сіра лінія зліва, щоб було видно, що матеріал факультативний. Рамки немає; блок розривається між сторінками.
 \newtcolorbox{Extra}{
 	enhanced,breakable,
@@ -1405,7 +1410,7 @@ fyz/.style={fill=cyan},yz face/.code={\tikzset{parallelepiped/fyz/.style={#1}}}
 	colback=black!4,
 	borderline west={0.6pt}{0pt}{black!35},
 	before skip=2mm,after skip=3mm,
-	before upper={\parindent15pt\clubpenalty=10000 \widowpenalty=10000 \displaywidowpenalty=10000 },  % усередині tcolorbox lua-widow-control не діє
+	before upper={\parindent15pt\clubpenalties=3 10000 10000 0\relax\widowpenalties=3 10000 10000 0\relax\displaywidowpenalty=10000 },  % усередині tcolorbox lua-widow-control не діє; \clubpenalty/\widowpenalty ігноруються, коли задано \clubpenalties: розрив абзацу від 3-го рядка
 	left=3.5mm,right=2.5mm,top=1.5mm,bottom=1.5mm,
 	fontupper=\footnotesize}
 
