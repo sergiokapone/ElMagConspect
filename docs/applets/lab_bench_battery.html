@@ -78,6 +78,12 @@ option{background:var(--card);color:var(--fg)}
 .btn-sov:active{box-shadow:inset 0 2px 3px rgba(0,0,0,.45)}
 .sovbtns{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;justify-content:center}
 .panel .hint{color:#3b3b36;font-size:10.5px;margin:8px 0 0}
+.panel .warn{color:#a3160d;font:bold 11px Arial,sans-serif;margin:6px 0 0;min-height:0}
+.panel .warn:empty{display:none}
+.chk{display:flex;align-items:flex-start;gap:6px;font-size:13px;margin-top:8px;cursor:pointer}
+.chk input{margin-top:3px}
+.cov{font-size:12.5px;color:var(--muted);margin-top:6px}
+.cov:empty{display:none}
 
 /* ---------- графіки і таблиця ---------- */
 .graphs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(440px,100%),1fr));gap:12px}
@@ -134,8 +140,18 @@ textarea{width:100%;margin-top:8px;font:12px ui-monospace,Consolas,monospace;bac
   <label class="f"><span id="riLbl">Внутрішній опір R<sub>i</sub> (стан джерела)</span><select id="ri"></select></label>
   <div class="hint">Зміна джерела, ε чи R<sub>i</sub> скидає виміряні точки.</div>
 
+  <div class="pgroup"><b>Схема включення приладів</b>
+    <label class="f"><select id="scheme">
+      <option value="term">A. Вольтметр на джерелі</option>
+      <option value="load">B. Вольтметр на навантаженні</option>
+    </select></label>
+    <label class="chk"><input type="checkbox" id="real" checked><span>Враховувати власні опори приладів R<sub>A</sub>, R<sub>V</sub></span></label>
+    <div class="hint" id="meterInfo"></div>
+  </div>
+
   <div class="pgroup"><b>Результат апроксимації</b>
     <div class="val" id="fr"></div>
+    <div class="cov" id="cov"></div>
     <div class="hint" id="chk"></div>
   </div>
   <div id="teach"></div>
@@ -151,6 +167,7 @@ textarea{width:100%;margin-top:8px;font:12px ui-monospace,Consolas,monospace;bac
      <div class="plate"><b>ВИМІРЮВАННЯ</b><span>клас точності 0,5</span></div>
      <div class="disp"><i>амперметр<br>струм I</i><div class="led"><b id="dI">0,00</b><u id="dIu">А</u></div></div>
      <div class="disp"><i>вольтметр<br>напруга U</i><div class="led"><b id="dU">0,00</b><u>В</u></div></div>
+     <div class="warn" id="warn"></div>
      <div class="rh"><i>реостат</i>
        <input type="range" id="pos" min="0" max="100" step="1" value="50" aria-label="Повзунок реостата">
        <div class="v" id="lpos"></div>
@@ -167,17 +184,19 @@ textarea{width:100%;margin-top:8px;font:12px ui-monospace,Consolas,monospace;bac
 
   <details class="card" open>
    <summary>Графіки</summary>
-   <div class="hint">Ліворуч: ВАХ U(I) з апроксимацією. Праворуч: нормовані залежності від R<sub>е</sub>/R<sub>i</sub> (лінії — теорія, точки — ваші виміри; з’являються після двох точок).</div>
+   <div class="hint">1) ВАХ U(I) зі смугами похибок і зваженою апроксимацією. 2) Нормовані залежності від R<sub>е</sub>/R<sub>i</sub> (лінії — теорія, точки — ваші виміри). 3) Потужність і ККД від R<sub>е</sub>: максимум потужності — при R<sub>е</sub> = R<sub>i</sub>, де ККД = 50 %. Теоретичні лінії з’являються після двох точок.</div>
+   <label class="chk"><input type="checkbox" id="errx"><span>збільшити смуги похибок ×10 (справжній розмір майже непомітний)</span></label>
    <div class="graphs">
      <div class="g"><canvas id="cUI"></canvas></div>
      <div class="g"><canvas id="cNorm"></canvas></div>
+     <div class="g"><canvas id="cPow"></canvas></div>
    </div>
   </details>
 
   <details class="card">
    <summary>Таблиця вимірювань</summary>
-   <div class="tw"><table id="tbl"><thead><tr><th>№</th><th id="thI">I, А</th><th>U, В</th><th>R<sub>e</sub> = U/I, Ом</th></tr></thead><tbody></tbody></table></div>
-   <div class="btns"><button class="btn" id="exp">Таблиця для LaTeX</button></div>
+   <div class="tw"><table id="tbl"><thead><tr><th>№</th><th id="thI">I, А</th><th>U, В</th><th>R<sub>e</sub> = U/I, Ом</th><th id="thP">P, Вт</th><th>η, %</th></tr></thead><tbody></tbody></table></div>
+   <div class="btns"><button class="btn" id="cp">Копіювати таблицю</button><button class="btn" id="csv">Завантажити CSV</button><button class="btn" id="exp">Таблиця для LaTeX</button></div>
    <textarea id="latex" rows="5" readonly></textarea>
   </details>
  </div>
@@ -186,7 +205,7 @@ textarea{width:100%;margin-top:8px;font:12px ui-monospace,Consolas,monospace;bac
 
 <script>
 const $=id=>document.getElementById(id);
-const CV={circ:$('cCirc'),ui:$('cUI'),norm:$('cNorm')};
+const CV={circ:$('cCirc'),ui:$('cUI'),norm:$('cNorm'),pow:$('cPow')};
 let g=null,BG,INK,AX,GR,C_U,C_I,C_P,C_TRUE,C_FIT='#c0392b',C_PT;
 /* кольори беремо з CSS-змінних щоразу під час малювання: тема змінюється на льоту */
 function colors(){
@@ -239,8 +258,29 @@ const posFrac=()=>(+$('pos').value)/100;
 const Rset=()=>S.Rmin+(S.Rmax-S.Rmin)*posFrac();
 
 function gauss(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+/* Власні опори приладів: амперметр має спад ~0,3 В на межі (R_A = 0,3 В / Imax), вольтметр — 1 кОм/В (R_V = 1000·Umax).
+   Схема A: вольтметр на затискачах джерела, амперметр далі у ланцюзі навантаження. Вольтметр показує U на затискачах,
+            амперметр — струм навантаження I_L, а джерело віддає ще й струм вольтметра: I = I_L + U/R_V.
+   Схема B: вольтметр безпосередньо на реостаті (після амперметра). Амперметр показує повний струм джерела,
+            а вольтметр — напругу на реостаті, без спаду на амперметрі: U = U_затискачів − I·R_A. */
+const SCHEME=()=>$('scheme').value;
+const REAL=()=>$('real').checked;
+const RA=()=>REAL()?0.3/(S.Imax*KI()):0;
+const RV=()=>REAL()?1000*S.uMax:Infinity;
+function ideal(R){
+  const Ri=S.Ri,E=Eof(),ra=RA(),gv=1/RV();
+  if(SCHEME()==='term'){
+    const gl=1/(R+ra),Ut=(E/Ri)/(1/Ri+gl+gv);
+    return{IA:Ut*gl,U:Ut};
+  }
+  const req=1/(1/R+gv),Is=E/(Ri+ra+req);
+  return{IA:Is,U:Is*req};
+}
+/* похибки показів: амперметр класу 0,5 (рівномірно в ±0,5 % межі) і шум вольтметра 0,005 В; обидва округлено до 0,01 */
+const sigI=()=>Math.sqrt(Math.pow(0.005*S.Imax,2)/3+0.0001/12);
+const sigU=()=>Math.sqrt(0.005*0.005+0.0001/12);
 function reading(){
-  const R=Rset(),IA=Eof()/(R+S.Ri),U=IA*R,I=IA/KI();
+  const {IA,U}=ideal(Rset()),I=IA/KI();
   const Im=Math.round((I+(Math.random()*2-1)*0.005*S.Imax)*100)/100;
   const Um=Math.round((U+gauss()*0.005)*100)/100;
   return{I:Im,U:Um};
@@ -248,22 +288,26 @@ function reading(){
 
 let pts=[],last={I:0,U:0};   // last задається після updRange(): reading() потребує S.Imax
 
+/* Зважена лінійна апроксимація U = a + b·I з ефективною дисперсією σ² = σU² + b²σI² (враховує похибки обох приладів).
+   Похибки параметрів — формальні, помножені на √(χ²/ν), якщо розкид точок більший за очікуваний. */
 function fit(){
   const n=pts.length; if(n<2) return null;
   let mx=0,my=0;for(const p of pts){mx+=p.I;my+=p.U}mx/=n;my/=n;
   let Sxx=0,Sxy=0,Syy=0;
   for(const p of pts){const dx=p.I-mx,dy=p.U-my;Sxx+=dx*dx;Sxy+=dx*dy;Syy+=dy*dy}
   if(Sxx<1e-12) return null;
-  const b=Sxy/Sxx, a=my-b*mx;
-  const r2=Syy>0?Sxy*Sxy/(Sxx*Syy):1;
-  const f={a,b,Ri:-b/KI(),r2,n};
-  if(n>=3){
-    let sse=0;for(const p of pts){const e=p.U-(a+b*p.I);sse+=e*e}
-    const s=Math.sqrt(sse/(n-2));
-    f.sb=s/Math.sqrt(Sxx)/KI();
-    f.sa=s*Math.sqrt(1/n+mx*mx/Sxx);
+  let b=Sxy/Sxx,a=my-b*mx,Sw=0,Swx=0,Swy=0,Swxx=0,Swxy=0,D=0;
+  const sI=sigI(),sU=sigU();
+  for(let it=0;it<4;it++){
+    Sw=Swx=Swy=Swxx=Swxy=0;
+    for(const p of pts){const w=1/(sU*sU+b*b*sI*sI);Sw+=w;Swx+=w*p.I;Swy+=w*p.U;Swxx+=w*p.I*p.I;Swxy+=w*p.I*p.U}
+    D=Sw*Swxx-Swx*Swx; if(D<=0) return null;
+    b=(Sw*Swxy-Swx*Swy)/D; a=(Swxx*Swy-Swx*Swxy)/D;
   }
-  return f;
+  let chi2=0;for(const p of pts){const e=p.U-(a+b*p.I);chi2+=e*e/(sU*sU+b*b*sI*sI)}
+  const nu=n-2,chi2r=nu>0?chi2/nu:null,sc=nu>0?Math.max(1,Math.sqrt(chi2r)):1;
+  const r2=Syy>0?Sxy*Sxy/(Sxx*Syy):1;
+  return{a,b,Ri:-b/KI(),r2,n,chi2r,sa:Math.sqrt(Swxx/D)*sc,sb:Math.sqrt(Sw/D)*sc/KI()};
 }
 
 /* ---- допоміжні для схеми ---- */
@@ -323,7 +367,7 @@ function drawRheostat(xA,xB,yb,xs,Rv){
 }
 let RH=null;   // геометрія реостата на схемі (для перетягування каретки)
 function drawCircuit(b){
-  const xL=b.x+b.w*0.08, xAm=b.x+b.w*0.24, xA=b.x+b.w*0.36, xB=b.x+b.w*0.80, xC=xB+30;
+  const xL=b.x+b.w*0.085, xAm=b.x+b.w*0.33, xA=b.x+b.w*0.43, xB=b.x+b.w*0.80, xC=xB+30, xVj=b.x+b.w*0.25, term=SCHEME()==='term';
   const yb=b.y+b.h*0.36, B=b.y+b.h*0.84, yc=(yb+B)/2, vy=b.y+b.h*0.66, ry=yb-34;
   const xs=xA+8+(xB-xA-16)*posFrac();
   const xv=(xA+xC)/2;
@@ -335,7 +379,7 @@ function drawCircuit(b){
   wire(xB+6,ry,xC,ry);wire(xC,ry,xC,B);
   if(isI()){
     /* джерело струму I0 і паралельний шунт Rp (схема Нортона) */
-    const xS=xL+(xAm-xL)*0.55;
+    const xS=b.x+b.w*0.17;
     g.strokeStyle=INK;g.lineWidth=2;
     wire(xS,yb,xS,B);
     mask(xL-16,yc-18,32,36);
@@ -368,21 +412,34 @@ function drawCircuit(b){
   wire(xA,by,xs,by);wire(xA,by-4,xA,by+4);wire(xs,by-4,xs,by+4);
   g.fillStyle=C_U;g.textAlign='left';g.font='12px system-ui,"Segoe UI",sans-serif';
   g.fillText('R_е = '+fmtR(Rset())+(posFrac()===0?'  (повзунок на початку: лише опір контактів)':''),xA+8,by+17);
-  /* вольтметр між A і C */
   g.strokeStyle=C_U;g.fillStyle=C_U;g.lineWidth=2;
-  wire(xA,yb+bh0(),xA,vy);
-  wire(xA,vy,xv-13,vy);wire(xv+13,vy,xC,vy);
-  g.beginPath();g.arc(xA,vy,3,0,2*Math.PI);g.fill();
-  g.beginPath();g.arc(xC,vy,3,0,2*Math.PI);g.fill();
-  probe(xv,vy,'V',C_U,'U = '+fmt2(last.U)+' В');
-  g.font='12px system-ui,"Segoe UI",sans-serif';g.fillStyle=INK;g.textAlign='center';
-  g.fillText('вольтметр вимірює напругу на навантаженні R_е (між виводами A і C)',(xA+xC)/2,B+36);
+  g.font='12px system-ui,"Segoe UI",sans-serif';
+  if(term){
+    /* схема A: вольтметр на затискачах джерела, ліворуч від амперметра */
+    wire(xVj,yb,xVj,yc-13);wire(xVj,yc+13,xVj,B);
+    g.beginPath();g.arc(xVj,yb,3,0,2*Math.PI);g.fill();
+    g.beginPath();g.arc(xVj,B,3,0,2*Math.PI);g.fill();
+    probe(xVj,yc,'V',C_U);
+    g.fillStyle=C_U;g.textAlign='left';g.font='13px system-ui,"Segoe UI",sans-serif';
+    g.fillText('U = '+fmt2(last.U)+' В',xVj+20,yc+5);
+    g.font='12px system-ui,"Segoe UI",sans-serif';g.fillStyle=INK;g.textAlign='center';
+    g.fillText('схема A: вольтметр на затискачах джерела, амперметр вимірює струм навантаження',(xL+xC)/2,B+36);
+  }else{
+    /* схема B: вольтметр на реостаті між виводами A і C */
+    wire(xA,yb+bh0(),xA,vy);
+    wire(xA,vy,xv-13,vy);wire(xv+13,vy,xC,vy);
+    g.beginPath();g.arc(xA,vy,3,0,2*Math.PI);g.fill();
+    g.beginPath();g.arc(xC,vy,3,0,2*Math.PI);g.fill();
+    probe(xv,vy,'V',C_U,'U = '+fmt2(last.U)+' В');
+    g.font='12px system-ui,"Segoe UI",sans-serif';g.fillStyle=INK;g.textAlign='center';
+    g.fillText('схема B: вольтметр на навантаженні R_е (між виводами A і C), амперметр — перед ним',(xL+xC)/2,B+36);
+  }
 }
 function bh0(){return 18}
 
 /* ---- графіки ---- */
-function frame(b,xmin,xmax,ymin,ymax,xt,yt,xlab,ylab,logx,xlabels,title){
-  const x0=b.x+54,x1=b.x+b.w-14,y0=b.y+b.h-30,y1=b.y+42;
+function frame(b,xmin,xmax,ymin,ymax,xt,yt,xlab,ylab,logx,xlabels,title,rm=14){
+  const x0=b.x+54,x1=b.x+b.w-rm,y0=b.y+b.h-30,y1=b.y+42;
   const X=v=>logx?x0+(Math.log10(v)-xmin)/(xmax-xmin)*(x1-x0):x0+(v-xmin)/(xmax-xmin)*(x1-x0);
   const Y=v=>y0-(v-ymin)/(ymax-ymin)*(y0-y1);
   g.font='13px system-ui,"Segoe UI",sans-serif';g.textBaseline='alphabetic';
@@ -410,8 +467,18 @@ function drawUI(b,f){
     g.strokeStyle=C_FIT;g.lineWidth=2;g.beginPath();
     g.moveTo(A.X(0),A.Y(f.a));g.lineTo(A.X(xend),A.Y(f.a+f.b*xend));g.stroke();
   }
+  /* смуги похибок ±2σ (95 %) по обох осях; прапорець ×10 збільшує їх для наочності */
+  const m=$('errx').checked?10:1,dI=2*sigI()*m,dU=2*sigU()*m;
+  g.strokeStyle=C_PT;g.lineWidth=1.2;
+  for(const p of pts){
+    const x=A.X(p.I),y=A.Y(p.U),xa=A.X(p.I-dI),xb=A.X(p.I+dI),ya=A.Y(p.U-dU),yb2=A.Y(p.U+dU);
+    g.beginPath();g.moveTo(x,ya);g.lineTo(x,yb2);g.moveTo(x-3,ya);g.lineTo(x+3,ya);g.moveTo(x-3,yb2);g.lineTo(x+3,yb2);
+    g.moveTo(xa,y);g.lineTo(xb,y);g.moveTo(xa,y-3);g.lineTo(xa,y+3);g.moveTo(xb,y-3);g.lineTo(xb,y+3);g.stroke();
+  }
   g.fillStyle=C_PT;
-  for(const p of pts){g.beginPath();g.arc(A.X(p.I),A.Y(p.U),4,0,2*Math.PI);g.fill()}
+  for(const p of pts){g.beginPath();g.arc(A.X(p.I),A.Y(p.U),3.5,0,2*Math.PI);g.fill()}
+  g.font='11px system-ui,"Segoe UI",sans-serif';g.textAlign='right';g.fillStyle=AX;
+  g.fillText('смуги ±2σ'+(m>1?' ×10':''),A.x1,A.y1-10);
 }
 
 function decades(lo,hi){const t=[],l=[];for(let d=Math.ceil(lo);d<=Math.floor(hi);d++){const v=Math.pow(10,d);t.push(v);l.push(String(v).replace('.',','))}return{t,l}}
@@ -419,7 +486,7 @@ function decades(lo,hi){const t=[],l=[];for(let d=Math.ceil(lo);d<=Math.floor(hi
 function drawNorm(b,f){
   const dec=decades(S.logMin,S.logMax);
   const B=frame(b,S.logMin,S.logMax,0,1.05,dec.t,[0,0.25,0.5,0.75,1],isI()?'R_е / R_p':'R_е / R_i','нормована величина',true,dec.l,
-    'Нормовані залежності від R_е / R_i');
+    'Нормовані залежності від '+(isI()?'R_е / R_p':'R_е / R_i'));
   const curve=(fn,color)=>{g.strokeStyle=color;g.lineWidth=2;g.beginPath();
     for(let k=0;k<=200;k++){const t=S.logMin+(S.logMax-S.logMin)*k/200,x=Math.pow(10,t),y=fn(x);k?g.lineTo(B.X(x),B.Y(y)):g.moveTo(B.X(x),B.Y(y))}g.stroke()};
   curve(x=>x/(1+x),C_U);curve(x=>1/(1+x),C_I);curve(x=>x/((1+x)*(1+x)),C_P);
@@ -435,6 +502,44 @@ function drawNorm(b,f){
     for(const [y,c] of [[p.U/E,C_U],[p.I/Ik,C_I],[p.U*p.I/P0,C_P]]){
       g.fillStyle=c;g.beginPath();g.arc(B.X(x),B.Y(y),4,0,2*Math.PI);g.fill();
     }
+  }
+}
+
+/* ---- потужність і ККД ---- */
+const PU=()=>isI()?'мВт':'Вт';
+function drawPow(b,f){
+  const lo=Math.floor(Math.log10(S.Rmin)),hi=Math.ceil(Math.log10(S.Rmax)),dec=decades(lo,hi);
+  const Pn=S.E*S.E/(4*S.Ri)/KI(),Pmax=niceCeil(Pn*1.2),pt=ticksFor(Pmax);
+  const B=frame(b,lo,hi,0,Pmax,dec.t,pt,'R_е, '+(S.Rmax>=1000?'Ом':'Ом'),'P, '+PU(),true,dec.l,'Потужність і ККД',44);
+  const Yr=v=>B.y0-v/100*(B.y0-B.y1);
+  /* права вісь η */
+  g.font='13px system-ui,"Segoe UI",sans-serif';g.textAlign='left';
+  for(const v of [0,25,50,75,100]){g.fillStyle=C_I;g.fillText(String(v),B.x1+6,Yr(v)+4)}
+  g.textAlign='right';g.fillStyle=C_I;g.fillText('η, %',B.x1+40,B.y1-10);
+  g.font='12px system-ui,"Segoe UI",sans-serif';g.textAlign='left';
+  g.fillStyle=C_P;g.fillText('P',B.x0+8,B.y1+14);g.fillStyle=C_I;g.fillText('η',B.x0+24,B.y1+14);
+  const ok=f&&f.Ri>0&&f.a>0;
+  if(ok){
+    const E=f.a,Ri=f.Ri;
+    const curve=(fn,Y,color)=>{g.strokeStyle=color;g.lineWidth=2;g.beginPath();
+      for(let k=0;k<=200;k++){const t=lo+(hi-lo)*k/200,R=Math.pow(10,t);k?g.lineTo(B.X(R),Y(fn(R))):g.moveTo(B.X(R),Y(fn(R)))}g.stroke()};
+    curve(R=>E*E*R/((R+Ri)*(R+Ri))/KI(),B.Y,C_P);
+    curve(R=>100*R/(R+Ri),Yr,C_I);
+    const xr=Math.log10(Ri);
+    if(xr>=lo&&xr<=hi){
+      g.strokeStyle=INK;g.setLineDash([4,3]);g.lineWidth=1;
+      g.beginPath();g.moveTo(B.X(Ri),B.y1);g.lineTo(B.X(Ri),B.y0);g.stroke();g.setLineDash([]);
+      const pm=E*E/(4*Ri)/KI();
+      g.fillStyle=C_P;g.beginPath();g.arc(B.X(Ri),B.Y(pm),5,0,2*Math.PI);g.fill();
+      g.fillStyle=INK;g.font='12px system-ui,"Segoe UI",sans-serif';g.textAlign=B.X(Ri)>(B.x0+B.x1)/2?'right':'left';
+      g.fillText('P_max = '+fmt2(pm)+' '+PU(),B.X(Ri)+(B.X(Ri)>(B.x0+B.x1)/2?-9:9),B.Y(pm)-8);
+      g.fillText('R_е = '+(isI()?'R_p':'R_i')+', η = 50 %',B.X(Ri)+(B.X(Ri)>(B.x0+B.x1)/2?-9:9),B.Y(pm)+6);
+    }
+  }
+  for(const p of pts){
+    const lx=Math.log10(p.R); if(lx<lo||lx>hi) continue;
+    g.fillStyle=C_P;g.beginPath();g.arc(B.X(p.R),B.Y(p.U*p.I),4,0,2*Math.PI);g.fill();
+    if(ok){g.fillStyle=C_I;g.beginPath();g.arc(B.X(p.R),Yr(100*p.U/f.a),4,0,2*Math.PI);g.fill()}
   }
 }
 
@@ -454,13 +559,15 @@ function draw(){
   if((s=useCanvas(CV.circ))) drawCircuit({x:0,y:0,w:s.W,h:s.H});
   if((s=useCanvas(CV.ui)))   drawUI({x:4,y:2,w:s.W-8,h:s.H-4},f);
   if((s=useCanvas(CV.norm))) drawNorm({x:4,y:2,w:s.W-8,h:s.H-4},f);
+  if((s=useCanvas(CV.pow)))  drawPow({x:4,y:2,w:s.W-8,h:s.H-4},f);
 }
 
 /* ---- таблиця, підсумки, експорт ---- */
 function refresh(){
   const f=fit();
-  $('tbl').querySelector('tbody').innerHTML=pts.map((p,k)=>`<tr><td>${k+1}</td><td>${fmt2(p.I)}</td><td>${fmt2(p.U)}</td><td>${fmt2(p.R)}</td></tr>`).join('');
-  $('thI').textContent='I, '+IU();$('dIu').textContent=IU();
+  const okF=f&&f.a>0;
+  $('tbl').querySelector('tbody').innerHTML=pts.map((p,k)=>`<tr><td>${k+1}</td><td>${fmt2(p.I)}</td><td>${fmt2(p.U)}</td><td>${fmt2(p.R)}</td><td>${fmt2(p.U*p.I)}</td><td>${okF?(100*p.U/f.a).toFixed(1).replace('.',','):'—'}</td></tr>`).join('');
+  $('thI').textContent='I, '+IU();$('thP').textContent='P, '+PU();$('dIu').textContent=IU();
   $('dI').textContent=fmt2(last.I);$('dU').textContent=fmt2(last.U);
   if(!f){
     $('fr').innerHTML='Точок: '+pts.length+'<br>Зніміть щонайменше дві точки, щоб побудувати апроксимацію.';
@@ -468,26 +575,38 @@ function refresh(){
   }else{
     $('fr').innerHTML=
       'Точок: '+f.n+'<br>'+
-      'ε = '+fmt2(f.a)+(f.n>=3?' ± '+fmtA(f.sa):'')+' В<br>'+
-      (isI()?'R<sub>p</sub>':'R<sub>i</sub>')+' = '+fmtR(f.Ri)+(f.n>=3?' ± '+fmtR(f.sb):'')+'<br>'+
+      'ε = '+fmt2(f.a)+' ± '+fmtA(f.sa)+' В<br>'+
+      (isI()?'R<sub>p</sub>':'R<sub>i</sub>')+' = '+fmtR(f.Ri)+' ± '+fmtR(f.sb)+'<br>'+
       (isI()?'I<sub>0</sub> = ε/R<sub>p</sub> = '+fmt2(f.a/f.Ri/KI())+' '+IU()+'<br>':'')+
-      'R² = '+f.r2.toFixed(4);
+      (f.Ri>0&&f.a>0?'P<sub>max</sub> = ε²/4R = '+fmt2(f.a*f.a/(4*f.Ri)/KI())+' '+PU()+'<br>':'')+
+      'R² = '+f.r2.toFixed(4)+(f.chi2r!==null?'; χ²/ν = '+f.chi2r.toFixed(2).replace('.',','):'');
     const p=pts[pts.length-1];
     const Ik=f.a/f.Ri/KI();
     $('chk').innerHTML='Перевірка для останньої точки: U/ε + I/'+(isI()?'I<sub>0</sub>':'I<sub>кз</sub>')+' = '+fmt2(p.U/f.a+p.I/Ik)+' (має бути близько 1)'+
       (isI()?'.<br>Джерело струму з шунтом R<sub>p</sub> для навантаження еквівалентне джерелу ЕРС ε = I<sub>0</sub>R<sub>p</sub> з внутрішнім опором R<sub>p</sub> (теорема Нортона–Тевенена); тому ВАХ — та сама пряма.':'');
   }
   if(teacher){
-    $('teach').innerHTML='Еталон (лише для викладача): ε = '+fmt2(Eof())+' В, R<sub>i</sub> = '+fmtR(S.Ri)+(isI()?'; I<sub>0</sub> = '+fmt2(S.I0/KI())+' '+IU():'')+'; реостат = '+fmtR(Rset())+'.';
+    $('teach').innerHTML='Еталон (лише для викладача): ε = '+fmt2(Eof())+' В, R<sub>i</sub> = '+fmtR(S.Ri)+(isI()?'; I<sub>0</sub> = '+fmt2(S.I0/KI())+' '+IU():'')+'; реостат = '+fmtR(Rset())+'.'+
+      (f?'<br>Систематика схеми: R<sub>i</sub>(вимір.)/R<sub>i</sub>(еталон) = '+(f.Ri/S.Ri).toFixed(3).replace('.',',')+', ε(вимір.)/ε(еталон) = '+(f.a/Eof()).toFixed(3).replace('.',',')+'.':'');
   }
   $('lpos').textContent=(+$('pos').value)+' %  ·  R = '+fmtR(Rset());
   $('devnote').textContent='Прилади: амперметр класу точності 0,5, межа '+String(+S.Imax.toFixed(2)).replace('.',',')+' '+IU()+'; вольтметр, межа '+String(+S.uMax.toFixed(2)).replace('.',',')+' В; показання округлено до 0,01.';
+  $('meterInfo').innerHTML=REAL()?'R<sub>A</sub> = '+fmtR(RA())+' (спад 0,3 В на межі), R<sub>V</sub> = '+fmtR(RV())+' (1 кОм/В). Порівняйте їх з R<sub>'+(isI()?'p':'i')+'</sub>: який прилад заважає більше за цієї схеми?':'Прилади ідеальні: R<sub>A</sub> = 0, R<sub>V</sub> = ∞.';
+  /* попередження про коротке замикання і підказка щодо покриття діапазону */
+  $('warn').textContent=(!isI()&&Rset()<0.25*S.Ri)?'⚠ Майже коротке замикання: джерело швидко розряджається, не тримайте повзунок тут.':'';
+  const cov=[];
+  if(pts.length>0&&pts.length<5) cov.push('Зніміть щонайменше 5 точок.');
+  if(pts.length>=2){
+    const Is=pts.map(p=>p.I),span=Math.max(...Is)-Math.min(...Is),full=Eof()/(S.Rmin+S.Ri)/KI();
+    if(span<0.6*full) cov.push('Охоплено лише '+Math.round(100*span/full)+' % можливого діапазону струмів: додайте точки при менших R (ближче до короткого замикання) і при більших R.');
+  }
+  $('cov').textContent=cov.join(' ');
   draw();
 }
 
 /* діапазон осі R_е/R_i залежить від R_i: підлаштовуємо під реостат */
 function updRange(){
-  S.logMin=Math.floor(Math.log10(S.Rmin/S.Ri));S.logMax=Math.ceil(Math.log10(S.Rmax/S.Ri));
+  S.logMin=Math.floor(Math.log10(S.Rmin/S.Ri)-0.1);S.logMax=Math.ceil(Math.log10(S.Rmax/S.Ri)+0.1);   // запас: підігнане R_i трохи відрізняється від заданого
   S.E=Eof();
   S.Imax=niceCeil(S.E/(S.Rmin+S.Ri)/KI()*1.05);      // межа амперметра: з запасом над найбільшим струмом
   S.iTicks=ticksFor(S.Imax);
@@ -518,17 +637,38 @@ function newReading(){last=reading();refresh()}
 function setSource(id){
   S=SOURCES[id];
   updRange();fillEmf();fillRi();
+  $('scheme').value=isI()?'load':'term';   // початкова схема: A для малого R_i, B для великого шунта R_p
   pts=[];last=reading();
   $('src').value=id;
   refresh();
 }
 $('src').addEventListener('change',()=>setSource($('src').value));
+$('scheme').addEventListener('change',()=>{pts=[];last=reading();refresh()});
+$('real').addEventListener('change',()=>{pts=[];last=reading();refresh()});
+$('errx').addEventListener('change',()=>draw());
 $('pos').addEventListener('input',newReading);
-$('take').onclick=()=>{pts.push({I:last.I,U:last.U,R:last.I>0?last.U/last.I:Rset()});refresh()};
+$('take').onclick=()=>{pts.push({I:last.I,U:last.U,R:last.I>0?last.U/(last.I*KI()):Rset()});refresh()};
 $('undo').onclick=()=>{pts.pop();refresh()};
 $('clear').onclick=()=>{pts=[];refresh()};
 $('exp').onclick=()=>{
   $('latex').value=pts.map(p=>fmt2(p.I)+' & '+fmt2(p.U)+' & '+fmt2(p.R)+' \\\\').join('\n');
+};
+/* таблиця для Excel / CSV: десяткова кома, розділювач — табуляція або «;» */
+function tableRows(sep){
+  const f=fit(),ok=f&&f.a>0;
+  const head=['№','I, '+IU(),'U, В','Rе, Ом','P, '+PU(),'η, %'];
+  const rows=pts.map((p,k)=>[k+1,fmt2(p.I),fmt2(p.U),fmt2(p.R),fmt2(p.U*p.I),ok?(100*p.U/f.a).toFixed(1).replace('.',','):'']);
+  return [head].concat(rows).map(r=>r.join(sep)).join('\n');
+}
+$('cp').onclick=()=>{
+  const t=tableRows('\t'),done=()=>{$('cp').textContent='Скопійовано ✓';setTimeout(()=>$('cp').textContent='Копіювати таблицю',1500)};
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done,()=>{$('latex').value=t;$('latex').select()});
+  else{$('latex').value=t;$('latex').select();try{document.execCommand('copy');done()}catch(e){}}
+};
+$('csv').onclick=()=>{
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\ufeff'+tableRows(';')],{type:'text/csv;charset=utf-8'}));
+  a.download='vax_dzherela.csv';document.body.appendChild(a);a.click();a.remove();
 };
 
 /* перемальовуємо при зміні розміру (у тому числі коли згорнутий блок розкривається) і зміні теми */
@@ -556,6 +696,8 @@ new MutationObserver(()=>draw()).observe(document.documentElement,{attributes:tr
 
 $('src').value=Object.keys(SOURCES).find(k=>SOURCES[k]===S);
 updRange();fillEmf();fillRi();
+$('scheme').value=P.get('scheme')==='load'||P.get('scheme')==='term'?P.get('scheme'):(isI()?'load':'term');
+if(P.get('real')==='0')$('real').checked=false;
 last=reading();
 refresh();
 </script>
