@@ -35,6 +35,10 @@ nav.tabs{display:flex;gap:4px;flex-wrap:wrap}
 nav.tabs button{font:inherit;font-size:14px;border:1px solid var(--line);background:transparent;color:var(--fg);padding:6px 12px;border-radius:8px;cursor:pointer}
 nav.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .toggles{margin-left:auto;display:flex;gap:14px;align-items:center;font-size:13px;color:var(--muted)}
+.menu{position:relative}
+.menu>summary{cursor:pointer;list-style:none;border:1px solid var(--line);border-radius:8px;padding:5px 11px;color:var(--fg)}
+.menu>summary::-webkit-details-marker{display:none}
+.menu-pop{position:absolute;right:0;top:calc(100% + 6px);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:40;white-space:nowrap}
 .sw{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
 .sw input{appearance:none;width:34px;height:19px;border-radius:10px;background:var(--line);position:relative;cursor:pointer;margin:0;transition:background .2s}
 .sw input::after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
@@ -132,7 +136,7 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;margin:6px 0 !im
 .screen{background:#050d06;border-radius:12px;padding:7px;box-shadow:inset 0 0 14px #000,0 0 0 4px #2a2c29,0 0 0 7px #6a6d67,0 0 0 8px #9a9d96}
 .screen canvas{display:block;width:100%;border-radius:6px}
 .scope-body{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
-.scope-screen{flex:1 1 300px;min-width:240px;max-width:430px;margin:6px}
+.scope-screen{flex:1 1 300px;min-width:240px;max-width:400px;margin:6px}
 .lamp.off{background:radial-gradient(circle at 40% 35%,#8a5a4e,#4a1a10 70%);box-shadow:none}
 .lamp.g{background:radial-gradient(circle at 40% 35%,#d9ffc9,#3bd11d 60%,#0d5a05);box-shadow:0 0 7px #5aff32}
 .lamp.g.off{background:radial-gradient(circle at 40% 35%,#5e7a55,#1d3a14 70%);box-shadow:none}
@@ -154,7 +158,8 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;margin:6px 0 !im
 .meter{display:block;width:140px;height:auto;box-shadow:inset 0 0 4px rgba(0,0,0,.4),0 0 0 3px #2a2c29;border-radius:4px}
 .gen-read.off{color:#3c4a36}
 .scope-under{display:flex;justify-content:center;margin-top:10px}
-.scope-ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;flex:1 1 360px;min-width:0}
+.scope-ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:10px;align-items:stretch;flex:1 1 360px;min-width:0}
+.scope-ctl>.hint{grid-column:1/-1;max-width:none !important}
 .btn-sov{background:linear-gradient(#f4f4f0,#c8c9c3);border:1px solid #6f716b;border-radius:3px;font:10.5px Arial,sans-serif;padding:3px 7px;cursor:pointer;color:#111;
   box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(0,0,0,.35);text-transform:uppercase;letter-spacing:.3px}
 .btn-sov.on{background:linear-gradient(#a9aaa4,#d9dad4);box-shadow:inset 0 2px 3px rgba(0,0,0,.45)}
@@ -179,8 +184,31 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;margin:6px 0 !im
 .sch .sub{font-size:10px}
 .sch .flow{fill:var(--flow)}
 .sch .dev{fill:var(--bg);stroke:var(--muted);stroke-width:1.4}
+
+/* ---------- розкладка «стенд»: схема ліворуч, прилади праворуч ---------- */
+@media (min-width:1500px){
+  main{max-width:1880px}
+  .content{display:grid;grid-template-columns:minmax(440px,5fr) minmax(0,8fr);gap:14px;align-items:start}
+  .content>.card{margin-bottom:0}
+  .content>details:nth-child(1){grid-column:1;grid-row:1}
+  .content>details:nth-child(2){grid-column:2;grid-row:1}
+  .content>details:nth-child(n+3){grid-column:1/-1}
+  .content>details:nth-child(1) .schem-wrap{flex:1 1 100%}
+  .content>details:nth-child(1) .phasor-wrap{flex:1 1 100%;max-width:380px;margin:0 auto}
+}
 @media (max-width:920px){
-  .layout{grid-template-columns:1fr}
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .content,.instr,.panel{min-width:0}
+  /* телефон: схема → параметри → прилади → графіки → теорія */
+  .content{display:contents}
+  .content>.card{margin-bottom:0}
+  .content>details:nth-child(1){order:1}
+  aside.params{order:2}
+  .content>details:nth-child(2){order:3}
+  .content>details:nth-child(n+3){order:4}
+  .schem-wrap{overflow-x:auto}
+  .schem-wrap svg{min-width:430px}
+  .seg{flex-wrap:wrap}
   aside.params{position:static;max-height:none}
   header.top{position:static}
   .toggles{margin-left:0}
@@ -208,10 +236,13 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;margin:6px 0 !im
     <button data-t="2">Робота 2. Котушка</button>
     <button data-t="3">Робота 3. Резонанс</button>
   </nav>
-  <div class="toggles">
-    <label class="sw"><input type="checkbox" id="noiseSw" checked> шум відліку</label>
-    <label class="sw"><input type="checkbox" id="themeSw"> темна тема</label>
-  </div>
+  <details class="toggles menu">
+    <summary title="Налаштування">⚙ Налаштування</summary>
+    <div class="menu-pop">
+      <label class="sw"><input type="checkbox" id="noiseSw" checked> шум відліку</label>
+      <label class="sw"><input type="checkbox" id="themeSw"> темна тема</label>
+    </div>
+  </details>
 </header>
 
 <main>
@@ -220,8 +251,16 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;margin:6px 0 !im
  <div class="layout">
   <aside class="params card" id="p1"></aside>
   <div class="content">
-   <details class="card th" open>
-    <summary>1. Теорія: конденсатор у колі змінного струму</summary>
+   <details class="card" open><summary>Схема (рис. 1.6) і векторна діаграма</summary>
+    <div class="row"><div class="schem-wrap" id="s1"></div><div class="phasor-wrap" id="ph1"></div></div>
+   </details>
+   <details class="card" open><summary>Прилади</summary><div class="instr" id="i1"></div></details>
+   <details class="card fold"><summary>Графіки</summary>
+    <p class="hint">Рожева вертикаль показує поточну частоту генератора. Клацніть або протягніть по графіку з віссю ν, щоб змінити частоту.</p>
+    <div class="graphs" id="g1"></div><div class="scan" id="sc1"></div>
+   </details>
+   <details class="card th">
+    <summary>Теорія: конденсатор у колі змінного струму</summary>
     <p class="hint">Позначення і виведення взято з розд. 17 конспекту, гаусова система (СГС). У ній \(R\) вимірюють у с/см, \(C\) у см, \(L\) у с²/см, щоб ЕРС самоіндукції мала вигляд \(-L\dot I\), як у (17.10). Співвідношення: 1 Ом = 1,113·10⁻¹² с/см, 1 мкФ = 8,988·10⁵ см, 1 мГн = 1,113·10⁻¹⁵ с²/см, 1 В = 1/299,8 статВ. Частоти, кути φ, добротність і відношення напруг від системи одиниць не залежать. Тому робочі формули записано в Ом, мкФ, мГн, Гц.</p>
     <div class="val" data-live="cgs"></div>
 
@@ -265,15 +304,6 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;margin:6px 0 !im
     <p>Покази приладів симуляція рахує з повної комплексної моделі: \(Z=R_i+(R\parallel R_{\text{вх}})+(Z_C\parallel R_{\text{вх}})\), \(R_{\text{вх}}=1\) МОм. Опір \(R_i\) змінює амплітуди, але не кут між \(U\) на затискачах і \(I\).</p>
     <div class="val" data-live="model"></div>
    </details>
-
-   <div class="card"><h3>2. Схема (рис. 1.6) і векторна діаграма</h3>
-    <div class="row"><div class="schem-wrap" id="s1"></div><div class="phasor-wrap" id="ph1"></div></div>
-   </div>
-   <div class="card"><h3>3. Прилади</h3><div class="instr" id="i1"></div></div>
-   <div class="card"><h3>4. Графіки</h3>
-    <p class="hint">Рожева вертикаль показує поточну частоту генератора. Клацніть або протягніть по графіку з віссю ν, щоб змінити частоту.</p>
-    <div class="graphs" id="g1"></div><div class="scan" id="sc1"></div>
-   </div>
   </div>
  </div>
 </section>
@@ -283,8 +313,16 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;margin:6px 0 !im
  <div class="layout">
   <aside class="params card" id="p2"></aside>
   <div class="content">
-   <details class="card th" open>
-    <summary>1. Теорія: котушка індуктивності в колі змінного струму</summary>
+   <details class="card" open><summary>Схема (рис. 2.1) і векторна діаграма</summary>
+    <div class="row"><div class="schem-wrap" id="s2"></div><div class="phasor-wrap" id="ph2"></div></div>
+   </details>
+   <details class="card" open><summary>Прилади</summary><div class="instr" id="i2"></div></details>
+   <details class="card fold"><summary>Графіки</summary>
+    <p class="hint">Рожева вертикаль показує поточну частоту генератора. Клацніть або протягніть по графіку з віссю ν, щоб змінити частоту.</p>
+    <div class="graphs" id="g2"></div><div class="scan" id="sc2"></div>
+   </details>
+   <details class="card th">
+    <summary>Теорія: котушка індуктивності в колі змінного струму</summary>
     <p class="hint">Гаусова система, позначення розд. 17. У рівнянні (17.57) \(L\) вимірюється в с²/см (1 мГн = 1,113·10⁻¹⁵ с²/см). Робочі формули нижче записано в мГн, Ом і Гц.</p>
     <div class="val" data-live="cgs"></div>
 
@@ -322,15 +360,6 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;margin:6px 0 !im
     <p>Модель приладів: \(Z=R_i+(R\parallel R_{\text{вх}})+(Z_L\parallel R_{\text{вх}})\), де \(Z_L=R_L+i\omega L\).</p>
     <div class="val" data-live="model"></div>
    </details>
-
-   <div class="card"><h3>2. Схема (рис. 2.1) і векторна діаграма</h3>
-    <div class="row"><div class="schem-wrap" id="s2"></div><div class="phasor-wrap" id="ph2"></div></div>
-   </div>
-   <div class="card"><h3>3. Прилади</h3><div class="instr" id="i2"></div></div>
-   <div class="card"><h3>4. Графіки</h3>
-    <p class="hint">Рожева вертикаль показує поточну частоту генератора. Клацніть або протягніть по графіку з віссю ν, щоб змінити частоту.</p>
-    <div class="graphs" id="g2"></div><div class="scan" id="sc2"></div>
-   </div>
   </div>
  </div>
 </section>
@@ -340,8 +369,16 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;margin:6px 0 !im
  <div class="layout">
   <aside class="params card" id="p3"></aside>
   <div class="content">
-   <details class="card th" open>
-    <summary>1. Теорія: резонанс напруг і резонанс струмів</summary>
+   <details class="card" open><summary>Схема (рис. 3.6 / 3.7) і векторна діаграма</summary>
+    <div class="row"><div class="schem-wrap" id="s3"></div><div class="phasor-wrap" id="ph3"></div></div>
+   </details>
+   <details class="card" open><summary>Прилади</summary><div class="instr" id="i3"></div></details>
+   <details class="card fold"><summary>Графіки</summary>
+    <p class="hint">Рожева вертикаль показує поточну частоту генератора. Клацніть або протягніть по графіку, щоб змінити частоту. Q<sub>exp</sub> визначено числово за шириною кривої з повної моделі.</p>
+    <div class="graphs" id="g3"></div><div class="scan" id="sc3"></div>
+   </details>
+   <details class="card th">
+    <summary>Теорія: резонанс напруг і резонанс струмів</summary>
     <p class="hint">Гаусова система, розд. 17 конспекту: \(2\gamma=R/L\), \(\omega_0^2=1/(LC)\). Рівняння вимушених коливань (17.58): \(\ddot q+2\gamma\dot q+\omega_0^2q=\omega_0^2C\,\mathcal E_m\cos\omega t\).</p>
     <div class="val" data-live="cgs"></div>
 
@@ -396,15 +433,6 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;margin:6px 0 !im
     \[\nu_0\,[\text{Гц}]=\frac{10^{4.5}}{2\pi\sqrt{L[\text{мГн}]\,C[\text{мкФ}]}},\qquad \rho=\sqrt{\frac{L}{C}}=\sqrt{\frac{10^{3}L[\text{мГн}]}{C[\text{мкФ}]}}\ \text{Ом},\qquad Q_{\text{theor}}=\frac{\rho}{R_\Sigma},\qquad Q_{\text{exp}}=\frac{\nu_0}{\nu_2-\nu_1}.\]
     <div class="val" data-live="work"></div>
    </details>
-
-   <div class="card"><h3>2. Схема (рис. 3.6 / 3.7) і векторна діаграма</h3>
-    <div class="row"><div class="schem-wrap" id="s3"></div><div class="phasor-wrap" id="ph3"></div></div>
-   </div>
-   <div class="card"><h3>3. Прилади</h3><div class="instr" id="i3"></div></div>
-   <div class="card"><h3>4. Графіки</h3>
-    <p class="hint">Рожева вертикаль показує поточну частоту генератора. Клацніть або протягніть по графіку, щоб змінити частоту. Q<sub>exp</sub> визначено числово за шириною кривої з повної моделі.</p>
-    <div class="graphs" id="g3"></div><div class="scan" id="sc3"></div>
-   </div>
   </div>
  </div>
 </section>
@@ -1030,9 +1058,7 @@ function makeScope(host, tab, o) {
   const panel = h('div', { class: 'panel scope', style: 'flex:1 1 100%' },
     h('div', { class: 'plate' }, h('b', {}, o.name), h('span', {}, 'осцилограф універсальний двоканальний')),
     h('div', { class: 'scope-body' },
-      h('div', { class: 'scope-screen' }, h('div', { class: 'screen' }, cv),
-        h('div', { class: 'scope-under' },
-          grp('промінь', vstack(pw, capt('мережа'), pLamp), vstack(kB.svg, capt('яскр.')), vstack(kF.svg, capt('фокус'))))),
+      h('div', { class: 'scope-screen' }, h('div', { class: 'screen' }, cv)),
       h('div', { class: 'scope-ctl' },
         ch[0].el, ch[1].el,
         grp('розгортка · X', knobBox(kt, 'час/под', vt), vstack(kH.svg, capt('↔')), vstack(bMag, capt('розтяжка'))),
@@ -1042,6 +1068,7 @@ function makeScope(host, tab, o) {
           vstack(h('div', { class: 'rbtns h' }, trSl), capt('полярн.')),
           vstack(h('div', { class: 'rbtns h' }, trMd), h('span', { class: 'unc' }, tLamp, 'синхр.'))),
         grp('режим', h('div', { class: 'rbtns h' }, md, bXY), bA),
+        grp('промінь', vstack(pw, capt('мережа'), pLamp), vstack(kB.svg, capt('яскр.')), vstack(kF.svg, capt('фокус'))),
         h('div', { class: 'hint', style: 'max-width:360px', html: (o.note || '') + ' Ручка «плавно» не в крайньому правому положенні — канал некалібрований (горить «некал.»), тоді показ В/под неточний.' }))));
   host.append(panel);
   tab.onRes.push(res => { if (sc.auto) autoRange(res); syncUI(); });
@@ -1469,7 +1496,7 @@ function makeLab12(n, kind) {
     ? { label: `C<sub>${i}</sub>`, unit: 'мкФ', mul: 1e6, min: 0.1e-6, max: 10e-6, log: true, hardMin: 1e-12 }
     : { label: `L<sub>${i}</sub>`, unit: 'мГн', mul: 1e3, min: 0.1e-3, max: 20e-3, log: true, hardMin: 1e-9 };
   const p = $('#p' + n);
-  p.append(h('h3', {}, '5. Параметри'),
+  p.append(h('h3', {}, 'Параметри'),
     makeSlider(tab, 'nu', SPEC.nu), makeSlider(tab, 'E0', SPEC.E0), makeSlider(tab, 'R', SPEC.R),
     makeSlider(tab, 'X1', spX(1)), makeSlider(tab, 'X2', spX(2)),
     ...(isC ? [] : [makeSlider(tab, 'RL', SPEC.RL)]), makeSlider(tab, 'Ri', SPEC.Ri),
@@ -1494,10 +1521,10 @@ function makeLab12(n, kind) {
   SCH.wire(gw, [[60, 150], [60, 40], [300, 40], [300, 150]]);
   SCH.wire(gw, [[300, 250], [300, 260], [60, 260], [60, 150]]);
   sv('rect', { x: 18, y: 62, width: 92, height: 176, rx: 6, class: 'box' }, ge);
-  SCH.txt(ge, 64, 76, 'Г3-112', 'sm', 'middle');
-  SCH.res(ge, 60, 108, true, 40, 14);
+  SCH.txt(ge, 88, 78, 'Г3-112', 'sm', 'middle');
+  SCH.res(ge, 60, 118, true, 40, 14);
   SCH.src(ge, 60, 188);
-  SCH.txt(ge, 74, 112, subT('R', 'i'));
+  SCH.txt(ge, 76, 122, subT('R', 'i'));
   SCH.txt(ge, 86, 193, 'ℰ');
   SCH.res(ge, 300, 95, true);
   SCH.dot(ge, 300, 40); SCH.dot(ge, 300, 150); SCH.dot(ge, 300, 260);
@@ -1728,7 +1755,7 @@ function makeLab12(n, kind) {
       items.splice(2, 0, { z: Rr(IRL), from: Rr(r.UR), color: K.c4, dash: [3, 3], w: 1.4, u: 'V' },
         { z: Rr(IXL), from: Rr(add(r.UR, IRL)), color: K.c4, dash: [3, 3], w: 1.4, u: 'V', label: 'U_{L,ід}', side: -1 });
     }
-    drawPhasors(ph.cv, items);
+    drawPhasors(ph.cv, items, { ratio: 0.8 });
     if (!tab._legT || now - tab._legT > 300) {
       tab._legT = now;
       ph.leg.innerHTML = legendHTML([[K.c3, `I<sub>m</sub>=${si(abs(r.I), 'А')}`], [K.c1, `U<sub>R</sub>=${si(abs(r.UR), 'В')}`],
@@ -1779,7 +1806,7 @@ function makeLab3() {
   const gS = h('div', {}, makeSlider(tab, 'R', { ...SPEC.R, max: 500 }));
   const gP = h('div', {}, makeSlider(tab, 'Rk', SPEC.Rk),
     h('div', { style: 'font-size:13px;margin-top:4px' }, 'Опір R паралельно контуру:'), makeSeg(tab, 'Rp', RPS, 'rp3'));
-  p.append(h('h3', {}, '5. Параметри'),
+  p.append(h('h3', {}, 'Параметри'),
     makeSeg(tab, 'mode', [['s', 'послідовний (рис. 3.6)'], ['p', 'паралельний (рис. 3.7)']], 'mode3'),
     makeSlider(tab, 'nu', SPEC.nu), makeSlider(tab, 'E0', SPEC.E0), gS, gP,
     makeSlider(tab, 'C', SPEC.C), makeSlider(tab, 'L', SPEC.L), makeSlider(tab, 'RL', SPEC.RL), makeSlider(tab, 'Ri', SPEC.Ri),
@@ -1795,11 +1822,11 @@ function makeLab3() {
 
   /* ---- схеми 3.6 і 3.7 ---- */
   const host = $('#s' + n);
-  const svgS = sv('svg', { viewBox: '0 0 560 300', class: 'sch' }), svgP = sv('svg', { viewBox: '0 0 560 300', class: 'sch' });
+  const svgS = sv('svg', { viewBox: '0 0 600 300', class: 'sch' }), svgP = sv('svg', { viewBox: '0 0 600 300', class: 'sch' });
   host.append(svgS, svgP);
   const genBox = (g, name) => {
     sv('rect', { x: 18, y: 72, width: 92, height: 166, rx: 6, class: 'box' }, g);
-    SCH.txt(g, 64, 66, name, 'sm', 'middle');
+    SCH.txt(g, 88, 84, name, 'sm', 'middle');
     SCH.res(g, 60, 116, true, 40, 14); SCH.src(g, 60, 192);
     SCH.txt(g, 74, 120, subT('R', 'i')); SCH.txt(g, 86, 197, 'ℰ');
   };
@@ -1817,8 +1844,8 @@ function makeLab3() {
   SCH.txt(se, 478, 98, 'котушка', 'sm'); SCH.txt(se, 260, 292, 'C', '', 'middle');
   SCH.txt(se, 120, 290, 'С1-83: кан. I — U<tspan class="sub" dy="3">ген</tspan><tspan dy="-3">, кан. II — U</tspan><tspan class="sub" dy="3">R</tspan>', 'sm');
   const LS = {
-    E: SCH.txt(sl, 14, 254, '', 'lv'), Ri: SCH.txt(sl, 14, 30, '', 'lv'), R: SCH.txt(sl, 248, 40, '', 'lv'), Lv: SCH.txt(sl, 476, 126, '', 'lv'),
-    RL: SCH.txt(sl, 476, 194, '', 'lv'), Cv: SCH.txt(sl, 290, 250, '', 'lv'), I: SCH.txt(sl, 300, 40, '', 'lv'),
+    E: SCH.txt(sl, 14, 282, '', 'lv'), Ri: SCH.txt(sl, 14, 30, '', 'lv'), R: SCH.txt(sl, 248, 40, '', 'lv'), Lv: SCH.txt(sl, 476, 126, '', 'lv'),
+    RL: SCH.txt(sl, 476, 194, '', 'lv'), Cv: SCH.txt(sl, 290, 250, '', 'lv'), I: SCH.txt(sl, 345, 40, '', 'lv'),
   };
   const fS = new Flow(sf, [[60, 260], [60, 50], [440, 50], [440, 260], [60, 260]]);
   // паралельний
@@ -1838,7 +1865,7 @@ function makeLab3() {
   SCH.txt(pe, 180, 36, subT('R', 'k'), '', 'middle');
   SCH.txt(pe, 120, 290, 'С1-83: кан. I — U<tspan class="sub" dy="3">ген</tspan><tspan dy="-3">, кан. II — U</tspan><tspan class="sub" dy="3">Rk</tspan><tspan dy="-3"> ∝ I</tspan>', 'sm');
   const LP = {
-    E: SCH.txt(pl, 14, 254, '', 'lv'), Ri: SCH.txt(pl, 14, 30, '', 'lv'), Rk: SCH.txt(pl, 214, 40, '', 'lv'),
+    E: SCH.txt(pl, 14, 282, '', 'lv'), Ri: SCH.txt(pl, 14, 30, '', 'lv'), Rk: SCH.txt(pl, 214, 40, '', 'lv'),
     Lv: SCH.txt(pl, 312, 118, '', 'lv'), RL: SCH.txt(pl, 312, 200, '', 'lv'), Cv: SCH.txt(pl, 400, 140, '', 'lv'), Rv: SCH.txt(pl, 478, 220, '', 'lv'),
     I: SCH.txt(pl, 80, 40, '', 'lv'),
   };
@@ -2139,7 +2166,7 @@ function makeLab3() {
     const r = tab.res; if (!r) return;
     const th = tab.theta, K = colors();
     for (const f of tab.flows) if (f.only === st.mode) f.flow.step(tab.paused ? 0 : inst(f.get(r), th) / f.ref(r), dt);
-    drawPhasors(ph.cv, vecs(r, th, K, false));
+    drawPhasors(ph.cv, vecs(r, th, K, false), { ratio: 0.8 });
     if (!tab._legT || now - tab._legT > 300) {
       tab._legT = now;
       ph.leg.innerHTML = r.mode === 's'
@@ -2195,6 +2222,37 @@ function init() {
   requestAnimationFrame(loop);
 }
 document.addEventListener('DOMContentLoaded', init);
+</script>
+<script>
+// Згорнуті розділи: після розкриття канвас отримує ширину, тож змушуємо перемалювати
+document.addEventListener('toggle',e=>{if(e.target.open)setTimeout(()=>window.dispatchEvent(new Event('resize')),30)},true);
+</script>
+<script>
+// Широка розкладка «стенд»: масштабуємо приборы так, щоб вони влізли по висоті у вікно (zoom не змінює кути ручок)
+(function(){
+  function fit(){
+    document.querySelectorAll('.tab:not([hidden]) .instr').forEach(el=>{
+      el.style.zoom = '';
+      if (innerWidth < 1500) return;
+      const top = el.getBoundingClientRect().top + scrollY, avail = innerHeight - 52 - 14 - 54 - 14;
+      let z = 1, lo = 0.55, hi = 1;
+      // шукаємо zoom, при якому видима висота (zoom · власна висота) дорівнює доступній: двійковий пошук
+      el.style.zoom = 1;
+      if (el.offsetHeight <= avail) { return; }
+      for (let i = 0; i < 9; i++) {
+        z = (lo + hi) / 2; el.style.zoom = z;
+        if (z * el.offsetHeight > avail) hi = z; else lo = z;
+      }
+      z = lo;
+      el.style.zoom = z;
+      
+    });
+  }
+  let t; const later = () => { clearTimeout(t); t = setTimeout(fit, 80); };
+  addEventListener('resize', later); addEventListener('load', () => { later(); setTimeout(fit, 600); });
+  document.addEventListener('click', e => { if (e.target.closest('#tabs')) setTimeout(fit, 50); });
+  document.addEventListener('toggle', later, true);
+})();
 </script>
 </body>
 </html>
