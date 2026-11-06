@@ -79,3 +79,8 @@ review/
 .archive/
 main2.tex
 main2.pdf
+video/out/
+video/audio/
+video/__pycache__/
+video/voice_sample.wav
+video/*.mp4
