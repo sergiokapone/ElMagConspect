@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Трифазний струм</title>
+<style>
+:root{--ink:#1d2327;--muted:#5b6670;--line:#c9d0d6;--bg:#f5f6f7;--panel:#fff;--pos:#1f5fd6;--neg:#d62728;--force:#c2189a;--field:#1b8a3c;--gold:#9a6b00;--ok:#1b8a3c;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;--force:#ff6ad5;--field:#4fd17a;--gold:#ffd35a;--ok:#4fd17a;color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;--force:#ff6ad5;--field:#4fd17a;--gold:#ffd35a;--ok:#4fd17a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;padding:10px 14px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+h1{font-size:19px;margin:0 40px 6px 0;font-weight:600;line-height:1.25}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+button,select{font:inherit;font-size:14px;padding:5px 11px;border:1px solid #8b97a1;background:var(--panel);border-radius:4px;cursor:pointer;color:var(--ink)}
+select{padding:4px 6px}
+button:focus-visible{outline:2px solid #1f6feb;outline-offset:2px}
+button.sel{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+details{max-width:110ch;margin:0 0 6px}
+summary{cursor:pointer;color:var(--muted);font-size:13.5px;padding:2px 0}
+details p{margin:6px 0;font-size:13.5px;line-height:1.45;color:var(--muted)}
+.main{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px;align-items:start;max-width:1300px}
+.ct{font-size:13.5px;font-weight:600;margin:0 0 3px}
+.cap{font-size:12px;color:var(--muted);line-height:1.35;margin-top:3px}
+canvas{display:block;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+#scene{height:clamp(270px,50vh,460px)}
+#plot{height:clamp(150px,28vh,240px)}#scheme{aspect-ratio:2.15/1;margin-bottom:8px}
+.controls{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0;align-items:center}
+.hint{font-size:13px;color:var(--muted)}
+.hidden{display:none!important}
+input[type=range]{width:min(150px,38vw);vertical-align:middle}
+.readout{font-size:13px;line-height:1.5;padding:7px 10px;background:var(--panel);border:1px solid var(--line);border-radius:4px;margin-bottom:8px}
+#info{margin:8px 0 0;font-size:13px;line-height:1.45;max-width:120ch}
+@media (max-width:860px){.main{grid-template-columns:1fr}#scene{height:310px}#plot{height:190px}h1{font-size:17px}}
+</style>
+<script src="assets/theme.js"></script>
+</head>
+<body>
+<h1>Трифазний струм</h1>
+<div class="tabs">
+<button class="tab sel" data-t="field">Обертове магнітне поле</button>
+<button class="tab" data-t="conn">Зірка, трикутник, обрив нуля</button>
+<button class="tab" data-t="power">Потужність</button>
+</div>
+<details id="desc"><summary>Про що модель</summary>
+<p>Три однакові обмотки, зсунуті на 120°, дають ЕРС однакової амплітуди, зсунуті за фазою на 120° (третину періоду): ℰ<sub>k</sub> = ℰ<sub>m</sub> sin(ωt − 2π(k−1)/3). Їхня сума в кожен момент дорівнює нулю.</p>
+<p><b>Три сцени:</b> (1) три котушки з осями під 120° створюють поле сталого модуля 3B<sub>m</sub>/2, що обертається з кутовою швидкістю ω, на цьому працюють асинхронні двигуни; (2) з'єднання зіркою (з нульовим дротом і без нього) і трикутником: U<sub>л</sub> = √3 U<sub>ф</sub> для зірки, I<sub>л</sub> = √3 I<sub>ф</sub> для трикутника; при несиметричному навантаженні й обриві нуля напруга перерозподіляється між фазами; (3) миттєва потужність: у трифазній системі вона стала, в однофазній пульсує з частотою 2ω.</p>
+<p>Усі величини ефективні. Мережа 400/230 В: U<sub>ф</sub> = 230 В, U<sub>л</sub> = 400 В. Навантаження в сцені 2 активні, тому Z = R; опір 1000 Ом і більше вважається обривом фази.</p>
+</details>
+<div class="main">
+<div>
+<div class="ct" id="sceneTitle"></div>
+<canvas id="scene"></canvas>
+<div class="cap" id="sceneCap"></div>
+<div class="controls">
+<label class="hint" data-tabs="field"><input id="swap" type="checkbox"> поміняти місцями фази 2 і 3</label>
+<label class="hint" data-tabs="field"><input id="open3" type="checkbox"> обрив фази 3</label>
+<label class="hint" data-tabs="field power">швидкість <input id="sSpd" type="range" min="0.05" max="1.5" step="0.05" value="0.25"> <span id="vSpd"></span></label>
+<span data-tabs="field power"><button id="bPause">Пауза</button></span>
+<label class="hint" data-tabs="conn">схема <select id="sch"><option value="yn">зірка з нульовим дротом</option><option value="yo">зірка без нульового дроту</option><option value="d">трикутник</option></select></label>
+<label class="hint" data-tabs="conn">Z₁ <input id="sR1" type="range" min="10" max="1000" step="1" value="100"> <span id="vR1"></span></label>
+<label class="hint" data-tabs="conn">Z₂ <input id="sR2" type="range" min="10" max="1000" step="1" value="100"> <span id="vR2"></span></label>
+<label class="hint" data-tabs="conn">Z₃ <input id="sR3" type="range" min="10" max="1000" step="1" value="100"> <span id="vR3"></span></label>
+<span data-tabs="conn"><button id="pSym">Симетрично</button> <button id="pBreak">Приклад обриву нуля</button></span>
+<label class="hint" data-tabs="power">кут зсуву φ <input id="sPhi" type="range" min="-90" max="90" step="1" value="30"> <span id="vPhi"></span></label>
+<label class="hint" data-tabs="power">струм фази I<sub>ф</sub> <input id="sIf" type="range" min="0.5" max="20" step="0.5" value="10"> <span id="vIf"></span></label>
+</div>
+</div>
+<div>
+<div class="readout" id="ro"></div>
+<div data-tabs="conn"><div class="ct">Схема: генератор і навантаження</div><canvas id="scheme"></canvas></div>
+<div class="ct" id="plotTitle"></div>
+<canvas id="plot"></canvas>
+<div class="cap" id="plotCap"></div>
+</div>
+</div>
+<p id="info"></p>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id),cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+const sc=$('scheme'),cv=$('scene'),g=cv.getContext('2d'),pv=$('plot'),pq=pv.getContext('2d'),ro=$('ro'),info=$('info');
+let dpr=1,col={},tab='field',paused=false,wt=0;
+const UF=230,PI=Math.PI,TP=2*PI;
+const P={spd:0.25,swap:false,open3:false,sch:'yn',R:[100,100,100],phi:30,If:10};
+const fmt=(v,n)=>v.toFixed(n);
+const phaseCol=()=>[col.gold,col.field,col.neg];
+const dl=k=>{const d=[0,-TP/3,TP/3];if(P.swap&&k>0)return -d[k];return d[k]};     // зсув фази k (рад)
+
+function readCols(){const s=getComputedStyle(document.documentElement);for(const n of['ink','muted','line','panel','pos','neg','force','field','gold','ok'])col[n]=s.getPropertyValue('--'+n).trim()}
+function txt(c,t,x,y,color,al,fs,bl){c.fillStyle=color;c.font=(fs||12)+'px system-ui,sans-serif';c.textAlign=al||'center';c.textBaseline=bl||'alphabetic';c.fillText(t,x,y)}
+function arrow(c,x0,y0,x1,y1,color,w){const Ln=Math.hypot(x1-x0,y1-y0);if(Ln<2)return;
+  c.strokeStyle=color;c.fillStyle=color;c.lineWidth=w;c.beginPath();c.moveTo(x0,y0);c.lineTo(x1,y1);c.stroke();
+  const a=Math.atan2(y1-y0,x1-x0),h=Math.min(Ln*.8,6+w*1.6);c.beginPath();c.moveTo(x1,y1);
+  c.lineTo(x1-h*Math.cos(a-.4),y1-h*Math.sin(a-.4));c.lineTo(x1-h*Math.cos(a+.4),y1-h*Math.sin(a+.4));c.closePath();c.fill()}
+function setup(cvs){const a=cvs.getBoundingClientRect(),W=Math.round(a.width*dpr),H=Math.round(a.height*dpr);if(cvs.width!==W||cvs.height!==H){cvs.width=W;cvs.height=H}
+  const q=cvs.getContext('2d');q.setTransform(dpr,0,0,dpr,0,0);q.clearRect(0,0,a.width,a.height);q.fillStyle=col.panel;q.fillRect(0,0,a.width,a.height);return[q,a.width,a.height]}
+const nice=v=>{const a=Math.abs(v),s=v<0?'−':'';return s+(a===0?'0':a>=100?a.toFixed(0):a>=10?a.toFixed(1):a.toPrecision(2))};
+
+/* ---------- графік ---------- */
+function plotG(q,w,h,c){
+  const mx=46,mr=14,mt=12,mb=30;
+  const X=x=>mx+(x-c.x0)/(c.x1-c.x0)*(w-mx-mr);
+  let lo=0,hi=0;for(const k of c.L)for(let i=0;i<=120;i++){const v=k.f(c.x0+(c.x1-c.x0)*i/120);lo=Math.min(lo,v);hi=Math.max(hi,v)}
+  if(c.ylo!=null)lo=c.ylo;if(c.yhi!=null)hi=c.yhi;const pad=(hi-lo)*.08;lo=lo<0?lo-pad:0;hi=hi>0?hi+pad:0;if(hi===lo)hi=lo+1;
+  const Y=v=>h-mb-(v-lo)/(hi-lo)*(h-mt-mb);
+  q.strokeStyle=col.line;q.lineWidth=1;q.strokeRect(mx,mt,w-mx-mr,h-mt-mb);
+  q.setLineDash([2,3]);if(lo<0&&hi>0){q.beginPath();q.moveTo(mx,Y(0));q.lineTo(w-mr,Y(0));q.stroke()}
+  for(const[v]of c.xt){q.beginPath();q.moveTo(X(v),mt);q.lineTo(X(v),h-mb);q.stroke()}q.setLineDash([]);
+  for(const k of c.L){q.setLineDash(k.dash?[5,4]:[]);q.strokeStyle=k.color;q.lineWidth=k.dash?1.6:2.2;q.beginPath();
+    for(let i=0;i<=240;i++){const xv=c.x0+(c.x1-c.x0)*i/240,v=k.f(xv);i?q.lineTo(X(xv),Y(v)):q.moveTo(X(xv),Y(v))}q.stroke();q.setLineDash([])}
+  if(c.xm!=null){q.strokeStyle=col.ink;q.lineWidth=1.3;q.beginPath();q.moveTo(X(c.xm),mt);q.lineTo(X(c.xm),h-mb);q.stroke();
+    for(const k of c.L){q.fillStyle=k.color;q.beginPath();q.arc(X(c.xm),Y(k.f(c.xm)),4,0,6.283);q.fill()}}
+  txt(q,nice(hi),mx-4,mt+4,col.muted,'right',11.5);txt(q,nice(lo),mx-4,h-mb,col.muted,'right',11.5);if(lo<0&&hi>0)txt(q,'0',mx-4,Y(0)+4,col.muted,'right',11.5);
+  for(const[v,s]of c.xt)txt(q,s,X(v),h-mb+14,col.muted,'center',11.5);txt(q,c.xl,(mx+w-mr)/2,h-4,col.muted,'center',11.5);
+  let ly=mt+14;for(const t of c.notes||[]){txt(q,t[0],mx+6,ly,t[1],'left',11.5);ly+=14}
+}
+const XT=[[0,'0'],[PI/2,'T/4'],[PI,'T/2'],[3*PI/2,'3T/4'],[TP,'T']];
+
+/* ============ сцена 1: обертове поле ============ */
+const cur=(k,t)=>(k===2&&P.open3)?0:Math.sin(t+dl(k));      // I_k = sin(ωt − 2π(k−1)/3), dl повертає −2π(k−1)/3
+const AX=[PI/2,PI/2+TP/3,PI/2+2*TP/3];                          // осі котушок
+function sumB(t){let bx=0,by=0;for(let k=0;k<3;k++){const b=cur(k,t);bx+=b*Math.cos(AX[k]);by+=b*Math.sin(AX[k])}return[bx,by]}
+function sceneField(){
+  const [q,w,h]=setup(cv),cx=w/2,cy=h/2,R=0.4*Math.min(w,h),L=R*0.42,pc=phaseCol();
+  q.strokeStyle=col.line;q.lineWidth=10;q.beginPath();q.arc(cx,cy,R*1.0,0,TP);q.stroke();
+  q.strokeStyle=col.muted;q.lineWidth=1;q.setLineDash([4,4]);q.beginPath();q.arc(cx,cy,1.5*L,0,TP);q.stroke();q.setLineDash([]);
+  const names=['I','II','III'];
+  for(let k=0;k<3;k++){const a=AX[k],ex=Math.cos(a),ey=-Math.sin(a);
+    q.strokeStyle=pc[k];q.lineWidth=1;q.globalAlpha=.5;q.beginPath();q.moveTo(cx-ex*R,cy-ey*R);q.lineTo(cx+ex*R,cy+ey*R);q.stroke();q.globalAlpha=1;
+    for(const sgn of[1,-1]){q.save();q.translate(cx+sgn*ex*R,cy+sgn*ey*R);q.rotate(Math.atan2(ey,ex));q.fillStyle=pc[k];q.globalAlpha=(k===2&&P.open3)?.25:1;q.fillRect(-5,-13,10,26);q.restore();q.globalAlpha=1}
+    txt(q,names[k],cx+ex*(R+22),cy+ey*(R+22)+4,pc[k],'center',13);
+    const b=cur(k,wt);arrow(q,cx,cy,cx+ex*b*L,cy+ey*b*L,pc[k],2.2)}
+  const[bx,by]=sumB(wt),m=Math.hypot(bx,by);
+  arrow(q,cx,cy,cx+bx*L,cy-by*L,col.force,4);
+  q.fillStyle=col.ink;q.beginPath();q.arc(cx,cy,3,0,TP);q.fill();
+  txt(q,'B = '+fmt(m,2)+' B_m'+(m>1.49&&m<1.51?' (= 3B_m/2)':''),cx,h-8,col.force,'center',13);
+  txt(q,'ωt = '+fmt(((wt%TP)+TP)%TP*180/PI,0)+'°',10,18,col.muted,'left',12.5);
+}
+function plotField(){
+  const [q,w,h]=setup(pv),pc=phaseCol(),xm=((wt%TP)+TP)%TP;
+  plotG(q,w,h,{x0:0,x1:TP,xt:XT,xl:'ωt',xm,ylo:-1.2,yhi:1.2,
+    L:[0,1,2].map(k=>({f:x=>cur(k,x),color:pc[k]})).concat([{f:x=>cur(0,x)+cur(1,x)+cur(2,x),color:col.ink,dash:true}]),
+    notes:[['I₁',pc[0]],['I₂',pc[1]],['I₃',pc[2]],['I₁+I₂+I₃',col.ink]]});
+}
+function roField(){
+  const[bx,by]=sumB(wt),m=Math.hypot(bx,by),sum=cur(0,wt)+cur(1,wt)+cur(2,wt);
+  ro.innerHTML='I₁ = '+fmt(cur(0,wt),2)+' I<sub>m</sub> · I₂ = '+fmt(cur(1,wt),2)+' · I₃ = '+fmt(cur(2,wt),2)+'<br>I₁+I₂+I₃ = <b>'+fmt(sum,2)+'</b> · |B| = <b>'+fmt(m,2)+' B<sub>m</sub></b> (при симетрії 1,5 B<sub>m</sub> = const)';
+  info.innerHTML=P.open3?'<b>Обрив фази 3.</b> Дві котушки під 120° дають еліптичне поле: його модуль пульсує, а ротор крутиться нерівномірно й втрачає момент. Так і поводяться трифазні двигуни при втраті фази: гудуть, гріються, зупиняються під навантаженням.':
+    P.swap?'<b>Дві фази поміняно місцями:</b> порядок чергування фаз змінився, і поле обертається в протилежний бік. Так змінюють напрямок обертання двигуна: достатньо поміняти місцями два дроти.':
+    '<b>Обертове поле.</b> Кожна котушка створює пульсуюче поле вздовж своєї осі, але векторна сума трьох полів має сталий модуль 3B<sub>m</sub>/2 і обертається з кутовою швидкістю ω без жодних рухомих частин. Провідний ротор захоплюється цим полем струмами Фуко.';
+}
+
+/* ============ сцена 2: зірка, трикутник ============ */
+const cx_=(re,im)=>({re,im}),cadd=(a,b)=>cx_(a.re+b.re,a.im+b.im),csub=(a,b)=>cx_(a.re-b.re,a.im-b.im),cmul=(a,s)=>cx_(a.re*s,a.im*s),cabs=a=>Math.hypot(a.re,a.im);
+const E=[0,1,2].map(k=>{const th=PI/2-k*TP/3;return cx_(UF*Math.cos(th),UF*Math.sin(th))});
+const Y=k=>P.R[k]>=1000?0:1/P.R[k];
+function solveConn(){
+  const r={U:[],I:[],IN:cx_(0,0),V0:cx_(0,0),Il:[]};
+  if(P.sch==='yn'){for(let k=0;k<3;k++){r.U.push(E[k]);r.I.push(cmul(E[k],Y(k)))}r.IN=cadd(cadd(r.I[0],r.I[1]),r.I[2]);r.Il=r.I}
+  else if(P.sch==='yo'){const sy=Y(0)+Y(1)+Y(2);let n=cx_(0,0);for(let k=0;k<3;k++)n=cadd(n,cmul(E[k],Y(k)));r.V0=sy>0?cmul(n,1/sy):cx_(0,0);
+    for(let k=0;k<3;k++){const u=csub(E[k],r.V0);r.U.push(u);r.I.push(cmul(u,Y(k)))}r.Il=r.I}
+  else{const u=[csub(E[0],E[1]),csub(E[1],E[2]),csub(E[2],E[0])];for(let k=0;k<3;k++){r.U.push(u[k]);r.I.push(cmul(u[k],Y(k)))}
+    r.Il=[csub(r.I[0],r.I[2]),csub(r.I[1],r.I[0]),csub(r.I[2],r.I[1])]}
+  r.P=0;for(let k=0;k<3;k++)r.P+=Math.pow(cabs(r.U[k]),2)*Y(k);
+  return r}
+function sceneConn(){
+  const [q,w,h]=setup(cv),r=solveConn(),s=0.36*Math.min(w,h)/UF,cx=w/2,cy=h*0.53;
+  const pt=z=>[cx+s*z.re,cy-s*z.im],pc=phaseCol();
+  const A=E.map(pt),O=pt(cx_(0,0));
+  q.strokeStyle=col.muted;q.lineWidth=1.2;q.setLineDash([5,4]);q.beginPath();q.moveTo(...A[0]);q.lineTo(...A[1]);q.lineTo(...A[2]);q.closePath();q.stroke();q.setLineDash([]);
+  const lab=['U₁₂','U₂₃','U₃₁'];for(let k=0;k<3;k++){const a=A[k],b=A[(k+1)%3],mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,dx=mx-cx,dy=my-cy,d=Math.hypot(dx,dy)||1;
+    txt(q,lab[k]+' = 400 В',mx+dx/d*34,my+dy/d*14,col.muted,'center',11.5)}
+  for(let k=0;k<3;k++)arrow(q,O[0],O[1],A[k][0],A[k][1],pc[k],1.4);
+  if(P.sch==='d'){for(let k=0;k<3;k++){const a=A[(k+1)%3],b=A[k];arrow(q,a[0]+(b[0]-a[0])*.03,a[1]+(b[1]-a[1])*.03,a[0]+(b[0]-a[0])*.97,a[1]+(b[1]-a[1])*.97,col.force,3)}
+    txt(q,'трикутник: на кожному навантаженні лінійна напруга U_л = √3·U_ф',cx,h-10,col.force,'center',12.5)}
+  else{const O2=pt(r.V0);for(let k=0;k<3;k++)arrow(q,O2[0],O2[1],A[k][0],A[k][1],col.force,3);
+    if(P.sch==='yo'&&cabs(r.V0)>1){q.strokeStyle=col.ink;q.lineWidth=1;q.setLineDash([3,3]);q.beginPath();q.moveTo(...O);q.lineTo(...O2);q.stroke();q.setLineDash([])}
+    q.fillStyle=col.ink;q.beginPath();q.arc(O[0],O[1],3.5,0,TP);q.fill();txt(q,'0',O[0]-9,O[1]+4,col.ink,'right',12.5);
+    if(P.sch==='yo'){q.fillStyle=col.force;q.beginPath();q.arc(O2[0],O2[1],4.5,0,TP);q.fill();txt(q,'0′',O2[0]+9,O2[1]-6,col.force,'left',12.5)}
+    txt(q,P.sch==='yn'?'зірка з нульовим дротом: нейтраль приймача прив’язана до нейтралі генератора, U_k = U_ф':'зірка без нульового дроту: нейтраль 0′ «пливе» (U_k — від 0′ до вершин)',cx,h-10,col.force,'center',12)}
+  for(let k=0;k<3;k++){const a=A[k],dx=a[0]-cx,dy=a[1]-cy,d=Math.hypot(dx,dy)||1;txt(q,'L'+(k+1),a[0]+dx/d*14,a[1]+dy/d*14+4,pc[k],'center',13)}
+}
+
+/* ---- принципова схема зірки / трикутника (геометрія рисунків книги: ThreePhaseStar, ThreePhaseDelta) ---- */
+function schemeConn(){
+  const [q,w,h]=setup(sc),pc=phaseCol(),d=P.sch==='d',u=Math.min(w/11.6,h/5.3);
+  const X=x=>w/2+(x-3.8)*u,Yc=y=>h/2-(y-0.25)*u,pt=(x,y)=>[X(x),Yc(y)];
+  q.lineWidth=1.6;q.lineJoin='round';q.lineCap='round';
+  const poly=(pts,c)=>{q.strokeStyle=c||col.ink;q.beginPath();pts.forEach(([x,y],i)=>i?q.lineTo(X(x),Yc(y)):q.moveTo(X(x),Yc(y)));q.stroke()};
+  const dot=(x,y)=>{q.fillStyle=col.ink;q.beginPath();q.arc(X(x),Yc(y),3,0,TP);q.fill()};
+  const T=(t,x,y,c,al,fs)=>txt(q,t,X(x),Yc(y),c||col.ink,al||'center',fs||12.5);
+  // елемент між двома точками: type 'L' (котушка) або 'R' (резистор); side — з якого боку підпис
+  function el(type,a,b,lab,side,c,off){const[x0,y0]=pt(...a),[x1,y1]=pt(...b),mx=(x0+x1)/2,my=(y0+y1)/2,ang=Math.atan2(y1-y0,x1-x0),len=Math.hypot(x1-x0,y1-y0),bl=Math.min(len*0.55,1.15*u);
+    q.save();q.translate(mx,my);q.rotate(ang);q.strokeStyle=c||col.ink;q.beginPath();q.moveTo(-len/2,0);q.lineTo(-bl/2,0);q.moveTo(bl/2,0);q.lineTo(len/2,0);q.stroke();
+    q.beginPath();if(type==='R')q.rect(-bl/2,-0.17*u,bl,0.34*u);else{const r=bl/8;q.moveTo(-bl/2,0);for(let i=0;i<4;i++)q.arc(-bl/2+r*(2*i+1),0,r,Math.PI,0)}q.stroke();q.restore();
+    const nx=-Math.sin(ang)*side,ny=Math.cos(ang)*side,o=(off||0.5)*u;txt(q,lab,mx+nx*o,my+ny*o+4,c||col.ink,'center',12)}
+  const Z=k=>'Z'+['₁','₂','₃'][k]+(Y(k)>0?'':' (обрив)');
+  const zc=k=>Y(k)>0?pc[k]:col.muted;
+  if(!d){
+    // генератор: зірка
+    dot(0,0);T('0',-0.25,0.28,null,'right');
+    el('L',[0,0],[0,2],'I',-1,pc[0]);el('L',[0,0],[1.5,-1],'II',1,pc[1],0.55);el('L',[0,0],[-1.5,-1],'III',-1,pc[2],0.55);
+    dot(0,2);dot(1.5,-1);dot(-1.5,-1);
+    // навантаження: зірка. Z_k — на лінії k: Z1 зверху, Z2 праворуч-вниз (лінія II йде до лівого вузла, див. нижче)
+    dot(6,0);T('0′',6.25,0.28,null,'left');
+    el('R',[6,0],[6,2],Z(0),-1,zc(0));el('R',[6,0],[4.7,-1],Z(1),1,zc(1),0.55);el('R',[6,0],[7.3,-1],Z(2),-1,zc(2),0.55);
+    dot(6,2);dot(4.7,-1);dot(7.3,-1);
+    poly([[0,2],[6,2]],pc[0]);T('I_Л1',3,1.55,pc[0]);
+    poly([[1.5,-1],[4.7,-1]],pc[1]);T('I_Л2',3.1,-0.7,pc[1]);
+    poly([[-1.5,-1],[-1.5,-2.1],[7.3,-2.1],[7.3,-1]],pc[2]);T('I_Л3',3.1,-1.85,pc[2]);
+    if(P.sch==='yn'){poly([[0,0],[0.5,0],[1,0.4],[5,0.4],[5.5,0],[6,0]],col.ok);T('I_N',3,0.62,col.ok)}
+    else{poly([[0,0],[0.5,0],[1,0.4],[2.6,0.4]],col.muted);poly([[3.4,0.4],[5,0.4],[5.5,0],[6,0]],col.muted);
+      q.strokeStyle=col.neg;q.lineWidth=2.4;const[cx,cy]=pt(3,0.4);q.beginPath();q.moveTo(cx-7,cy-7);q.lineTo(cx+7,cy+7);q.moveTo(cx+7,cy-7);q.lineTo(cx-7,cy+7);q.stroke();q.lineWidth=1.6;
+      T('нуль обірвано',3,0.8,col.neg)}
+    // вольтметри: фазна й лінійна напруги
+    poly([[6,2],[8.8,2]],col.force);poly([[6,0],[8.2,0]],col.force);poly([[7.3,-1],[8.8,-1]],col.force);
+    const ar=(x,ya,yb,lab)=>{q.strokeStyle=col.force;q.fillStyle=col.force;for(const[y0,y1]of[[ya,yb],[yb,ya]]){const[ax,ay]=pt(x,y0),[bx,by]=pt(x,y1),a=Math.atan2(by-ay,bx-ax);q.beginPath();q.moveTo(bx,by);q.lineTo(bx-7*Math.cos(a-.4),by-7*Math.sin(a-.4));q.lineTo(bx-7*Math.cos(a+.4),by-7*Math.sin(a+.4));q.closePath();q.fill()}
+      poly([[x,ya],[x,yb]],col.force);T(lab,x+0.12,(ya+yb)/2-0.05,col.force,'left')};
+    ar(8.0,2,0,P.sch==='yn'?'U_ф':'U₁');ar(8.6,2,-1,'U_л');
+  }else{
+    // генератор: трикутник
+    const GT=[0,2.5],GBL=[-1.5,0],GBR=[1.5,0];
+    el('L',GBL,GT,'III',-1,pc[2]);el('L',GT,GBR,'I',-1,pc[0]);el('L',GBR,GBL,'II',1,pc[1]);
+    for(const v of[GT,GBL,GBR])dot(...v);
+    // навантаження: трикутник. Z1 між лініями 1–2, Z2 між 2–3, Z3 між 3–1
+    const LT=[6.5,2.5],LBL=[5.3,0],LBR=[7.7,0];
+    el('R',LT,LBL,Z(0),-1,zc(0),0.6);el('R',LBL,LBR,Z(1),1,zc(1));el('R',LBR,LT,Z(2),-1,zc(2),0.6);
+    for(const v of[LT,LBL,LBR])dot(...v);
+    poly([GT,LT],pc[0]);T('I_Л1',3.3,2.85,pc[0]);
+    poly([GBR,[1.5,-0.6],[5.3,-0.6],LBL],pc[1]);T('I_Л2',3.4,-0.3,pc[1]);
+    poly([GBL,[-1.5,-1.3],[7.7,-1.3],LBR],pc[2]);T('I_Л3',3.4,-1.05,pc[2]);
+    const[ax,ay]=pt(3.0,2.5),[bx,by]=pt(3.0,-0.6);q.strokeStyle=col.force;q.fillStyle=col.force;q.beginPath();q.moveTo(ax,ay+3);q.lineTo(bx,by-3);q.stroke();
+    for(const[x0,y0,x1,y1]of[[ax,ay,bx,by],[bx,by,ax,ay]]){const a=Math.atan2(y1-y0,x1-x0);q.beginPath();q.moveTo(x1,y1);q.lineTo(x1-7*Math.cos(a-.4),y1-7*Math.sin(a-.4));q.lineTo(x1-7*Math.cos(a+.4),y1-7*Math.sin(a+.4));q.closePath();q.fill()}
+    q.save();q.translate(ax-9,(ay+by)/2);q.rotate(-PI/2);txt(q,'U_л = U_ф',0,0,col.force,'center',12);q.restore();
+    T('навантаження трикутником: на кожному Z — лінійна напруга',3.8,-1.9,col.muted,'center',11.5);
+  }
+}
+function plotConn(){
+  const [q,w,h]=setup(pv),r=solveConn(),ml=44,mr=12,mt=14,mb=26,vmax=460,pc=phaseCol();
+  const Yv=v=>h-mb-cl(v,0,vmax)/vmax*(h-mt-mb);
+  q.strokeStyle=col.line;q.lineWidth=1;q.strokeRect(ml,mt,w-ml-mr,h-mt-mb);
+  for(const[v,c,t]of[[230,col.ok,'230 В'],[400,col.muted,'400 В']]){q.strokeStyle=c;q.setLineDash([5,4]);q.beginPath();q.moveTo(ml,Yv(v));q.lineTo(w-mr,Yv(v));q.stroke();q.setLineDash([]);txt(q,t,ml-4,Yv(v)+4,c,'right',11)}
+  const bw=(w-ml-mr)/3;
+  for(let k=0;k<3;k++){const u=cabs(r.U[k]),nom=P.sch==='d'?400:UF,bad=u>1.1*nom||(u<0.9*nom&&Y(k)>0);const x=ml+bw*(k+.5);
+    q.fillStyle=bad?col.neg:pc[k];q.globalAlpha=Y(k)>0?.85:.3;q.fillRect(x-bw*.28,Yv(u),bw*.56,h-mb-Yv(u));q.globalAlpha=1;
+    txt(q,fmt(u,0)+' В',x,Yv(u)-4,col.ink,'center',12);txt(q,'Z'+(k+1)+(Y(k)>0?'':' (обрив)'),x,h-8,col.muted,'center',11.5)}
+}
+function roConn(){
+  const r=solveConn(),nom=P.sch==='d'?400:UF;let h='';
+  for(let k=0;k<3;k++){const u=cabs(r.U[k]),i=cabs(r.I[k]),bad=Y(k)>0&&(u>1.1*nom||u<0.9*nom);
+    h+='Z'+(k+1)+' = '+(Y(k)?P.R[k]+' Ом':'∞ (обрив)')+': U = <b'+(bad?' style="color:var(--neg)"':'')+'>'+fmt(u,0)+' В</b>, I = '+fmt(i,2)+' А<br>'}
+  if(P.sch==='yn')h+='Струм нульового дроту I<sub>N</sub> = |I₁+I₂+I₃| = <b>'+fmt(cabs(r.IN),2)+' А</b>';
+  else if(P.sch==='yo')h+='Зміщення нейтралі |0′0| = <b>'+fmt(cabs(r.V0),0)+' В</b>';
+  else h+='Лінійні струми: '+r.Il.map(z=>fmt(cabs(z),2)).join(' · ')+' А';
+  h+=' · P = '+fmt(r.P/1000,2)+' кВт';ro.innerHTML=h;
+  const sym=P.R[0]===P.R[1]&&P.R[1]===P.R[2];
+  info.innerHTML=P.sch==='yn'?'<b>Зірка з нулем.</b> Нульовий дріт тримає нейтраль приймача в потенціалі нейтралі генератора, тому при будь-якому навантаженні кожна фаза лишається під U<sub>ф</sub> = 230 В. При симетричному навантаженні I<sub>N</sub> = 0 і нульовий дріт непотрібен.':
+    P.sch==='yo'?(sym?'<b>Зірка без нуля, симетричне навантаження:</b> 0′ збігається з 0, кожна фаза під 230 В, нуль не потрібен. Розведіть опори й подивіться, як 0′ відходить від 0.':'<b>Нейтраль «пливе»:</b> напруга перерозподіляється між фазами, більше її дістає фаза з більшим опором (менш навантажена). Це та сама ситуація, що й обрив нуля в мережі: прилади на малонавантаженій фазі працюють при завищеній напрузі й виходять з ладу. Кнопка «Приклад обриву нуля» відтворює числа з книги: 80 В і 320 В.'):
+    '<b>Трикутник.</b> До кожної фази прикладена лінійна напруга 400 В, а лінійний струм розгалужується на два фазні. При симетричному навантаженні I<sub>л</sub> = √3 I<sub>ф</sub>. Те саме навантаження, ввімкнене трикутником замість зірки, споживає втричі більшу потужність.';
+}
+
+/* ============ сцена 3: потужність ============ */
+function pk(k,t){const ph=P.phi*PI/180;return(Math.cos(ph)-Math.cos(2*(t+dl(k))-ph))*UF*P.If/1000}
+function scenePower(){
+  const [q,w,h]=setup(cv),pc=phaseCol(),xm=((wt%TP)+TP)%TP;
+  plotG(q,w,h,{x0:0,x1:TP,xt:XT,xl:'ωt',xm,ylo:0,
+    L:[0,1,2].map(k=>({f:x=>pk(k,x),color:pc[k]})).concat([{f:x=>pk(0,x)+pk(1,x)+pk(2,x),color:col.ink,dash:false}]),
+    notes:[['p₁(t)',pc[0]],['p₂(t)',pc[1]],['p₃(t)',pc[2]],['p₁+p₂+p₃ = const',col.ink]]});
+}
+function plotPower(){
+  const [q,w,h]=setup(pv),xm=((wt%TP)+TP)%TP;
+  plotG(q,w,h,{x0:0,x1:TP,xt:XT,xl:'ωt',xm,ylo:0,L:[{f:x=>pk(0,x),color:col.pos}],notes:[['однофазна: p(t) = UI[cosφ − cos(2ωt − φ)]',col.pos]]});
+}
+function roPower(){
+  const ph=P.phi*PI/180,S=3*UF*P.If,Pa=S*Math.cos(ph),Q=S*Math.sin(ph),UL=UF*Math.sqrt(3),IL=P.If;
+  ro.innerHTML='U<sub>ф</sub> = 230 В, I<sub>ф</sub> = '+fmt(P.If,1)+' А, φ = '+P.phi+'°<br><b>P = 3U<sub>ф</sub>I<sub>ф</sub>cosφ = √3U<sub>л</sub>I<sub>л</sub>cosφ</b> = '+fmt(Pa/1000,2)+' кВт · Q<sub>р</sub> = '+fmt(Q/1000,2)+' квар · S = '+fmt(S/1000,2)+' кВ·А<br>Однофазна p(t) змінюється від '+fmt(UF*P.If*(Math.cos(ph)-1)/1000,2)+' до '+fmt(UF*P.If*(Math.cos(ph)+1)/1000,2)+' кВт, середнє UIcosφ = '+fmt(UF*P.If*Math.cos(ph)/1000,2)+' кВт';
+  info.innerHTML='<b>Стала потужність.</b> Миттєва потужність кожної фази пульсує з подвоєною частотою 2ω, але три пульсації зсунуті на 120° у кожній з гармонік 2ω і взаємно гасяться: сума p₁+p₂+p₃ = 3UIcosφ не залежить від часу. Тому момент на валу двигуна й навантаження на генератор рівномірні. Чорна лінія — стала сума; вона дорівнює середній потужності трьох фаз разом.';
+}
+
+/* ============ каркас ============ */
+const TITLES={field:['Три котушки під 120°: обертове поле','Колір — фаза. Тонкі стрілки: поля окремих котушок B_k (довжина ∝ I_k); товста малинова — сума B. Пунктирне коло: |B| = 3B_m/2.','Струми трьох фаз і їхня сума'],
+ conn:['Векторна діаграма: ЕРС фаз і напруги на навантаженні','Вершини трикутника — кінці фазних ЕРС; U_k — напруги на навантаженнях (від нейтралі приймача до вершин). Опори Z ≥ 1000 Ом вважаються обривом.','Напруги на навантаженнях (червоні — поза допуском ±10 %)'],
+ power:['Миттєва потужність трьох фаз і їхня сума','Тут p_k = u_k·i_k, потужність у кВт. Чорна лінія — сума, вона стала.','Однофазне коло для порівняння']};
+function setTab(t){tab=t;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('sel',b.dataset.t===t));
+  document.querySelectorAll('[data-tabs]').forEach(el=>el.classList.toggle('hidden',!el.dataset.tabs.split(' ').includes(t)));
+  const T=TITLES[t];$('sceneTitle').textContent=T[0];$('sceneCap').textContent=T[1];$('plotTitle').textContent=T[2]}
+function frame(){const now=performance.now()/1000,dt=Math.min(now-(frame.t||now),.05);frame.t=now;
+  if(!paused)wt+=dt*TP*P.spd;
+  if(tab==='field'){sceneField();plotField();roField()}else if(tab==='conn'){schemeConn();sceneConn();plotConn();roConn()}else{scenePower();plotPower();roPower()}
+  requestAnimationFrame(frame)}
+function bind(id,out,fn,set){const el=$(id),o=$(out),ap=()=>{set(+el.value);o.textContent=fn(+el.value)};el.addEventListener('input',ap);ap()}
+bind('sSpd','vSpd',v=>fmt(v,2)+' об/с',v=>P.spd=v);
+for(let k=0;k<3;k++)bind('sR'+(k+1),'vR'+(k+1),v=>v>=1000?'∞':v+' Ом',v=>P.R[k]=v);
+bind('sPhi','vPhi',v=>v+'°',v=>P.phi=v);bind('sIf','vIf',v=>fmt(v,1)+' А',v=>P.If=v);
+$('swap').addEventListener('change',e=>P.swap=e.target.checked);$('open3').addEventListener('change',e=>P.open3=e.target.checked);
+$('sch').addEventListener('change',e=>P.sch=e.target.value);
+function setR(a){for(let k=0;k<3;k++){$('sR'+(k+1)).value=a[k];$('vR'+(k+1)).textContent=a[k]>=1000?'∞':a[k]+' Ом';P.R[k]=a[k]}}
+$('pSym').onclick=()=>setR([100,100,100]);
+$('pBreak').onclick=()=>{setR([50,200,1000]);P.sch='yo';$('sch').value='yo'};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
+const bP=$('bPause');bP.onclick=()=>{paused=!paused;bP.textContent=paused?'Продовжити':'Пауза'};
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target.tagName==='BODY'&&tab!=='conn'){e.preventDefault();bP.click()}});
+function resize(){dpr=window.devicePixelRatio||1;readCols()}
+addEventListener('resize',resize);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',readCols);
+new MutationObserver(readCols).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+if(innerWidth<=700)$('desc').removeAttribute('open');
+resize();setTab('field');requestAnimationFrame(frame);
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>

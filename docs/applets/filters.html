@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Частотні фільтри ФНЧ і ФВЧ</title>
+<style>
+:root{--ink:#1d2327;--muted:#5b6670;--line:#c9d0d6;--bg:#f5f6f7;--panel:#fff;--pos:#1f5fd6;--neg:#d62728;--force:#c2189a;--field:#1b8a3c;--gold:#9a6b00;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;--force:#ff6ad5;--field:#4fd17a;--gold:#ffd35a;color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;--force:#ff6ad5;--field:#4fd17a;--gold:#ffd35a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;padding:10px 14px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+h1{font-size:19px;margin:0 40px 6px 0;font-weight:600;line-height:1.25}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+button,select{font:inherit;font-size:14px;padding:5px 11px;border:1px solid #8b97a1;background:var(--panel);border-radius:4px;cursor:pointer;color:var(--ink)}
+select{padding:4px 6px}
+button:focus-visible{outline:2px solid #1f6feb;outline-offset:2px}
+button.sel{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+details{max-width:110ch;margin:0 0 6px}
+summary{cursor:pointer;color:var(--muted);font-size:13.5px;padding:2px 0}
+details p{margin:6px 0;font-size:13.5px;line-height:1.45;color:var(--muted)}
+.main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start;max-width:1300px}
+.ct{font-size:13.5px;font-weight:600;margin:0 0 3px}
+.cap{font-size:12px;color:var(--muted);line-height:1.35;margin-top:3px}
+canvas{display:block;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+#bode{height:clamp(200px,34vh,300px)}#scheme{height:150px}#tin,#tout{height:clamp(110px,19vh,170px)}
+.controls{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0;align-items:center}
+.hint{font-size:13px;color:var(--muted)}
+.hidden{display:none!important}
+input[type=range]{width:min(170px,40vw);vertical-align:middle}
+.readout{font-size:13px;line-height:1.5;padding:7px 10px;background:var(--panel);border:1px solid var(--line);border-radius:4px;margin:6px 0 8px;max-width:1300px}
+#info{margin:8px 0 0;font-size:13px;line-height:1.45;max-width:120ch}
+@media (max-width:860px){.main{grid-template-columns:1fr}#bode{height:230px}h1{font-size:17px}}
+</style>
+<script src="assets/theme.js"></script>
+</head>
+<body>
+<h1>Частотні фільтри: ФНЧ, ФВЧ і смуговий</h1>
+<div class="tabs">
+<button class="tab sel" data-t="lp">ФНЧ (RC, вихід на C)</button>
+<button class="tab" data-t="hp">ФВЧ (RC, вихід на R)</button>
+<button class="tab" data-t="bp">Смуговий (LCR, вихід на R)</button>
+</div>
+<details id="desc"><summary>Про що модель</summary>
+<p>Коефіцієнт передачі K(ω) = U<sub>вих</sub>/U<sub>вх</sub> — комплексна величина: модуль |K| показує, у скільки разів змінюється амплітуда, аргумент φ — наскільки вихід зсунутий за фазою відносно входу. Для ФНЧ K = 1/(1 + iω/ω<sub>c</sub>), для ФВЧ K = (iω/ω<sub>c</sub>)/(1 + iω/ω<sub>c</sub>), де ω<sub>c</sub> = 1/RC. Для смугового фільтра K = 1/[1 + iQ(ω/ω₀ − ω₀/ω)].</p>
+<p>Зліва — частотні характеристики (амплітуда в децибелах і фаза, логарифмічна вісь частот); вертикальна лінія — частота вхідного сигналу. Справа — вхід і вихід у часі. Негармонічний сигнал розкладено в ряд Фур'є; кожна гармоніка проходить фільтр зі своїм |K| і φ, тому форма сигналу змінюється. Це стаціонарний режим (перехідний процес давно закінчився).</p>
+</details>
+<div class="controls">
+<label class="hint" data-tabs="lp hp">частота зрізу f<sub>c</sub> <input id="sFc" type="range" min="1" max="4" step="0.01" value="3"> <span id="vFc"></span></label>
+<label class="hint" data-tabs="bp">резонанс f₀ <input id="sF0" type="range" min="1" max="4" step="0.01" value="3"> <span id="vF0"></span></label>
+<label class="hint" data-tabs="bp">добротність Q <input id="sQ" type="range" min="0.5" max="30" step="0.1" value="5"> <span id="vQ"></span></label>
+<label class="hint">частота сигналу f <input id="sF" type="range" min="0" max="5" step="0.01" value="2.5"> <span id="vF"></span></label>
+<label class="hint">сигнал <select id="wave"><option value="sin">синус</option><option value="sq">меандр</option><option value="two">синус f + 0,5·синус 10f</option><option value="tri">трикутний</option></select></label>
+</div>
+<div class="readout" id="ro"></div>
+<div class="main">
+<div>
+<div class="ct">Схема фільтра</div><canvas id="scheme"></canvas>
+<div class="ct" style="margin-top:10px">Частотні характеристики: |K| у дБ і φ</div><canvas id="bode"></canvas><div class="cap">Суцільна лінія — |K| (ліва вісь, дБ), пунктир — φ (права вісь, градуси). Горизонтальна пунктирна — рівень −3 дБ.</div>
+</div>
+<div>
+<div class="ct">Вхідний сигнал U<sub>вх</sub>(t)</div><canvas id="tin"></canvas>
+<div class="ct" style="margin-top:10px">Вихідний сигнал U<sub>вих</sub>(t)</div><canvas id="tout"></canvas>
+<div class="cap" id="tcap">Три періоди вхідного сигналу; обидва графіки в одному масштабі. Пунктир на виході — вхідний сигнал для порівняння.</div>
+</div>
+</div>
+<p id="info"></p>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id),cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+const bc=$('bode'),bq=bc.getContext('2d'),sc=$('scheme'),sq=sc.getContext('2d'),ti=$('tin'),tiq=ti.getContext('2d'),to=$('tout'),toq=to.getContext('2d'),ro=$('ro'),info=$('info');
+let dpr=1,col={},tab='lp';
+const P={fc:1000,f0:1000,Q:5,f:300,wave:'sin'};
+const fmt=(v,n)=>v.toFixed(n);
+const fHz=f=>f>=1000?fmt(f/1000,f>=1e4?1:2)+' кГц':f>=100?fmt(f,0)+' Гц':fmt(f,1)+' Гц';
+/* K(f): [re, im] */
+function K(f){
+  if(tab==='bp'){const x=P.Q*(f/P.f0-P.f0/f),d=1+x*x;return[1/d,-x/d]}
+  const x=f/P.fc,d=1+x*x;                       // 1/(1+ix) = (1-ix)/d
+  return tab==='lp'?[1/d,-x/d]:[x*x/d,x/d];      // ix/(1+ix) = (x²+ix)/d
+}
+const gain=f=>{const k=K(f);return Math.hypot(k[0],k[1])};
+const phase=f=>{const k=K(f);return Math.atan2(k[1],k[0])*180/Math.PI};
+const dB=f=>20*Math.log10(Math.max(gain(f),1e-9));
+/* спектр сигналу: гармоніки [n, амплітуда, фаза]; сигнал = Σ a·sin(2π n f t + ph) */
+function spec(w){
+  if(w==='sin')return[[1,1,0]];
+  if(w==='two')return[[1,1,0],[10,0.5,0]];
+  const out=[];
+  for(let n=1;n<=79;n+=2){
+    if(w==='sq')out.push([n,4/(Math.PI*n),0]);
+    else out.push([n,8/(Math.PI*Math.PI*n*n)*((n-1)/2%2?-1:1),0]);   // трикутний: сума sin з чергуванням знаків
+  }
+  return out;
+}
+function sig(sp,f,t,useK){let s=0;for(const[n,a,ph]of sp){const fn=n*f;let A=a,p=ph;
+  if(useK){const k=K(fn);A=a*Math.hypot(k[0],k[1]);p=ph+Math.atan2(k[1],k[0])}
+  s+=A*Math.sin(2*Math.PI*fn*t+p)}return s}
+
+function readCols(){const s=getComputedStyle(document.documentElement);for(const n of['ink','muted','line','panel','pos','neg','force','field','gold'])col[n]=s.getPropertyValue('--'+n).trim()}
+function txt(c,t,x,y,color,al,fs,bl){c.fillStyle=color;c.font=(fs||11.5)+'px system-ui,sans-serif';c.textAlign=al||'center';c.textBaseline=bl||'alphabetic';c.fillText(t,x,y)}
+function setup(c,cvs){if(typeof c==='object'&&c.canvas)c=c;const a=cvs.getBoundingClientRect(),W=Math.round(a.width*dpr),H=Math.round(a.height*dpr);if(cvs.width!==W||cvs.height!==H){cvs.width=W;cvs.height=H}return[a.width,a.height]}
+
+function drawBode(){
+  const q=bq,[w,h]=setup(q.canvas,bc);q.setTransform(dpr,0,0,dpr,0,0);q.clearRect(0,0,w,h);q.fillStyle=col.panel;q.fillRect(0,0,w,h);
+  const ml=46,mr=42,mt=12,mb=30,x0=0,x1=5,dmin=-60,dmax=3;       // lg f від 0 до 5
+  const X=lf=>ml+(lf-x0)/(x1-x0)*(w-ml-mr),Yd=v=>mt+(dmax-cl(v,dmin,dmax))/(dmax-dmin)*(h-mt-mb),Yp=v=>mt+(90-v)/180*(h-mt-mb);
+  q.strokeStyle=col.line;q.lineWidth=1;q.strokeRect(ml,mt,w-ml-mr,h-mt-mb);
+  q.setLineDash([2,3]);for(let d=-60;d<=0;d+=20){q.beginPath();q.moveTo(ml,Yd(d));q.lineTo(w-mr,Yd(d));q.stroke()}
+  for(let e=1;e<5;e++){q.beginPath();q.moveTo(X(e),mt);q.lineTo(X(e),h-mb);q.stroke()}q.setLineDash([]);
+  q.strokeStyle=col.muted;q.setLineDash([6,4]);q.beginPath();q.moveTo(ml,Yd(-3.01));q.lineTo(w-mr,Yd(-3.01));q.stroke();q.setLineDash([]);
+  const curve=(fn,Y,color,dash)=>{q.setLineDash(dash?[5,4]:[]);q.strokeStyle=color;q.lineWidth=dash?1.6:2.4;q.beginPath();
+    for(let i=0;i<=300;i++){const lf=x0+(x1-x0)*i/300,v=fn(Math.pow(10,lf));i?q.lineTo(X(lf),Y(v)):q.moveTo(X(lf),Y(v))}q.stroke();q.setLineDash([])};
+  curve(dB,Yd,col.pos,false);curve(phase,Yp,col.force,true);
+  const fc=tab==='bp'?P.f0:P.fc;q.strokeStyle=col.gold;q.lineWidth=1.4;q.setLineDash([3,3]);q.beginPath();q.moveTo(X(Math.log10(fc)),mt);q.lineTo(X(Math.log10(fc)),h-mb);q.stroke();q.setLineDash([]);
+  txt(q,tab==='bp'?'f₀':'f_c',X(Math.log10(fc))+3,mt+12,col.gold,'left');
+  const lf=Math.log10(P.f);q.strokeStyle=col.ink;q.lineWidth=1.4;q.beginPath();q.moveTo(X(lf),mt);q.lineTo(X(lf),h-mb);q.stroke();
+  q.fillStyle=col.pos;q.beginPath();q.arc(X(lf),Yd(dB(P.f)),4.5,0,6.283);q.fill();
+  q.fillStyle=col.force;q.beginPath();q.arc(X(lf),Yp(phase(P.f)),4.5,0,6.283);q.fill();
+  for(let d=-60;d<=0;d+=20)txt(q,String(d),ml-5,Yd(d),col.pos,'right',11.5,'middle');
+  for(const p of[-90,-45,0,45,90])txt(q,p+'°',w-mr+5,Yp(p),col.force,'left',11.5,'middle');
+  const tk=[[0,'1'],[1,'10'],[2,'100'],[3,'1k'],[4,'10k'],[5,'100k']];for(const[e,s]of tk)txt(q,s,X(e),h-mb+14,col.muted,'center');
+  txt(q,'f, Гц',(ml+w-mr)/2,h-4,col.muted,'center');txt(q,'дБ',ml-5,mt-1,col.pos,'right');
+}
+function drawTrace(cvs,q,useK,title){
+  const [w,h]=setup(q,cvs);q.setTransform(dpr,0,0,dpr,0,0);q.clearRect(0,0,w,h);q.fillStyle=col.panel;q.fillRect(0,0,w,h);
+  const ml=30,mr=10,mt=12,mb=16,sp=spec(P.wave),T=3/P.f,N=Math.min(900,Math.round(w*2));
+  let pk=0;for(let i=0;i<=N;i++)pk=Math.max(pk,Math.abs(sig(sp,P.f,T*i/N,false)));pk=pk||1;
+  const X=i=>ml+i/N*(w-ml-mr),Y=v=>mt+(1.15-v/pk)/2.3*(h-mt-mb);
+  q.strokeStyle=col.line;q.lineWidth=1;q.strokeRect(ml,mt,w-ml-mr,h-mt-mb);
+  q.setLineDash([2,3]);for(const v of[-1,0,1]){q.beginPath();q.moveTo(ml,Y(v*pk));q.lineTo(w-mr,Y(v*pk));q.stroke()}q.setLineDash([]);
+  if(useK){q.strokeStyle=col.pos;q.globalAlpha=.45;q.setLineDash([4,3]);q.lineWidth=1.4;q.beginPath();
+    for(let i=0;i<=N;i++){const v=sig(sp,P.f,T*i/N,false);i?q.lineTo(X(i),Y(v)):q.moveTo(X(i),Y(v))}q.stroke();q.setLineDash([]);q.globalAlpha=1}
+  q.strokeStyle=useK?col.force:col.pos;q.lineWidth=2.4;q.beginPath();
+  let mx=0;for(let i=0;i<=N;i++){const v=sig(sp,P.f,T*i/N,useK);mx=Math.max(mx,Math.abs(v));i?q.lineTo(X(i),Y(v)):q.moveTo(X(i),Y(v))}q.stroke();
+  for(const v of[-1,0,1])txt(q,v===0?'0':(v>0?'+':'−')+'1',ml-4,Y(v*pk),col.muted,'right',11,'middle');
+  txt(q,'t: '+(T>=1?fmt(T,2)+' с':T>=1e-3?fmt(T*1e3,2)+' мс':fmt(T*1e6,1)+' мкс'),w-mr-4,h-3,col.muted,'right',11);
+  if(useK)txt(q,'піки: '+fmt(mx/pk,2)+' від входу',ml+6,mt+13,col.force,'left',11.5);
+}
+function drawTime(){drawTrace(ti,tiq,false);drawTrace(to,toq,true)}
+/* ---- принципова схема ---- */
+function rot(q,x,y,ang,fn){q.save();q.translate(x,y);q.rotate(ang);fn();q.restore()}
+function elR(q,len){const n=len-24;q.beginPath();q.moveTo(-len/2,0);q.lineTo(-n/2,0);q.rect(-n/2,-7,n,14);q.moveTo(n/2,0);q.lineTo(len/2,0);q.stroke()}
+function elC(q,len){q.beginPath();q.moveTo(-len/2,0);q.lineTo(-4,0);q.moveTo(-4,-12);q.lineTo(-4,12);q.moveTo(4,-12);q.lineTo(4,12);q.moveTo(4,0);q.lineTo(len/2,0);q.stroke()}
+function elL(q,len){const n=len-20;q.beginPath();q.moveTo(-len/2,0);q.lineTo(-n/2,0);const r=n/8;for(let i=0;i<4;i++)q.arc(-n/2+r*(2*i+1),0,r,Math.PI,0);q.lineTo(len/2,0);q.stroke()}
+function engC(v){return v>=1e-6?fmt(v*1e6,v>=1e-5?0:2)+' мкФ':v>=1e-9?fmt(v*1e9,v>=1e-7?0:1)+' нФ':fmt(v*1e12,0)+' пФ'}
+function engL(v){return v>=1?fmt(v,2)+' Гн':v>=1e-3?fmt(v*1e3,v>=1e-2?1:2)+' мГн':fmt(v*1e6,1)+' мкГн'}
+function drawScheme(){
+  const q=sq,[w,h]=setup(q,sc);q.setTransform(dpr,0,0,dpr,0,0);q.clearRect(0,0,w,h);q.fillStyle=col.panel;q.fillRect(0,0,w,h);
+  const yt=34,yb=h-30,xs=34,xn=w-82,xo=w-24;q.strokeStyle=col.ink;q.lineWidth=1.8;q.lineJoin='round';
+  const line=(x0,y0,x1,y1)=>{q.beginPath();q.moveTo(x0,y0);q.lineTo(x1,y1);q.stroke()};
+  const dot=(x,y)=>{q.fillStyle=col.ink;q.beginPath();q.arc(x,y,3,0,6.283);q.fill()};
+  const open=(x,y)=>{q.fillStyle=col.panel;q.beginPath();q.arc(x,y,3.5,0,6.283);q.fill();q.stroke()};
+  // джерело
+  const ys=(yt+yb)/2;line(xs,yt,xs,ys-14);line(xs,ys+14,xs,yb);q.beginPath();q.arc(xs,ys,14,0,6.283);q.stroke();
+  q.beginPath();q.moveTo(xs-8,ys);q.bezierCurveTo(xs-4,ys-9,xs-2,ys-9,xs,ys);q.bezierCurveTo(xs+2,ys+9,xs+4,ys+9,xs+8,ys);q.stroke();
+  txt(q,'U',xs-20,ys-2,col.pos,'right',13);txt(q,'вх',xs-13,ys+3,col.pos,'left',9.5);
+  line(xs,yb,xn,yb);line(xn,yb,xo,yb);
+  const R=1000;let lab=[],topEls=[],vert=null;
+  const Rv=tab==='bp'?100:R,w0=2*Math.PI*(tab==='bp'?P.f0:P.fc);
+  if(tab==='lp'){topEls=[['R',R,'R = 1 кОм']];vert=['C','C = '+engC(1/(w0*R))]}
+  else if(tab==='hp'){topEls=[['C',0,'C = '+engC(1/(w0*R))]];vert=['R','R = 1 кОм']}
+  else{const L=P.Q*Rv/w0,C=1/(w0*w0*L);topEls=[['L',0,'L = '+engL(L)],['C',0,'C = '+engC(C)]];vert=['R','R = 100 Ом']}
+  // верхня шина
+  const xa=xs,span=xn-xa,n=topEls.length,seg=span/n;let x=xa;line(xs,yt,xs,yt);
+  topEls.forEach((e,i)=>{const cx=xa+seg*(i+.5),len=Math.min(70,seg-14);line(x,yt,cx-len/2,yt);
+    rot(q,cx,yt,0,()=>{e[0]==='R'?elR(q,len):e[0]==='C'?elC(q,len):elL(q,len)});
+    txt(q,e[2],cx,yt-14,col.gold,'center',12);x=cx+len/2});
+  line(x,yt,xn,yt);dot(xn,yt);dot(xn,yb);
+  rot(q,xn,(yt+yb)/2,Math.PI/2,()=>{vert[0]==='R'?elR(q,yb-yt-30):elC(q,yb-yt-30)});
+  txt(q,vert[1],xn-10,(yt+yb)/2+4,col.gold,'right',12);
+  line(xn,yt,xo,yt);open(xo,yt);open(xo,yb);
+  arrow(q,xo-12,yt+8,xo-12,yb-8);txt(q,'U',xo-18,ys-2,col.force,'right',13);txt(q,'вих',xo-11,ys+3,col.force,'left',9.5);
+  if(tab==='bp')txt(q,'f₀ = '+fHz(P.f0)+', Q = '+fmt(P.Q,1),w/2,h-8,col.muted,'center',11.5);
+  else txt(q,'f_c = 1/(2πRC) = '+fHz(P.fc),w/2,h-8,col.muted,'center',11.5);
+}
+function arrow(q,x0,y0,x1,y1){q.save();q.strokeStyle=col.force;q.fillStyle=col.force;q.lineWidth=1.6;q.beginPath();q.moveTo(x0,y0);q.lineTo(x1,y1);q.stroke();
+  const a=Math.atan2(y1-y0,x1-x0);q.beginPath();q.moveTo(x1,y1);q.lineTo(x1-7*Math.cos(a-.4),y1-7*Math.sin(a-.4));q.lineTo(x1-7*Math.cos(a+.4),y1-7*Math.sin(a+.4));q.closePath();q.fill();q.restore()}
+function update(){
+  const f=P.f,g=gain(f),ph=phase(f),db=dB(f);
+  const fc=tab==='bp'?P.f0:P.fc;
+  let h='f = <b>'+fHz(f)+'</b> · '+(tab==='bp'?'f₀ = '+fHz(P.f0)+', Q = '+fmt(P.Q,1)+', ширина смуги Δf = f₀/Q = '+fHz(P.f0/P.Q):'f<sub>c</sub> = 1/(2πRC) = '+fHz(P.fc))+'<br>|K| = <b>'+fmt(g,3)+'</b> ('+fmt(db,1)+' дБ) · φ = <b>'+fmt(ph,1)+'°</b> · f/'+(tab==='bp'?'f₀':'f<sub>c</sub>')+' = '+fmt(f/fc,2);
+  ro.innerHTML=h;
+  const t={lp:'<b>ФНЧ.</b> Нижче f<sub>c</sub> амплітуда майже не змінюється, вище спадає як 1/f (−20 дБ за декаду, −6 дБ за октаву). На f<sub>c</sub> |K| = 1/√2 ≈ 0,707 (−3 дБ) і φ = −45°. Високі гармоніки меандра гаснуть, і він «заокруглюється» — фільтр інтегрує сигнал.',
+    hp:'<b>ФВЧ.</b> Вище f<sub>c</sub> сигнал проходить, нижче спадає як f (+20 дБ за декаду). На f<sub>c</sub> |K| = 0,707 і φ = +45°. На низьких частотах фільтр диференціює: меандр перетворюється на короткі піки на фронтах, а постійна складова зникає.',
+    bp:'<b>Смуговий фільтр.</b> На резонансі f₀ реактивні опори компенсуються, |K| = 1 і φ = 0; нижче фаза +90°, вище −90°. Чим вища добротність Q, тим вужча смуга (Δf = f₀/Q) і тим крутіше змінюється фаза. Для меандра на f = f₀/3 лишається майже чиста третя гармоніка.'}[tab];
+  info.innerHTML=t;
+}
+function resize(){dpr=window.devicePixelRatio||1;readCols()}
+function frame(){drawScheme();drawBode();drawTime();requestAnimationFrame(frame)}
+const lg=e=>Math.pow(10,e);
+function bind(id,out,fn,set){const el=$(id),o=$(out),ap=()=>{set(+el.value);o.textContent=fn(+el.value);update()};el.addEventListener('input',ap);ap()}
+bind('sFc','vFc',v=>fHz(lg(v)),v=>P.fc=lg(v));bind('sF0','vF0',v=>fHz(lg(v)),v=>P.f0=lg(v));
+bind('sQ','vQ',v=>fmt(v,1),v=>P.Q=v);bind('sF','vF',v=>fHz(lg(v)),v=>P.f=lg(v));
+$('wave').addEventListener('change',e=>P.wave=e.target.value);
+function setTab(t){tab=t;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('sel',b.dataset.t===t));
+  document.querySelectorAll('[data-tabs]').forEach(el=>el.classList.toggle('hidden',!el.dataset.tabs.split(' ').includes(t)));update()}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
+addEventListener('resize',resize);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',readCols);
+new MutationObserver(readCols).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+if(innerWidth<=700)$('desc').removeAttribute('open');
+resize();setTab('lp');requestAnimationFrame(frame);
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>

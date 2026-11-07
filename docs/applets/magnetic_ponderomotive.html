@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Пондеромоторні сили в магнітному полі</title>
+<style>
+:root{--ink:#1d2327;--muted:#5b6670;--line:#c9d0d6;--bg:#f5f6f7;--panel:#fff;--pos:#1f5fd6;--neg:#d62728;
+  --diel:#1f7fb0;--dielf:rgba(31,127,176,.20);--force:#c2189a;--field:#1b8a3c;--metal:#8c929c;--gold:#9a6b00;--para:rgba(214,120,40,.30);
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;--diel:#69c7e8;--dielf:rgba(105,199,232,.22);--force:#ff6ad5;--field:#4fd17a;--metal:#9aa0a8;--gold:#ffd35a;--para:rgba(255,170,90,.30);color-scheme:dark}}
+:root[data-theme="dark"]{--ink:#e6e9ec;--muted:#9aa5ae;--line:#3a444c;--bg:#14181b;--panel:#1c2125;--pos:#6aa3ff;--neg:#ff7b72;--diel:#69c7e8;--dielf:rgba(105,199,232,.22);--force:#ff6ad5;--field:#4fd17a;--metal:#9aa0a8;--gold:#ffd35a;--para:rgba(255,170,90,.30);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;padding:10px 14px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+h1{font-size:19px;margin:0 40px 6px 0;font-weight:600;line-height:1.25}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+button,select{font:inherit;font-size:14px;padding:5px 11px;border:1px solid #8b97a1;background:var(--panel);border-radius:4px;cursor:pointer;color:var(--ink)}
+select{padding:4px 6px}
+button:hover{filter:brightness(.96)}button:focus-visible{outline:2px solid #1f6feb;outline-offset:2px}
+button.sel{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+details{max-width:110ch;margin:0 0 6px}
+summary{cursor:pointer;color:var(--muted);font-size:13.5px;padding:2px 0}
+details p{margin:6px 0;font-size:13.5px;line-height:1.45;color:var(--muted)}
+.main{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:12px;align-items:start;max-width:1300px}
+.ct{font-size:13.5px;font-weight:600;margin:0 0 3px}
+.cap{font-size:12px;color:var(--muted);line-height:1.35;margin-top:3px}
+canvas{display:block;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+#scene{height:clamp(260px,48vh,450px);touch-action:none}
+#plot{height:clamp(140px,26vh,230px)}
+.controls{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;align-items:center}
+.hint{font-size:13px;color:var(--muted)}
+.hidden{display:none!important}
+input[type=range]{width:min(150px,38vw);vertical-align:middle}
+.readout{font-size:13px;line-height:1.5;padding:7px 10px;background:var(--panel);border:1px solid var(--line);border-radius:4px;margin-bottom:8px}
+.bar{display:flex;height:22px;border-radius:3px;overflow:hidden;border:1px solid var(--line);margin:4px 0 2px;font-size:11.5px;line-height:22px;color:#fff}
+.bar span{white-space:nowrap;overflow:hidden;text-align:center}
+#info{margin:8px 0 0;font-size:13px;line-height:1.45;max-width:120ch;color:var(--ink)}
+@media (max-width:860px){.main{grid-template-columns:1fr}#scene{height:310px}#plot{height:190px}h1{font-size:17px}}
+</style>
+<script src="assets/theme.js"></script>
+</head>
+<body>
+<h1>Пондеромоторні сили в магнітному полі</h1>
+<div class="tabs">
+<button class="tab sel" data-t="rod">Стрижень у соленоїді</button>
+<button class="tab" data-t="em">Підйомна сила електромагніта</button>
+<button class="tab" data-t="virt">Віртуальне переміщення</button>
+<button class="tab" data-t="rings">Два кільця зі струмом</button>
+</div>
+<details id="desc"><summary>Про що модель</summary>
+<p>Сили в магнітному полі, як і в електростатиці, знаходять методом віртуальних переміщень: тіло зсувається на dx, а робота сили F·dx прирівнюється до зміни енергії поля. При <b>сталому струмі</b> (джерело підтримує I) F<sub>x</sub> = +(∂W/∂x)<sub>I</sub>: джерело виконує роботу 2ΔW, половина йде на збільшення енергії поля, половина на механічну роботу. При <b>сталому потоці</b> (Φ = const, струм вільно змінюється) F<sub>x</sub> = −(∂W/∂x)<sub>Φ</sub>: джерело не працює, механічна робота виконується за рахунок енергії поля. Сила в обох випадках однакова.</p>
+<p><b>Чотири сцени:</b> (1) стрижень, що втягується в соленоїд: парамагнетик і феромагнетик втягуються, діамагнетик виштовхується, надпровідник (μ = 0) виштовхується найсильніше; (2) підйомна сила електромагніта F = B²S/μ₀ (у СГС B²S/4π); (3) віртуальне зміщення якоря при I = const і при Φ = const; (4) притягання й відштовхування двох співвісних кілець, F = I₁I₂ ∂M/∂z (у СГС (I₁I₂/c²) ∂M/∂z).</p>
+<p>Формули книги записано в СГС, у моделі числа в СІ: H²/8π → μ₀H²/2, B²/8π → B²/2μ₀, L₁₂I₁I₂/c² → L₁₂I₁I₂. Скрізь припущено μ = const (без насичення й гістерезису); стрижень тонкий, розмагнічувальний фактор не враховано.</p>
+</details>
+<div class="main">
+<div class="left">
+<div class="ct" id="sceneTitle"></div>
+<canvas id="scene"></canvas>
+<div class="cap" id="sceneCap"></div>
+<div class="controls">
+<label class="hint" data-tabs="rod">матеріал <select id="mat">
+<option value="sc">надпровідник (μ = 0)</option><option value="bi">вісмут</option><option value="w">вода</option><option value="al">алюміній</option><option value="o2">рідкий O₂</option><option value="st" selected>сталь (μ = 200)</option><option value="fe">залізо (μ = 1000)</option><option value="cu">довільне μ</option></select></label>
+<label class="hint" data-tabs="rod">μ <input id="sMu" type="range" min="-100" max="100" step="0.1" value="76.7"> <span id="vMu"></span></label>
+<label class="hint" data-tabs="rod">витків N <input id="sN" type="range" min="200" max="5000" step="50" value="1000"> <span id="vN"></span></label>
+<label class="hint" data-tabs="rod">I <input id="sI" type="range" min="0" max="20" step="0.1" value="0.5"> <span id="vI"></span></label>
+<label class="hint" data-tabs="rod">радіус стрижня <input id="sR" type="range" min="0.2" max="1.2" step="0.05" value="0.6"> <span id="vR"></span></label>
+<label class="hint" data-tabs="rod">положення переднього кінця <input id="sX" type="range" min="-1" max="22" step="0.1" value="-1"> <span id="vX"></span></label>
+<label class="hint" data-tabs="em virt">μ осердя <input id="sMuE" type="range" min="0" max="3.7" step="0.01" value="2.699"> <span id="vMuE"></span></label>
+<label class="hint" data-tabs="em virt">витків N <input id="sNe" type="range" min="50" max="2000" step="10" value="500"> <span id="vNe"></span></label>
+<label class="hint" data-tabs="em virt">I <input id="sIe" type="range" min="0" max="5" step="0.05" value="1"> <span id="vIe"></span></label>
+<label class="hint" data-tabs="em virt">зазор x <input id="sGap" type="range" min="0" max="5" step="0.01" value="0.5"> <span id="vGap"></span></label>
+<label class="hint" data-tabs="virt"><input id="vmode" type="checkbox"> сталий потік Φ (струм вільний)</label>
+<label class="hint" data-tabs="virt">зміщення δ <input id="sDx" type="range" min="0.01" max="0.5" step="0.01" value="0.1"> <span id="vDx"></span></label>
+<label class="hint" data-tabs="rings">відстань z <input id="sZ" type="range" min="5" max="100" step="1" value="40"> <span id="vZ"></span></label>
+<label class="hint" data-tabs="rings">I₁ <input id="sI1" type="range" min="-10" max="10" step="0.1" value="5"> <span id="vI1"></span></label>
+<label class="hint" data-tabs="rings">I₂ <input id="sI2" type="range" min="-10" max="10" step="0.1" value="5"> <span id="vI2"></span></label>
+<label class="hint" data-tabs="rings">радіус R₂ <input id="sR2" type="range" min="2" max="8" step="0.1" value="5"> <span id="vR2"></span></label>
+<span data-tabs="rod"><button id="bGo">Пуск</button> <button id="bPause">Пауза</button> <button id="bReset">Скинути</button></span>
+</div>
+</div>
+<div class="right">
+<div class="readout" id="ro"></div>
+<div id="bars" class="hidden"></div>
+<div class="ct" id="plotTitle"></div>
+<canvas id="plot"></canvas>
+<div class="cap" id="plotCap"></div>
+</div>
+</div>
+<p id="info"></p>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id),cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+const cv=$('scene'),g=cv.getContext('2d'),pv=$('plot'),pq=pv.getContext('2d'),ro=$('ro'),info=$('info');
+const MU0=4e-7*Math.PI,GR=9.81;
+let dpr=1,W=600,H=300,PW=300,PH=150,col={};
+let tab='rod',paused=false,running=false,draggingX=false;
+/* --- параметри --- */
+const LS=0.10,RS=0.015,LR=0.14;                       // соленоїд: довжина, радіус; стрижень: довжина
+const ELL=0.3,SE=4e-4;                                // осердя електромагніта: довжина силової лінії, переріз
+const RING1=0.05;                                     // радіус першого кільця
+const P={mu:200,N:1000,I:0.5,rr:0.006,xf:-0.01,v:0,
+  muE:500,Ne:500,Ie:1,gap:0.5e-3,dxv:0.1e-3,phi:false,
+  z:0.04,I1:5,I2:5,R2:0.05};
+const MATS={sc:0,bi:0.99983,w:0.999991,al:1.000022,o2:1.0035,st:200,fe:1000};
+
+/* ---------- фізика: стрижень у соленоїді ---------- */
+const hz=z=>0.5*(z/Math.hypot(z,RS)-(z-LS)/Math.hypot(z-LS,RS));      // B(z)/B0 на осі
+const NG=1200,G0=-0.25,G1=0.35,GT=new Float64Array(NG+1);
+{let s=0;for(let i=1;i<=NG;i++){const a=G0+(i-1)*(G1-G0)/NG,b=a+(G1-G0)/NG;s+=0.5*(hz(a)**2+hz(b)**2)*(G1-G0)/NG;GT[i]=s}}
+function Gf(z){const t=cl((z-G0)/(G1-G0)*NG,0,NG),i=Math.min(NG-1,Math.floor(t));return GT[i]+(GT[i+1]-GT[i])*(t-i)}
+const f0=()=>(P.mu-1)*MU0*Math.PI*P.rr*P.rr*(P.N/LS*P.I)**2/2;
+const Frod=xf=>f0()*(hz(xf)**2-hz(xf-LR)**2);
+const Wrod=xf=>f0()*(Gf(xf)-Gf(xf-LR));
+const B0=()=>MU0*P.N/LS*P.I;
+function stepRod(dt){const F0=Math.abs(f0());if(!running||paused||draggingX||F0<1e-30)return;
+  const sub=4,h=dt/sub;for(let s=0;s<sub;s++){const a=0.8*Frod(P.xf)/F0-1.5*P.v;P.v+=a*h;P.xf+=P.v*h;
+    if(P.xf<-0.01){P.xf=-0.01;P.v=0}else if(P.xf>0.22){P.xf=0.22;P.v=0}}}
+/* ---------- фізика: електромагніт ---------- */
+const Lem=x=>P.Ne*P.Ne*MU0*P.muE*SE/(ELL+2*P.muE*x);
+const Bem=x=>MU0*P.muE*P.Ne*P.Ie/(ELL+2*P.muE*x);
+const Fem=x=>Bem(x)**2*SE/MU0;
+/* ---------- фізика: кільця ---------- */
+function KE(k){let a=1,b=Math.sqrt(1-k*k),c=k,s=0.5*c*c,pw=0.5;
+  for(let i=0;i<24;i++){const an=(a+b)/2,cn=(a-b)/2;b=Math.sqrt(a*b);a=an;c=cn;pw*=2;s+=pw*c*c}
+  const K=Math.PI/(2*a);return[K,K*(1-s)]}
+function Mring(z){const R1=RING1,R2=P.R2,k=Math.sqrt(4*R1*R2/((R1+R2)**2+z*z)),[K,E]=KE(k);
+  return MU0*Math.sqrt(R1*R2)*((2/k-k)*K-(2/k)*E)}
+const dMdz=z=>{z=Math.max(z,1.5e-3);const d=1e-4;return(Mring(z+d)-Mring(z-d))/(2*d)};
+const Fring=z=>P.I1*P.I2*dMdz(z);          // <0 — ближче до першого кільця
+
+/* ---------- кольори й допоміжне ---------- */
+function readCols(){const s=getComputedStyle(document.documentElement);
+  for(const n of['ink','muted','line','panel','pos','neg','diel','dielf','force','field','metal','gold','para'])col[n]=s.getPropertyValue('--'+n).trim()}
+function arrow(c,x0,y0,x1,y1,color,w){const Ln=Math.hypot(x1-x0,y1-y0);if(Ln<2)return;
+  c.strokeStyle=color;c.fillStyle=color;c.lineWidth=w;c.beginPath();c.moveTo(x0,y0);c.lineTo(x1,y1);c.stroke();
+  const a=Math.atan2(y1-y0,x1-x0),h=Math.min(Ln*.8,6+w*1.6);c.beginPath();c.moveTo(x1,y1);
+  c.lineTo(x1-h*Math.cos(a-.4),y1-h*Math.sin(a-.4));c.lineTo(x1-h*Math.cos(a+.4),y1-h*Math.sin(a+.4));c.closePath();c.fill()}
+function txt(c,t,x,y,color,al,fs,bl){c.fillStyle=color;c.font=(fs||12.5)+'px system-ui,sans-serif';c.textAlign=al||'center';c.textBaseline=bl||'alphabetic';c.fillText(t,x,y)}
+function txtBg(c,t,x,y,color,al,fs){fs=fs||12.5;c.font=fs+'px system-ui,sans-serif';const w=c.measureText(t).width;al=al||'center';
+  const x0=al==='left'?x:al==='right'?x-w:x-w/2;c.fillStyle=col.panel;c.fillRect(x0-3,y-fs+1,w+6,fs+4);txt(c,t,x,y,color,al,fs);return w}
+const fmt=(v,n)=>v.toFixed(n);
+const nice=v=>{const a=Math.abs(v),s=v<0?'−':'';return s+(a===0?'0':a>=100?a.toFixed(0):a>=10?a.toFixed(1):a>=0.01?a.toPrecision(2):a.toExponential(0))};
+const sci=v=>{if(v===0)return'0';const e=Math.floor(Math.log10(Math.abs(v))),m=v/Math.pow(10,e);
+  const sup=String(e).replace('-','⁻').replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);return fmt(m,1)+'·10'+sup};
+const fF=F=>{const a=Math.abs(F);return a>=1?fmt(F,2)+' Н':a>=1e-3?fmt(F*1e3,2)+' мН':fmt(F*1e6,2)+' мкН'};
+function muText(mu){return Math.abs(mu-1)<0.05&&mu!==1?'1 '+(mu>1?'+':'−')+' '+sci(Math.abs(mu-1)):mu>=100?fmt(mu,0):fmt(mu,3).replace(/\.?0+$/,'')}
+function muToU(mu){return mu<1?(mu-1)*100:100/3*Math.log10(mu)}
+function uToMu(u){return u<0?1+u/100:Math.pow(10,3*u/100)}
+
+/* ---------- графік ---------- */
+function plotG(c){
+  const q=pq,mx=46,mr=c.R?46:12,mt=12,mb=28,w=PW,h=PH;
+  q.setTransform(dpr,0,0,dpr,0,0);q.clearRect(0,0,w,h);q.fillStyle=col.panel;q.fillRect(0,0,w,h);
+  const X=x=>mx+(x-c.x0)/(c.x1-c.x0)*(w-mx-mr);
+  const rng=list=>{let lo=0,hi=0;for(const k of list)for(let i=0;i<=80;i++){const v=k.f(c.x0+(c.x1-c.x0)*i/80);if(isFinite(v)){lo=Math.min(lo,v);hi=Math.max(hi,v)}}
+    if(hi-lo<1e-300)hi=1;const pad=(hi-lo)*.08;return[lo<0?lo-pad:0,hi>0?hi+pad:0]};
+  const rl=rng(c.L),rr=c.R?rng(c.R):null;
+  const Yf=r=>v=>h-mb-(v-r[0])/(r[1]-r[0])*(h-mt-mb);
+  q.strokeStyle=col.line;q.lineWidth=1;q.strokeRect(mx,mt,w-mx-mr,h-mt-mb);
+  q.setLineDash([2,3]);for(const r of[rl,rr]){if(r&&r[0]<0&&r[1]>0){const y=Yf(r)(0);q.beginPath();q.moveTo(mx,y);q.lineTo(w-mr,y);q.stroke()}}q.setLineDash([]);
+  const draw=(list,r)=>{const Y=Yf(r);for(const k of list){q.setLineDash(k.dash?[5,4]:[]);q.strokeStyle=k.color;q.lineWidth=k.dash?1.4:2.2;q.beginPath();
+    for(let i=0;i<=120;i++){const xv=c.x0+(c.x1-c.x0)*i/120,v=k.f(xv);if(!isFinite(v))continue;i?q.lineTo(X(xv),Y(v)):q.moveTo(X(xv),Y(v))}q.stroke();q.setLineDash([]);
+    if(c.xm!=null&&!k.nodot){q.fillStyle=k.color;q.beginPath();q.arc(X(c.xm),Y(k.f(c.xm)),4.5,0,6.283);q.fill()}}};
+  draw(c.L,rl);if(rr)draw(c.R,rr);
+  for(const m of(c.marks||[])){q.strokeStyle=m.color;q.setLineDash([3,3]);q.beginPath();q.moveTo(X(m.x),mt);q.lineTo(X(m.x),h-mb);q.stroke();q.setLineDash([])}
+  if(c.xm!=null){q.strokeStyle=col.muted;q.setLineDash([3,3]);q.beginPath();q.moveTo(X(c.xm),mt);q.lineTo(X(c.xm),h-mb);q.stroke();q.setLineDash([])}
+  q.font='11.5px system-ui,sans-serif';q.textBaseline='middle';q.textAlign='right';q.fillStyle=c.L[0].color;
+  q.fillText(nice(rl[1]),mx-4,mt);q.fillText(nice(rl[0]),mx-4,h-mb);
+  if(rr){q.textAlign='left';q.fillStyle=c.R[0].color;q.fillText(nice(rr[1]),w-mr+4,mt);q.fillText(nice(rr[0]),w-mr+4,h-mb)}
+  q.fillStyle=col.muted;q.textAlign='center';q.textBaseline='top';for(const xv of c.xt)q.fillText(String(xv),X(xv),h-mb+4);
+  q.fillText(c.xl,mx+(w-mx-mr)/2,h-mb+15);
+  let ly=mt+14;for(const t of c.notes||[]){txt(q,t[0],mx+6,ly,t[1],'left',11.5);ly+=14}
+}
+
+/* ============ СЦЕНА 1: стрижень у соленоїді ============ */
+const zx=z=>20+(z+0.17)/0.42*(W-40);
+function sceneRod(){
+  const yc=0.42*H,sh=Math.min(0.2*H,60),x0=zx(0),x1=zx(LS),mu=P.mu;
+  // соленоїд
+  g.strokeStyle=col.ink;g.lineWidth=1.4;g.strokeRect(x0,yc-sh,x1-x0,2*sh);
+  const nt=cl(Math.round(P.N/125),6,40);g.strokeStyle=col.gold;g.lineWidth=1.6;
+  for(let i=0;i<nt;i++){const xx=x0+(i+.5)*(x1-x0)/nt;g.beginPath();g.moveTo(xx-3,yc-sh-4);g.lineTo(xx+3,yc-sh+4);g.moveTo(xx-3,yc+sh-4);g.lineTo(xx+3,yc+sh+4);g.stroke()}
+  // поле всередині
+  const a=cl(P.I/20*3,0.25,1);g.globalAlpha=a;
+  for(const f of[-.55,.55])arrow(g,x0+10,yc+f*sh,x1-10,yc+f*sh,col.field,1.4);g.globalAlpha=1;
+  // стрижень
+  const hr=cl(P.rr/RS,0.1,0.9)*sh,xa=zx(P.xf-LR),xb=zx(P.xf);
+  g.fillStyle=mu>10?col.metal:mu>1?col.para:col.dielf;g.fillRect(xa,yc-hr,xb-xa,2*hr);
+  g.strokeStyle=col.ink;g.lineWidth=1.2;g.strokeRect(xa,yc-hr,xb-xa,2*hr);
+  g.strokeStyle=col.gold;g.lineWidth=2;g.beginPath();g.moveTo(xb,yc-hr-6);g.lineTo(xb,yc+hr+6);g.stroke();
+  // рівновага
+  if(mu>1){const xe=zx(0.12);g.strokeStyle=col.muted;g.setLineDash([4,4]);g.lineWidth=1;g.beginPath();g.moveTo(xe,yc-sh-14);g.lineTo(xe,yc+sh+4);g.stroke();g.setLineDash([]);
+    txt(g,'рівновага (центри збігаються)',xe,yc-sh-18,col.muted,'center',11)}
+  // сила
+  const F=Frod(P.xf),F0=Math.abs(f0()),len=F0>0?cl(F/(F0*0.5)*70,-95,95):0;
+  const xm=(xa+xb)/2,ya=yc+hr+12;
+  if(Math.abs(len)>3){arrow(g,xm,ya,xm+len,ya,col.force,3.2)}
+  txtBg(g,'F = '+fF(F)+(F>0?' (всередину)':F<0?' (назовні)':''),xm,yc+sh+28,col.force,'center',13);
+  txt(g,'0',x0,yc+sh+14,col.muted,'center',11.5);txt(g,'10 см',x1,yc+sh+14,col.muted,'center',11.5);
+  // профіль B(z)/B0
+  const yb=yc+sh+84,ph=34;g.strokeStyle=col.line;g.lineWidth=1;g.beginPath();g.moveTo(zx(-0.17),yb);g.lineTo(zx(0.25),yb);g.stroke();
+  g.strokeStyle=col.field;g.lineWidth=2;g.beginPath();
+  for(let i=0;i<=160;i++){const z=-0.17+0.42*i/160,y=yb-hz(z)*ph;i?g.lineTo(zx(z),y):g.moveTo(zx(z),y)}g.stroke();
+  txt(g,'B(z)/B₀ на осі',zx(-0.17),yb-ph-4,col.field,'left',11.5);
+  const zs=cl(P.xf,-0.17,0.25);g.fillStyle=col.gold;g.beginPath();g.arc(zx(zs),yb-hz(zs)*ph,3.5,0,6.283);g.fill();
+}
+function plotRod(){
+  plotG({x0:-1,x1:22,xt:[0,5,10,15,20],xl:'положення переднього кінця, см',xm:P.xf*100,
+    L:[{f:x=>Frod(x/100),color:col.force}],R:[{f:x=>Wrod(x/100),color:col.pos,dash:true}],
+    marks:P.mu>1?[{x:12,color:col.muted}]:[],notes:[['F, Н (ліва вісь)',col.force],['W, Дж (права вісь)',col.pos]]});
+}
+function roRod(){
+  const F=Frod(P.xf),W=Wrod(P.xf),b=B0(),H0=P.N/LS*P.I;
+  let h='<b>μ = '+muText(P.mu)+'</b> · B₀ = μ₀nI = '+fmt(b*1e3,2)+' мТл · H₀ = nI = '+fmt(H0,0)+' А/м<br>';
+  h+='<b>F = (μ−1)μ₀πr²/2 · (nI)² · [h²(x) − h²(x−l)]</b> = '+fF(F)+'<br>W = '+(Math.abs(W)<1e-3?sci(W):fmt(W,4))+' Дж · F = +∂W/∂x при I = const';
+  if(P.mu>10&&P.mu*b>2)h+='<br><b style="color:var(--neg)">μB₀ = '+fmt(P.mu*b,1)+' Тл: у реальному залізі настає насичення (B ≲ 2 Тл). Модель лінійна, сила завищена.</b>';
+  ro.innerHTML=h;
+  info.innerHTML=P.mu>1?'<b>Пара- й феромагнетик втягуються</b> у область сильнішого поля: енергія стрижня ∝ (μ−1)H² мінімальна, коли він симетрично розташований у соленоїді (x = 12 см). Після «Пуск» стрижень робить загасаючі коливання навколо положення рівноваги. Сила пропорційна (μ−1), тож у алюмінію вона в ~10⁷ разів слабша, ніж у заліза.':
+    P.mu<1?'<b>Діамагнетик виштовхується</b> зі соленоїда: (μ−1) &lt; 0, енергія зменшується при виході в слабке поле. У надпровіднику μ = 0 і сила найбільша за модулем для даного поля. Щоб діамагнітна жаба левітувала, потрібне поле з B∂B/∂z ≈ 1400 Тл²/м (~10 Тл). Порівняйте з <a href="capacitor_dielectric.html">пондеромоторними силами в конденсаторі</a>.':'<b>μ = 1:</b> середовище не відрізняється від вакууму, сила дорівнює нулю.';
+}
+
+/* ============ СЦЕНА 2: електромагніт ============ */
+function sceneEm(){
+  const cw=Math.min(0.46*W,300),lw=Math.min(0.18*cw,26),ch=Math.max(70,Math.min(170,H-24-50-lw-48)),cx=0.42*W-cw/2+40,yT=24;
+  const xmm=P.gap*1e3,gp=4+xmm/5*46,yA=yT+ch+gp,ah=lw*0.8;
+  g.fillStyle=col.metal;g.strokeStyle=col.ink;g.lineWidth=1.2;
+  const core=()=>{g.beginPath();g.rect(cx,yT,cw,lw);g.rect(cx,yT,lw,ch);g.rect(cx+cw-lw,yT,lw,ch);g.fill();g.stroke()};
+  core();g.fillRect(cx,yA,cw,ah);g.strokeRect(cx,yA,cw,ah);
+  // котушки
+  g.strokeStyle=col.gold;g.lineWidth=1.8;
+  for(const lx of[cx+lw/2,cx+cw-lw/2]){const y0=yT+lw+8,y1=yT+ch-8,n=Math.max(4,Math.round(P.Ne/60));
+    for(let i=0;i<n;i++){const yy=y0+(i+.5)*(y1-y0)/n;g.beginPath();g.moveTo(lx-lw/2-6,yy);g.lineTo(lx+lw/2+6,yy+3);g.stroke()}}
+  // лінія поля
+  const mid=lw/2,bt=Math.min(1,Bem(P.gap)/1.8);g.globalAlpha=0.35+0.6*bt;g.strokeStyle=col.field;g.lineWidth=1.8;g.setLineDash([6,4]);
+  g.strokeRect(cx+mid,yT+mid,cw-lw,yA+ah/2-yT-mid);g.setLineDash([]);g.globalAlpha=1;
+  arrow(g,cx+cw/2-10,yT+mid,cx+cw/2+14,yT+mid,col.field,2);
+  // сила
+  const F=Fem(P.gap),Fm=Fem(0),len=cl(14+F/Math.max(Fm,1e-9)*58,14,72);
+  for(const fx of[cx-14,cx+cw+14])arrow(g,fx,yA+ah,fx,yA+ah-len,col.force,3.2);
+  txtBg(g,'F = '+fF(F),cx+cw/2,yA+ah+(Math.abs(F)>0?-ah-gp-ch/2:0),col.force,'center',13);
+  // вантаж
+  const m=F/GR,ys=yA+ah;g.strokeStyle=col.ink;g.lineWidth=1.4;g.beginPath();g.moveTo(cx+cw/2,ys);g.lineTo(cx+cw/2,ys+14);g.stroke();
+  g.fillStyle=col.dielf;g.fillRect(cx+cw/2-34,ys+14,68,24);g.strokeRect(cx+cw/2-34,ys+14,68,24);
+  txt(g,'m = '+(m>=100?fmt(m,0):fmt(m,1))+' кг',cx+cw/2,ys+31,col.ink,'center',12.5);
+  // розмір x
+  const ax=cx+cw+30;txt(g,'x = '+fmt(xmm,2)+' мм',ax,yT+ch+gp/2+4,col.muted,'left',12);
+  arrow(g,ax-4,yT+ch,ax-4,yA,col.muted,1);
+  txt(g,'N витків, I',cx-8,yT+ch/2,col.gold,'right',11.5,'middle');
+}
+function plotEm(){
+  plotG({x0:0,x1:5,xt:[0,1,2,3,4,5],xl:'зазор x, мм',xm:P.gap*1e3,
+    L:[{f:x=>Fem(x/1e3),color:col.force}],marks:[{x:ELL/(2*P.muE)*1e3,color:col.muted}],
+    notes:[['F, Н',col.force],['пунктир: x = ℓ/2μ',col.muted]]});
+}
+function roEm(){
+  const x=P.gap,B=Bem(x),L=Lem(x),F=Fem(x),Fm=Fem(0);
+  let h='B = μ₀μNI/(ℓ+2μx) = <b>'+fmt(B,3)+' Тл</b> · L = '+fmt(L*1e3,1)+' мГн<br><b>F = B²S/μ₀</b> = '+fF(F)+' · піднімає <b>m = '+fmt(F/GR,1)+' кг</b><br>При x → 0: F → μ₀μ²N²I²S/ℓ² = '+fF(Fm);
+  if(B>1.8)h+='<br><b style="color:var(--neg)">B &gt; 1,8 Тл: насичення, реальна сила менша за розрахункову.</b>';
+  ro.innerHTML=h;
+  info.innerHTML='<b>Підйомна сила електромагніта.</b> Поки зазор малий (x ≪ ℓ/2μ), майже вся МРС падає на осердя, B майже не залежить від x, а сила майже стала. При x ≫ ℓ/2μ кількість ампер-витків «витрачається» на зазор, B ∝ 1/x і F ∝ 1/x². Тому відрив якоря від магніту набагато важчий за утримання на відстані: сила з зазором 1 мм і з нульовим зазором відрізняється на порядки.';
+}
+
+/* ============ СЦЕНА 3: віртуальне переміщення ============ */
+function virtCalc(){
+  const x=P.gap,d=Math.min(P.dxv,x),I=P.Ie;
+  if(x<1e-6)return null;
+  const L0=Lem(x),L1=Lem(x-d);
+  if(!P.phi){const dW=0.5*I*I*(L1-L0);return{d,dW,Asrc:2*dW,Amech:dW,F:dW/d,L0,L1}}
+  const Psi=L0*I,dW=Psi*Psi/2*(1/L1-1/L0);return{d,dW,Asrc:0,Amech:-dW,F:-dW/d,L0,L1};
+}
+function sceneVirt(){
+  sceneEm();
+  const cw=Math.min(0.46*W,300),lw=Math.min(0.18*cw,26),ch=Math.max(70,Math.min(170,H-24-50-lw-48)),cx=0.42*W-cw/2+40,yT=24;
+  const xmm=P.gap*1e3,gp=4+xmm/5*46,d=Math.min(P.dxv,P.gap)*1e3/5*46,yA=yT+ch+gp,ah=lw*0.8;
+  g.setLineDash([5,4]);g.strokeStyle=col.gold;g.lineWidth=1.6;g.strokeRect(cx,yA-d,cw,ah);g.setLineDash([]);
+  txt(g,'δ',cx+cw-4,yA-d/2+4,col.gold,'right',12.5);
+  txt(g,P.phi?'Φ = const':'I = const',cx+cw+30,yT+14,col.gold,'left',12.5);
+}
+function plotVirt(){
+  const I=P.Ie,L0=Lem(Math.max(P.gap,1e-6)),Psi=L0*I;
+  plotG({x0:0,x1:5,xt:[0,1,2,3,4,5],xl:'зазор x, мм',xm:P.gap*1e3,
+    L:[{f:x=>0.5*Lem(x/1e3)*I*I*1e3,color:col.pos},{f:x=>Psi*Psi/(2*Lem(x/1e3))*1e3,color:col.neg,dash:true,nodot:false}],
+    notes:[['W(x) при I = const, мДж',col.pos],['W(x) при Φ = const, мДж',col.neg]]});
+}
+function roVirt(){
+  const c=virtCalc(),B=Bem(P.gap),F0=Fem(P.gap);
+  if(!c){ro.innerHTML='Задайте зазор x &gt; 0: при x = 0 нема куди зміщувати якір.';$('bars').classList.add('hidden');info.innerHTML='';return}
+  const mJ=v=>fmt(v*1e3,3)+' мДж';
+  ro.innerHTML='δ = '+fmt(c.d*1e3,2)+' мм · L(x) = '+fmt(c.L0*1e3,1)+' мГн → L(x−δ) = '+fmt(c.L1*1e3,1)+' мГн<br>'+
+    (P.phi?'Φ = const: ΔW = Ψ²/2·(1/L′ − 1/L) = <b>'+mJ(c.dW)+'</b> (енергія поля <b>зменшується</b>), джерело не працює<br>F = −ΔW/δ = <b>'+fF(c.F)+'</b>':
+    'I = const: ΔW = ½I²(L′ − L) = <b>'+mJ(c.dW)+'</b> (енергія поля <b>зростає</b>), робота джерела A = 2ΔW = '+mJ(c.Asrc)+'<br>F = +ΔW/δ = <b>'+fF(c.F)+'</b>')+
+    '<br>Точна F = B²S/μ₀ = '+fF(F0)+' (збігається при δ → 0)';
+  const bars=$('bars');bars.classList.remove('hidden');
+  const A=Math.abs(c.dW)||1;
+  bars.innerHTML=P.phi?
+    '<div class="hint">Баланс енергії (Φ = const):</div><div class="bar"><span style="width:100%;background:var(--force)">механічна робота = |ΔW| = '+mJ(c.Amech)+' (поле віддає)</span></div>':
+    '<div class="hint">Баланс енергії (I = const):</div><div class="bar"><span style="width:100%;background:var(--gold)">джерело 2ΔW = '+mJ(c.Asrc)+'</span></div><div class="bar"><span style="width:50%;background:var(--pos)">поле ΔW</span><span style="width:50%;background:var(--force)">робота ΔW</span></div>';
+  info.innerHTML='<b>Чому знаки різні, а сила та сама.</b> При I = const енергія поля W = ½LI² зростає, коли зазор зменшується (L зростає), і F = +(∂W/∂x)<sub>I</sub>. При Φ = const W = Φ²/2L спадає, і F = −(∂W/∂x)<sub>Φ</sub>. Нахили двох кривих у точці x протилежні за знаком і однакові за модулем: обидва розрахунки дають F = B²S/μ₀. Різниця лише у тому, хто платить: джерело (I = const) чи саме поле (Φ = const).';
+}
+
+/* ============ СЦЕНА 4: два кільця ============ */
+function sceneRings(){
+  const s=Math.min(0.5*W/0.12,0.36*H/0.08),yc=H*0.5,x1=0.22*W+20,x2=x1+P.z*s;
+  const ring=(x,R,I,lab)=>{const ry=R*s,rx=Math.max(5,ry*0.2);
+    g.strokeStyle=col.ink;g.lineWidth=2.4;g.beginPath();g.ellipse(x,yc,rx,ry,0,0,6.283);g.stroke();
+    if(I!==0){const up=I>0;arrow(g,x+rx,yc+(up?9:-9),x+rx,yc-(up?9:-9),col.gold,2.4)}
+    txt(g,lab+' = '+fmt(I,1)+' А',x,yc-ry-8,col.gold,'center',12.5)};
+  g.strokeStyle=col.muted;g.setLineDash([4,4]);g.lineWidth=1;g.beginPath();g.moveTo(8,yc);g.lineTo(W-8,yc);g.stroke();g.setLineDash([]);
+  ring(x1,RING1,P.I1,'I₁');ring(x2,P.R2,P.I2,'I₂');
+  const F=Fring(P.z),Fm=Math.abs(P.I1*P.I2*dMdz(0.005))||1,dir=F<0?-1:1,len=cl(12+Math.abs(F)/Fm*60,12,70);
+  if(Math.abs(F)>0)arrow(g,x2+dir*0,yc+ -P.R2*s*0.4,x2+dir*len,yc-P.R2*s*0.4,col.force,3.2);
+  txtBg(g,P.I1*P.I2===0?'F = 0':'F = '+fF(Math.abs(F))+(F<0?' (притягання)':' (відштовхування)'),(x1+x2)/2,H-24,col.force,'center',13);
+  const yd=yc+Math.max(RING1,P.R2)*s+22;arrow(g,x1,yd,x2,yd,col.muted,1);arrow(g,x2,yd,x1,yd,col.muted,1);
+  txtBg(g,'z = '+fmt(P.z*1e3,0)+' мм',(x1+x2)/2,yd-6,col.muted,'center',12);
+}
+function plotRings(){
+  plotG({x0:5,x1:100,xt:[10,25,50,75,100],xl:'відстань z, мм',xm:P.z*1e3,
+    L:[{f:x=>Mring(x/1e3)*1e9,color:col.pos}],R:[{f:x=>Fring(x/1e3)*1e6,color:col.force,dash:true}],
+    notes:[['M(z), нГн (ліва)',col.pos],['F(z), мкН (права)',col.force]]});
+}
+function roRings(){
+  const z=P.z,M=Mring(z),F=Fring(z),att=F<0;
+  ro.innerHTML='M(z) = '+fmt(M*1e9,1)+' нГн · ∂M/∂z = '+sci(dMdz(z))+' Гн/м<br><b>F = I₁I₂ ∂M/∂z</b> = '+fF(F)+(P.I1*P.I2===0?'':att?' → <b>притягання</b> (струми одного напрямку)':' → <b>відштовхування</b> (струми протилежні)')+'<br>Взаємна енергія W₁₂ = MI₁I₂ = '+sci(M*P.I1*P.I2)+' Дж';
+  info.innerHTML='<b>Паралельні струми притягуються, антипаралельні відштовхуються.</b> Коефіцієнт M(z) спадає з відстанню, тому ∂M/∂z &lt; 0 і при I₁I₂ &gt; 0 сила напрямлена до зменшення z. Змініть знак одного зі струмів: M не змінюється, а F змінює знак. При z ≪ R кільця поводяться як дві паралельні дроти, при z ≫ R сила спадає як 1/z⁴ (взаємодія двох магнітних диполів).';
+}
+
+/* ============ каркас ============ */
+const TITLES={rod:['Стрижень у соленоїді','Стрижень (паралельний осі) втягується в соленоїд або виштовхується з нього. Пунктир: положення рівноваги. Внизу профіль поля на осі.','Сила F(x) і енергія W(x)'],
+ em:['Підйомна сила електромагніта','Якір притягується до підковоподібного осердя; вантаж показує, яку масу утримує сила F.','Сила F(x)'],
+ virt:['Віртуальне переміщення якоря','Золотий пунктир: якір, зміщений на δ до осердя. Порівнюються два способи розрахунку сили.','Енергія поля W(x) при I = const і Φ = const'],
+ rings:['Два співвісні кільця зі струмом','Бічний вигляд: кільця з радіусами R₁ = 5 см і R₂, осі збігаються. Стрілка на кільці — напрям струму.','Взаємна індуктивність M(z) і сила F(z)']};
+function setTab(t){tab=t;paused=false;$('bPause').textContent='Пауза';
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('sel',b.dataset.t===t));
+  document.querySelectorAll('[data-tabs]').forEach(el=>el.classList.toggle('hidden',!el.dataset.tabs.split(' ').includes(t)));
+  const T=TITLES[t];$('sceneTitle').textContent=T[0];$('sceneCap').textContent=T[1];$('plotTitle').textContent=T[2];
+  if(t!=='virt')$('bars').classList.add('hidden');
+  resize()}
+function resize(){dpr=window.devicePixelRatio||1;
+  const a=cv.getBoundingClientRect();W=a.width;H=a.height;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+  const b=pv.getBoundingClientRect();PW=b.width;PH=b.height;pv.width=Math.round(PW*dpr);pv.height=Math.round(PH*dpr);readCols()}
+function setX(){const s=$('sX');s.value=(P.xf*100).toFixed(1);$('vX').textContent=fmt(P.xf*100,1)+' см'}
+let last=performance.now()/1000;
+function frame(){const now=performance.now()/1000,dt=Math.min(now-last,.05);last=now;
+  if(tab==='rod'){stepRod(dt);if(running&&!paused&&!draggingX)setX()}
+  g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);g.fillStyle=col.panel;g.fillRect(0,0,W,H);
+  if(tab==='rod'){sceneRod();plotRod();roRod()}
+  else if(tab==='em'){sceneEm();plotEm();roEm()}
+  else if(tab==='virt'){sceneVirt();plotVirt();roVirt()}
+  else{sceneRings();plotRings();roRings()}
+  requestAnimationFrame(frame)}
+function bind(id,out,f,set){const el=$(id),o=$(out),ap=()=>{set(+el.value);o.textContent=f(+el.value)};el.addEventListener('input',ap);ap()}
+bind('sN','vN',v=>v,v=>P.N=v);bind('sI','vI',v=>fmt(v,1)+' А',v=>P.I=v);bind('sR','vR',v=>fmt(v,2)+' см',v=>P.rr=v*1e-2);
+bind('sX','vX',v=>fmt(v,1)+' см',v=>{P.xf=v/100;P.v=0});
+bind('sMu','vMu',v=>muText(uToMu(v)),v=>{P.mu=uToMu(v)});
+$('sMu').addEventListener('input',()=>{$('mat').value='cu'});
+$('mat').addEventListener('change',e=>{const k=e.target.value;if(k==='cu')return;P.mu=MATS[k];$('sMu').value=muToU(P.mu).toFixed(1);$('vMu').textContent=muText(P.mu)});
+P.mu=200;$('sMu').value=muToU(200).toFixed(1);$('vMu').textContent=muText(200);
+bind('sMuE','vMuE',v=>Math.round(Math.pow(10,v)),v=>P.muE=Math.round(Math.pow(10,v)));
+bind('sNe','vNe',v=>v,v=>P.Ne=v);bind('sIe','vIe',v=>fmt(v,2)+' А',v=>P.Ie=v);
+bind('sGap','vGap',v=>fmt(v,2)+' мм',v=>P.gap=v*1e-3);bind('sDx','vDx',v=>fmt(v,2)+' мм',v=>P.dxv=v*1e-3);
+bind('sZ','vZ',v=>v+' мм',v=>P.z=v*1e-3);bind('sI1','vI1',v=>fmt(v,1)+' А',v=>P.I1=v);bind('sI2','vI2',v=>fmt(v,1)+' А',v=>P.I2=v);
+bind('sR2','vR2',v=>fmt(v,1)+' см',v=>P.R2=v*1e-2);
+$('vmode').addEventListener('change',e=>P.phi=e.target.checked);
+$('sX').addEventListener('pointerdown',()=>{draggingX=true});addEventListener('pointerup',()=>{draggingX=false});addEventListener('pointercancel',()=>{draggingX=false});
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
+const bP=$('bPause');bP.onclick=()=>{paused=!paused;bP.textContent=paused?'Продовжити':'Пауза'};
+$('bGo').onclick=()=>{running=true;paused=false;bP.textContent='Пауза'};
+$('bReset').onclick=()=>{running=false;paused=false;P.xf=-0.01;P.v=0;bP.textContent='Пауза';setX()};
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&tab==='rod'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='SELECT'){e.preventDefault();bP.click()}});
+addEventListener('resize',resize);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',readCols);
+new MutationObserver(readCols).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+if(innerWidth<=700)$('desc').removeAttribute('open');
+setTab('rod');requestAnimationFrame(frame);
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>
