@@ -13,8 +13,7 @@
       "Bash(grep:*)",
       "Bash(rg:*)",
       "Read(docs/applets/**)",
-      "Edit(docs/applets/**)",
-      "Write(docs/applets/**)"
+      "Edit(docs/applets/**)"
     ],
     "ask": [
       "Bash(git commit:*)",
