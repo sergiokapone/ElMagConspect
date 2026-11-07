@@ -9,7 +9,7 @@ At the prompt: Enter = take the suggestion, text = your own message, '-' = skip 
 import os, re, subprocess, sys
 from collections import Counter
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.stdout.reconfigure(encoding='utf-8')
 
 

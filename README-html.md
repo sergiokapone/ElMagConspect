@@ -3,8 +3,8 @@
 
 Put the files from src/ into the project root (next to main.tex). Chapters are not modified.
 
-    python mathjax2lwarp.py mathjax-macros.tex lwarp-mathjax.tex
-    python prepare_html.py          # PDF pictures -> SVG, fixes for 10 tikz files (copies go to _html/)
+    python tools/mathjax2lwarp.py mathjax-macros.tex lwarp-mathjax.tex
+    python tools/prepare_html.py          # PDF pictures -> SVG, fixes for 10 tikz files (copies go to _html/)
     lualatex main-html
     biber main-html
     lwarpmk html                    # long: ~15 min on a Linux sandbox; whole book = 20 pages index*.html -> ch*.html
@@ -41,7 +41,7 @@ Operators from babel (\tg, \ctg, \arctg, \sh, \ch, \cth, \cosec) are not in the 
 has no such alphabet, so it uses \mathcal{E}: close, not identical to the print.
 Formulas: lwarp gives MathJax the text of a formula unchanged, so prepare_html.py rewrites it in the chapter copies: \tikzmarknode{n}{x} -> x,
 \tikzmark and \tikz[..]{..} (overlay arrows) are removed, \tag{\theequation x} gets its number from main-html.aux
-(run `python prepare_html.py --tags` after the first lualatex pass; build-html.ps1 does it). The overlay arrow of the Gauss equations is lost in HTML.
+(run `python tools/prepare_html.py --tags` after the first lualatex pass; build-html.ps1 does it). The overlay arrow of the Gauss equations is lost in HTML.
 \emphx{term}[index entry]: the optional [..] is swallowed in HTML (print puts it into the index).
 Appendices and bibliography: main-html.tex has \appendix + Additions/SGStoSI, Additions/Vanaliz (read through \htmlinput, so the fixed
 copies of prepare_html.py are used: tblr -> tabularx, tags) and \printbibliography with the same \nocite list as main.tex.

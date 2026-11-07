@@ -36,7 +36,7 @@ Work in stages and stop at the marked points: the author decides what is changed
 - Do not re-read the chapter in full: `grep -n` the anchor quote from the remark, Read ~60 lines around it, Edit.
 - Apply only what was agreed. Mark each item `[+]` (done), `[~]` (done differently: say how), `[-]` (author kept as is).
 - New figures or boxes: define the commands for the HTML class too.
-- Check the layout: `python chapter.py $ARGUMENTS --png`; look at the PNGs (widows, split boxes, overfull). Fix and rebuild.
+- Check the layout: `python tools/chapter.py $ARGUMENTS --png`; look at the PNGs (widows, split boxes, overfull). Fix and rebuild.
 - Do not edit chapter sources while a full-book build is running.
 
 ## 5. Close

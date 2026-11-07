@@ -25,7 +25,9 @@ param([switch]$Full)
 chcp 65001 | Out-Null
 
 # --- Config ---
-$FOLDER  = Split-Path -Leaf $PSScriptRoot
+$ROOT    = Split-Path -Parent $PSScriptRoot
+Set-Location -LiteralPath $ROOT
+$FOLDER  = Split-Path -Leaf $ROOT
 
 # --- Вибір цільового файлу: "folder" або "main" ---
 $MODE = "main"          # ← змінюйте ТУТ: "folder" або "main"

@@ -21,7 +21,8 @@ param(
     [string]$OutDir = 'docs'
 )
 $ErrorActionPreference = 'Stop'
-Set-Location -LiteralPath $PSScriptRoot
+$ROOT = Split-Path -Parent $PSScriptRoot
+Set-Location -LiteralPath $ROOT
 try { [Console]::OutputEncoding = [Text.Encoding]::UTF8 } catch { }
 $main = 'main-html'
 $totalStages = 7
@@ -180,7 +181,7 @@ if (-not $script:hasSieve) {
     Write-Host "Warning: texlogsieve not found in PATH - logs will not be filtered (tlmgr install texlogsieve)." -ForegroundColor Yellow
 }
 if ($missing.Count -gt 0) { throw "Not found in PATH: $($missing -join ', ')" }
-foreach ($f in "$main.tex", 'ConspectBookHTML.cls', 'mathjax-macros.tex', 'mathjax2lwarp.py', 'prepare_html.py', 'publish_html.py') {
+foreach ($f in "$main.tex", 'ConspectBookHTML.cls', 'mathjax-macros.tex', 'tools/mathjax2lwarp.py', 'tools/prepare_html.py', 'tools/publish_html.py') {
     if (-not (Test-Path $f)) { throw "File not found: $f" }
 }
 Remove-Item -ErrorAction SilentlyContinue build-error.txt
@@ -216,8 +217,8 @@ foreach ($pdf in @(Get-ChildItem -Path '*/Pictures/*.pdf' -File -ErrorAction Sil
 }
 if ($restored -gt 0) { Write-Host "  - $restored SVG pictures taken back from $OutDir/" -ForegroundColor Green }
 if (-not $SkipPrepare) {
-    Step 'MathJax macros -> lwarp-mathjax.tex' { & $py mathjax2lwarp.py mathjax-macros.tex lwarp-mathjax.tex }
-    $prepArgs = @('prepare_html.py')
+    Step 'MathJax macros -> lwarp-mathjax.tex' { & $py tools/mathjax2lwarp.py mathjax-macros.tex lwarp-mathjax.tex }
+    $prepArgs = @('tools/prepare_html.py')
     if ($Placeholder) { $prepArgs += '--placeholder' }
     Step 'PDF pictures -> SVG, fixed copies of tikz files' { & $py @prepArgs }
 } else {
@@ -235,7 +236,7 @@ Step "lualatex -shell-escape $main" {
 } "$main.log" $false
 Write-Host "      (the print PDF is thrown away: its 'rerun' and undefined references do not matter, the HTML pass redoes them)" -ForegroundColor DarkGray
 # \tag{\theequation ..} cannot be expanded by MathJax: its number is taken from the aux file of the pass above.
-Step 'equation numbers for \tag{\theequation ..}' { & $py prepare_html.py --tags }
+Step 'equation numbers for \tag{\theequation ..}' { & $py tools/prepare_html.py --tags }
 Step "biber $main" { biber $main }
 # the HTML pass is the job ${main}_html and reads ${main}_html.bbl: without it every citation is undefined and the
 # bibliography is empty. Both jobs are the same document, so the bbl of the print pass fits.
@@ -279,7 +280,7 @@ if (Test-Path $rawHtml) {
         Write-Host "  stray carets: none" -ForegroundColor Green
     }
     if ((Test-Path 'node_modules/mathjax-full') -and (Get-Command node -ErrorAction SilentlyContinue)) {
-        Step 'MathJax check of the formulas' { node check-mathjax-html.js $rawHtml }
+        Step 'MathJax check of the formulas' { node tools/check-mathjax-html.js $rawHtml }
     } else {
         Write-Host "  (optional) npm i mathjax-full  -> the build will then check all formulas with MathJax" -ForegroundColor DarkGray
     }
@@ -340,7 +341,7 @@ Stage 6 "Publish to $OutDir/"
 if ($NoPublish) {
     Write-Host "  (skipped: -NoPublish)" -ForegroundColor DarkGray
 } else {
-    & $py publish_html.py --out $OutDir --extra ElMagConspect.pdf
+    & $py tools/publish_html.py --out $OutDir --extra ElMagConspect.pdf
     if ($LASTEXITCODE -ne 0) { throw "publish_html.py failed (exit code $LASTEXITCODE)" }
     # search index for book.js: $OutDir/pagefind/ (only the chapter text, marked by publish_html.py). Needs node (npx).
     if (Get-Command npx -ErrorAction SilentlyContinue) {

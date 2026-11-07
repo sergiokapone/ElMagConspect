@@ -11,7 +11,7 @@
 #>
 
 param(
-    [string]$Folder = $PSScriptRoot,
+    [string]$Folder = (Split-Path -Parent $PSScriptRoot),
     [string]$DocsSubfolder = "docs"
 )
 

@@ -17,12 +17,12 @@ HTML_FLAGS = ['-Placeholder', '-SkipPrepare', '-NoImages', '-Full', '-Keep', '-N
 
 def ps(script, *args):
     """Runs a PowerShell script of the project; returns its exit code."""
-    return subprocess.run([PS, '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', os.path.join(ROOT, script), *args],
+    return subprocess.run([PS, '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', os.path.join(ROOT, 'tools', script), *args],
                           cwd=ROOT, env={**os.environ, 'ELMAG_CLI': '1'}).returncode
 
 
 def py(script, *args):
-    return subprocess.run([PY, os.path.join(ROOT, script), *args], cwd=ROOT).returncode
+    return subprocess.run([PY, os.path.join(ROOT, 'tools', script), *args], cwd=ROOT).returncode
 
 
 def git(*args):

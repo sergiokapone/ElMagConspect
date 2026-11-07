@@ -21,7 +21,7 @@ Thresholds are in pt (1 pt = 0.353 mm); change them with the options below. Exit
 import argparse, collections, os, sys
 import fitz  # PyMuPDF
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TERMINAL = '.!?:;»”)…'
 
 

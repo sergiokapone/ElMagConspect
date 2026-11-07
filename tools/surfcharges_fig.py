@@ -10,7 +10,7 @@ Usage: python surfcharges_fig.py
 import os
 import numpy as np
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'SteadyCurrent', 'tikz')
 
 DS = 0.06            # segment length, cm

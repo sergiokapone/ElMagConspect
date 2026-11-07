@@ -10,7 +10,7 @@ latexmk -usepretex. References to other chapters stay '??': the chapter is built
 After the build the overfull/underfull boxes of the log are listed with their source lines."""
 import argparse, glob, os, queue, re, subprocess, sys, threading, time
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, '_chapters')
 
 # Список папок-винятків, які не є розділами книги

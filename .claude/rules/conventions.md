@@ -70,7 +70,7 @@ These are decisions already made. Follow them; if you think one is wrong, say so
   If you meet such a phrase under a figure, delete it from the caption and make sure the figure's file is listed there.
 - Anything added to chapters for print (tcolorbox commands etc.) must also be defined in `ConspectBookHTML.cls`
   (there `\tcbset` is an empty stub). Check with `python elmag.py html` after a review round.
-- Check the layout of an edited chapter with `python chapter.py <Folder> --png` and look at the PNGs.
+- Check the layout of an edited chapter with `python tools/chapter.py <Folder> --png` and look at the PNGs.
 
 ## Physics checks that found real errors in this book
 Use them when reading any chapter:

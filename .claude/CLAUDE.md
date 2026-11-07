@@ -37,7 +37,7 @@ Commits go straight to `main`; commit and push only when asked.
 ## Build and check
 - Whole book: `python elmag.py pdf` (run.ps1: latexmk, stops at the first error). Do not edit chapter sources while it runs:
   latexmk then hits "too many passes".
-- One chapter with the book class: `python chapter.py <Folder> --png` (test.tex + latexmk -usepretex) ->
+- One chapter with the book class: `python tools/chapter.py <Folder> --png` (test.tex + latexmk -usepretex) ->
   `_chapters/<Folder>.pdf` and page PNGs to check the layout (widows, split boxes). `--tikz <name>` builds one picture.
   Refs to other chapters stay `??`; the running head shows "Частина .": that is normal.
 - Layout check of the whole PDF: `python elmag.py lint` (`layout_lint.py`, PyMuPDF): sparse pages (`gap-bottom`, `gap-inside`),
@@ -46,6 +46,7 @@ Commits go straight to `main`; commit and push only when asked.
   A `gap-inside` usually means: with `\flushbottom` the empty space left by an unbreakable box or a float that did not fit is spread
   over the glue around headings; cure: make that box breakable or move the figure before it.
 - After a review round: `python elmag.py pdf`, then `python elmag.py html`, commit `docs/`, push (only when asked).
+- `tools/` holds all helper scripts (`.py`, `.ps1`, `.js`; they take the project root as the parent of `tools/`); the root keeps only `elmag.py`.
 - `elmag.py` is the entry point for everything (pdf, html, serve, clean, purge, size, status, push, chapter): an interactive
   shell or one command; it only calls the scripts. A new script of the project gets a command there.
   `run.ps1` skips its pause and Clear-Host when `ELMAG_CLI` is set.

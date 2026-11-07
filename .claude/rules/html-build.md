@@ -1,11 +1,12 @@
 ---
 paths:
-  - "publish_html.py"
-  - "prepare_html.py"
-  - "build-html.ps1"
+  - "tools/publish_html.py"
+  - "tools/prepare_html.py"
+  - "tools/build-html.ps1"
   - "mathjax*"
+  - "tools/mathjax2lwarp.py"
   - "lwarp*"
-  - "check-mathjax-html.js"
+  - "tools/check-mathjax-html.js"
   - "ConspectBookHTML.cls"
   - "docs/assets/**"
   - "README-html.md"
@@ -29,7 +30,7 @@ paths:
   (`\tcbhighmath` was lost this way: no boxes in the HTML). Macros that must always reach MathJax go to `ALWAYS` in `mathjax2lwarp.py`.
   `npm i` in the project root installs `mathjax-full@3`; then `build-html.ps1` runs `check-mathjax-html.js` (every formula of the
   page through MathJax with the macros from `lwarp-mathjax.tex`) and reports undefined macros. Run it by hand:
-  `node check-mathjax-html.js docs/ch*.html`.
+  `node tools/check-mathjax-html.js docs/ch*.html`.
 - lwarp 0.922 hard-codes MathJax 3 (`mathjax@3/es5/tex-svg.js`) with its own `startup.ready()` code that uses v3-internal
   modules; MathJax 4 would need that code ported. MathJax 3 has no line breaking: `book.js` splits long display
   formulas itself (top-level TeX break points -> `aligned`).

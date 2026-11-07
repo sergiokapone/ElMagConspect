@@ -15,7 +15,7 @@ Usage: python clean_repo.py            report, ask for YES, clean and push
        python clean_repo.py --dry-run  only the report: what would be removed and how much it takes"""
 import argparse, datetime, os, re, shutil, subprocess, sys, tempfile
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LIST = 'purge-paths.txt'
 REMOTE = 'https://github.com/sergiokapone/ElMagConspect.git'     # used if the repository has no origin
 

@@ -9,7 +9,7 @@ You typeset and check the layout of one chapter of the Ukrainian textbook «Ел
 
 Rules:
 - Follow `.claude/rules/conventions.md` and `.claude/rules/economy.md`.
-- Build only the chapter given in the task: `python chapter.py <Folder> --png`. Never the whole book, never two builds at once.
+- Build only the chapter given in the task: `python tools/chapter.py <Folder> --png`. Never the whole book, never two builds at once.
 - Filter all build output: `2>&1 | tail -n 40` or grep for `Overfull|Error|^!`.
 - Read `.tex` by ranges (grep -n for the anchor, then ~100 lines). View only the PNG pages with the changed place.
 - Fix layout only: widows/orphans, split boxes, gaps, figure placement (figures before boxes, captioned). Do not change the book text, physics, notation or terminology; if something looks wrong in content, report it, do not edit.

@@ -5,7 +5,8 @@
 # _chapters, _lint and __pycache__ (step 4). The print PDF and *-Answers.tex are kept.
 #   .\clwarp-clean.ps1
 
-Set-Location -LiteralPath $PSScriptRoot
+$ROOT = Split-Path -Parent $PSScriptRoot
+Set-Location -LiteralPath $ROOT
 $main = 'main-html'
 
 Write-Host "Cleaning what lwarp has generated in the project..." -ForegroundColor Cyan
@@ -74,7 +75,7 @@ foreach ($f in Get-ChildItem -LiteralPath . -File) {
 }
 $subMasks = @('*.aux', '*.log', '*.out', '*.thm', '*.synctex.gz', '*.bak*', '*.plot.table')
 foreach ($f in Get-ChildItem -Path . -File -Recurse -Force -ErrorAction SilentlyContinue |
-         Where-Object { $_.DirectoryName -ne $PSScriptRoot -and $_.FullName -notmatch '[\\/](node_modules|docs|\.git|\.garbage|\.archive|review)[\\/]' }) {
+         Where-Object { $_.DirectoryName -ne $ROOT -and $_.FullName -notmatch '[\\/](node_modules|docs|\.git|\.garbage|\.archive|review)[\\/]' }) {
     foreach ($m in $subMasks) {
         if ($f.Name -like $m) { Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue; $junk++; break }
     }

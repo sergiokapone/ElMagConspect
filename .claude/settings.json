@@ -6,7 +6,7 @@
   "permissions": {
     "allow": [
       "Bash(python elmag.py:*)",
-      "Bash(python chapter.py:*)",
+      "Bash(python tools/chapter.py:*)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
@@ -18,7 +18,7 @@
     "ask": [
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(python clean_repo.py:*)"
+      "Bash(python tools/clean_repo.py:*)"
     ],
     "deny": [
       "Read(./**/*.bak*)",
