@@ -23,6 +23,14 @@
   #readout { margin-top:6px; font-size:13px; line-height:1.5; }
   .sw { display:inline-block; width:22px; height:3px; vertical-align:middle; margin-right:6px; border-radius:2px; }
   #hint { position:absolute; bottom:6px; left:12px; right:12px; font-size:12px; opacity:.7; }
+@media (max-width:700px){
+  /* Телефон: панель керування над полотном, а не поверх нього */
+  html,body{height:auto;overflow:auto}
+  body{display:flex;flex-direction:column}
+  canvas{order:2;flex:none;height:62vh;min-height:300px}
+  #panel{position:static;order:1;width:auto;max-width:none;margin:8px}
+  #hint{position:static;order:3;margin:8px 12px 12px}
+}
 </style>
 <script src="assets/theme.js"></script>
 </head>
@@ -296,5 +304,6 @@ resize();
 setMode('harm');
 requestAnimationFrame(frame);
 </script>
+<script src="assets/panel-toggle.js"></script>
 </body>
 </html>
