@@ -2,7 +2,7 @@
 """Cleans the git history of the repository (GitHub: sergiokapone/ElMagConspect) so that it does not grow without end.
 
 Removed from the WHOLE history:
-  - the paths listed in purge-paths.txt (one per line; 'regex:...' lines are regular expressions, as in git filter-repo);
+  - the paths listed in tools/purge-paths.txt (one per line; 'regex:...' lines are regular expressions, as in git filter-repo);
   - old versions of the files in docs/ (the published site is rebuilt and committed again and again).
 Never removed: any file of the current commit (its tree is compared before and after; nothing is pushed if it changed)
 and any version that was ever at a path outside docs/ (the pictures in docs/ are byte copies of */Pictures/*).
@@ -16,7 +16,7 @@ Usage: python clean_repo.py            report, ask for YES, clean and push
 import argparse, datetime, os, re, shutil, subprocess, sys, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LIST = 'purge-paths.txt'
+LIST = os.path.join('tools', 'purge-paths.txt')
 REMOTE = 'https://github.com/sergiokapone/ElMagConspect.git'     # used if the repository has no origin
 
 
@@ -85,7 +85,7 @@ def main():
     args = ap.parse_args()
 
     # --- 0. checks ---------------------------------------------------------------------------------
-    if not os.path.isfile(os.path.join(ROOT, LIST)): sys.exit('ERROR: no %s next to the script' % LIST)
+    if not os.path.isfile(os.path.join(ROOT, LIST)): sys.exit('ERROR: %s not found' % LIST)
     if git('rev-parse', '--is-inside-work-tree', check=False).strip() != 'true': sys.exit('ERROR: not a git repository')
     branch = git('rev-parse', '--abbrev-ref', 'HEAD').strip()
     pats = read_list()
@@ -156,7 +156,7 @@ def main():
     # the marker of the previous run makes filter-repo ask "continue the previous run (Y/N)?" even with --force: not wanted here
     marker = os.path.join(ROOT, '.git', 'filter-repo', 'already_ran')
     if os.path.isfile(marker): os.remove(marker)
-    code = run('git', 'filter-repo', '--invert-paths', '--paths-from-file', LIST, '--strip-blobs-with-ids', blobs, '--force')
+    code = run('git', 'filter-repo', '--invert-paths', '--paths-from-file', os.path.join(ROOT, LIST), '--strip-blobs-with-ids', blobs, '--force')
     for rel in saved:
         dst = os.path.join(ROOT, rel)
         if not os.path.exists(dst):

@@ -84,7 +84,7 @@ def cmd_clean(args):
 
 
 def cmd_purge(args):
-    """Clean the git history of old docs/ versions and the paths of purge-paths.txt (clean_repo.py).
+    """Clean the git history of old docs/ versions and the paths of tools/purge-paths.txt (clean_repo.py).
     purge --dry-run: only show what would go and how much it takes. Without it: asks YES, then force-pushes."""
     return py('clean_repo.py', *args)
 
