@@ -13,6 +13,8 @@ RENEW = {'phi', 'epsilon', 'iint', 'iiint'}        # already defined in MathJax
 
 # Macros that MathJax must always have, even if mathjax-macros.tex lacks them or defines them in a way MathJax cannot read.
 # \emf (package emf) is \mathemf{E} in LaTeX: a calligraphic E in the BOONDOX-cal alphabet; MathJax has no such alphabet.
+# In the published pages it becomes the character U+2130 drawn with the web font STIX Two Math (publish_html.py: fix_emf,
+# docs/assets/conspect.css, docs/assets/fonts/). Here it must stay ASCII: the glyph does not survive lwarp/LuaLaTeX; \unicode{} is not in tex-svg.
 ALWAYS = {'emf': r'\newcommand{\emf}{\mathcal{E}}',
           'tikzmarknode': r'\newcommand{\tikzmarknode}[2]{#2}',   # tikzmark has no meaning in HTML
           'tikzmark': r'\newcommand{\tikzmark}[1]{}',

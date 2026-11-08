@@ -275,8 +275,17 @@ def mark_sections(text):
     Safe to run again: the number then follows "§&#x202F;", not the span."""
     return SECTION_NUMBER.sub(r'\1&#xA7;&#x202F;\2', text)
 
+# lwarp writes it with spaces: \newcommand {\emf }{\mathcal {E}}; the body may hold one level of braces
+EMF_MACRO = re.compile(r'(\\newcommand\s*\{\\emf\s*\}\s*\{)(?:[^{}]|\{[^{}]*\})*(\})')
+
+def fix_emf(text):
+    """\\emf in MathJax is the character U+2130 (drawn with the web font STIX Two Math, see conspect.css), as the nearest
+    thing to the BOONDOX-cal E of the print book. It cannot go through lwarp/LuaLaTeX (the glyph is missing in the text font and
+    comes out as U+FFFD), so mathjax2lwarp.py writes \\mathcal{E} and the character is put in here. Safe to run again."""
+    return EMF_MACRO.sub('\\1\u2130\\2', text)
+
 n_pages = n_script = 0
-donor = None                                   # a processed chapter page: its side panel goes to the book home page
+donor = None                                  # a processed chapter page: its side panel goes to the book home page
 pages = sorted((n for n in os.listdir(OUT) if n.endswith('.html') and not is_site_own(n)),
                key=lambda n: (not re.fullmatch(r'ch\d+\.html', n), n))       # chapters first, then the home page
 for name in pages:
@@ -290,6 +299,7 @@ for name in pages:
     new = wrap_toc_titles(new)
     new = mark_sections(new)
     new = patch_images(new)
+    new = fix_emf(new)
     if 'book.js' not in new and '</body>' in new:
         new = new.replace('</body>', '<script src="%s/book.js" defer></script>\n</body>' % ASSET_DIR, 1); n_script += 1
     if new != text:
