@@ -4,6 +4,7 @@
 Деталі посилань і джерел по розділах (29.10), журнал сесій --- `.claude/STATUS-archive.md` (не імпортується; лише `grep -n`).
 
 ## Де зупинилися (перевірити `git status` / `git log -5`: запис міг відстати)
+- 08.11.2026: HTML зібрано і опубліковано (eb12359): `\emf` в HTML = символ ℰ (U+2130) шрифтом STIX Two Math (`docs/assets/fonts/`, `conspect.css`); у lwarp-проході лишається `\mathcal{E}`, символ підставляє `fix_emf` у `publish_html.py` (через LuaLaTeX гліф втрачається → «�»). `\unicode` у tex-svg немає. Збірку з Git Bash/Claude запускати з PATH без `mingw64` (інакше CESU-8 від pdftotext).
 - Усі 20 розділів вичитано до 24.10.2026; далі --- другі проходи (ElMagInduction, ElMagOscillations, MaxwellEqns тощо). Для EBMotion і Charges--ElEnergy другого проходу немає.
 - 05.11.2026: `\ExtraMark`/`\ExtraHeading`, штрафи вдів/сиріт, `lint` 27 → 2 (ElMagInduction с. 326, Telegraph с. 500). HTML після цього НЕ збирали (перевірити `\ExtraMark`/`\ExtraHeading` у lwarp); `Pictures/Soft.jpg`, `Hard.jpg` не видалено. Деталі --- в архіві.
 - 06.11.2026, `docs/applets/ac_lab.html` (закомічено і запушено, 1bf1781): теорія зроблена автономною (без посилань на конспект, посібник, номери формул і рисунків; пресети й підписи графіків без «рис. N»); знак φ пояснено (тут φ = arg Z, у конспекті φ = −arg Z); Δν/Δω --- повна ширина по 1/√2, `Q = ν₀/Δν` (як у конспекті). Книгу правити не треба (звірено з ElMagOscillations). Деталі аплетів `lab_bench_battery`, `em-induction` --- в архіві.
