@@ -23,7 +23,7 @@
 
         \draw[green!50!black, ->, thick] (A) -- (C) node[right=2pt] {$i\left(\omega L - \frac{1}{\omega C}\right)I$};
 
-        \draw[purple, ->, ultra thick] (O2) -- (C) node[midway, above left] {$\mathcal{E}$};
+        \draw[purple, ->, ultra thick] (O2) -- (C) node[midway, above left] {$\emf$};
 
         \draw[dashed] (U_reac) -- (C);
 
