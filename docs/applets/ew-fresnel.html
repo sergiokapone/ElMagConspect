@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Відбивання й заломлення хвилі: закони Снелліуса, формули Френеля, повне внутрішнє відбивання</title>
+<link rel="stylesheet" href="assets/ew.css">
+<script src="assets/theme.js"></script>
+<script src="assets/ew.js"></script>
+</head>
+<body>
+<h1>Відбивання та заломлення хвилі на межі двох діелектриків</h1>
+<p class="lead">Плоска хвиля падає зліва (середовище 1, n₁) на межу x = 0 із середовищем 2 (n₂). Кольором показано миттєве значення поля (для <b>s</b>-поляризації — E, перпендикулярного до площини падіння; для <b>p</b> — B, перпендикулярного до неї). Гранична умова — рівність фаз уздовж межі — дає закони Снелліуса <i>i = i′</i>, <i>n₁ sin i = n₂ sin r</i>, а неперервність тангенціальних компонент — формули Френеля. При n₁ &gt; n₂ та i &gt; i<sub>гр</sub> за межею лишається лише <i>згасаюча хвиля</i> e<sup>−Kx</sup>.</p>
+<div class="layout">
+<canvas id="main" class="sq" aria-label="Поле біля межі двох середовищ"></canvas>
+<div class="right">
+<canvas id="plotR" class="plot" aria-label="Коефіцієнти відбивання"></canvas>
+<canvas id="plotX" class="plot" aria-label="Амплітуда поля вздовж x"></canvas>
+</div>
+</div>
+<div class="controls">
+<button id="bPause">Пауза</button><button id="bReset">Спочатку</button>
+<button id="bSlow">Повільніше</button><button id="bFast">Швидше</button>
+</div>
+<div class="controls">
+<label>Кут падіння i <input id="ang" type="range" min="0" max="89" step="0.5" value="40"><b id="ango">40°</b></label>
+<label>n₁ <input id="n1" type="range" min="1" max="2.5" step="0.01" value="1"><b id="n1o">1.00</b></label>
+<label>n₂ <input id="n2" type="range" min="1" max="2.5" step="0.01" value="1.5"><b id="n2o">1.50</b></label>
+<button id="pS" class="on">s-поляризація</button><button id="pP">p-поляризація</button>
+</div>
+<div class="controls">
+<span class="hint">Швидкі набори:</span>
+<button id="q1">повітря → скло</button><button id="q2">скло → повітря</button><button id="q3">повітря → вода</button><button id="q4">вода → повітря</button>
+<button id="qB">Кут Брюстера (p)</button><button id="qC">Граничний кут</button>
+</div>
+<p class="out" id="out"></p>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const cv=EW.view($("main")),cR=EW.view($("plotR")),cX=EW.view($("plotX")),col=EW.readCols();
+const HALF=2.1,NG=200;
+let n1=1,n2=1.5,ang=40,pol="s";
+const clk=EW.clock({rate:1,wrap:1e5});
+const img=document.createElement("canvas");img.width=img.height=NG;const ig=img.getContext("2d"),idat=ig.createImageData(NG,NG);
+const hex=c=>{const m=c.replace("#","");return[parseInt(m.substr(0,2),16),parseInt(m.substr(2,2),16),parseInt(m.substr(4,2),16)];};
+// комплексні числа: [re,im]
+const cm=(a,b)=>[a[0]*b[0]-a[1]*b[1],a[0]*b[1]+a[1]*b[0]],cd=(a,b)=>{const d=b[0]*b[0]+b[1]*b[1];return[(a[0]*b[0]+a[1]*b[1])/d,(a[1]*b[0]-a[0]*b[1])/d];};
+const cad=(a,b)=>[a[0]+b[0],a[1]+b[1]],csub=(a,b)=>[a[0]-b[0],a[1]-b[1]],cabs=a=>Math.hypot(a[0],a[1]);
+const K0=2*Math.PI; // λ0 = 1
+function calc(iDeg,pl){
+  const i=iDeg*Math.PI/180,a=n1*K0*Math.cos(i),ky=n1*K0*Math.sin(i),q=n2*n2-n1*n1*Math.sin(i)*Math.sin(i);
+  const kx2=q>=0?[K0*Math.sqrt(q),0]:[0,K0*Math.sqrt(-q)];
+  let r,t;
+  if(pl==="s"){r=cd([a-kx2[0],-kx2[1]],[a+kx2[0],kx2[1]]);t=cd([2*a,0],[a+kx2[0],kx2[1]]);}
+  else{const A=n2*n2*a,Bx=[n1*n1*kx2[0],n1*n1*kx2[1]];r=cd([A-Bx[0],-Bx[1]],[A+Bx[0],Bx[1]]);t=cd([2*A,0],[A+Bx[0],Bx[1]]);}
+  return{i,a,ky,kx2,r,t,tir:q<0,R:r[0]*r[0]+r[1]*r[1],q};
+}
+function frame(){
+  const tt=clk.tick(),c=calc(ang,pol),W=cv.w,S=W/(2*HALF),om=2*Math.PI*0.2*tt;
+  // поле
+  const bg=hex(col.panel),pos=hex(col.neg),neg=hex(col.pos);
+  const Ar=new Float32Array(NG),Ai=new Float32Array(NG),cs=new Float32Array(NG),sn=new Float32Array(NG);
+  for(let ix=0;ix<NG;ix++){const x=-HALF+2*HALF*(ix+0.5)/NG;
+    if(x<0){const e1=[Math.cos(c.a*x),Math.sin(c.a*x)],e2=[Math.cos(-c.a*x),Math.sin(-c.a*x)],rr=cm(c.r,e2),s=cad(e1,rr);Ar[ix]=s[0];Ai[ix]=s[1];}
+    else{const e=Math.exp(-c.kx2[1]*x),ph=c.kx2[0]*x,z=cm(c.t,[e*Math.cos(ph),e*Math.sin(ph)]);Ar[ix]=z[0];Ai[ix]=z[1];}}
+  for(let iy=0;iy<NG;iy++){const y=HALF-2*HALF*(iy+0.5)/NG,ph=c.ky*y-om;cs[iy]=Math.cos(ph);sn[iy]=Math.sin(ph);}
+  for(let iy=0;iy<NG;iy++)for(let ix=0;ix<NG;ix++){
+    const u=(Ar[ix]*cs[iy]-Ai[ix]*sn[iy])/1.6,al=Math.min(1,Math.abs(u))*0.88,cc=u>0?pos:neg,o=4*(iy*NG+ix);
+    idat.data[o]=bg[0]+(cc[0]-bg[0])*al;idat.data[o+1]=bg[1]+(cc[1]-bg[1])*al;idat.data[o+2]=bg[2]+(cc[2]-bg[2])*al;idat.data[o+3]=255;}
+  ig.putImageData(idat,0,0);
+  const g=cv.begin();g.imageSmoothingEnabled=true;g.drawImage(img,0,0,W,W);
+  // тонування середовищ
+  g.fillStyle=col.zero;g.globalAlpha=0.07*(n1-1);g.fillRect(0,0,W/2,W);g.globalAlpha=0.07*(n2-1)+0.0;g.fillRect(W/2,0,W/2,W);g.globalAlpha=1;
+  const o=[W/2,W/2];
+  g.strokeStyle=col.ink;g.lineWidth=2.2;g.beginPath();g.moveTo(W/2,0);g.lineTo(W/2,W);g.stroke();
+  g.setLineDash([5,5]);g.lineWidth=1;g.strokeStyle=col.muted;g.beginPath();g.moveTo(0,W/2);g.lineTo(W,W/2);g.stroke();g.setLineDash([]);
+  g.fillStyle=col.ink;g.font="600 14px system-ui";g.textAlign="left";g.textBaseline="top";g.fillText("n₁ = "+n1.toFixed(2),10,8);g.textAlign="right";g.fillText("n₂ = "+n2.toFixed(2),W-10,8);
+  g.font="12px system-ui";g.fillStyle=col.muted;g.textAlign="left";g.fillText("нормаль",8,W/2+4);
+  // промені
+  const Lr=0.62*W/2,ci=Math.cos(c.i),si=Math.sin(c.i);
+  EW.arrow(g,o[0]-Lr*ci,o[1]+Lr*si,o[0]-4*ci,o[1]+4*si,col.acc,3,12);
+  g.fillStyle=col.acc;g.textAlign="right";g.textBaseline="top";g.fillText("k",o[0]-Lr*ci-4,o[1]+Lr*si);
+  EW.arrow(g,o[0],o[1],o[0]-Lr*ci,o[1]-Lr*si,col.acc,Math.max(1,3*Math.min(1,Math.sqrt(c.R)+0.15)),12);
+  g.textBaseline="bottom";g.fillText("k′",o[0]-Lr*ci-4,o[1]-Lr*si);
+  let rDeg=NaN;
+  if(!c.tir){const sr=n1*si/n2,cr=Math.sqrt(1-sr*sr);rDeg=Math.asin(sr)*180/Math.PI;
+    EW.arrow(g,o[0],o[1],o[0]+Lr*cr,o[1]-Lr*sr,col.acc,Math.max(1,3*Math.min(1,Math.sqrt(1-c.R)+0.15)),12);g.textAlign="left";g.fillText("k″",o[0]+Lr*cr+4,o[1]-Lr*sr);}
+  // дуги кутів
+  g.strokeStyle=col.ink;g.lineWidth=1.3;g.beginPath();g.arc(o[0],o[1],40,Math.PI-c.i,Math.PI);g.stroke();
+  g.fillStyle=col.ink;g.textAlign="right";g.textBaseline="middle";g.fillText("i",o[0]-52*Math.cos(c.i/2),o[1]+52*Math.sin(c.i/2));
+  if(!c.tir){g.beginPath();g.arc(o[0],o[1],34,-Math.asin(n1*si/n2),0);g.stroke();g.textAlign="left";g.fillText("r",o[0]+42,o[1]-14*(n1*si/n2)-6);}
+  // графіки
+  const pts=(pl)=>{const a=[];for(let d=0;d<=89.5;d+=0.5){a.push([d,calc(d,pl).R]);}return a;};
+  const iB=Math.atan(n2/n1)*180/Math.PI,iC=n1>n2?Math.asin(n2/n1)*180/Math.PI:null;
+  const vl=[[iB,col.zero,[3,4]]];if(iC)vl.push([iC,col.zero,[3,4]]);
+  EW.plot(cR,{x0:0,x1:90,y0:0,y1:1.05,title:"Коефіцієнт відбивання R = |r|²",xl:"кут падіння i, °",yl:"R",xt:[0,15,30,45,60,75,90],yt:[0,0.5,1],
+    curves:[{pts:pts("s"),c:col.pos,w:2},{pts:pts("p"),c:col.neg,w:2,d:[6,4]}],marks:[[ang,c.R,pol==="s"?col.pos:col.neg]],vlines:vl,n:180});
+  {const g2=cR.g;g2.font="12px system-ui";g2.fillStyle=col.pos;g2.textAlign="left";g2.fillText("— s",56,44);g2.fillStyle=col.neg;g2.fillText("- - p",92,44);}
+  // профіль амплітуди вздовж x
+  const ptsX=[];for(let k=0;k<=240;k++){const x=-HALF+2*HALF*k/240;let A;
+    if(x<0){const e1=[Math.cos(c.a*x),Math.sin(c.a*x)],e2=[Math.cos(-c.a*x),Math.sin(-c.a*x)];A=cabs(cad(e1,cm(c.r,e2)));}
+    else{A=cabs(c.t)*Math.exp(-c.kx2[1]*x);}
+    ptsX.push([x,A]);}
+  EW.plot(cX,{x0:-HALF,x1:HALF,y0:0,y1:2.2,title:c.tir?"Амплітуда поля вздовж x: згасаюча хвиля e^(−Kx)":"Амплітуда поля вздовж x",xl:"x/λ₀ (межа при x = 0)",yl:"|поле|/амплітуда падаючої",xt:[-2,-1,0,1,2],yt:[0,1,2],
+    curves:[{pts:ptsX,c:col.ink,w:2}],vlines:[[0,col.ink,[]]],n:240});
+  let msg="";
+  const Rn=c.R,Tn=1-c.R;
+  msg="Закон Снелліуса: ";
+  if(!c.tir)msg+="r = <b>"+rDeg.toFixed(1)+"°</b> (n₁ sin i = n₂ sin r).  ";else msg+="sin r &gt; 1 — заломлена хвиля не існує.  ";
+  msg+="R = <b>"+Rn.toFixed(3)+"</b>, T = 1 − R = <b>"+Tn.toFixed(3)+"</b> ("+(pol==="s"?"s":"p")+"-поляризація).  ";
+  msg+="Кут Брюстера i<sub>Б</sub> = arctg(n₂/n₁) = "+iB.toFixed(1)+"° (для p: R = 0).  ";
+  if(iC)msg+="Граничний кут i<sub>гр</sub> = arcsin(n₂/n₁) = "+iC.toFixed(1)+"°.  ";
+  if(c.tir){const K=c.kx2[1];msg+="<b>Повне внутрішнє відбивання:</b> R = 1; поле в середовищі 2 згасає як e<sup>−Kx</sup>, глибина проникнення 1/K = <b>"+(1/K).toFixed(2)+" λ₀</b>.";}
+  $("out").innerHTML=msg;
+  requestAnimationFrame(frame);
+}
+function setPol(p){pol=p;$("pS").classList.toggle("on",p==="s");$("pP").classList.toggle("on",p==="p");}
+$("pS").onclick=()=>setPol("s");$("pP").onclick=()=>setPol("p");
+function setN(a,b,d){n1=a;n2=b;if(d!==undefined)ang=d;$("n1").value=a;$("n2").value=b;$("n1o").textContent=a.toFixed(2);$("n2o").textContent=b.toFixed(2);$("ang").value=ang;$("ango").textContent=ang.toFixed(0)+"°";}
+$("ang").oninput=e=>{ang=+e.target.value;$("ango").textContent=ang.toFixed(0)+"°";};
+$("n1").oninput=e=>{n1=+e.target.value;$("n1o").textContent=n1.toFixed(2);};
+$("n2").oninput=e=>{n2=+e.target.value;$("n2o").textContent=n2.toFixed(2);};
+$("q1").onclick=()=>setN(1,1.5,40);$("q2").onclick=()=>setN(1.5,1,30);$("q3").onclick=()=>setN(1,1.33,40);$("q4").onclick=()=>setN(1.33,1,40);
+$("qB").onclick=()=>{setPol("p");ang=Math.atan(n2/n1)*180/Math.PI;$("ang").value=ang;$("ango").textContent=ang.toFixed(1)+"°";};
+$("qC").onclick=()=>{if(n1>n2){ang=Math.asin(n2/n1)*180/Math.PI+0.5;}else{setN(1.5,1,0);ang=Math.asin(1/1.5)*180/Math.PI+0.5;}$("ang").value=ang;$("ango").textContent=ang.toFixed(1)+"°";};
+function onres(){cv.fit();cR.fit();cX.fit();EW.readCols();}
+window.addEventListener("resize",onres);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>EW.readCols());
+requestAnimationFrame(frame);
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>

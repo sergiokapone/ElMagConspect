@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Електромагнітна хвиля: E, B, k, вектор Пойнтінга</title>
+<link rel="stylesheet" href="assets/ew.css">
+<script src="assets/theme.js"></script>
+<script src="assets/ew.js"></script>
+</head>
+<body>
+<h1>Плоска електромагнітна хвиля: <span style="color:var(--neg)">E</span> ⊥ <span style="color:var(--pos)">B</span> ⊥ <b>k</b></h1>
+<p class="lead">Хвиля біжить уздовж осі x. Вектори <span style="color:var(--neg)">E</span> і <span style="color:var(--pos)">B</span> лежать у площині, перпендикулярній до k, коливаються синфазно, а <span style="color:var(--acc)">вектор Пойнтінга Π = (c/4π)·E×B</span> завжди спрямований уздовж k. У середовищі швидкість v = c/n, довжина хвилі λ = λ₀/n, а амплітуди пов'язані співвідношенням B = nE (СГС). Перетягніть рисунок, щоб повернути його; праворуч — слід вектора E у фіксованій точці (поляризація).</p>
+<div class="layout">
+<canvas id="main" class="sq" style="aspect-ratio:4/3" aria-label="Тривимірна електромагнітна хвиля"></canvas>
+<div class="right"><canvas id="pol" class="sq" aria-label="Поляризація: слід вектора E"></canvas></div>
+</div>
+<div class="controls">
+<button id="bPause">Пауза</button><button id="bReset">Спочатку</button>
+<button id="bSlow">Повільніше</button><button id="bFast">Швидше</button>
+</div>
+<div class="controls">
+<label>Показник заломлення n <input id="nn" type="range" min="1" max="2" step="0.05" value="1"><b id="nno">1.00</b></label>
+<label>Кут осі поляризації θ <input id="th" type="range" min="0" max="180" step="1" value="0"><b id="tho">0°</b></label>
+<label>Еліптичність e <input id="el" type="range" min="-1" max="1" step="0.05" value="0"><b id="elo">0.00</b></label>
+<span class="hint">e = 0 — лінійна, |e| = 1 — колова (знак — напрям обертання)</span>
+</div>
+<div class="controls">
+<button id="pLin">Лінійна</button><button id="pR">Колова ↺</button><button id="pL">Колова ↻</button><button id="pEll">Еліптична</button>
+<label><input id="sP" type="checkbox" checked> вектор Пойнтінга</label>
+<label><input id="sV" type="checkbox" checked> усі стрілки E, B</label>
+<label><input id="sW" type="checkbox"> пластина фази (хвильова площина)</label>
+</div>
+<p class="out" id="out"></p>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const cv=EW.view($("main")),cp=EW.view($("pol")),col=EW.readCols();
+let n=1,th=0,el=0,sP=true,sV=true,sW=false,az=-0.6,elev=0.3;
+const clk=EW.clock({rate:1,wrap:1e5});
+const XL=4*Math.PI; // довжина показаної ділянки (2 довжини хвилі при n=1: λ0=2π→XL=2λ0)
+// поле: перетворює (x,t) у вектори в площині (y,z). ξ = kx − ωt ; k=n·k0, ω фіксована
+function EB(x,t){
+  const k0=1,k=n*k0,w=k0*1,ph=k*x-w*t,c=Math.cos(th*Math.PI/180),s=Math.sin(th*Math.PI/180);
+  const a=Math.cos(ph),b=el*Math.sin(ph);
+  const Ey=(a*c-b*s),Ez=(a*s+b*c);
+  // B = n·(k̂×E) = n·(Ey ẑ − Ez ŷ); для відображення ділимо на 1.4 щоб не вилазило
+  return{Ey,Ez,By:-n*Ez,Bz:n*Ey};}
+// проєкція: світові (x,y,z) → екран; y вгору, x праворуч, z до глядача
+function proj(x,y,z,W,H){
+  const ca=Math.cos(az),sa=Math.sin(az),ce=Math.cos(elev),se=Math.sin(elev);
+  let X=x*ca+z*sa,Z=-x*sa+z*ca,Y=y;
+  const Y2=Y*ce-Z*se,Z2=Y*se+Z*ce;
+  const sc=Math.min(W/(XL*0.98),H/4.4);
+  return[W/2+X*sc,H/2-Y2*sc+H*0.02,Z2];}
+function frame(){
+  const t=clk.tick(),g=cv.begin(),W=cv.w,H=cv.h;
+  const P=(x,y,z)=>proj(x-XL/2,y,z,W,H);
+  const line=(a,b,c,lw,dash)=>{g.strokeStyle=c;g.lineWidth=lw;g.setLineDash(dash||[]);g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();g.setLineDash([]);};
+  // осі
+  const o=P(0,0,0),ax=P(XL*1.02,0,0);
+  line(o,ax,col.ink,1.5);EW.arrow(g,ax[0]-8,ax[1],ax[0]+4,ax[1],col.ink,1.5,9);g.fillStyle=col.ink;g.font="600 13px system-ui";g.textAlign="left";g.textBaseline="middle";g.fillText("x  (k)",ax[0]+8,ax[1]);
+  const ay=P(0,1.9,0);line(o,ay,col.muted,1,[4,4]);g.fillStyle=col.neg;g.fillText("y",ay[0]+4,ay[1]);
+  const az_=P(0,0,1.9);line(o,az_,col.muted,1,[4,4]);g.fillStyle=col.pos;g.fillText("z",az_[0]+4,az_[1]);
+  // пластина (хвильова площина) при x = XL*0.2 + ... рухається? — залишаємо фіксованою в x = 0.5 XL
+  const N=240,eps=[],bps=[];
+  for(let i=0;i<=N;i++){const x=XL*i/N,f=EB(x,t);eps.push(P(x,f.Ey,f.Ez));bps.push(P(x,f.By*0.7,f.Bz*0.7));}
+  const sorted=[];
+  // стрілки (позаду кривих) — малюємо спершу ті, що далі
+  const M=36,arrows=[];
+  for(let i=0;i<=M;i++){const x=XL*i/M,f=EB(x,t);arrows.push({x,f});}
+  // Пойнтінг: Π ∝ E×B ; |Π| ∝ n E² (СГС): E×B = x̂ (Ey Bz − Ez By) = n(Ey²+Ez²)
+  g.lineJoin="round";
+  if(sW){const x=XL*0.5,f=EB(x,t),c0=P(x,-1.5,-1.5),c1=P(x,1.5,-1.5),c2=P(x,1.5,1.5),c3=P(x,-1.5,1.5);
+    g.fillStyle=col.zero;g.globalAlpha=0.18;g.beginPath();g.moveTo(c0[0],c0[1]);[c1,c2,c3].forEach(p=>g.lineTo(p[0],p[1]));g.closePath();g.fill();g.globalAlpha=1;
+    g.strokeStyle=col.zero;g.lineWidth=1;g.stroke();
+    const base=P(x,0,0);EW.arrow(g,base[0],base[1],...P(x,f.Ey,f.Ez).slice(0,2),col.neg,3,10);EW.arrow(g,base[0],base[1],...P(x,f.By*0.7,f.Bz*0.7).slice(0,2),col.pos,3,10);}
+  // криві
+  g.lineWidth=2.4;g.strokeStyle=col.pos;g.beginPath();bps.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.stroke();
+  g.strokeStyle=col.neg;g.beginPath();eps.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.stroke();
+  // стрілки
+  if(sV){
+    for(const a of arrows){const base=P(a.x,0,0);
+      const pe=P(a.x,a.f.Ey,a.f.Ez),pb=P(a.x,a.f.By*0.7,a.f.Bz*0.7);
+      EW.arrow(g,base[0],base[1],pe[0],pe[1],col.neg,1.2,6);EW.arrow(g,base[0],base[1],pb[0],pb[1],col.pos,1.2,6);}}
+  if(sP){
+    for(let i=0;i<=M;i+=2){const a=arrows[i],S=n*(a.f.Ey*a.f.Ey+a.f.Ez*a.f.Ez),base=P(a.x,0,0),tip=P(a.x+S*0.55,0,0);
+      if(S>0.03)EW.arrow(g,base[0],base[1],tip[0],tip[1],col.acc,2.2,8);}
+  }
+  // легенда
+  g.font="600 13px system-ui";g.textAlign="left";g.textBaseline="middle";
+  [["E",col.neg],["B",col.pos],["Π",col.acc]].forEach((q,i)=>{g.fillStyle=q[1];g.fillRect(12,14+i*18,16,4);g.fillText(q[0],34,16+i*18);});
+  // λ
+  const lam=2*Math.PI/n,p0=P(0,-1.8,0),p1=P(lam,-1.8,0);
+  line(p0,p1,col.ink,1.6);line([p0[0],p0[1]-5],[p0[0],p0[1]+5],col.ink,1.6);line([p1[0],p1[1]-5],[p1[0],p1[1]+5],col.ink,1.6);
+  g.fillStyle=col.ink;g.textAlign="center";g.textBaseline="top";g.fillText("λ = λ₀/n",(p0[0]+p1[0])/2,p0[1]+6);
+
+  // поляризація
+  const g2=cp.begin(),S=cp.w,cx=S/2,cy=S/2,R=S*0.36;
+  g2.strokeStyle=col.line;g2.lineWidth=1;g2.beginPath();g2.moveTo(10,cy);g2.lineTo(S-10,cy);g2.moveTo(cx,10);g2.lineTo(cx,S-10);g2.stroke();
+  g2.fillStyle=col.muted;g2.font="12px system-ui";g2.textAlign="left";g2.textBaseline="top";g2.fillText("z",S-18,cy+4);g2.fillText("y (вгору)",cx+5,10);
+  // у цьому вигляді дивимося назустріч хвилі (k до нас)? малюємо перерізом у фіксованій точці x=0: слід за період
+  g2.strokeStyle=col.neg;g2.lineWidth=1.4;g2.setLineDash([5,4]);g2.beginPath();
+  for(let q=0;q<=120;q++){const tt=2*Math.PI*q/120;const f=EB(0,tt);const X=cx+f.Ez*R,Y=cy-f.Ey*R;q?g2.lineTo(X,Y):g2.moveTo(X,Y);}g2.stroke();g2.setLineDash([]);
+  const f0=EB(0,t),ex=cx+f0.Ez*R,ey=cy-f0.Ey*R,bx=cx+f0.Bz*R*0.7,by=cy-f0.By*R*0.7;
+  EW.arrow(g2,cx,cy,ex,ey,col.neg,3,12);EW.arrow(g2,cx,cy,bx,by,col.pos,3,12);
+  g2.fillStyle=col.ink;g2.textAlign="center";g2.textBaseline="bottom";g2.font="600 13px system-ui";g2.fillText("Переріз x = const, дивимось уздовж k (хвиля віддаляється)",cx,S-8);
+  // вектор в 2D для підпису про поляризацію
+  const absE=Math.hypot(f0.Ey,f0.Ez);
+  const kind=Math.abs(el)<0.02?"лінійна":(Math.abs(Math.abs(el)-1)<0.02?(el>0?"колова, E обертається проти годинникової стрілки на правому рисунку":"колова, E обертається за годинниковою стрілкою на правому рисунку"):"еліптична");
+  $("out").innerHTML="Показник заломлення n = <b>"+n.toFixed(2)+"</b>: v = c/n = <b>"+(1/n).toFixed(2)+"c</b>, λ = λ₀/<b>"+n.toFixed(2)+"</b>.  Миттєво |E| = "+absE.toFixed(2)+", |B| = n|E| = "+(n*absE).toFixed(2)+", E·B = "+(f0.Ey*f0.By+f0.Ez*f0.Bz).toFixed(2)+" (≡ 0, перпендикулярні).  Поляризація: <b>"+kind+"</b>.  Π = w·v: густина енергії w = εE²/4π, Π спрямований уздовж k, і для кругової поляризації не пульсує.";
+  requestAnimationFrame(frame);
+}
+// обертання мишею
+let drag=null;
+cv.c.style.touchAction="none";cv.c.style.cursor="grab";
+cv.c.addEventListener("pointerdown",e=>{drag={x:e.clientX,y:e.clientY,az,el:elev};cv.c.setPointerCapture(e.pointerId);});
+cv.c.addEventListener("pointermove",e=>{if(!drag)return;az=drag.az+(e.clientX-drag.x)*0.008;elev=Math.max(-1.2,Math.min(1.2,drag.el+(e.clientY-drag.y)*0.008));});
+cv.c.addEventListener("pointerup",()=>drag=null);
+$("nn").oninput=e=>{n=+e.target.value;$("nno").textContent=n.toFixed(2);};
+function setPol(a,b){th=a;el=b;$("th").value=a;$("tho").textContent=a+"°";$("el").value=b;$("elo").textContent=b.toFixed(2);}
+$("th").oninput=e=>{th=+e.target.value;$("tho").textContent=th+"°";};
+$("el").oninput=e=>{el=+e.target.value;$("elo").textContent=el.toFixed(2);};
+$("pLin").onclick=()=>setPol(0,0);$("pR").onclick=()=>setPol(0,1);$("pL").onclick=()=>setPol(0,-1);$("pEll").onclick=()=>setPol(30,0.5);
+$("sP").onchange=e=>sP=e.target.checked;$("sV").onchange=e=>sV=e.target.checked;$("sW").onchange=e=>sW=e.target.checked;
+function onres(){cv.fit();cp.fit();EW.readCols();}
+window.addEventListener("resize",onres);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>EW.readCols());
+requestAnimationFrame(frame);
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>

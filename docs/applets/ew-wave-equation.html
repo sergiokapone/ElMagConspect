@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Хвильове рівняння: u = f(x − vt) + g(x + vt)</title>
+<link rel="stylesheet" href="assets/ew.css">
+<script src="assets/theme.js"></script>
+<script src="assets/ew.js"></script>
+</head>
+<body>
+<h1>Хвильове рівняння: збурення біжить зі швидкістю v</h1>
+<p class="lead">Загальний розв'язок рівняння ∂²u/∂x² = (1/v²)·∂²u/∂t² — сума двох хвиль: <span style="color:var(--neg)">f(x − vt)</span> біжить праворуч, <span style="color:var(--pos)">g(x + vt)</span> — ліворуч. Чорна крива — реальне збурення u = f + g. Вигляд f і g задають початкові умови — виберіть їх і подивіться, як форма розходиться, зустрічається й проходить крізь себе.</p>
+<div class="layout">
+<canvas id="main" class="wide" aria-label="Профіль хвилі u(x,t)"></canvas>
+<div class="right"><canvas id="plotT" class="plot" aria-label="Коливання в точці x0"></canvas></div>
+</div>
+<div class="controls">
+<button id="bPause">Пауза</button><button id="bReset">Спочатку</button>
+<button id="bSlow">Повільніше</button><button id="bFast">Швидше</button>
+<label>t <input id="ph" type="range" min="0" max="10" step="0.001" value="0"></label>
+</div>
+<div class="controls">
+<label>Форма <select id="shape"><option value="gauss">Гаусівський імпульс</option><option value="rect">Прямокутний імпульс</option><option value="tri">Трикутний імпульс</option><option value="pack">Хвильовий пакет</option></select></label>
+<label>Початкові умови <select id="mode"><option value="rest">Відпущено зі стану спокою (f = g = s/2)</option><option value="right">Лише хвиля праворуч (g = 0)</option><option value="left">Лише хвиля ліворуч (f = 0)</option><option value="coll">Два імпульси назустріч</option></select></label>
+<label>v <input id="vv" type="range" min="0.5" max="2" step="0.05" value="1"><b id="vvo">1.0</b></label>
+<label>x₀ <input id="x0" type="range" min="0.5" max="9.5" step="0.05" value="3.5"><b id="x0o">3.5</b></label>
+<label><input id="chase" type="checkbox" checked> точка з фіксованою фазою (ξ = x − vt = const)</label>
+</div>
+<p class="out" id="out"></p>
+<p class="lead" style="margin-top:6px">Перевірка рівняння: у червоній точці числово обчислено ∂²u/∂x² та (1/v²)·∂²u/∂t² (скінченні різниці). Вони збігаються для будь-яких f, g — це і є хвильове рівняння. Зелена точка на графіку праворуч — момент часу, що відповідає положенню на лівому рисунку.</p>
+<script>
+"use strict";
+const L=10, SH={
+  gauss:s=>Math.exp(-Math.pow(s/0.5,2)),
+  rect:s=>Math.abs(s)<0.6?1:0,
+  tri:s=>Math.max(0,1-Math.abs(s)/0.8),
+  pack:s=>Math.exp(-Math.pow(s/1.1,2))*Math.cos(2*Math.PI*s/0.7)};
+const $=id=>document.getElementById(id);
+const cv=EW.view($("main")),cT=EW.view($("plotT")),col=EW.readCols();
+let v=1,x0=3.5,shape="gauss",mode="rest",chase=true,tmax=10;
+function fg(){
+  const s=SH[shape];
+  if(mode==="rest")return[x=>0.5*s(x-5),x=>0.5*s(x-5)];
+  if(mode==="right")return[x=>s(x-3),x=>0];
+  if(mode==="left")return[x=>0,x=>s(x-7)];
+  return[x=>s(x-2),x=>s(x-8)];
+}
+// f(ξ), g(η): початкові форми; f(x−vt), g(x+vt)
+function parts(x,t){const[f,g]=fg();return[f(x-v*t),g(x+v*t)];}
+function u(x,t){const p=parts(x,t);return p[0]+p[1];}
+const clk=EW.clock({rate:1,wrap:10});
+function setTmax(){tmax=Math.min(10,6/v);clk.wrap=tmax;$("ph").max=tmax;if(clk.t>=tmax)clk.t=0;}
+function draw(t){
+  const g=cv.begin(),W=cv.w,H=cv.h,ml=34,mr=14,mt=16,mb=34,X=x=>ml+x/L*(W-ml-mr),Y=y=>mt+(1-(y+1.25)/2.5)*(H-mt-mb);
+  g.strokeStyle=col.line;g.lineWidth=1;g.beginPath();g.moveTo(ml,Y(0));g.lineTo(W-mr,Y(0));g.stroke();
+  g.fillStyle=col.muted;g.font="11px system-ui";g.textAlign="center";g.textBaseline="top";
+  for(let x=0;x<=L;x+=1)g.fillText(x,X(x),H-mb+5);
+  g.fillText("x",W-mr-6,H-mb+18);g.textAlign="right";g.textBaseline="middle";g.fillText("u",ml-6,mt+4);
+  const curve=(fn,c,w,d)=>{g.strokeStyle=c;g.lineWidth=w;g.setLineDash(d||[]);g.beginPath();
+    for(let k=0;k<=600;k++){const x=L*k/600;const y=fn(x);k?g.lineTo(X(x),Y(y)):g.moveTo(X(x),Y(y));}g.stroke();g.setLineDash([]);};
+  curve(x=>parts(x,t)[0],col.neg,1.6,[6,4]);
+  curve(x=>parts(x,t)[1],col.pos,1.6,[6,4]);
+  curve(x=>u(x,t),col.ink,2.6);
+  // стрілки напряму хвиль
+  EW.arrow(g,W-mr-70,mt+12,W-mr-20,mt+12,col.neg,2);g.fillStyle=col.neg;g.textAlign="right";g.textBaseline="middle";g.fillText("f(x−vt)  v",W-mr-74,mt+12);
+  EW.arrow(g,ml+70,mt+32,ml+20,mt+32,col.pos,2);g.fillStyle=col.pos;g.textAlign="left";g.fillText("g(x+vt)  v",ml+76,mt+32);
+  // вертикальна лінія x0 і точка
+  g.strokeStyle=col.zero;g.setLineDash([3,4]);g.beginPath();g.moveTo(X(x0),mt);g.lineTo(X(x0),H-mb);g.stroke();g.setLineDash([]);
+  g.fillStyle="#e5484d";g.beginPath();g.arc(X(x0),Y(u(x0,t)),5,0,6.3);g.fill();
+  // точка з фіксованою фазою f: x = xi0 + v t
+  if(chase){const[f]=fg();let best=0,bx=0;for(let x=0;x<=L;x+=0.01){const y=f(x);if(y>best){best=y;bx=x;}}
+    if(best>0.05){const xi=(bx)-0; // початкове положення піку f при t=0
+      const xp=xi+v*t;if(xp>=0&&xp<=L){const[fv]=parts(xp,t);g.fillStyle=col.neg;g.beginPath();g.arc(X(xp),Y(fv),5,0,6.3);g.fill();
+        g.fillStyle=col.neg;g.textAlign="center";g.textBaseline="bottom";g.fillText("ξ = const, dx/dt = v",X(xp),Y(fv)-9);}}}
+}
+const hist=[];
+function drawT(t){
+  const pts=[];const N=240;for(let k=0;k<=N;k++){const tt=tmax*k/N;pts.push([tt,u(x0,tt)]);}
+  EW.plot(cT,{x0:0,x1:tmax,y0:-1.25,y1:1.25,title:"Коливання в точці x₀: u(x₀, t)",xl:"t",yl:"u",xt:[0,2,4,6,8,10].filter(a=>a<=tmax),yt:[-1,0,1],
+    curves:[{pts,c:col.ink,w:2}],marks:[[t,u(x0,t),"#2fa84f"]],n:N});
+}
+function checkEq(t){
+  const hx=0.02,ht=0.02/Math.max(v,0.5);
+  const uxx=(u(x0+hx,t)-2*u(x0,t)+u(x0-hx,t))/(hx*hx),utt=(u(x0,t+ht)-2*u(x0,t)+u(x0,t-ht))/(ht*ht)/(v*v);
+  return[uxx,utt];
+}
+function frame(){
+  const t=clk.tick();
+  draw(t);drawT(t);
+  const[a,b]=checkEq(t);
+  $("out").innerHTML="t = <b>"+t.toFixed(2)+"</b>, v = "+v.toFixed(2)+".  У точці x₀ = "+x0.toFixed(2)+": ∂²u/∂x² = <b>"+EW.fmt(a,2)+"</b>, (1/v²)·∂²u/∂t² = <b>"+EW.fmt(b,2)+"</b>.";
+  requestAnimationFrame(frame);
+}
+function onres(){cv.fit();cT.fit();EW.readCols();}
+window.addEventListener("resize",onres);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>EW.readCols());
+$("vv").oninput=e=>{v=+e.target.value;$("vvo").textContent=v.toFixed(1);setTmax();};
+$("x0").oninput=e=>{x0=+e.target.value;$("x0o").textContent=x0.toFixed(1);};
+$("shape").onchange=e=>{shape=e.target.value;clk.t=0;};
+$("mode").onchange=e=>{mode=e.target.value;clk.t=0;};
+$("chase").onchange=e=>{chase=e.target.checked;};
+setTmax();requestAnimationFrame(frame);
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>

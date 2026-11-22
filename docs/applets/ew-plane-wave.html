@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Плоска монохроматична хвиля: k, λ, ω, v</title>
+<link rel="stylesheet" href="assets/ew.css">
+<script src="assets/theme.js"></script>
+<script src="assets/ew.js"></script>
+</head>
+<body>
+<h1>Плоска монохроматична хвиля u = u<sub>m</sub>·cos(ωt − <b>k</b>·<b>r</b>)</h1>
+<p class="lead">Колір — миттєве значення u (червоне — додатне, синє — від'ємне). Лінії сталої фази — <i>хвильові площини</i> — перпендикулярні до хвильового вектора <b>k</b> і біжать уздовж нього з фазовою швидкістю v = ω/k. Перетягніть точку P — побачите, як фаза k·r залежить від радіус-вектора. Повертайте <b>k</b> повзунком або перетягуванням стрілки.</p>
+<div class="layout">
+<canvas id="main" class="sq" aria-label="Плоска хвиля на площині"></canvas>
+<div class="right">
+<canvas id="plotA" class="plot" aria-label="Профіль уздовж k"></canvas>
+<canvas id="plotB" class="plot" aria-label="Коливання в точці P"></canvas>
+</div>
+</div>
+<div class="controls">
+<button id="bPause">Пауза</button><button id="bReset">Спочатку</button>
+<button id="bSlow">Повільніше</button><button id="bFast">Швидше</button>
+</div>
+<div class="controls">
+<label>Напрям k, α <input id="ang" type="range" min="0" max="360" step="1" value="45"><b id="ango">45°</b></label>
+<label>λ <input id="lam" type="range" min="0.6" max="3" step="0.05" value="1.5"><b id="lamo">1.5</b></label>
+<label>v <input id="vv" type="range" min="0.5" max="3" step="0.05" value="1"><b id="vvo">1.0</b></label>
+<label><input id="showf" type="checkbox" checked> хвильові площини</label>
+<label><input id="showdot" type="checkbox" checked> точка сталої фази</label>
+</div>
+<p class="out" id="out"></p>
+<p class="lead" style="margin-top:6px">Зверніть увагу: уздовж осі x довжина хвилі λₓ = λ/cos α більша за λ, а «видима» швидкість фронту v/cos α більша за v — геометричний ефект косого перерізу, а не швидкість енергії. Рух самих фронтів завжди перпендикулярний до них і відбувається з v.</p>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const cv=EW.view($("main")),cA=EW.view($("plotA")),cB=EW.view($("plotB")),col=EW.readCols();
+const HALF=3.6; // півширина кадру в одиницях довжини
+let alpha=45*Math.PI/180,lam=1.5,vel=1,showf=true,showdot=true,P={x:1.1,y:0.9};
+const clk=EW.clock({rate:1,wrap:1e5});
+const NG=150, img=document.createElement("canvas");img.width=img.height=NG;const ig=img.getContext("2d"),idata=ig.createImageData(NG,NG);
+function hex(c){const m=c.replace("#","");return[parseInt(m.substr(0,2),16),parseInt(m.substr(2,2),16),parseInt(m.substr(4,2),16)];}
+function params(){const k=2*Math.PI/lam;return{k,w:k*vel,T:lam/vel,kx:k*Math.cos(alpha),ky:k*Math.sin(alpha)};}
+function fieldImage(ph0,pm){ // ph0 = ωt
+  const bg=hex(col.panel.length===7?col.panel:"#ffffff"),pos=hex(col.neg.length===7?col.neg:"#d62728"),neg=hex(col.pos.length===7?col.pos:"#1f5fd6");
+  for(let j=0;j<NG;j++)for(let i=0;i<NG;i++){
+    const x=-HALF+2*HALF*(i+0.5)/NG,y=HALF-2*HALF*(j+0.5)/NG,u=Math.cos(ph0-(pm.kx*x+pm.ky*y)),a=Math.min(1,Math.abs(u))*0.85,c=u>0?pos:neg,o=4*(j*NG+i);
+    idata.data[o]=bg[0]+(c[0]-bg[0])*a;idata.data[o+1]=bg[1]+(c[1]-bg[1])*a;idata.data[o+2]=bg[2]+(c[2]-bg[2])*a;idata.data[o+3]=255;}
+  ig.putImageData(idata,0,0);
+}
+function frame(){
+  const t=clk.tick(),pm=params(),ph0=pm.w*t,tau=(t/pm.T)%4; // ωt; t/T для графіка
+  fieldImage(ph0,pm);
+  const g=cv.begin(),W=cv.w,S=W/(2*HALF),sx=x=>W/2+x*S,sy=y=>W/2-y*S;
+  g.imageSmoothingEnabled=true;g.drawImage(img,0,0,W,W);
+  // осі
+  g.strokeStyle=col.ink;g.lineWidth=1;g.globalAlpha=0.5;g.beginPath();g.moveTo(0,sy(0));g.lineTo(W,sy(0));g.moveTo(sx(0),0);g.lineTo(sx(0),W);g.stroke();g.globalAlpha=1;
+  g.fillStyle=col.ink;g.font="13px system-ui";g.textAlign="left";g.textBaseline="top";g.fillText("x",W-14,sy(0)+4);g.fillText("y",sx(0)+5,3);
+  const kx=Math.cos(alpha),ky=Math.sin(alpha);
+  // хвильові площини: kr = ωt + 2πn  (u=1 гребені)
+  if(showf){
+    g.strokeStyle=col.ink;g.lineWidth=1.2;g.setLineDash([]);
+    const s0=ph0%(2*Math.PI); // гребінь: k·r = ph0 + 2πn  → s = (ph0+2πn)/k
+    for(let n=-14;n<=14;n++){const s=(ph0+2*Math.PI*n)/pm.k;if(Math.abs(s)>HALF*1.5)continue;
+      const cx=s*kx,cy=s*ky,dx=-ky*HALF*3,dy=kx*HALF*3;
+      g.globalAlpha=0.55;g.beginPath();g.moveTo(sx(cx-dx),sy(cy-dy));g.lineTo(sx(cx+dx),sy(cy+dy));g.stroke();}
+    g.globalAlpha=1;}
+  // вектор k від початку
+  const klen=pm.k/ (2*Math.PI/1.5) *1.6; // довжина стрілки пропорційна k
+  EW.arrow(g,sx(0),sy(0),sx(klen*kx),sy(klen*ky),col.acc,3,13);
+  g.fillStyle=col.acc;g.font="600 14px system-ui";g.textAlign="left";g.textBaseline="bottom";g.fillText("k",sx(klen*kx)+6,sy(klen*ky)-4);
+  // кут α
+  g.strokeStyle=col.muted;g.lineWidth=1.2;g.beginPath();g.arc(sx(0),sy(0),0.7*S,0,-alpha,true);g.stroke();
+  g.fillStyle=col.muted;g.font="12px system-ui";g.textAlign="left";g.textBaseline="middle";g.fillText("α",sx(0)+0.8*S*Math.cos(alpha/2),sy(0)-0.8*S*Math.sin(alpha/2));
+  // точка P і r
+  EW.arrow(g,sx(0),sy(0),sx(P.x),sy(P.y),col.ink,1.6,9);
+  g.fillStyle=col.panel;g.strokeStyle=col.ink;g.lineWidth=2;g.beginPath();g.arc(sx(P.x),sy(P.y),6,0,6.3);g.fill();g.stroke();
+  g.fillStyle=col.ink;g.font="600 13px system-ui";g.textAlign="left";g.textBaseline="top";g.fillText("P",sx(P.x)+8,sy(P.y)+4);
+  g.fillText("r",sx(P.x/2)+5,sy(P.y/2)+5);
+  // проекція r на k (відстань уздовж k)
+  const sP=P.x*kx+P.y*ky;
+  g.strokeStyle=col.acc;g.setLineDash([4,3]);g.lineWidth=1.3;g.beginPath();g.moveTo(sx(P.x),sy(P.y));g.lineTo(sx(sP*kx),sy(sP*ky));g.stroke();g.setLineDash([]);
+  // точка сталої фази: вздовж k зі швидкістю v
+  if(showdot){const s1=((ph0/pm.k)%lam+lam)%lam;
+    g.fillStyle=col.acc;g.strokeStyle=col.panel;g.lineWidth=2;g.beginPath();g.arc(sx(s1*kx),sy(s1*ky),6,0,6.3);g.fill();g.stroke();
+    EW.arrow(g,sx(s1*kx),sy(s1*ky),sx((s1+0.6*vel)*kx),sy((s1+0.6*vel)*ky),col.ink,2.4,10);
+    g.fillStyle=col.ink;g.textAlign="left";g.textBaseline="bottom";g.fillText("v",sx((s1+0.6*vel)*kx)+5,sy((s1+0.6*vel)*ky)-3);}
+  // шкала λ
+  const bx=14,by=W-16,bl=lam*S;g.strokeStyle=col.ink;g.lineWidth=2;g.beginPath();g.moveTo(bx,by);g.lineTo(bx+bl,by);g.moveTo(bx,by-5);g.lineTo(bx,by+5);g.moveTo(bx+bl,by-5);g.lineTo(bx+bl,by+5);g.stroke();
+  g.fillStyle=col.ink;g.font="12px system-ui";g.textAlign="center";g.textBaseline="bottom";g.fillText("λ",bx+bl/2,by-6);
+
+  // графік уздовж k
+  const sMax=HALF*1.2,N=300,ptsA=[];for(let q=0;q<=N;q++){const s=-sMax+2*sMax*q/N;ptsA.push([s,Math.cos(ph0-pm.k*s)]);}
+  const sPm=Math.max(-sMax,Math.min(sMax,sP));
+  EW.plot(cA,{x0:-sMax,x1:sMax,y0:-1.2,y1:1.2,title:"u уздовж k (s — відстань вздовж k)",xl:"s",yl:"u/uₘ",xt:[-3,-2,-1,0,1,2,3],yt:[-1,0,1],
+    curves:[{pts:ptsA,c:col.ink,w:2}],marks:[[sPm,Math.cos(ph0-pm.k*sPm),"#e5484d"]],n:N});
+  // коливання в P
+  const ph_P=pm.k*sP,ptsB=[];for(let q=0;q<=N;q++){const tt=4*q/N;ptsB.push([tt,Math.cos(2*Math.PI*tt-ph_P)]);}
+  EW.plot(cB,{x0:0,x1:4,y0:-1.2,y1:1.2,title:"Коливання в точці P: u(t)",xl:"t/T",yl:"u/uₘ",xt:[0,1,2,3,4],yt:[-1,0,1],
+    curves:[{pts:ptsB,c:col.ink,w:2}],marks:[[tau,Math.cos(ph0-ph_P),"#e5484d"]],n:N});
+  const deg=alpha*180/Math.PI;
+  $("out").innerHTML="k = <b>"+pm.k.toFixed(2)+"</b> (k<sub>x</sub> = "+EW.fmt(pm.kx)+", k<sub>y</sub> = "+EW.fmt(pm.ky)+"),  λ = 2π/k = <b>"+lam.toFixed(2)+"</b>,  ω = <b>"+pm.w.toFixed(2)+"</b>,  T = 2π/ω = <b>"+pm.T.toFixed(2)+"</b>,  v = ω/k = <b>"+vel.toFixed(2)+"</b>.  У точці P: <b>k·r = "+EW.fmt(ph_P)+"</b> рад,  u(P)/uₘ = <b>"+EW.fmt(Math.cos(ph0-ph_P))+"</b>.  λₓ = λ/cos α = "+(Math.abs(Math.cos(alpha))>0.02?(lam/Math.abs(Math.cos(alpha))).toFixed(2):"∞")+".";
+  requestAnimationFrame(frame);
+}
+// перетягування P та кінця k
+let drag=null;
+function pos(e){const r=cv.c.getBoundingClientRect(),S=r.width/(2*HALF);return{x:((e.clientX-r.left)-r.width/2)/S,y:-((e.clientY-r.top)-r.height/2)/S};}
+cv.c.addEventListener("pointerdown",e=>{const p=pos(e);const kk=1.6*(2*Math.PI/lam)/(2*Math.PI/1.5);
+  const dP=Math.hypot(p.x-P.x,p.y-P.y),dK=Math.hypot(p.x-kk*Math.cos(alpha),p.y-kk*Math.sin(alpha));
+  drag=dK<dP&&dK<0.6?"k":"P";cv.c.setPointerCapture(e.pointerId);mv(e);});
+function mv(e){if(!drag)return;const p=pos(e);if(drag==="P"){P.x=Math.max(-HALF,Math.min(HALF,p.x));P.y=Math.max(-HALF,Math.min(HALF,p.y));}
+  else{alpha=(Math.atan2(p.y,p.x)+2*Math.PI)%(2*Math.PI);$("ang").value=Math.round(alpha*180/Math.PI);$("ango").textContent=Math.round(alpha*180/Math.PI)+"°";}}
+cv.c.addEventListener("pointermove",mv);cv.c.addEventListener("pointerup",()=>drag=null);cv.c.style.touchAction="none";cv.c.style.cursor="crosshair";
+$("ang").oninput=e=>{alpha=+e.target.value*Math.PI/180;$("ango").textContent=e.target.value+"°";};
+$("lam").oninput=e=>{lam=+e.target.value;$("lamo").textContent=lam.toFixed(2);};
+$("vv").oninput=e=>{vel=+e.target.value;$("vvo").textContent=vel.toFixed(1);};
+$("showf").onchange=e=>{showf=e.target.checked;};$("showdot").onchange=e=>{showdot=e.target.checked;};
+function onres(){cv.fit();cA.fit();cB.fit();EW.readCols();}
+window.addEventListener("resize",onres);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>EW.readCols());
+requestAnimationFrame(frame);
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>

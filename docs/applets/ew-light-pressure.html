@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Тиск світла: дослід Лебедєва p = w(1 + ρ)</title>
+<link rel="stylesheet" href="assets/ew.css">
+<script src="assets/theme.js"></script>
+<script src="assets/ew.js"></script>
+</head>
+<body>
+<h1>Тиск світла: крутильні терези Лебедєва</h1>
+<p class="lead">Вигляд зверху на коромисло з двома крильцями: <b>дзеркальним</b> (ρ = 1) і <b>зачорненим</b> (ρ = 0). Світло, що поглинається, віддає імпульс w·ΔV/c, а відбите — удвічі більше: тиск <b>p = w(1 + ρ)</b>, де w = I/c — густина енергії хвилі. Тому промінь на дзеркальне крильце закручує нитку вдвічі сильніше, ніж на чорне. Лебедєв перемикав освітлення з одного крильця на інше, щоб відокремити світловий тиск від радіометричних ефектів.</p>
+<div class="layout">
+<canvas id="main" class="sq" aria-label="Крутильні терези Лебедєва, вигляд зверху"></canvas>
+<div class="right">
+<canvas id="plotT" class="plot" aria-label="Кут закручування від часу"></canvas>
+<canvas id="plotR" class="plot" aria-label="Тиск від коефіцієнта відбивання"></canvas>
+</div>
+</div>
+<div class="controls">
+<button id="bPause">Пауза</button><button id="bReset">Спочатку</button>
+<button id="bSlow">Повільніше</button><button id="bFast">Швидше</button>
+</div>
+<div class="controls">
+<span class="hint">Освітлення:</span>
+<button id="mTop" class="on">Дзеркальне крильце</button><button id="mBot">Чорне крильце</button><button id="mAuto">Перемикати (як у Лебедєва)</button>
+<label>Інтенсивність I <input id="II" type="range" min="0.2" max="2" step="0.05" value="1"><b id="IIo">1.00</b></label>
+<label>ρ дзеркального <input id="rA" type="range" min="0" max="1" step="0.05" value="1"><b id="rAo">1.00</b></label>
+<label>ρ чорного <input id="rB" type="range" min="0" max="1" step="0.05" value="0"><b id="rBo">0.00</b></label>
+</div>
+<p class="out" id="out"></p>
+<p class="lead" style="margin-top:6px">Масштаб кута закручування сильно збільшений. Для сонячного світла I ≈ 1.36 кВт/м² (відповідає I = 1 тут) тиск на чорну поверхню лише ≈ 4.5 мкПа, на дзеркальну — ≈ 9 мкПа; Лебедєв виміряв його, придушуючи конвекцію та радіометричний ефект глибоким вакуумом і тонкими крильцями.</p>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const cv=EW.view($("main")),cT=EW.view($("plotT")),cR=EW.view($("plotR")),col=EW.readCols();
+const C=3e8,ISUN=1360;
+let I=1,rA=1,rB=0,mode="top",th=0,om=0;
+const KAPPA=4,GAM=1.0,TQ=0.8;
+const clk=EW.clock({rate:1,wrap:1e6});let tprev=0,photons=[],flashes=[],hist=[],beamTop=true,tmode=0;
+const HW=40; // кількість фотонів на секунду при I=1 (візуально)
+function beamNow(t){return mode==="top"?"top":mode==="bot"?"bot":(Math.floor(t/9)%2===0?"top":"bot");}
+function geom(W){return{cx:W/2,cy:W/2,L:W*0.30,vh:W*0.075};}
+function step(dt,t){
+  const b=beamNow(t),rho=b==="top"?rA:rB,F=I*(1+rho);
+  // момент: промінь на верхнє крильце — за годинниковою (θ>0), на нижнє — проти
+  const tau=(b==="top"?1:-1)*TQ*F;
+  const n=Math.max(1,Math.ceil(dt/0.004)),h=dt/n;
+  for(let q=0;q<n;q++){om+=h*(tau-KAPPA*th-GAM*om);th+=h*om;}
+  th=Math.max(-1.1,Math.min(1.1,th));
+  return{b,rho,F,tau};
+}
+function spawn(dt,b,W){
+  const gm=geom(W),sgn=b==="top"?1:-1;
+  const vy=gm.cy-sgn*gm.L*Math.cos(th),n=I*HW*dt;let k=Math.floor(n)+(Math.random()<n%1?1:0);
+  while(k--){photons.push({x:12,y:vy+(Math.random()-0.5)*gm.vh*1.8,vx:W*0.5,refl:false,b,born:Math.random()});}
+}
+function frame(){
+  const t=clk.tick(),dt=Math.max(0,t-tprev);tprev=t;const W=cv.w;
+  const gm=geom(W);let st={b:beamNow(t),rho:0,F:0,tau:0};
+  if(dt>0){st=step(dt,t);spawn(dt,st.b,W);
+    for(const p of photons){
+      const sgn=p.b==="top"?1:-1,vx=gm.cx+(p.b==="top"?1:-1)*gm.L*Math.sin(th)-(p.b==="top"?0:0),vane=(p.b==="top"?gm.cx+gm.L*Math.sin(th):gm.cx-gm.L*Math.sin(th))-4;
+      const oldx=p.x;p.x+=p.vx*dt;
+      if(!p.refl&&p.vx>0&&p.x>=vane){const r=p.b==="top"?rA:rB;
+        if(Math.random()<r){p.refl=true;p.vx=-W*0.5;p.x=vane;flashes.push({x:vane,y:p.y,a:1,c:col.warn});}
+        else{p.dead=true;flashes.push({x:vane,y:p.y,a:1,c:col.neg});}}}
+    photons=photons.filter(p=>!p.dead&&p.x>-10&&p.x<W+10);
+    for(const f of flashes)f.a-=dt*3;flashes=flashes.filter(f=>f.a>0);
+    hist.push([t,th]);while(hist.length&&hist[0][0]<t-40)hist.shift();}
+  const g=cv.begin(),Hh=cv.h;
+  // стіна/джерело
+  g.fillStyle=col.warn;g.globalAlpha=0.9;g.fillRect(0,gm.cy-gm.L-gm.vh*1.1,8,2*gm.L+gm.vh*2.2);g.globalAlpha=1;
+  g.fillStyle=col.muted;g.font="12px system-ui";g.textAlign="left";g.textBaseline="top";g.fillText("джерело світла",14,gm.cy-gm.L-gm.vh*1.4);
+  // промінь (смуга)
+  const b=st.b,sgn=b==="top"?1:-1;const by=gm.cy-sgn*gm.L*Math.cos(th);
+  g.fillStyle=col.warn;g.globalAlpha=0.09;g.fillRect(8,by-gm.vh*0.9,W-16,gm.vh*1.8);g.globalAlpha=1;
+  // фотони
+  for(const p of photons){g.fillStyle=p.refl?col.pos:col.warn;g.strokeStyle=g.fillStyle;g.lineWidth=2;
+    const L2=p.vx>0?-9:9;g.beginPath();g.moveTo(p.x,p.y);g.lineTo(p.x+L2,p.y);g.stroke();g.beginPath();g.arc(p.x,p.y,2.6,0,6.3);g.fill();}
+  // нитка (вісь) і коромисло
+  const sx=Math.sin(th),cx_=Math.cos(th);
+  const top=[gm.cx+gm.L*sx,gm.cy-gm.L*cx_],bot=[gm.cx-gm.L*sx,gm.cy+gm.L*cx_];
+  g.strokeStyle=col.ink;g.lineWidth=3;g.beginPath();g.moveTo(top[0],top[1]);g.lineTo(bot[0],bot[1]);g.stroke();
+  g.fillStyle=col.ink;g.beginPath();g.arc(gm.cx,gm.cy,5,0,6.3);g.fill();
+  g.fillStyle=col.muted;g.font="12px system-ui";g.textAlign="left";g.fillText("нитка підвісу",gm.cx+9,gm.cy-5);
+  // крильця (перпендикулярні до променя => уздовж y), повернуті на θ навколо свого центру
+  const wing=(c,rho,label)=>{
+    g.save();g.translate(c[0],c[1]);g.rotate(th);
+    const h=gm.vh,w=7;
+    g.fillStyle=rho>0.5?"#cfd8e3":"#2b2f33";g.strokeStyle=col.ink;g.lineWidth=1.4;
+    g.fillRect(-w/2,-h,w,2*h);g.strokeRect(-w/2,-h,w,2*h);
+    if(rho>0.5){g.strokeStyle="#ffffff";g.lineWidth=1.5;g.beginPath();g.moveTo(-w/2+1.5,-h+4);g.lineTo(-w/2+1.5,h-4);g.stroke();}
+    g.restore();
+    g.fillStyle=col.ink;g.font="12px system-ui";g.textAlign="left";g.textBaseline="middle";g.fillText(label,c[0]+14,c[1]);};
+  wing(top,rA,"дзеркальне ρ = "+rA.toFixed(2));wing(bot,rB,"чорне ρ = "+rB.toFixed(2));
+  // стрілка сили на освітлене крильце
+  const lit=b==="top"?top:bot,Fl=st.F||I*(1+(b==="top"?rA:rB));
+  EW.arrow(g,lit[0]+24,lit[1]+gm.vh*1.35,lit[0]+24+Fl*28,lit[1]+gm.vh*1.35,col.neg,3,11);
+  g.fillStyle=col.neg;g.font="600 12px system-ui";g.textAlign="left";g.textBaseline="top";g.fillText("F = p·S",lit[0]+24,lit[1]+gm.vh*1.35+5);
+  // спалахи поглинання
+  for(const f of flashes){g.globalAlpha=Math.max(0,f.a);g.fillStyle=f.c;g.beginPath();g.arc(f.x,f.y,3+6*(1-f.a),0,6.3);g.fill();}g.globalAlpha=1;
+  // кут
+  g.fillStyle=col.ink;g.font="600 13px system-ui";g.textAlign="center";g.textBaseline="bottom";
+  g.fillText("кут закручування θ = "+(th*180/Math.PI).toFixed(0)+"°",W/2,Hh-8);
+  // рівноважні кути
+  const eqA=TQ*I*(1+rA)/KAPPA,eqB=TQ*I*(1+rB)/KAPPA;
+  const pts=hist.map(h=>[h[0]-t,h[1]*180/Math.PI]);
+  const lines=[];
+  EW.plot(cT,{x0:-40,x1:0,y0:-70,y1:70,title:"Кут закручування θ(t) (° у підсиленому масштабі)",xl:"t − t_поточний, с",yl:"θ, °",xt:[-40,-30,-20,-10,0],yt:[-60,-30,0,30,60],
+    curves:[{pts:pts.length>1?pts:[[-40,0],[0,0]],c:col.ink,w:2}],
+    vlines:[],n:200});
+  const plots=cT;
+  // горизонтальні рівні рівноваги (малюємо вручну поверх)
+  {const g2=cT.g,ml=48,mr=10,mt=26,mb=36,w=cT.w,h=cT.h,Y=y=>h-mb-(y+70)/140*(h-mt-mb);g2.save();g2.setLineDash([5,4]);g2.lineWidth=1.2;
+    for(const [v,c,lab] of [[eqA*180/Math.PI,col.neg,"θ_зерк"],[-eqB*180/Math.PI,col.pos,"θ_чорн"]]){g2.strokeStyle=c;g2.fillStyle=c;g2.beginPath();g2.moveTo(ml,Y(v));g2.lineTo(w-mr,Y(v));g2.stroke();g2.font="11px system-ui";g2.textAlign="left";g2.fillText(lab,ml+4,Y(v)-6);}
+    g2.restore();}
+  EW.plot(cR,{x0:0,x1:1,y0:0,y1:2.2,title:"Тиск p/w = 1 + ρ",xl:"ρ (коефіцієнт відбивання)",yl:"p/w",xt:[0,0.25,0.5,0.75,1],yt:[0,1,2],
+    curves:[{f:r=>1+r,c:col.ink,w:2}],marks:[[rA,1+rA,col.neg],[rB,1+rB,col.pos]],n:20});
+  const pSun=x=>x*ISUN/C*1e6;
+  $("out").innerHTML="Освітлене крильце: <b>"+(b==="top"?"дзеркальне":"чорне")+"</b>, p = w(1 + ρ) = <b>"+(1+(b==="top"?rA:rB)).toFixed(2)+"</b>·w ≈ <b>"+(pSun(I)*(1+(b==="top"?rA:rB))).toFixed(1)+" мкПа</b> (при I = "+I.toFixed(2)+"× сонячна).  Рівноважний кут: θ = M/κ — дзеркальне "+(eqA*180/Math.PI).toFixed(0)+"°, чорне "+(eqB*180/Math.PI).toFixed(0)+"°; їх відношення = (1 + ρ<sub>зерк</sub>)/(1 + ρ<sub>чорн</sub>) = <b>"+((1+rA)/(1+rB)).toFixed(2)+"</b>.";
+  requestAnimationFrame(frame);
+}
+function setMode(m){mode=m;for(const[id,k]of[["mTop","top"],["mBot","bot"],["mAuto","auto"]])$(id).classList.toggle("on",k===m);}
+$("mTop").onclick=()=>setMode("top");$("mBot").onclick=()=>setMode("bot");$("mAuto").onclick=()=>setMode("auto");
+$("II").oninput=e=>{I=+e.target.value;$("IIo").textContent=I.toFixed(2);};
+$("rA").oninput=e=>{rA=+e.target.value;$("rAo").textContent=rA.toFixed(2);};
+$("rB").oninput=e=>{rB=+e.target.value;$("rBo").textContent=rB.toFixed(2);};
+$("bReset").addEventListener("click",()=>{th=0;om=0;photons=[];hist=[];tprev=0;});
+function onres(){cv.fit();cT.fit();cR.fit();EW.readCols();}
+window.addEventListener("resize",onres);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>EW.readCols());
+requestAnimationFrame(frame);
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>

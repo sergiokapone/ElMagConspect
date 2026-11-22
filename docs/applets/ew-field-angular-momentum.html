@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Момент імпульсу електромагнітного поля: заряджений конденсатор у магнітному полі</title>
+<link rel="stylesheet" href="assets/ew.css">
+<script src="assets/theme.js"></script>
+<script src="assets/ew.js"></script>
+</head>
+<body>
+<h1>Момент імпульсу поля: циліндричний конденсатор у магнітному полі</h1>
+<p class="lead">Вигляд зверху вздовж осі. Внутрішня жилка має заряд +q, зовнішня оболонка радіуса R — заряд −q; зовнішнє однорідне B спрямоване вздовж осі (до глядача, ⊙). Електричне E (радіальне) і магнітне B поля утворюють <span style="color:var(--acc)">вектор Пойнтінга Π = (c/4π)·E×B</span>, що циркулює навколо осі, тож поле несе момент імпульсу <b>L<sub>п</sub> = −qR²B/2c</b>, хоча нічого не рухається. Натисніть «Вимкнути B»: змінне B породжує вихрове E, яке розкручує циліндр, і момент імпульсу переходить від поля до речовини: <b>ω = −qB/(2mc)</b>.</p>
+<div class="layout">
+<canvas id="main" class="sq" aria-label="Конденсатор у магнітному полі, вигляд зверху"></canvas>
+<div class="right">
+<canvas id="plotL" class="plot" aria-label="Моменти імпульсу від часу"></canvas>
+<canvas id="plotB" class="plot" aria-label="Магнітна індукція від часу"></canvas>
+</div>
+</div>
+<div class="controls">
+<button id="bOff" class="on">Вимкнути B</button><button id="bOn">Увімкнути B знову</button><button id="bRes">Спочатку</button>
+<label>Тривалість вимикання <input id="tau" type="range" min="1" max="8" step="0.5" value="3"><b id="tauo">3 с</b></label>
+<label>Заряд q <input id="qq" type="range" min="-1" max="1" step="0.1" value="1"><b id="qqo">+1.0</b></label>
+<label>B₀ <input id="bb" type="range" min="0.2" max="1" step="0.05" value="1"><b id="bbo">1.00</b></label>
+</div>
+<p class="out" id="out"></p>
+<p class="lead" style="margin-top:6px">Закон збереження: L<sub>п</sub> + L<sub>мех</sub> = const (сіра лінія). Момент сили, що розкручує циліндр, виникає від вихрового електричного поля E<sub>φ</sub> = −(R/2c)·dB/dt, діючого на заряд −q зовнішньої оболонки; жилкою можна знехтувати. Якщо змінити знак q або B, напрям обертання змінюється на протилежний.</p>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const cv=EW.view($("main")),cL=EW.view($("plotL")),cB=EW.view($("plotB")),col=EW.readCols();
+// умовні одиниці: m = R = c = 1
+let q=1,B0=1,Toff=3,tau=0,B=1,state="hold",tstart=0,om=0,rot=0,flow=0,tnow=0;
+const hist=[];let tLast=0;
+const clk=EW.clock({rate:1,wrap:1e6});
+function Bt(t){ // B(t): плавне вимикання/вмикання
+  if(state==="hold")return B0;if(state==="off"){const x=Math.min(1,(t-tstart)/Toff);return B0*(1-(3*x*x-2*x*x*x));}
+  if(state==="on"){const x=Math.min(1,(t-tstart)/Toff);return B0*(3*x*x-2*x*x*x);}
+  return B0;}
+function reset(){state="hold";om=0;rot=0;hist.length=0;B=B0;tstart=0;}
+function frame(){
+  const t=clk.tick(),dt=Math.max(0,t-tLast);tLast=t;
+  if(dt>0){
+    const Bn=(state==="off")?Bt(t):(state==="on"?Bt(t):B0),dB=Bn-B;B=Bn;
+    // dω = q/(2mc)·dB  (знак як у лекції: ω = −q(B0−B)/2mc)
+    om+=q/2*dB;rot+=om*dt*6;flow+=dt*0.8*(B>0.02?1:0);
+    if(state==="off"&&t-tstart>=Toff){B=0;}
+    const Lf=-q*B/2,Lm=om;hist.push([t,Lf,Lm,B]);while(hist.length&&hist[0][0]<t-30)hist.shift();}
+  const g=cv.begin(),W=cv.w,cx=W/2,cy=W/2,R=W*0.34,r0=W*0.018;
+  // магнітне поле: точки ⊙/× з густиною ∝ |B|
+  const step=W/16;g.fillStyle=col.pos;g.strokeStyle=col.pos;g.lineWidth=1.3;g.globalAlpha=Math.max(0.12,Math.min(1,Math.abs(B)/B0))*(Math.abs(B)<1e-6?0:1);
+  for(let i=0;i<16;i++)for(let j=0;j<16;j++){const x=(i+0.5)*step,y=(j+0.5)*step;{
+    const s=2+3*Math.abs(B)/B0;g.beginPath();g.arc(x,y,s+1.5,0,6.3);g.stroke();
+    if(B>0){g.beginPath();g.arc(x,y,s*0.45,0,6.3);g.fill();}else{g.beginPath();g.moveTo(x-s*.6,y-s*.6);g.lineTo(x+s*.6,y+s*.6);g.moveTo(x+s*.6,y-s*.6);g.lineTo(x-s*.6,y+s*.6);g.stroke();}}}
+  g.globalAlpha=1;
+  // зовнішня оболонка (обертається): спиці для візуалізації
+  g.fillStyle=col.panel;g.globalAlpha=0.9;g.beginPath();g.arc(cx,cy,R,0,6.3);g.fill();g.globalAlpha=1;
+  // радіальне E (від жилки до оболонки для q>0)
+  g.strokeStyle=col.neg;g.lineWidth=1.2;
+  for(let a=0;a<12;a++){const ang=a*Math.PI/6+0.0,x0=cx+Math.cos(ang)*r0*2,y0=cy+Math.sin(ang)*r0*2,x1=cx+Math.cos(ang)*(R-6),y1=cy+Math.sin(ang)*(R-6);
+    if(q>=0)EW.arrow(g,x0,y0,x1,y1,col.neg,1.2,6);else EW.arrow(g,x1,y1,x0,y0,col.neg,1.2,6);}
+  // вектор Пойнтінга: Π ∝ q·B, напрям φ̂ при qB>0 (E порухом від центра, B на нас): E×B = r̂×ẑ = −φ̂ ... а коли q>0, E вихідне: Π ∝ −φ̂ (за годинниковою)
+  const dir=-Math.sign(q*B)||0; // +1 → проти годинникової (φ̂), у координатах екрана y вниз
+  const mag=Math.abs(q*B)/B0;
+  if(mag>0.02){
+    for(const rr of[0.38,0.62,0.84]){const Rr=R*rr;
+      for(let k=0;k<6;k++){const a0=flow*(-dir)*0.9+k*Math.PI/3+rr;
+        const a1=a0+(-dir)*0.35;// кут (у екранних координатах, y вниз: φ̂ проти годинникової = зменшення кута)
+        g.strokeStyle=col.acc;g.fillStyle=col.acc;g.lineWidth=2.2*Math.min(1,0.4+mag);g.globalAlpha=0.35+0.65*mag;
+        g.beginPath();g.arc(cx,cy,Rr,a0,a1,a1<a0);g.stroke();
+        const ex=cx+Math.cos(a1)*Rr,ey=cy+Math.sin(a1)*Rr,tx=(a1>a0?1:-1)*(-Math.sin(a1)),ty=(a1>a0?1:-1)*Math.cos(a1),hh=7;
+        g.beginPath();g.moveTo(ex+tx*hh,ey+ty*hh);g.lineTo(ex-tx*hh*0.2+ty*hh*0.6,ey-ty*hh*0.2-tx*hh*0.6);g.lineTo(ex-tx*hh*0.2-ty*hh*0.6,ey-ty*hh*0.2+tx*hh*0.6);g.closePath();g.fill();}}
+    g.globalAlpha=1;}
+  // циліндр (оболонка) — товсте кільце + спиці, що обертаються
+  g.strokeStyle=col.ink;g.lineWidth=5;g.beginPath();g.arc(cx,cy,R,0,6.3);g.stroke();
+  g.lineWidth=2;for(let a=0;a<4;a++){const ang=rot*-1+a*Math.PI/2;g.beginPath();g.moveTo(cx+Math.cos(ang)*(R-14),cy+Math.sin(ang)*(R-14));g.lineTo(cx+Math.cos(ang)*(R+8),cy+Math.sin(ang)*(R+8));g.stroke();}
+  g.fillStyle=col.neg;g.beginPath();g.arc(cx,cy,r0*1.5,0,6.3);g.fill();
+  g.fillStyle=col.panel;g.font="700 14px system-ui";g.textAlign="center";g.textBaseline="middle";
+  g.fillStyle="#fff";g.fillText(q>=0?"+":"−",cx,cy+1);
+  g.font="600 13px system-ui";g.textAlign="center";g.fillStyle=col.panel;g.fillRect(cx+R*0.72-16,cy-R*0.72-11,32,22);g.fillStyle=col.ink;g.fillText(q>=0?"−q":"+q",cx+R*0.72,cy-R*0.72);
+  g.fillStyle=col.panel;g.fillRect(6,6,190,62);g.font="12px system-ui";g.textAlign="left";g.textBaseline="top";
+  g.fillStyle=col.pos;g.fillText("B "+(B>0.005?"(⊙ до нас)":B<-0.005?"(⊗ від нас)":"= 0"),12,11);
+  g.fillStyle=col.acc;g.fillText("Π — потік енергії поля",12,29);g.fillStyle=col.neg;g.fillText("E — радіальне поле",12,47);
+  // графіки
+  const pL=hist.map(h=>[h[0]-t,h[1]]),pM=hist.map(h=>[h[0]-t,h[2]]),pS=hist.map(h=>[h[0]-t,h[1]+h[2]]),pB=hist.map(h=>[h[0]-t,h[3]]);
+  const e=[[-30,0],[0,0]],rngL=Math.max(0.6,Math.abs(q)*B0/2*1.2);
+  EW.plot(cL,{x0:-30,x1:0,y0:-rngL,y1:rngL,title:"Моменти імпульсу (у одиницях qR²B₀/c)",xl:"t − t_поточний, с",yl:"L",xt:[-30,-20,-10,0],yt:[],
+    curves:[{pts:pS.length>1?pS:e,c:col.zero,w:1.8,d:[6,4]},{pts:pL.length>1?pL:e,c:col.acc,w:2.2},{pts:pM.length>1?pM:e,c:col.warn,w:2.2}],n:100});
+  {const g2=cL.g;g2.font="12px system-ui";g2.textAlign="left";g2.fillStyle=col.acc;g2.fillText("L поля",56,42);g2.fillStyle=col.warn;g2.fillText("L циліндра",110,42);g2.fillStyle=col.zero;g2.fillText("сума",190,42);}
+  EW.plot(cB,{x0:-30,x1:0,y0:-0.1,y1:1.15,title:"B(t)/B₀",xl:"t − t_поточний, с",yl:"B/B₀",xt:[-30,-20,-10,0],yt:[0,0.5,1],
+    curves:[{pts:pB.length>1?pB.map(p=>[p[0],p[1]/B0]):e,c:col.pos,w:2.2}],n:100});
+  const Lf=-q*B/2,fin=-q*B0/2;
+  $("out").innerHTML="B = <b>"+EW.fmt(B/B0)+"</b>·B₀, L<sub>п</sub> = −qR²B/2c = <b>"+EW.fmt(Lf,3)+"</b> (од.),  L<sub>циліндра</sub> = mR²ω = <b>"+EW.fmt(om,3)+"</b>,  сума = <b>"+EW.fmt(Lf+om,3)+"</b>.  Після повного вимикання ω = −qB₀/(2mc) = <b>"+EW.fmt(fin,3)+"</b> (од.): циліндр обертається "+(fin<0?"за годинниковою стрілкою":fin>0?"проти годинникової стрілки":"— не обертається")+" (на рисунку, вигляд назустріч B).";
+  requestAnimationFrame(frame);
+}
+$("bOff").onclick=()=>{if(state==="hold"||state==="on"){state="off";tstart=tLast;}$("bOff").classList.add("on");$("bOn").classList.remove("on");};
+$("bOn").onclick=()=>{state="on";tstart=tLast;$("bOn").classList.add("on");$("bOff").classList.remove("on");};
+$("bRes").onclick=()=>{reset();$("bOff").classList.add("on");$("bOn").classList.remove("on");};
+$("tau").oninput=e=>{Toff=+e.target.value;$("tauo").textContent=Toff.toFixed(1)+" с";};
+$("qq").oninput=e=>{q=+e.target.value;$("qqo").textContent=(q>=0?"+":"−")+Math.abs(q).toFixed(1);};
+$("bb").oninput=e=>{B0=+e.target.value;$("bbo").textContent=B0.toFixed(2);if(state==="hold")B=B0;};
+$("bOff").classList.remove("on");
+function onres(){cv.fit();cL.fit();cB.fit();EW.readCols();}
+window.addEventListener("resize",onres);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>EW.readCols());
+reset();requestAnimationFrame(frame);
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>
