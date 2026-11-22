@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Колір неба: розсіяння Релея ∝ ω⁴ ∝ 1/λ⁴</title>
+<link rel="stylesheet" href="assets/ew.css">
+<script src="assets/theme.js"></script>
+<script src="assets/ew.js"></script>
+</head>
+<body>
+<h1>Чому небо блакитне, а Сонце на заході червоне: ⟨P⟩ ∝ ω⁴ ∝ λ⁻⁴</h1>
+<p class="lead">Молекули повітря — вимушені осцилятори, що випромінюють потужність ∝ ω⁴ (слайд про потужність диполя), тому інтенсивність розсіяного світла ∝ 1/λ⁴. Спектр Сонця (абсолютно чорне тіло 5778 K) × λ⁻⁴ дає блакитне небо; пряме світло Сонця втрачає короткі хвилі як exp(−τ·(λ₀/λ)⁴·m) і за великої повітряної маси m (низьке Сонце) червоніє. Колір обчислено за спектром (функції кольору CIE, наближення), розсіювання — однократне, схематичне. Повзунок — висота Сонця над горизонтом.</p>
+<div class="layout">
+<canvas id="main" class="sq" style="aspect-ratio:4/3" aria-label="Небо та Сонце"></canvas>
+<div class="right">
+<canvas id="spec" class="plot" aria-label="Спектри"></canvas>
+</div>
+</div>
+<div class="controls">
+<label>Висота Сонця h <input id="h" type="range" min="0" max="90" step="1" value="35"><b id="ho">35°</b></label>
+<label>Оптична товщина τ(550 нм, зеніт) <input id="tau" type="range" min="0.05" max="0.6" step="0.01" value="0.12"><b id="tauo">0.12</b></label>
+<label><input id="sPhase" type="checkbox" checked> кутова залежність (1 + cos²γ)</label>
+</div>
+<div class="controls">
+<button id="b90">Південь (90°)</button><button id="b35">35°</button><button id="b10">10°</button><button id="b2">Захід (2°)</button>
+<label><input id="sCont" type="checkbox"> чисте λ⁻⁴ без Сонця (порівняння з білим джерелом)</label>
+</div>
+<p class="out" id="out"></p>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const cv=EW.view($("main")),cs=EW.view($("spec")),col=EW.readCols();
+let hSun=35,tau=0.12,usePhase=true,white=false;
+const LAM=[];for(let l=380;l<=730;l+=10)LAM.push(l);
+// чорне тіло 5778 K (відносне)
+const bb=l=>{const x=l*1e-9,h=6.626e-34,c=2.998e8,k=1.381e-23,T=5778;return 1/(x**5*(Math.exp(h*c/(x*k*T))-1));};
+const bmax=Math.max(...LAM.map(bb)),Sun=l=>bb(l)/bmax;
+// CIE 1931, багатогаусове наближення (Wyman, Sloan, Shirley 2013)
+function g(x,m,s1,s2){const t=(x-m)/(x<m?s1:s2);return Math.exp(-0.5*t*t);}
+function cmf(l){return[1.056*g(l,599.8,37.9,31.0)+0.362*g(l,442.0,16.0,26.7)-0.065*g(l,501.1,20.4,26.2),
+  0.821*g(l,568.8,46.9,40.5)+0.286*g(l,530.9,16.3,31.1),1.217*g(l,437.0,11.8,36.0)+0.681*g(l,459.0,26.0,13.8)];}
+const CM=LAM.map(cmf);
+function rgb(spec){let X=0,Y=0,Z=0;spec.forEach((s,i)=>{X+=s*CM[i][0];Y+=s*CM[i][1];Z+=s*CM[i][2];});return[X,Y,Z];}
+function toSRGB(X,Y,Z,exp){X*=exp;Y*=exp;Z*=exp;
+  let r=3.2406*X-1.5372*Y-0.4986*Z,gg=-0.9689*X+1.8758*Y+0.0415*Z,b=0.0557*X-0.2040*Y+1.0570*Z;
+  const f=v=>{v=Math.max(0,Math.min(1,v));return Math.round(255*(v<=0.0031308?12.92*v:1.055*Math.pow(v,1/2.4)-0.055));};
+  return[f(r),f(gg),f(b)];}
+const tl=l=>tau*Math.pow(550/l,4);                    // τ(λ) у зеніті
+const airmass=h=>1/(Math.sin(h*Math.PI/180)+0.15*Math.pow(h+3.885,-1.253));
+function skySpec(h,elev,az){
+  // az — кут між напрямом спостереження й Сонцем, elev — висота точки неба
+  const ms=airmass(Math.max(h,0.3)),mv=airmass(Math.max(elev,0.3));
+  const ct=Math.cos(Math.PI/180*h)*Math.cos(Math.PI/180*elev)*Math.cos(az)+Math.sin(Math.PI/180*h)*Math.sin(Math.PI/180*elev);
+  const ph=usePhase?(1+ct*ct)/2:1;
+  return LAM.map(l=>{const t=tl(l),src=white?1:Sun(l);
+    // однократне розсіяння: розсіяно ~ t·mv, пряме світло послаблене на шляху до цієї точки (шлях ~ ms/2 в середньому)
+    return src*ph*(1-Math.exp(-t*mv))*Math.exp(-t*ms*0.5);});}
+function sunSpec(h){const ms=airmass(Math.max(h,0.3));return LAM.map(l=>(white?1:Sun(l))*Math.exp(-tl(l)*ms));}
+let off=null,key="";
+function draw(){
+  const gx=cv.begin(),Wd=cv.w,Hd=cv.h;
+  const NX=80,NY=60;
+  if(!off){off=document.createElement("canvas");off.width=NX;off.height=NY;}
+  const oc=off.getContext("2d"),im=oc.createImageData(NX,NY),dd=im.data;
+  // вигляд: горизонт знизу; по горизонталі азимут ±70° від Сонця, по вертикалі висота 0..70°
+  const fov=Math.PI*0.5,vmax=60;
+  const X=[],cells=[];let ymax=0;
+  for(let j=0;j<NY;j++)for(let i=0;i<NX;i++){
+    const az=((i+0.5)/NX-0.5)*fov*1.25,el=(1-(j+0.5)/NY)*vmax+0.5;
+    const s=skySpec(hSun,el,az),c=rgb(s);cells.push(c);ymax=Math.max(ymax,c[1]);}
+  const sunc=rgb(sunSpec(hSun));
+  const exp=0.8/Math.max(ymax,1e-9);          // автоекспозиція за найяскравішою точкою неба
+  cells.forEach((c,k)=>{const j=Math.floor(k/NX),i=k%NX,o=(j*NX+i)*4,rgbv=toSRGB(c[0],c[1],c[2],exp);dd[o]=rgbv[0];dd[o+1]=rgbv[1];dd[o+2]=rgbv[2];dd[o+3]=255;});
+  oc.putImageData(im,0,0);
+  gx.imageSmoothingEnabled=true;gx.drawImage(off,0,0,Wd,Hd*0.86);
+  // земля
+  gx.fillStyle="#2c3a2a";gx.fillRect(0,Hd*0.86,Wd,Hd*0.14);
+  // Сонце: положення — по вертикалі за висотою, по центру
+  const sy=Hd*0.86-(hSun/vmax)*Hd*0.86*0.98,sx=Wd/2,sr=Math.min(Wd,Hd)*0.04;
+  const sRGB=toSRGB(sunc[0],sunc[1],sunc[2],exp*1.6);
+  const grd=gx.createRadialGradient(sx,sy,0,sx,sy,sr*3);grd.addColorStop(0,"rgba("+sRGB.join(",")+",0.9)");grd.addColorStop(1,"rgba("+sRGB.join(",")+",0)");
+  gx.fillStyle=grd;gx.beginPath();gx.arc(sx,sy,sr*3,0,6.2832);gx.fill();
+  gx.fillStyle="rgb("+sRGB.join(",")+")";gx.beginPath();gx.arc(sx,sy,sr,0,6.2832);gx.fill();
+  gx.fillStyle="#fff";gx.font="12px system-ui";gx.textAlign="left";gx.textBaseline="top";gx.shadowColor="#000";gx.shadowBlur=3;
+  gx.fillText("вигляд у бік Сонця; внизу горизонт",8,8);gx.shadowBlur=0;
+  // спектри
+  const ss=skySpec(hSun,45,Math.PI/2),su=sunSpec(hSun),s0=LAM.map(l=>white?1:Sun(l));
+  const nz=a=>{const m=Math.max(...a);return a.map((v,i)=>[LAM[i],v/m]);};
+  EW.plot(cs,{x0:380,x1:730,y0:0,y1:1.05,title:"Спектри (нормовано на максимум кожного)",xl:"λ, нм",xt:[400,450,500,550,600,650,700],yt:[0,0.5,1],
+    curves:[{pts:nz(s0),c:col.zero,w:1.6,d:[5,4]},{pts:nz(ss),c:col.pos,w:2.4},{pts:nz(su),c:col.neg,w:2.4}]});
+  const g2=cs.g;g2.font="12px system-ui";g2.textAlign="left";
+  g2.fillStyle=col.zero;g2.fillText("- - спектр Сонця",56,40);g2.fillStyle=col.pos;g2.fillText("— небо (розсіяне)",56,55);g2.fillStyle=col.neg;g2.fillText("— пряме світло Сонця",56,70);
+  const m=airmass(Math.max(hSun,0.3)),Tb=Math.exp(-tl(450)*m),Tr=Math.exp(-tl(650)*m);
+  $("out").innerHTML="Повітряна маса на шляху до Сонця m ≈ <b>"+m.toFixed(1)+"</b>. Розсіяне світло: інтенсивність синього (450 нм) відносно червоного (650 нм) вища в (650/450)⁴ ≈ <b>4.4</b> разів. Пряме Сонце: пропускання в синьому ≈ <b>"+(Tb*100).toFixed(0)+"%</b>, в червоному ≈ <b>"+(Tr*100).toFixed(0)+"%</b> — тому на заході воно червоне, а небо навколо збіднює блакить.";
+}
+function bind(id,set,fmt){$(id).oninput=e=>{set(+e.target.value);$(id+"o").textContent=fmt(+e.target.value);draw();};}
+bind("h",v=>hSun=v,v=>v+"°");bind("tau",v=>tau=v,v=>v.toFixed(2));
+$("sPhase").onchange=e=>{usePhase=e.target.checked;draw();};
+$("sCont").onchange=e=>{white=e.target.checked;draw();};
+for(const[id,v]of[["b90",90],["b35",35],["b10",10],["b2",2]])$(id).onclick=()=>{hSun=v;$("h").value=v;$("ho").textContent=v+"°";draw();};
+function onres(){cv.fit();cs.fit();EW.readCols();draw();}
+window.addEventListener("resize",onres);
+window.addEventListener("themechange",()=>{EW.readCols();draw();});
+draw();
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>

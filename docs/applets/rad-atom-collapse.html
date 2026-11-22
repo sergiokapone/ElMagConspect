@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Класичний атом і формула Лармора: колапс за 10⁻¹¹ с</title>
+<link rel="stylesheet" href="assets/ew.css">
+<script src="assets/theme.js"></script>
+<script src="assets/ew.js"></script>
+</head>
+<body>
+<h1>Електрон на орбіті випромінює (dW/dt = 2e²a²/3c³) і падає на ядро</h1>
+<p class="lead">Якщо електрон обертається круговою орбітою радіуса r навколо ядра, його прискорення a = e²/(m r²) відмінне від нуля, тож за формулою Лармора він втрачає енергію E = −e²/2r. Повільне (адіабатичне) зменшення радіуса дає r³ = r₀³ − 4r<sub>e</sub>²c·t, звідки час падіння t = r₀³/(4r<sub>e</sub>²c) ≈ 1.6·10⁻¹¹ с для r₀ = 0.53 Å. Це — головна невдача класичної фізики, що привела до квантової механіки. Нижче час стиснуто; обертання на малюнку схематичне (насправді за цей час електрон робить ≈ 10⁵ обертів).</p>
+<div class="layout">
+<canvas id="main" class="sq" aria-label="Орбіта електрона, що спіралью падає на ядро"></canvas>
+<div class="right">
+<canvas id="plotR" class="plot" aria-label="Радіус орбіти від часу"></canvas>
+<canvas id="plotP" class="plot" aria-label="Потужність випромінювання від часу"></canvas>
+</div>
+</div>
+<div class="controls">
+<button id="bPause">Пауза</button><button id="bReset">Спочатку</button>
+<button id="bSlow">Повільніше</button><button id="bFast">Швидше</button>
+</div>
+<div class="controls">
+<label>Початковий радіус r₀, Å <input id="r0" type="range" min="0.2" max="2" step="0.01" value="0.53"><b id="r0o">0.53</b></label>
+<label>Час t/t<sub>пад</sub> <input id="ph" type="range" min="0" max="1" step="0.001" value="0"><b id="pho">0.00</b></label>
+</div>
+<p class="out" id="out"></p>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const cv=EW.view($("main")),cR=EW.view($("plotR")),cP=EW.view($("plotP")),col=EW.readCols();
+const ke2=2.30708e-28,me=9.10938e-31,c=2.99792e8,qe=1.60218e-19;      // ke·e², m, c, e (СІ)
+const re=ke2/(me*c*c);                                                // класичний радіус електрона
+let r0=0.53e-10,trail=[],vis=0;
+const clk=EW.clock({rate:0.07,wrap:1});                               // 0..1 за ≈ 14 с
+const tColl=()=>r0**3/(4*re*re*c);
+const rN=u=>Math.cbrt(Math.max(0,1-u));                                // r/r0
+function P(u){const r=r0*rN(u),a=ke2/(me*r*r);return 2*ke2*a*a/(3*c**3);}
+function fmtT(x){const e=Math.floor(Math.log10(x)),m=x/10**e;return m.toFixed(2)+"·10<sup>"+e+"</sup>";}
+let lastU=0;
+function frame(){
+  const u0=clk.tick(),u=Math.min(0.9999,u0);
+  if(u<lastU)trail=[];lastU=u;
+  const g=cv.begin(),S=Math.min(cv.w,cv.h),cx=cv.w/2,cy=cv.h/2,R=S*0.42;
+  // поля сітки/ядро
+  const rr=rN(u),r=R*rr;
+  // схематична фаза: швидкість обертання зростає як r^{-3/2}
+  vis+=0.05*Math.pow(1/Math.max(rr,0.05),1.5);
+  trail.push([Math.cos(vis)*r,Math.sin(vis)*r]);if(trail.length>6000)trail.shift();
+  // початкова орбіта
+  g.strokeStyle=col.line;g.setLineDash([4,5]);g.beginPath();g.arc(cx,cy,R,0,6.2832);g.stroke();g.setLineDash([]);
+  // спіральний слід
+  g.lineWidth=1.3;
+  g.strokeStyle=col.pos;g.globalAlpha=0.55;g.beginPath();trail.forEach((p,i)=>i?g.lineTo(cx+p[0],cy-p[1]):g.moveTo(cx+p[0],cy-p[1]));g.stroke();g.globalAlpha=1;
+  // «хвилі» — кільця з потужності
+  const pw=P(u)/P(0),ring=(performance.now()/1000*0.6)%1;
+  for(let k=0;k<4;k++){const f=(k+ring)/4;g.strokeStyle=col.warn;g.globalAlpha=Math.min(1,0.55*Math.sqrt(pw)/3)*(1-f);g.lineWidth=2;g.beginPath();g.arc(cx,cy,R*(0.15+0.9*f),0,6.2832);g.stroke();}
+  g.globalAlpha=1;
+  // ядро й електрон
+  g.fillStyle=col.neg;g.beginPath();g.arc(cx,cy,9,0,6.2832);g.fill();g.fillStyle="#fff";g.font="bold 13px system-ui";g.textAlign="center";g.textBaseline="middle";g.fillText("+",cx,cy+0.5);
+  const ex=cx+Math.cos(vis)*r,ey=cy-Math.sin(vis)*r;
+  g.fillStyle=col.pos;g.beginPath();g.arc(ex,ey,6,0,6.2832);g.fill();
+  // вектор прискорення (до ядра)
+  const L=18+14*Math.min(pw,4);EW.arrow(g,ex,ey,ex+(cx-ex)/Math.max(r,1)*L,ey+(cy-ey)/Math.max(r,1)*L,col.acc,2,8);
+  g.fillStyle=col.muted;g.font="12px system-ui";g.textAlign="left";g.textBaseline="top";
+  g.fillText("— початкова орбіта; помаранчеві кільця — випромінювана хвиля (яскравість ∝ √P)",8,8);
+  g.fillText("кількість обертів зображено схематично",8,24);
+  // графіки
+  const N=200,pr=[],pp=[],pm=[];
+  for(let k=0;k<=N;k++){const x=k/N*0.9995;pr.push([x,rN(x)]);pp.push([x,P(x)/P(0)]);}
+  EW.plot(cR,{x0:0,x1:1,y0:0,y1:1.05,title:"r(t)/r₀ = (1 − t/t_пад)^{1/3}",xl:"t / t_пад",xt:[0,0.25,0.5,0.75,1],yt:[0,0.5,1],
+    curves:[{pts:pr,c:col.pos,w:2.2}],vlines:[[u,col.zero,[3,3]]],marks:[[u,rN(u),col.pos]]});
+  const pmax=Math.min(40,Math.pow(1/Math.max(rN(0.99),0.01),4));
+  EW.plot(cP,{x0:0,x1:1,y0:0,y1:30,title:"P(t)/P₀ ∝ r⁻⁴ (обрізано на 30)",xl:"t / t_пад",xt:[0,0.25,0.5,0.75,1],yt:[0,10,20,30],
+    curves:[{pts:pp,c:col.warn,w:2.2}],vlines:[[u,col.zero,[3,3]]],marks:[[u,Math.min(30,P(u)/P(0)),col.warn]]});
+  const tc=tColl(),a0=ke2/(me*r0*r0),w0=Math.sqrt(ke2/(me*r0**3)),T0=2*Math.PI/w0,Pw=P(0),Pn=P(u);
+  const E0=ke2/(2*r0)/qe,En=ke2/(2*r0*rN(u))/qe;
+  $("out").innerHTML="r₀ = <b>"+(r0*1e10).toFixed(2)+" Å</b>: період T₀ = "+fmtT(T0)+" с, час падіння t<sub>пад</sub> = <b>"+fmtT(tc)+" с</b> (≈ <b>"+(tc/T0).toExponential(1).replace("e+","·10<sup>")+"</sup></b> обертів), t = "+fmtT(Math.max(u*tc,1e-30))+" с. Початкова потужність P₀ = 2e²a²/3c³ = <b>"+fmtT(Pw)+" Вт</b> (≈ "+(Pw/qe).toExponential(1)+" еВ/с); зараз P = "+fmtT(Pn)+" Вт. Енергія зв'язку зросла з "+E0.toFixed(1)+" еВ до <b>"+En.toFixed(1)+" еВ</b>. Реальний атом стабільний — класична електродинаміка тут непридатна.";
+  $("ph").value=u0.toFixed(3);$("pho").textContent=u0.toFixed(2);
+  requestAnimationFrame(frame);
+}
+$("r0").oninput=e=>{r0=+e.target.value*1e-10;$("r0o").textContent=(+e.target.value).toFixed(2);trail=[];};
+function onres(){cv.fit();cR.fit();cP.fit();EW.readCols();}
+window.addEventListener("resize",onres);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>EW.readCols());
+requestAnimationFrame(frame);
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>

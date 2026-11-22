@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Калібрувальні перетворення: A змінюється, B — ні</title>
+<link rel="stylesheet" href="assets/ew.css">
+<script src="assets/theme.js"></script>
+<script src="assets/ew.js"></script>
+</head>
+<body>
+<h1>Калібрувальні перетворення: <b>A′ = A + ∇f</b> змінює потенціал, але не поле B = rot A</h1>
+<p class="lead">Однорідне магнітне поле B (спрямоване на нас, у площину рисунка) можна описати різними векторними потенціалами. Оберіть початковий вигляд A і додайте градієнт довільної функції f = a·xy + b·(x² − y²)/2 + c·x + d·(x² + y²)/2. Стрілки A зміняться до невпізнання, а rot A в довільній точці й циркуляція ∮A·dl по контуру (= потік B) — ні. Лише складова d змінює ∇·A (калібрування Кулона ∇·A = 0 — при d = 0).</p>
+<div class="layout">
+<canvas id="main" class="sq" aria-label="Векторне поле A на фоні однорідного B"></canvas>
+<div class="right">
+<canvas id="plot" class="plot" aria-label="Циркуляція A по контуру від радіуса"></canvas>
+</div>
+</div>
+<div class="controls">
+<label>Початковий A <select id="base"><option value="sym">симетричний ½B×r = (−By/2, Bx/2)</option><option value="l1">Ландау (−By, 0)</option><option value="l2">Ландау (0, Bx)</option></select></label>
+<button id="bZero">Скинути f = 0</button>
+<button id="bRand">Випадкове f</button>
+</div>
+<div class="controls">
+<label>a (xy) <input id="a" type="range" min="-1" max="1" step="0.05" value="0"><b id="ao">0.00</b></label>
+<label>b ((x²−y²)/2) <input id="b" type="range" min="-1" max="1" step="0.05" value="0"><b id="bo">0.00</b></label>
+<label>c (x) <input id="c" type="range" min="-2" max="2" step="0.05" value="0"><b id="co">0.00</b></label>
+<label>d ((x²+y²)/2) <input id="d" type="range" min="-1" max="1" step="0.05" value="0"><b id="do">0.00</b></label>
+</div>
+<div class="controls">
+<label>Радіус контуру <input id="rl" type="range" min="0.3" max="2.4" step="0.05" value="1.4"><b id="rlo">1.40</b></label>
+<span class="hint">Перетягніть точку P — там обчислюється rot A (скінченними різницями).</span>
+</div>
+<p class="out" id="out"></p>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const cv=EW.view($("main")),cg=EW.view($("plot")),col=EW.readCols();
+const B=1.0,Wd=3;                   // кадр ±3
+let base="sym",pa=0,pb=0,pc=0,pd=0,Rl=1.4,P={x:1.8,y:-1.2};
+function Afield(x,y){let ax,ay;
+  if(base==="sym"){ax=-B*y/2;ay=B*x/2;}else if(base==="l1"){ax=-B*y;ay=0;}else{ax=0;ay=B*x;}
+  // + ∇f
+  ax+=pa*y+pb*x+pc+pd*x;ay+=pa*x-pb*y+pd*y;return[ax,ay];}
+function curl(x,y){const h=1e-3,[a1,]=Afield(x,y+h),[a0,]=Afield(x,y-h),[,b1]=Afield(x+h,y),[,b0]=Afield(x-h,y);return(b1-b0)/(2*h)-(a1-a0)/(2*h);}
+function circ(R){let s=0;const n=720;for(let k=0;k<n;k++){const t=2*Math.PI*(k+0.5)/n,x=R*Math.cos(t),y=R*Math.sin(t),[ax,ay]=Afield(x,y);s+=(ax*-Math.sin(t)+ay*Math.cos(t))*R*2*Math.PI/n;}return s;}
+function draw(){
+  const g=cv.begin(),S=Math.min(cv.w,cv.h),sc=S/(2*Wd),cx=cv.w/2,cy=cv.h/2,X=x=>cx+x*sc,Y=y=>cy-y*sc;
+  // тло: однорідне B (точки ⊙)
+  g.fillStyle=col.pos;g.globalAlpha=0.35;g.font="13px system-ui";g.textAlign="center";g.textBaseline="middle";
+  for(let i=-5;i<=5;i++)for(let j=-5;j<=5;j++){const x=i*0.6+0.3,y=j*0.6+0.3;g.beginPath();g.arc(X(x),Y(y),2.2,0,6.2832);g.fill();g.beginPath();g.arc(X(x),Y(y),5,0,6.2832);g.stroke();}
+  g.globalAlpha=1;
+  // осі
+  g.strokeStyle=col.line;g.lineWidth=1;g.beginPath();g.moveTo(0,cy);g.lineTo(cv.w,cy);g.moveTo(cx,0);g.lineTo(cx,cv.h);g.stroke();
+  // стрілки A; масштаб — за максимумом в кадрі
+  let mx=0;const pts=[];
+  for(let i=-5;i<=5;i++)for(let j=-5;j<=5;j++){const x=i*0.55,y=j*0.55,[ax,ay]=Afield(x,y);pts.push([x,y,ax,ay]);mx=Math.max(mx,Math.hypot(ax,ay));}
+  const k=0.45*sc*0.55/Math.max(mx,1.2);
+  for(const[x,y,ax,ay]of pts)EW.arrow(g,X(x),Y(y),X(x)+ax*k*1.9,Y(y)-ay*k*1.9,col.neg,1.6,6);
+  // контур
+  g.strokeStyle=col.acc;g.lineWidth=2.5;g.beginPath();g.arc(cx,cy,Rl*sc,0,6.2832);g.stroke();
+  // напрямок обходу
+  EW.arrow(g,cx+Rl*sc,cy+2,cx+Rl*sc,cy-22,col.acc,2.5,10);
+  // точка P
+  const[ap,aq]=Afield(P.x,P.y);
+  g.fillStyle=col.ink;g.beginPath();g.arc(X(P.x),Y(P.y),6,0,6.2832);g.fill();
+  g.font="600 13px system-ui";g.textAlign="left";g.textBaseline="bottom";g.fillText("P",X(P.x)+9,Y(P.y)-4);
+  g.fillStyle=col.muted;g.font="12px system-ui";g.textBaseline="top";g.fillText("червоні стрілки — A; ⊙ — однорідне B (на нас); зелене коло — контур",8,8);
+  // графік: циркуляція від R
+  const pt1=[],pt2=[];for(let R=0.05;R<=2.5;R+=0.05){pt1.push([R,circ(R)]);pt2.push([R,B*Math.PI*R*R]);}
+  EW.plot(cg,{x0:0,x1:2.5,y0:0,y1:20,title:"∮A·dl (точки) та потік Φ = Bπr² (лінія)",xl:"радіус контуру r",xt:[0,0.5,1,1.5,2,2.5],yt:[0,5,10,15,20],
+    curves:[{pts:pt2,c:col.pos,w:3},{pts:pt1,c:col.neg,w:1.5,d:[3,4]}],marks:[[Rl,circ(Rl),col.neg]]});
+  const dv=2*pd,fl=B*Math.PI*Rl*Rl;
+  $("out").innerHTML="У точці P: A = (<b>"+EW.fmt(ap)+"</b>; <b>"+EW.fmt(aq)+"</b>), але rot A = <b>"+curl(P.x,P.y).toFixed(3)+"</b> = B (однакове для будь-якого f). Циркуляція по контуру ∮A·dl = <b>"+circ(Rl).toFixed(3)+"</b> = потік Bπr² = <b>"+fl.toFixed(3)+"</b>. ∇·A = <b>"+dv.toFixed(2)+"</b>"+(Math.abs(dv)<1e-9?" (калібрування Кулона)":" — не кулонівське калібрування, але фізика та сама")+".";
+}
+function bind(id,set){$(id).oninput=e=>{set(+e.target.value);$(id+"o").textContent=(+e.target.value).toFixed(2);draw();};}
+bind("a",v=>pa=v);bind("b",v=>pb=v);bind("c",v=>pc=v);bind("d",v=>pd=v);bind("rl",v=>Rl=v);
+$("base").onchange=e=>{base=e.target.value;draw();};
+function setAll(a,b,c,d){pa=a;pb=b;pc=c;pd=d;for(const[i,v]of[["a",a],["b",b],["c",c],["d",d]]){$(i).value=v;$(i+"o").textContent=v.toFixed(2);}draw();}
+$("bZero").onclick=()=>setAll(0,0,0,0);
+$("bRand").onclick=()=>{const r=(m)=>Math.round((Math.random()*2-1)*m/0.05)*0.05;setAll(r(1),r(1),r(2),r(1));};
+let drag=false;cv.c.style.touchAction="none";cv.c.style.cursor="crosshair";
+function setP(e){const r=cv.c.getBoundingClientRect(),S=Math.min(cv.w,cv.h),sc=S/(2*Wd);P={x:(e.clientX-r.left-cv.w/2)/sc,y:-(e.clientY-r.top-cv.h/2)/sc};draw();}
+cv.c.addEventListener("pointerdown",e=>{drag=true;cv.c.setPointerCapture(e.pointerId);setP(e);});
+cv.c.addEventListener("pointermove",e=>{if(drag)setP(e);});
+cv.c.addEventListener("pointerup",()=>drag=false);
+function onres(){cv.fit();cg.fit();EW.readCols();draw();}
+window.addEventListener("resize",onres);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{EW.readCols();draw();});
+window.addEventListener("themechange",()=>{EW.readCols();draw();});
+draw();
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Запізнюючі потенціали: де був заряд, коли «випромінювалось» поле</title>
+<link rel="stylesheet" href="assets/ew.css">
+<script src="assets/theme.js"></script>
+<script src="assets/ew.js"></script>
+</head>
+<body>
+<h1>Запізнюючі потенціали: поле в точці P визначає «минуле» положення заряду</h1>
+<p class="lead">Збурення поширюється зі швидкістю c, тому потенціал у точці P у момент t створений зарядом, яким він був у момент <b>t′ = t − R/c</b>, де R = |P − r(t′)|. Кола — фронти збурень, випущених зарядом через рівні проміжки часу (центр кожного кола — положення заряду в момент випромінювання). Перетягніть точку P. Для швидкого заряду кола «збиваються» попереду руху — звідси різниця між запізнілим та миттєвим потенціалами.</p>
+<div class="layout">
+<canvas id="main" class="sq" aria-label="Заряд, його запізніле положення та фронти збурень"></canvas>
+<div class="right">
+<canvas id="plotA" class="plot" aria-label="Потенціал у точці P від часу"></canvas>
+<canvas id="plotB" class="plot" aria-label="Запізнення t − t′ від часу"></canvas>
+</div>
+</div>
+<div class="controls">
+<button id="bPause">Пауза</button><button id="bReset">Спочатку</button>
+<button id="bSlow">Повільніше</button><button id="bFast">Швидше</button>
+<select id="mode"><option value="osc">Коливання вздовж осі x</option><option value="circ">Рух по колу</option></select>
+</div>
+<div class="controls">
+<label>Швидкість β = v<sub>max</sub>/c <input id="beta" type="range" min="0.05" max="0.95" step="0.01" value="0.5"><b id="betao">0.50</b></label>
+<label><input id="sCircles" type="checkbox" checked> фронти збурень</label>
+<label><input id="sGhost" type="checkbox" checked> запізніле положення</label>
+<label><input id="sNow" type="checkbox" checked> миттєва відстань</label>
+</div>
+<p class="out" id="out"></p>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const cv=EW.view($("main")),cA=EW.view($("plotA")),cB=EW.view($("plotB")),col=EW.readCols();
+let mode="osc",beta=0.5,sC=true,sG=true,sN=true;
+let P={x:2.6,y:1.4};
+const W=6;                       // половина ширини кадру
+const clk=EW.clock({rate:1.6,wrap:1e5});
+const A=1;                       // амплітуда руху; c=1
+function Om(){return beta/A;}
+function pos(s){const w=Om();return mode==="osc"?{x:A*Math.sin(w*s),y:0}:{x:A*Math.cos(w*s),y:A*Math.sin(w*s)};}
+function vel(s){const w=Om();return mode==="osc"?{x:A*w*Math.cos(w*s),y:0}:{x:-A*w*Math.sin(w*s),y:A*w*Math.cos(w*s)};}
+/* t' з рівняння t − t' = |P − r(t')| (c = 1), бісекція */
+function retard(t,Pt){let lo=t-200,hi=t;
+  for(let i=0;i<60;i++){const m=(lo+hi)/2,r=pos(m),d=Math.hypot(Pt.x-r.x,Pt.y-r.y);
+    if(t-m-d>0)lo=m;else hi=m;}
+  return (lo+hi)/2;}
+function potentials(t,Pt){const s=retard(t,Pt),r=pos(s),v=vel(s);
+  const Rx=Pt.x-r.x,Ry=Pt.y-r.y,R=Math.hypot(Rx,Ry);
+  const lw=1/(R-(Rx*v.x+Ry*v.y));                     // Лієнар–Вихерт: q/(R(1−n·β))
+  const r0=pos(t),inst=1/Math.hypot(Pt.x-r0.x,Pt.y-r0.y);
+  return{s,R,lw,inst,r,r0};}
+function frame(){
+  const t=clk.tick();
+  const g=cv.begin(),S=Math.min(cv.w,cv.h),sc=S/(2*W),cx=cv.w/2,cy=cv.h/2;
+  const X=x=>cx+x*sc,Y=y=>cy-y*sc;
+  // сітка
+  g.strokeStyle=col.line;g.lineWidth=1;g.globalAlpha=0.5;
+  for(let k=-W;k<=W;k++){g.beginPath();g.moveTo(X(k),0);g.lineTo(X(k),cv.h);g.stroke();g.beginPath();g.moveTo(0,Y(k));g.lineTo(cv.w,Y(k));g.stroke();}
+  g.globalAlpha=1;
+  // фронти збурень
+  const D=0.5, sNow=Math.floor(t/D)*D;
+  if(sC){g.lineWidth=1.3;
+    for(let j=0;j<20;j++){const s=sNow-j*D,R=t-s;if(R>2*W*1.5||R<0)continue;const c0=pos(s);
+      g.strokeStyle=col.pos;g.globalAlpha=Math.max(0.15,1-R/(W*1.9));
+      g.beginPath();g.arc(X(c0.x),Y(c0.y),R*sc,0,6.2832);g.stroke();
+      g.fillStyle=col.pos;g.beginPath();g.arc(X(c0.x),Y(c0.y),2,0,6.2832);g.fill();}
+    g.globalAlpha=1;}
+  // траєкторія
+  g.strokeStyle=col.zero;g.setLineDash([3,4]);g.beginPath();
+  for(let k=0;k<=100;k++){const tt=2*Math.PI/Om()*k/100,p=pos(tt);k?g.lineTo(X(p.x),Y(p.y)):g.moveTo(X(p.x),Y(p.y));}
+  g.stroke();g.setLineDash([]);
+  const q=potentials(t,P);
+  // сигнал від запізнілого положення до P
+  if(sG){g.strokeStyle=col.acc;g.lineWidth=2;g.beginPath();g.moveTo(X(q.r.x),Y(q.r.y));g.lineTo(X(P.x),Y(P.y));g.stroke();
+    g.strokeStyle=col.acc;g.fillStyle=col.panel;g.lineWidth=2;g.beginPath();g.arc(X(q.r.x),Y(q.r.y),8,0,6.2832);g.fill();g.stroke();
+    g.fillStyle=col.acc;g.font="12px system-ui";g.textAlign="center";g.textBaseline="bottom";g.fillText("r(t′)",X(q.r.x),Y(q.r.y)-11);}
+  if(sN){g.strokeStyle=col.warn;g.setLineDash([5,4]);g.lineWidth=1.5;g.beginPath();g.moveTo(X(q.r0.x),Y(q.r0.y));g.lineTo(X(P.x),Y(P.y));g.stroke();g.setLineDash([]);}
+  // заряд
+  g.fillStyle=col.neg;g.beginPath();g.arc(X(q.r0.x),Y(q.r0.y),8,0,6.2832);g.fill();
+  g.fillStyle="#fff";g.font="bold 12px system-ui";g.textAlign="center";g.textBaseline="middle";g.fillText("+",X(q.r0.x),Y(q.r0.y)+0.5);
+  const v=vel(t);EW.arrow(g,X(q.r0.x),Y(q.r0.y),X(q.r0.x)+v.x*sc*1.2,Y(q.r0.y)-v.y*sc*1.2,col.neg,2,8);
+  // точка P
+  g.fillStyle=col.ink;g.beginPath();g.arc(X(P.x),Y(P.y),6,0,6.2832);g.fill();
+  g.font="600 13px system-ui";g.textAlign="left";g.textBaseline="bottom";g.fillText("P (тягніть)",X(P.x)+9,Y(P.y)-4);
+  g.fillStyle=col.muted;g.font="12px system-ui";g.textAlign="left";g.textBaseline="top";g.fillText("c = 1;  кадр = ±"+W+" (амплітуда руху = 1)",8,8);
+  // графіки
+  const T=2*Math.PI/Om(),Nn=240,pts1=[],pts2=[],pts3=[];
+  let lo=1e9,hi=-1e9;
+  const tm=((t%T)+T)%T;
+  for(let k=0;k<=Nn;k++){const tt=T*k/Nn,qq=potentials(tt+100*T,P);pts1.push([tt,qq.lw]);pts2.push([tt,qq.inst]);pts3.push([tt,tt+100*T-qq.s]);
+    lo=Math.min(lo,qq.lw,qq.inst);hi=Math.max(hi,qq.lw,qq.inst);}
+  const pad=(hi-lo)*0.12||0.1;
+  EW.plot(cA,{x0:0,x1:T,y0:lo-pad,y1:hi+pad,title:"φ(P)·(1/q): запізнілий vs миттєвий",xl:"t, за період T = "+T.toFixed(1),xt:[0,T/2,T].map(x=>+x.toFixed(1)),yt:[],
+    curves:[{pts:pts2,c:col.warn,d:[5,4]},{pts:pts1,c:col.acc,w:2.2}],vlines:[[tm,col.zero,[3,3]]],
+    marks:[[tm,q.lw,col.acc],[tm,q.inst,col.warn]]});
+  const dl=pts3.map(p=>p[1]),dmin=Math.min(...dl),dmax=Math.max(...dl);
+  EW.plot(cB,{x0:0,x1:T,y0:Math.max(0,dmin-0.5),y1:dmax+0.5,title:"запізнення t − t′ = R/c",xl:"t",xt:[0,T/2,T].map(x=>+x.toFixed(1)),yt:[],
+    curves:[{pts:pts3,c:col.pos,w:2}],vlines:[[tm,col.zero,[3,3]]],marks:[[tm,t-q.s,col.pos]]});
+  const dpos=Math.hypot(q.r0.x-q.r.x,q.r0.y-q.r.y);
+  $("out").innerHTML="Відстань від запізнілого положення R = <b>"+q.R.toFixed(2)+"</b>, запізнення t − t′ = R/c = <b>"+(t-q.s).toFixed(2)+"</b>; за цей час заряд змістився на <b>"+dpos.toFixed(2)+"</b>. φ<sub>запізн</sub> = q/[R(1 − <b>n</b>·<b>β</b>)] = <b>"+q.lw.toFixed(3)+"</b>q, а «миттєвий» кулонівський q/|P − r(t)| = <b>"+q.inst.toFixed(3)+"</b>q. При β → 0 обидва збігаються (кола майже концентричні).";
+  requestAnimationFrame(frame);
+}
+// перетягування P
+let drag=false;cv.c.style.touchAction="none";cv.c.style.cursor="crosshair";
+function setP(e){const r=cv.c.getBoundingClientRect(),S=Math.min(cv.w,cv.h),sc=S/(2*W);
+  P={x:Math.max(-W+.2,Math.min(W-.2,(e.clientX-r.left-cv.w/2)/sc)),y:Math.max(-W+.2,Math.min(W-.2,-(e.clientY-r.top-cv.h/2)/sc))};}
+cv.c.addEventListener("pointerdown",e=>{drag=true;cv.c.setPointerCapture(e.pointerId);setP(e);});
+cv.c.addEventListener("pointermove",e=>{if(drag)setP(e);});
+cv.c.addEventListener("pointerup",()=>drag=false);
+$("mode").onchange=e=>mode=e.target.value;
+$("beta").oninput=e=>{beta=+e.target.value;$("betao").textContent=beta.toFixed(2);};
+$("sCircles").onchange=e=>sC=e.target.checked;$("sGhost").onchange=e=>sG=e.target.checked;$("sNow").onchange=e=>sN=e.target.checked;
+function onres(){cv.fit();cA.fit();cB.fit();EW.readCols();}
+window.addEventListener("resize",onres);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>EW.readCols());
+requestAnimationFrame(frame);
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>

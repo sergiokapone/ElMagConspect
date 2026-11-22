@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Діаграма спрямованості випромінювання диполя й антени</title>
+<link rel="stylesheet" href="assets/ew.css">
+<script src="assets/theme.js"></script>
+<script src="assets/ew.js"></script>
+</head>
+<body>
+<h1>Діаграма спрямованості: sin²θ, обертовий диполь, антена довжини L</h1>
+<p class="lead">Ліворуч — хвильова зона в площині, що містить вісь (r·E: множник 1/r прибрано, щоб було видно картину; сіра зона — ближня, r &lt; λ/2π). Праворуч — полярна діаграма середньої інтенсивності ⟨Π⟩(θ). Для короткого диполя ⟨Π⟩ ∝ sin²θ: уздовж осі випромінювання немає. Обертовий диполь (дві взаємно перпендикулярні складові зі зсувом фаз 90°) дає (1 + cos²θ)/2, а в антени довжини L співмірної з λ діаграма вужчає й з'являються бічні пелюстки. Перетягніть кут спостереження на діаграмі.</p>
+<div class="layout">
+<canvas id="main" class="sq" aria-label="Хвильова зона диполя"></canvas>
+<div class="right">
+<canvas id="polar" class="sq" aria-label="Полярна діаграма спрямованості"></canvas>
+</div>
+</div>
+<div class="controls">
+<button id="bPause">Пауза</button><button id="bReset">Спочатку</button>
+<button id="bSlow">Повільніше</button><button id="bFast">Швидше</button>
+<select id="mode">
+<option value="lin">Лінійний диполь (осцилятор, L ≪ λ)</option>
+<option value="rot">Обертовий диполь (|p| = const)</option>
+<option value="ant">Лінійна антена довжини L</option>
+</select>
+<select id="comp"><option value="in">показати: E у площині рисунка</option><option value="out">показати: E з площини</option><option value="int">показати: інтенсивність |E|²</option></select>
+</div>
+<div class="controls">
+<label>L/λ <input id="len" type="range" min="0.05" max="2" step="0.05" value="0.5"><b id="leno">0.50</b></label>
+<span class="hint">(діє в режимі «антена»; L = 0.5 — півхвильовий диполь)</span>
+</div>
+<p class="out" id="out"></p>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const cv=EW.view($("main")),cp=EW.view($("polar")),col=EW.readCols();
+let mode="lin",comp="in",LL=0.5,thObs=Math.PI/3;
+const clk=EW.clock({rate:1,wrap:1e5});
+/* амплітуда складової E·r при куті θ від осі (в площині рисунка xz, ψ=0) */
+function Fant(th){const s=Math.sin(th);if(Math.abs(s)<1e-6)return 0;const a=Math.PI*LL;return (Math.cos(a*Math.cos(th))-Math.cos(a))/s;}
+function amp(th){ // повертає {i: складова в площині, o: складова з площини (в квадратурі)}
+  if(mode==="lin")return{i:Math.sin(th),o:0};
+  if(mode==="rot")return{i:Math.cos(th)/Math.SQRT2,o:1/Math.SQRT2};
+  return{i:Fant(th),o:0};}
+function I(th){const a=amp(th);return a.i*a.i+a.o*a.o;}
+function norm(){let m=0;for(let k=0;k<=720;k++)m=Math.max(m,I(Math.PI*k/720));return m||1;}
+function frame(){
+  const t=clk.tick(),ph=2*Math.PI*t;     // фаза ωt
+  /* --- карта хвильової зони --- */
+  const g=cv.begin(),Wd=cv.w,Hd=cv.h,N=150,half=2.6;       // кадр = ±2.6 λ
+  if(!frame.img||frame.img.n!==N){frame.off=document.createElement("canvas");frame.off.width=frame.off.height=N;frame.img={n:N,d:frame.off.getContext("2d").createImageData(N,N)};}
+  const d=frame.img.d.data,m0=norm(),mx=Math.sqrt(m0),bgc=getComputedStyle(document.documentElement).getPropertyValue("--panel").trim();
+  const dark=window.AppletTheme?AppletTheme.isDark():false;
+  const k=2*Math.PI;
+  for(let j=0;j<N;j++)for(let i=0;i<N;i++){
+    const x=(i+0.5)/N*2*half-half,z=half-(j+0.5)/N*2*half,r=Math.hypot(x,z),idx=(j*N+i)*4;
+    let v=0,a=0;
+    if(r<0.16){a=0;}
+    else{const th=Math.atan2(Math.abs(x),z),sg=x<0?-1:1;   // θ від осі z; для x<0 e_θ змінює знак
+      const am=amp(th),u=ph-k*r;
+      const sg2=mode==="rot"?sg:1,E_in=am.i*Math.cos(u)*sg2,E_out=am.o*Math.sin(u)*sg2;
+      if(comp==="in")v=E_in/mx;else if(comp==="out")v=E_out/mx;else v=(E_in*E_in+E_out*E_out)/(mx*mx)*2-1;
+      a=1;}
+    let R,G,B;
+    if(!a){R=G=B=dark?60:200;}
+    else if(comp==="int"){const q=Math.max(0,Math.min(1,(v+1)/2));
+      R=dark?20+q*235:255-q*(255-31);G=dark?24+q*160:255-q*(255-95);B=dark?27+q*60:255-q*(255-214);
+      if(!dark){R=255-q*224;G=255-q*160;B=255-q*41;}}
+    else{const q=Math.max(-1,Math.min(1,v)),s=Math.abs(q);
+      const base=dark?[28,33,37]:[255,255,255],tgt=q>0?[214,39,40]:[31,95,214];
+      R=base[0]+(tgt[0]-base[0])*s;G=base[1]+(tgt[1]-base[1])*s;B=base[2]+(tgt[2]-base[2])*s;}
+    d[idx]=R;d[idx+1]=G;d[idx+2]=B;d[idx+3]=255;}
+  frame.off.getContext("2d").putImageData(frame.img.d,0,0);
+  g.imageSmoothingEnabled=true;
+  const S=Math.min(Wd,Hd),ox=(Wd-S)/2,oy=(Hd-S)/2;g.drawImage(frame.off,ox,oy,S,S);
+  const sc=S/(2*half),cx=Wd/2,cy=Hd/2;
+  // промені спостереження
+  g.strokeStyle=col.ink;g.lineWidth=1.2;g.setLineDash([5,4]);
+  g.beginPath();g.moveTo(cx,cy);g.lineTo(cx+Math.sin(thObs)*half*sc*1.4,cy-Math.cos(thObs)*half*sc*1.4);g.stroke();g.setLineDash([]);
+  // антена / диполь
+  g.lineCap="round";
+  if(mode==="rot"){const a=0.28*sc,pp=ph;g.strokeStyle=col.neg;g.lineWidth=4;g.beginPath();g.moveTo(cx-a*Math.cos(pp),cy+a*Math.sin(pp)*0);g.lineTo(cx+a*Math.cos(pp),cy);g.stroke();
+    g.strokeStyle=col.pos;g.beginPath();g.arc(cx,cy,a,0,6.2832);g.stroke();
+    g.fillStyle=col.ink;g.font="12px system-ui";g.textAlign="left";g.fillText("p обертається навколо z (вертикаль)",8,Hd-10);}
+  else{const L=mode==="ant"?LL:0.12,hh=L/2*sc;g.strokeStyle=col.ink;g.lineWidth=5;g.beginPath();g.moveTo(cx,cy-hh);g.lineTo(cx,cy+hh);g.stroke();
+    g.strokeStyle=col.panel;g.lineWidth=2;g.beginPath();g.moveTo(cx,cy-hh);g.lineTo(cx,cy+hh);g.stroke();
+    // струм
+    const I0=Math.cos(ph);g.fillStyle=I0>0?col.neg:col.pos;
+    g.fillStyle=col.ink;g.font="12px system-ui";g.textAlign="left";g.textBaseline="alphabetic";g.fillText(mode==="ant"?"антена L = "+LL.toFixed(2)+"λ":"L ≪ λ",8,Hd-10);}
+  g.lineCap="butt";
+  g.fillStyle=col.muted;g.font="12px system-ui";g.textAlign="right";g.textBaseline="top";g.fillText("кадр = ±2.6λ;  вісь z — вертикаль",Wd-8,8);
+  /* --- полярна діаграма --- */
+  const p=cp.begin(),S2=Math.min(cp.w,cp.h),c2x=cp.w/2,c2y=cp.h/2,R0=S2*0.43,imax=norm();
+  p.strokeStyle=col.line;p.lineWidth=1;p.fillStyle=col.muted;p.font="11px system-ui";p.textAlign="left";p.textBaseline="middle";
+  for(const f of[0.25,0.5,0.75,1]){p.beginPath();p.arc(c2x,c2y,R0*f,0,6.2832);p.stroke();p.fillText(f.toFixed(2),c2x+R0*f*0.707+2,c2y-R0*f*0.707);}
+  p.beginPath();p.moveTo(c2x,c2y-R0*1.08);p.lineTo(c2x,c2y+R0*1.08);p.moveTo(c2x-R0*1.08,c2y);p.lineTo(c2x+R0*1.08,c2y);p.stroke();
+  p.textAlign="center";p.fillText("θ = 0 (вісь)",c2x,c2y-R0*1.13);
+  p.beginPath();
+  for(let kk=0;kk<=720;kk++){const th=2*Math.PI*kk/720,tt=Math.abs(th>Math.PI?2*Math.PI-th:th),rr=R0*I(tt)/imax,
+    X=c2x+rr*Math.sin(th),Y=c2y-rr*Math.cos(th);kk?p.lineTo(X,Y):p.moveTo(X,Y);}
+  p.closePath();p.fillStyle=col.pos+"33";p.fill();p.strokeStyle=col.pos;p.lineWidth=2.2;p.stroke();
+  // маркер кута
+  const iv=I(thObs)/imax,rm=R0*iv;
+  p.strokeStyle=col.ink;p.setLineDash([5,4]);p.lineWidth=1.2;p.beginPath();p.moveTo(c2x,c2y);p.lineTo(c2x+R0*1.05*Math.sin(thObs),c2y-R0*1.05*Math.cos(thObs));p.stroke();p.setLineDash([]);
+  p.fillStyle=col.neg;p.beginPath();p.arc(c2x+rm*Math.sin(thObs),c2y-rm*Math.cos(thObs),6,0,6.2832);p.fill();
+  p.fillStyle=col.ink;p.font="600 12.5px system-ui";p.textAlign="center";p.textBaseline="top";p.fillText("⟨Π⟩(θ)/⟨Π⟩max",c2x,6);
+  /* --- числа --- */
+  let Om=0,Ieq=I(Math.PI/2),I90=Ieq;
+  const NN=2000;for(let q=0;q<NN;q++){const th=Math.PI*(q+0.5)/NN;Om+=I(th)*Math.sin(th);}
+  Om*=2*Math.PI*Math.PI/NN;                       // ∫ I dΩ
+  const D=4*Math.PI*imax/Om;
+  // кутова ширина за рівнем половинної потужності навколо максимуму
+  let thm=0,mv=0;for(let q=0;q<=1800;q++){const th=Math.PI*q/1800;if(I(th)>mv){mv=I(th);thm=th;}}
+  let a1=thm,a2=thm;while(a1>0&&I(a1)>0.5*mv)a1-=Math.PI/3600;while(a2<Math.PI&&I(a2)>0.5*mv)a2+=Math.PI/3600;
+  const hp=(a2-a1)*180/Math.PI;
+  const Oeff=I90>1e-9?Om/I90:Infinity;
+  let txt="В напрямку θ = <b>"+(thObs*180/Math.PI).toFixed(0)+"°</b>: ⟨Π⟩/⟨Π⟩<sub>max</sub> = <b>"+iv.toFixed(2)+"</b>. Коефіцієнт спрямованої дії D = 4πΠ<sub>max</sub>/∫Π dΩ = <b>"+D.toFixed(2)+"</b> ("+(10*Math.log10(D)).toFixed(2)+" дБі), ширина головної пелюстки за половинною потужністю ≈ <b>"+hp.toFixed(0)+"°</b>. ";
+  if(mode==="lin")txt+="Повна потужність ⟨P⟩ = ω⁴p₀²/3c³ = (8π/3)·r²⟨Π(90°)⟩ — розв'язок задачі 1: ∫sin²θ dΩ = 8π/3.";
+  else if(mode==="rot")txt+="Дві перпендикулярні складові діють незалежно, тому ⟨P⟩ = 2ω⁴p²/3c³ (задача 2); ⟨Π⟩ ∝ 1 + cos²θ, мінімум на осі обертання вдвічі менший за максимум у площині обертання; на осі хвиля колова, в площині обертання — лінійна.";
+  else txt+="Струм вздовж антени вважається синусоїдальним (вузол на кінцях). При L → 0 діаграма → sin²θ (D = 1.5), L = λ/2: D = 1.64, L = λ: вужче (D ≈ 2.4), L = 1.5λ: з'являються бічні пелюстки.";
+  $("out").innerHTML=txt;
+  requestAnimationFrame(frame);
+}
+// перетягування кута на діаграмі
+let drag=false;cp.c.style.touchAction="none";cp.c.style.cursor="pointer";
+function setT(e){const r=cp.c.getBoundingClientRect(),x=e.clientX-r.left-cp.w/2,y=-(e.clientY-r.top-cp.h/2);let th=Math.atan2(Math.abs(x),y);thObs=Math.max(0,Math.min(Math.PI,th));if(x<0)thObs=thObs;}
+cp.c.addEventListener("pointerdown",e=>{drag=true;cp.c.setPointerCapture(e.pointerId);setT(e);});
+cp.c.addEventListener("pointermove",e=>{if(drag)setT(e);});
+cp.c.addEventListener("pointerup",()=>drag=false);
+$("mode").onchange=e=>{mode=e.target.value;if(mode!=="rot"&&comp==="out"){comp="in";$("comp").value="in";}};
+$("comp").onchange=e=>comp=e.target.value;
+$("len").oninput=e=>{LL=+e.target.value;$("leno").textContent=LL.toFixed(2);};
+function onres(){cv.fit();cp.fit();EW.readCols();}
+window.addEventListener("resize",onres);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>EW.readCols());
+requestAnimationFrame(frame);
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>
