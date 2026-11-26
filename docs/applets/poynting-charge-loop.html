@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Вектор Пойнтінга: заряд у центрі витка зі струмом</title>
+<link rel="stylesheet" href="assets/ew.css">
+<script src="assets/theme.js"></script>
+<script src="assets/ew.js"></script>
+</head>
+<body>
+<h1>Заряд у центрі витка зі струмом: <b>S = (c/4π) E×B</b> циркулює навколо осі</h1>
+<p class="lead">Поле заряду радіальне (E ∥ r), поле витка лежить у меридіональних площинах (B має лише складові B<sub>r</sub>, B<sub>θ</sub>). Тому E×B ∝ B<sub>θ</sub>·φ: потік енергії скрізь напрямлений по колах навколо осі. На осі S = 0. Знак S<sub>φ</sub> збігається зі знаком B<sub>θ</sub>: він змінюється на дроті, тож усередині кільця потік іде проти струму, а ззовні — за струмом (для qI > 0).</p>
+<div class="layout">
+<canvas id="mer" class="sq" aria-label="Просторова картина: S циркулює по колах навколо осі"></canvas>
+<div class="right">
+<canvas id="top" class="sq" aria-label="Вигляд зверху: S у площині на висоті h"></canvas>
+<canvas id="plot" class="plot" aria-label="B_theta як функція відстані до осі"></canvas>
+</div>
+</div>
+<div class="controls">
+<label>Заряд q <select id="qs"><option value="1">q &gt; 0</option><option value="-1">q &lt; 0</option></select></label>
+<label>Струм I <select id="is"><option value="1">проти годинникової (дивимось з +z)</option><option value="-1">за годинниковою</option></select></label>
+<label><input type="checkbox" id="cS" checked> S</label><label><input type="checkbox" id="cE" checked> E</label><label><input type="checkbox" id="cB" checked> B</label>
+<label>Висота площини h/a <input id="h" type="range" min="0" max="2" step="0.05" value="0"><b id="ho">0.00</b></label>
+</div>
+<p class="out" id="out"></p>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const cm=EW.view($("mer")),ct=EW.view($("top")),cg=EW.view($("plot")),col=EW.readCols();
+let qs=1,is=1,h=0,showS=true,showE=true,showB=true;
+const N=160,EPS=0.04;
+// поле витка радіуса 1 зі струмом I=1 (СГС, c=1): компоненти в площині (ρ,z)
+function Bf(rho,z){let br=0,bz=0;
+  for(let k=0;k<N;k++){const p=2*Math.PI*(k+0.5)/N,c=Math.cos(p),s=Math.sin(p);
+    const Rx=rho-c,Ry=-s,R2=Rx*Rx+Ry*Ry+z*z+EPS*EPS,R3=R2*Math.sqrt(R2);
+    br+=c*z/R3;bz+=(1-rho*c)/R3;}
+  return[br*2*Math.PI/N,bz*2*Math.PI/N];}
+// B_theta в точці (ρ≥0,z); θ відраховується від +z
+function Bth(rho,z){const r=Math.hypot(rho,z);if(r<1e-9)return 0;const[br,bz]=Bf(rho,z);return br*(z/r)-bz*(rho/r);}
+// S_phi у одиницях c/4π при q=1, a=1:  q I B_theta / r^2
+function Sphi(rho,z){const r2=rho*rho+z*z;return qs*is*Bth(rho,z)/Math.max(r2,1e-6);}
+const rad=s=>Math.min(11,2+2.2*Math.log10(1+Math.abs(s)/0.02));
+function sign(c){return c>=0?col.pos:col.neg;}
+// ---------- 3D ----------
+let yaw=0.7,pit=0.5,auto=true;
+const lines=[];   // замкнені силові лінії B у меридіональній площині: точки (ρ,z) уздовж B
+(function traceB(){
+  for(const r0 of[0.15,0.4,0.65,0.85,0.95]){
+    const half=dir=>{let p=[r0,0],pts=[[r0,0]];
+      for(let k=0;k<900;k++){const[br,bz]=Bf(p[0],p[1]),m=Math.hypot(br,bz);if(m<1e-9)break;
+        const st=0.04*dir/m;p=[p[0]+br*st,p[1]+bz*st];
+        if(Math.hypot(p[0]-1,p[1])<0.08||Math.hypot(p[0],p[1])>3.4)break;
+        pts.push([Math.max(p[0],0),p[1]]);if(k>10&&p[1]*pts[pts.length-2][1]<=0)break;}
+      return pts;};
+    lines.push(half(-1).reverse().concat(half(1).slice(1)));}
+})();
+function drawMer(){
+  const g=cm.begin(),S=Math.min(cm.w,cm.h),sc=S/(2*3.3),cx=cm.w/2,cy=cm.h/2;
+  const ca=Math.cos(yaw),sa=Math.sin(yaw),cb=Math.cos(pit),sb=Math.sin(pit);
+  const P=(x,y,z)=>{const xr=x*ca+y*sa,yr=-x*sa+y*ca;return[cx+sc*xr,cy-sc*(z*cb-yr*sb),yr*cb+z*sb];};
+  const items=[];
+  const add=(d,f)=>items.push([d,f]);
+  // вісь z
+  {const a=P(0,0,-3),b=P(0,0,3);g.strokeStyle=col.line;g.lineWidth=1;g.setLineDash([4,4]);g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();g.setLineDash([]);
+   g.fillStyle=col.muted;g.font="12px system-ui";g.textAlign="left";g.textBaseline="middle";g.fillText("z",b[0]+4,b[1]);}
+  // площина h (коло радіуса 2.7)
+  {g.strokeStyle=col.warn;g.globalAlpha=0.45;g.setLineDash([5,5]);g.lineWidth=1;g.beginPath();
+   for(let k=0;k<=72;k++){const p=2*Math.PI*k/72,q=P(2.7*Math.cos(p),2.7*Math.sin(p),h);k?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]);}
+   g.stroke();g.setLineDash([]);g.globalAlpha=1;}
+  const cE=col.acc,cB="#9b6bdc";
+  // силові лінії B: замкнені, у 4 меридіональних площинах; стрілка — за напрямком B
+  if(showB){g.lineWidth=1.6;g.strokeStyle=cB;g.globalAlpha=0.9;
+    for(let j=0;j<4;j++){const ph=Math.PI*j/2;
+      for(const L of lines){const T=L.map(q=>P(q[0]*Math.cos(ph),q[0]*Math.sin(ph),q[1]));
+        g.beginPath();T.forEach((t,k)=>k?g.lineTo(t[0],t[1]):g.moveTo(t[0],t[1]));g.stroke();
+        for(const f of[0.22,0.78]){const i=Math.floor(f*(T.length-1)),a=T[i],b=T[i+1];if(a&&b){const[u,v]=is>0?[a,b]:[b,a];EW.arrow(g,u[0],u[1],v[0],v[1],cB,1.6,7);}}}}
+    g.globalAlpha=1;}
+  // силові лінії E: радіальні (14 напрямків), стрілка від заряду при q>0
+  if(showE){g.lineWidth=1.4;g.strokeStyle=cE;g.globalAlpha=0.85;
+    const Nn=14;for(let k=0;k<Nn;k++){const zc=1-2*(k+0.5)/Nn,rr=Math.sqrt(1-zc*zc),ph=k*2.399963,dx=rr*Math.cos(ph),dy=rr*Math.sin(ph);
+      const a=P(0,0,0),b=P(3.1*dx,3.1*dy,3.1*zc);g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();
+      for(const r of[1.6,2.7]){const u=P((r-0.18*qs)*dx,(r-0.18*qs)*dy,(r-0.18*qs)*zc),v=P((r+0.18*qs)*dx,(r+0.18*qs)*dy,(r+0.18*qs)*zc);EW.arrow(g,u[0],u[1],v[0],v[1],cE,1.4,7);}}
+    g.globalAlpha=1;}
+  // стрілки S: кільця (ρ,z)
+  const rhos=[0.45,0.8,1.4,2.0,2.7],zs=[-1.5,-0.75,0,0.75,1.5];
+  if(showS)for(const rho of rhos)for(const z of zs){
+    if(Math.hypot(rho-1,z)<0.22||Math.hypot(rho,z)<0.3)continue;
+    const sp=Sphi(rho,z);if(Math.abs(sp)<2e-4)continue;
+    const n=Math.max(8,Math.round(2*Math.PI*rho/0.55));
+    const Lh=Math.min(0.34,0.08+0.075*Math.log10(1+Math.abs(sp)/0.02))*(sp>=0?1:-1);
+    for(let m=0;m<n;m++){const p=2*Math.PI*m/n+((rhos.indexOf(rho)+zs.indexOf(z))%2)*Math.PI/n,x=rho*Math.cos(p),y=rho*Math.sin(p),tx=-Math.sin(p),ty=Math.cos(p);
+      const a=P(x-tx*Lh,y-ty*Lh,z),b=P(x+tx*Lh,y+ty*Lh,z),d=a[2]*0.5+b[2]*0.5;
+      add(d,()=>{g.globalAlpha=Math.max(0.25,Math.min(1,0.75-d*0.13));EW.arrow(g,a[0],a[1],b[0],b[1],sign(sp),1.9,6);g.globalAlpha=1;});}}
+  // виток
+  {const pts=[];for(let k=0;k<=96;k++){const p=2*Math.PI*k/96;pts.push(P(Math.cos(p),Math.sin(p),0));}
+   for(let k=0;k<96;k++){const a=pts[k],b=pts[k+1];add((a[2]+b[2])/2,()=>{g.strokeStyle=col.warn;g.lineWidth=4;g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();});}
+   const p0=2.3,a=P(Math.cos(p0),Math.sin(p0),0),b=P(Math.cos(p0+0.12*is),Math.sin(p0+0.12*is),0);
+   const t=[Math.cos(p0+0.35*is),Math.sin(p0+0.35*is)],t0=[Math.cos(p0-0.2*is),Math.sin(p0-0.2*is)];
+   const A=P(t0[0],t0[1],0),B=P(t[0],t[1],0);add(a[2]-0.01,()=>EW.arrow(g,A[0],A[1],B[0],B[1],col.warn,4,13));}
+  // заряд
+  {const c=P(0,0,0);add(c[2],()=>{g.fillStyle=qs>0?col.neg:col.pos;g.beginPath();g.arc(c[0],c[1],9,0,6.2832);g.fill();
+    g.fillStyle="#fff";g.font="700 14px system-ui";g.textAlign="center";g.textBaseline="middle";g.fillText(qs>0?"+":"−",c[0],c[1]+1);});}
+  items.sort((u,v)=>v[0]-u[0]);for(const it of items)it[1]();
+  g.fillStyle=col.muted;g.font="12px system-ui";g.textAlign="left";g.textBaseline="top";
+  g.fillText("3D: тягніть мишею, щоб обертати",8,8);
+  g.fillStyle=col.pos;g.fillText("S: проти годинникової",8,26);g.fillStyle=col.neg;g.fillText("S: за годинниковою",170,26);
+  g.fillStyle=cE;g.fillText("E (від заряду)",8,44);g.fillStyle=cB;g.fillText("B (замкнені лінії)",130,44);g.fillStyle=col.warn;g.fillText("виток; пунктир — площина h",8,62);
+}
+function drawTop(){
+  const g=ct.begin(),W=3,S=Math.min(ct.w,ct.h),sc=S/(2*W),cx=ct.w/2,cy=ct.h/2;
+  g.strokeStyle=col.warn;g.lineWidth=2.5;if(Math.abs(h)>0.02)g.setLineDash([6,5]);
+  g.beginPath();g.arc(cx,cy,sc,0,6.2832);g.stroke();g.setLineDash([]);
+  EW.arrow(g,cx+sc,cy+2,cx+sc,cy+(is>0?-24:28),col.warn,2.5,9);
+  for(let k=1;k<=9;k++){const rho=0.3*k;
+    if(Math.abs(h)<0.12&&Math.abs(rho-1)<0.12)continue;
+    const n=Math.max(6,Math.round(2*Math.PI*rho/0.38)),sp=Sphi(rho,h);
+    for(let m=0;m<n;m++){const p=2*Math.PI*m/n+(k%2)*Math.PI/n,x=rho*Math.cos(p),y=rho*Math.sin(p);
+      const L=Math.min(36,6+12*Math.log10(1+Math.abs(sp)/0.02))*(sp>=0?1:-1)/2;
+      const tx=-Math.sin(p),ty=Math.cos(p),px=cx+x*sc,py=cy-y*sc;
+      EW.arrow(g,px-tx*L,py+ty*L,px+tx*L,py-ty*L,sign(sp),1.8,6);}}
+  g.fillStyle=qs>0?col.neg:col.pos;g.beginPath();g.arc(cx,cy,8,0,6.2832);g.fill();
+  g.fillStyle="#fff";g.font="700 13px system-ui";g.textAlign="center";g.textBaseline="middle";g.fillText(qs>0?"+":"−",cx,cy+1);
+  g.fillStyle=col.muted;g.font="12px system-ui";g.textAlign="left";g.textBaseline="top";
+  g.fillText("вигляд з +z, площина z = "+h.toFixed(2)+"·a; довжина стрілки ~ log|S|",8,8);
+}
+function drawPlot(){
+  const pts=[];for(let r=0.02;r<=3;r+=0.02){let v=qs*is*Bth(r,h);pts.push([r,Math.max(-3,Math.min(3,v))]);}
+  EW.plot(cg,{x0:0,x1:3,y0:-3,y1:3,title:"S_φ ∝ q·I·B_θ(ρ) на висоті h  (r² S_φ в умовних одиницях)",xl:"ρ / a",xt:[0,0.5,1,1.5,2,2.5,3],yt:[-3,-2,-1,0,1,2,3],
+    curves:[{pts:pts,c:col.pos,w:2.2}],vlines:[[1,col.warn,[4,4]]]});
+}
+function out(){
+  const sIn=Sphi(0.5,h),sOut=Sphi(2,h);
+  const dir=v=>v>0?"проти годинникової":"за годинниковою";
+  $("out").innerHTML="На осі <b>S = 0</b> (B<sub>θ</sub> = 0). У площині h = <b>"+h.toFixed(2)+"a</b>: при ρ = 0,5a потік іде <b>"+dir(sIn)+"</b>, при ρ = 2a — <b>"+dir(sOut)+"</b> (дивимось з +z). "+
+   (Math.abs(h)<0.3?"Біля площини витка знак змінюється саме на дроті (ρ = a).":"Над витком знак B<sub>θ</sub> змінюється при іншому ρ; на великих відстанях S ∝ sinθ/r⁵ спрямований однаково.")+
+   " Змініть знак q або I — і всі стрілки розвернуться; при qI = 0 потоку немає. Потік замкнений, div S = 0 (стаціонарно), а поле має момент імпульсу вздовж осі.";
+}
+function draw(){drawMer();drawTop();drawPlot();out();}
+$("qs").onchange=e=>{qs=+e.target.value;draw();};
+$("is").onchange=e=>{is=+e.target.value;draw();};
+$("cS").onchange=e=>{showS=e.target.checked;draw();};$("cE").onchange=e=>{showE=e.target.checked;draw();};$("cB").onchange=e=>{showB=e.target.checked;draw();};
+$("h").oninput=e=>{h=+e.target.value;$("ho").textContent=h.toFixed(2);draw();};
+function onres(){cm.fit();ct.fit();cg.fit();EW.readCols();draw();}
+window.addEventListener("resize",onres);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{EW.readCols();draw();});
+window.addEventListener("themechange",()=>{EW.readCols();draw();});
+let drag=false,lx=0,ly=0;cm.c.style.touchAction="none";cm.c.style.cursor="grab";
+cm.c.addEventListener("pointerdown",e=>{drag=true;lx=e.clientX;ly=e.clientY;cm.c.setPointerCapture(e.pointerId);});
+cm.c.addEventListener("pointermove",e=>{if(!drag)return;yaw+=(e.clientX-lx)*0.01;pit=Math.max(-1.45,Math.min(1.45,pit+(e.clientY-ly)*0.01));lx=e.clientX;ly=e.clientY;drawMer();});
+cm.c.addEventListener("pointerup",()=>drag=false);
+draw();
+</script>
+<script src="assets/panel-toggle.js"></script>
+</body>
+</html>
